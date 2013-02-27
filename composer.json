@@ -1,0 +1,23 @@
+{
+    "name": "newscoop/newscoop-paywall-bundle",
+    "description": "Paywall/Payment providers support in Newscoop",
+    "keywords": ["newscoop", "pawyall", "cms", "integration"],
+    "version": "0.1",
+    "type": "newscoop-plugin",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Pawel Mikolajczuk",
+            "email": "pawel.mikolajczuk@sourcefabric.org"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "newscoop/plugins-installer": "*"
+    },
+    "autoload": {
+        "psr-0": { "Newscoop\\NewscoopPaywallBundle": "" }
+    },
+    "target-dir": "Newscoop/PaywallBundle",
+    "minimum-stability": "dev"
+}
