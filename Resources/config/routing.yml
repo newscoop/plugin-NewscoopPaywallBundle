@@ -1,0 +1,3 @@
+newscoop_paywall_subscription_add:
+    pattern:  /paywall/subscriptions/add/{item}/{number}
+    defaults: { _controller: NewscoopPaywallBundle:Default:index }

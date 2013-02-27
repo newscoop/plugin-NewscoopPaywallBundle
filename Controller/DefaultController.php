@@ -42,6 +42,17 @@ class DefaultController extends Controller
     /**
      * Get callback response from paywall/payment provider and proccess it.
      * 
+     * @Route("/paywall/subscriptions/add/{item}/{number}")
+     */
+    public function createSubscription(Request $request, $item, $number)
+    {
+        $adapter = $this->container->getService('newscoop.paywall.adapter');
+
+    }
+
+    /**
+     * Get callback response from paywall/payment provider and proccess it.
+     * 
      * @Route("/paywall/return/callback")
      */
     public function callbackAction(Request $request)

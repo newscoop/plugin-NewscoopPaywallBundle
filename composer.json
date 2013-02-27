@@ -13,10 +13,12 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "newscoop/plugins-installer": "*"
+        "ext-curl": "*",
+        "newscoop/plugins-installer": "*",
+        "mike182uk/paypal-ipn-listener": "*"
     },
     "autoload": {
-        "psr-0": { "Newscoop\\NewscoopPaywallBundle": "" }
+        "psr-0": { "Newscoop\\PaywallBundle\\NewscoopPaywallBundle": "" }
     },
     "target-dir": "Newscoop/PaywallBundle",
     "minimum-stability": "dev"
