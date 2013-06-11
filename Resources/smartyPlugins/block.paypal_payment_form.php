@@ -32,11 +32,12 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
 
     $smarty->smarty->loadPlugin('smarty_shared_escape_special_chars');
     $context = $smarty->getTemplateVars('gimme');
-    $subscriptionService = \Zend_Registry::get('container')->getService('subscription.service');
+    $container = \Zend_Registry::get('container');
+    $subscriptionService = $container->getService('subscription.service');
     $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
     $url = $context->url;
 
-    $choosenSubscription = $subscriptionService->getOneById(\CampRequest::GetVar('subscription_id'));
+    $choosenSubscription = $subscriptionService->getOneById($params['subscriptionId']);
 
     if (!$choosenSubscription) {
         throw new Exception("Subscription don't exists", 1);
@@ -85,6 +86,10 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
     $html .= '<input type="hidden" name="no_note" value="1"> '."\n";
     $html .= '<input type="hidden" name="currency_code" value="'.$formData['subscription_currency'].'"> '."\n";
     $html .= '<input type="hidden" name="lc" value="'.$formData['language_code'].'">'."\n";
+    $html .= '<input type="hidden" name="return" value="'.$container->get('router')->generate('newscoop_paywall_default_statussuccess', array(), true).'">'."\n";
+    $html .= '<input type="hidden" name="cancel_return" value="'.$container->get('router')->generate('newscoop_paywall_default_statuscancel', array(), true).'">'."\n";
+    $html .= '<input type="hidden" name="notify_url" value="'.$container->get('router')->generate('newscoop_paywall_default_callback', array(), true).'">'."\n";
+    $html .= '<input type="hidden" name="custom" value="'.$choosenSubscription->getId().'__'.$choosenSubscription->getUser()->getId().'">'."\n";
 
     foreach ($context->url->form_parameters as $param) {
         if ($param['name'] == 'tpl') {

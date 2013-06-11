@@ -86,13 +86,18 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
                     $parts = false;
                 }
             }
-            if ($parts == true) {
+
+            if ($parts === true) {
                 $specificElement = true;
             }
         }
 
         if (array_key_exists($definition['type'], $meta)) {
-            if (!array_key_exists($definition['type'], $matched) || $specificElement === true) {
+            if (
+                !array_key_exists($definition['type'], $matched) || 
+                $specificElement === true || 
+                (!array_key_exists('specify', $definition) && !$specificType)
+            ) {
                 $matched[$definition['type']] = $definition + array('definition_name' => $name);
                 if ($specificElement) {
                     $specificType = $definition['type'];
@@ -110,7 +115,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     }
     $matched = $tmp;
 
-    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/subscriptions/add'.$anchor.'" method="post" '.$p_params['html_code'].'>'."\n";
+    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/subscriptions/get'.$anchor.'" method="post" '.$p_params['html_code'].'>'."\n";
 
     if (isset($template)) {
         $html .= "<input type=\"hidden\" name=\"tpl\" value=\"" . $template->identifier . "\" />\n";
@@ -125,8 +130,19 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     }
 
     $options = '';
+    if (array_key_exists('option_text', $p_params)) {
+        $optionText = smarty_function_escape_special_chars($p_params['option_text']);
+    } else {
+        $optionText = 'This %type% - %range% for %price% %currency%';
+    }
+
     foreach ($matched as $type => $definition) {
-        $options .= '<option value="'.$definition['definition_name'].'">This '.$type.' - '.$definition['range'].' for '.$definition['price'].' '.$definition['currency'].'</option>'."\n";
+        $optionText = str_replace('%currency%', $definition['currency'],
+            str_replace('%price%', $definition['price'],
+                str_replace('%range%', $definition['range'],
+                    str_replace('%type%', $type, $optionText)
+        )));
+        $options .= '<option value="'.$definition['definition_name'].'">'.$optionText.'</option>'."\n";
     }
     foreach ($meta as $type => $value) {    
         $html .= '<input type="hidden" name="'.$type.'_id" value="'.$value.'" />'."\n";
