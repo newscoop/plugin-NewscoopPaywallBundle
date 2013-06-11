@@ -39,33 +39,17 @@ class PaypallAdapter implements PaywallAdapterInterface
         }
 
         if ($status) {
-            /*$subscription = $this->subscriptionService->create();
-
+            $custom = explode('__', $this->request->get('custom', array()));
+            $subscription = $this->subscriptionService->getOneById($custom[0]);
             $subscriptionData = new \Newscoop\Subscription\SubscriptionData(array(
-                'userId' => 1,
-                'publicationId' => 2,
-                'toPay' => 30,
-                'days' => 30,
-                'currency' => 'PLN'
+                'active' => true
             ), $subscription);
-
-            $article = $this->subscriptionService->getArticleRepository()->findOneByNumber(64);
-            $section = $this->subscriptionService->getSectionRepository()->findOneByNumber(10);
-            $issue = $this->subscriptionService->getIssueRepository()->findOneByNumber(13);
-            $language = $this->subscriptionService->getLanguageRepository()->findOneById(1);
-            
-            $subscriptionData->addArticle($article, $language);
-            $subscriptionData->addSection($section, $language);
-            $subscriptionData->addIssue($issue, $language);
-
             $subscription = $this->subscriptionService->update($subscription, $subscriptionData);
-            $this->subscriptionService->save($subscription);*/
+            $this->subscriptionService->save($subscription);
         } else {
             //invalid...
             $report = $listener->getStatusReport();
         }
-
-        
 
         return new Response('OK');
     }
