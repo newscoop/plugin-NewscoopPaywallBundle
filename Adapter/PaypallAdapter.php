@@ -35,6 +35,7 @@ class PaypallAdapter implements PaywallAdapterInterface
         try {
             $status = $listener->verifyIpn();   
         } catch (\Exception $e) {
+            // log error mesage
             $error = $e->getMessage();
         }
 

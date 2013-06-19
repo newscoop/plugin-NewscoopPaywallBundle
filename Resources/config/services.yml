@@ -1,5 +1,5 @@
 parameters:
-    newscoop.paywall.adapter.class: "Newscoop\\PaywallBundle\\Adapter\\PayGeAdapter"
+    newscoop.paywall.adapter.class: "Newscoop\\PaywallBundle\\Adapter\\PaypallAdapter"
 
 services:
     newscoop.paywall.adapter:

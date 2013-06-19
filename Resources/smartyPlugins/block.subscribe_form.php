@@ -33,7 +33,6 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     $smarty->smarty->loadPlugin('smarty_shared_escape_special_chars');
     $context = $smarty->getTemplateVars('gimme');
     $subscriptionService = \Zend_Registry::get('container')->getService('subscription.service');
-
     $url = $context->url;
 
     if (!isset($p_params['submit_button'])) {
