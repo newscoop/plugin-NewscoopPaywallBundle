@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Newscoop\PaywallBundle\Adapter\PaywallAdapterInterface;
 
-class PaypallAdapter implements PaywallAdapterInterface
+class PaypalAdapter implements PaywallAdapterInterface
 {   
     private $subscriptionService;
 
@@ -35,6 +35,7 @@ class PaypallAdapter implements PaywallAdapterInterface
         try {
             $status = $listener->verifyIpn();   
         } catch (\Exception $e) {
+            // log error mesage
             $error = $e->getMessage();
         }
 
