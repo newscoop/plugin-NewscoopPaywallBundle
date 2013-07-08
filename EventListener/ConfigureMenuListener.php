@@ -21,7 +21,7 @@ class ConfigureMenuListener
 
         $menu[getGS('Plugins')]->addChild(
         	'Paywall Plugin', 
-        	array('uri' => $event->getRouter()->generate('newscoop_exampleplugin_default_admin'))
+        	array('uri' => $event->getRouter()->generate('newscoop_paywall_default_admin'))
         );
     }
 }
