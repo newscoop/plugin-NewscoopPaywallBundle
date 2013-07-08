@@ -1,0 +1,4 @@
+
+<h1>hello !</h1>
+
+{{ test_plugin_block }} {{ /test_plugin_block }}
