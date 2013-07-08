@@ -5,3 +5,15 @@ services:
     newscoop.paywall.adapter:
         class: %newscoop.paywall.adapter.class%
         arguments: ["@subscription.service"]
+
+    newscoop_paywall_plugin.lifecyclesubscriber:
+        class: Newscoop\ExamplePluginBundle\EventListener\LifecycleSubscriber
+        arguments:
+            - @em
+        tags:
+            - { name: kernel.event_subscriber}
+
+    newscoop_paywall_plugin.configure_menu_listener:
+        class: Newscoop\PaywallBundle\EventListener\ConfigureMenuListener
+        tags:
+          - { name: kernel.event_listener, event: newscoop_newscoop.menu_configure, method: onMenuConfigure }
