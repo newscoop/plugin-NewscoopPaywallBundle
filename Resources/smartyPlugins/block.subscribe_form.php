@@ -56,8 +56,8 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
         $meta['issue'] = $context->issue->number;
     }
 
-    if ($context->section->identifier) {
-        $meta['section'] = $context->section->identifier;
+    if ($context->section->number) {
+        $meta['section'] = $context->section->number;
     }
 
     if ($context->article->number) {
@@ -97,22 +97,13 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
                 $specificElement === true || 
                 (!array_key_exists('specify', $definition) && !$specificType)
             ) {
-                $matched[$definition['type']] = $definition + array('definition_name' => $name);
+                $matched[$name] = $definition + array('definition_name' => $name);
                 if ($specificElement) {
                     $specificType = $definition['type'];
                 }
             }
         }
     }
-
-    // sort elements on list
-    $tmp = array();
-    foreach ($types as $type => $value) {
-        if (array_key_exists($type, $matched)) {
-            $tmp[$type] = $matched[$type];
-        }
-    }
-    $matched = $tmp;
 
     $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/subscriptions/get'.$anchor.'" method="post" '.$p_params['html_code'].'>'."\n";
 
@@ -135,21 +126,30 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
         $optionText = 'This %type% - %range% for %price% %currency%';
     }
 
-    foreach ($matched as $type => $definition) {
-        $optionText = str_replace('%currency%', $definition['currency'],
-            str_replace('%price%', $definition['price'],
-                str_replace('%range%', $definition['range'],
-                    str_replace('%type%', $type, $optionText)
-        )));
-        $options .= '<option value="'.$definition['definition_name'].'">'.$optionText.'</option>'."\n";
-    }
     foreach ($meta as $type => $value) {    
         $html .= '<input type="hidden" name="'.$type.'_id" value="'.$value.'" />'."\n";
     }
 
     $html .= '<input type="hidden" name="language_id" value="'.$context->language->number.'" />'."\n";
 
-    $html  .= "<select name=\"subscription_name\">".$options."</select>";
+    if (array_key_exists('type', $p_params) && $p_params['type'] == 'radio') {
+        foreach ($matched as $type => $definition) {
+            $html .= '<p><input type="radio" name="subscription_name" value="'.$definition['definition_name'].'">' .str_replace('%currency%', $definition['currency'],
+                    str_replace('%price%', $definition['price'],
+                        str_replace('%range%', $definition['range'],
+                            str_replace('%type%', $definition['type'], $optionText)
+                ))).'</p>';
+        }
+    } else {
+        foreach ($matched as $type => $definition) {
+            $options .= '<option value="'.$definition['definition_name'].'">'.str_replace('%currency%', $definition['currency'],
+                str_replace('%price%', $definition['price'],
+                    str_replace('%range%', $definition['range'],
+                        str_replace('%type%', $definition['type'], $optionText)
+            ))).'</option>'."\n";
+        }
+        $html  .= "<select name=\"subscription_name\">".$options."</select>";
+    }
 
     $html .= $p_content;
 

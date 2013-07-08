@@ -10,14 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 class AdminController extends Controller
 {
     /**
-     * @Route("/testpaywall")
-     */
-    public function indexAction(Request $request)
-    {
-        return $this->render('NewscoopPaywallBundle:Default:index.html.smarty');
-    }
-
-    /**
      * @Route("/admin/paywall_plugin")
      * @Template()
      */
