@@ -1,1 +1,23 @@
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}Paywall{% endblock %}
+{% block admin_page_title_content %}{{ getGS('Configuration') }}{% endblock %}
+
+{% block admin_content %}
+<div id="subscription" class="ui-tabs ui-widget ui-widget-content ui-corner-all" style="border: none;">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#configure">{{ getGS('Configure Subscriptions') }}</a></li>
+		<li class="ui-state-default ui-corner-top"><a href="#manage">{{ getGS('Manage Subscriptions') }}</a></li>
+		<li class="ui-state-default ui-corner-top"><a href="#settings">{{ getGS('Configure Paywall') }}</a></li>
+	</ul>
+</div>
+<script type="text/javascript">
+<!--
+$(document).ready(function() {
+    // tabs
+    $('#subscription').tabs()
+    .css('border', 'none');
+});
+//-->
+</script>
+{% endblock %}

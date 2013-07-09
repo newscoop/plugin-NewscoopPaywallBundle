@@ -41,13 +41,13 @@ class Subscriptions
     private $type;
 
     /**
-     * @ORM\Column(type="integer", name="range")
+     * @ORM\Column(type="integer", name="ranges")
      * @var int
      */
     private $range;
 
     /**
-     * @ORM\Column(type="decimal", name="pice")
+     * @ORM\Column(type="decimal", name="price")
      * @var decimal
      */
     private $price;
@@ -169,4 +169,3 @@ class Subscriptions
         return $this;
     }
 }
-

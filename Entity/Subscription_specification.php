@@ -31,7 +31,7 @@ class Subscription_specification
      * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscriptions")
      * @var Newscoop\PaywallBundle\Entity\Subscriptions
      */
-    private $subscription_id;
+    private $subscription;
 
     /**
      * @ORM\Column(type="integer", name="publication")
@@ -72,7 +72,7 @@ class Subscription_specification
     public function __construct() {
         $this->setCreatedAt(new \DateTime());
         $this->setIsActive(true);
-        $this->subscription_id = new ArrayCollection();
+        $this->subscription = new ArrayCollection();
     }
 
     /**
@@ -85,16 +85,16 @@ class Subscription_specification
         return $this->id;
     }
 
-    public function getSubscriptionId()
+    public function getSubscription()
     {
-        return $this->subscription_id;
+        return $this->subscription;
     }
 
-    public function setSubscriptionId($subscription_id)
+    public function setSubscription($subscription)
     {
-        $this->subscription_id = $subscription_id;
+        $this->subscription = $subscription;
         
-        return $subscription_id;
+        return $subscription;
     }
 
     public function getPublication()
@@ -169,4 +169,3 @@ class Subscription_specification
         return $this;
     }
 }
-
