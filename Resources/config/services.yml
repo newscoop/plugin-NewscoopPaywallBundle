@@ -17,3 +17,8 @@ services:
         class: Newscoop\PaywallBundle\EventListener\ConfigureMenuListener
         tags:
           - { name: kernel.event_listener, event: newscoop_newscoop.menu_configure, method: onMenuConfigure }
+
+    newscoop_paywall.form.type.subscriptionconf:
+        class: Newscoop\PaywallBundle\Form\Type\SubscriptionConfType
+        tags:
+            - { name: form.type, alias: subscriptionconf }

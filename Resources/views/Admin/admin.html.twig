@@ -3,94 +3,8 @@
 {% block admin_title %}Paywall{% endblock %}
 {% block admin_page_title_content %}{{ getGS('Configuration') }}{% endblock %}
 
-{% block admin_content %}
-<div id="subscription" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<li class="ui-state-default ui-corner-top"><a href="#configure">{{ getGS('Configure Subscriptions') }}</a></li>
-		<li class="ui-state-default ui-corner-top"><a href="#manage">{{ getGS('Manage Subscriptions') }}</a></li>
-		<li class="ui-state-default ui-corner-top"><a href="#settings">{{ getGS('Configure Paywall') }}</a></li>
-	</ul>
-	<div id="configure">	
-		<table border="0" cellspacing="0" cellpadding="0" class="box_table">
-			<tbody>
-				<tr>
-					<td colspan="2" align="left">
-						<input class="button" name="step1" value="{{ getGS('(1) Specify type and value') }}">
-						<input class="button" name="step2" value="{{ getGS('(2) Specify articles') }}"><br><br>
-						<strong>Please specify the name and value for your new subscription. You can set up various diffrent types<br> of subscriptions, but just one after the other.</strong>
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ getGS('Name of subscription:') }}   
-					</td>
-				</tr>
-				<tr>
-					<td align="left" valign="top">
-						<input type="text" name="sub_name" maxlength="100" size="40" class="input_text" alt="blank" emsg="Type subscription name">
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ getGS('Type of subscription:') }}: 
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<select name="sub_section" alt="select" emsg="You must choose section." class="input_select">
-							<option value="0">---Choose section---</option>
-							<option value="1" selected="selected">Section</option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ getGS('Duration of subscription in days') }}:    
-					</td>
-				</tr>
-				<tr>
-					<td align="left" valign="top">
-						<input type="text" name="sub_name" value="30" maxlength="100" size="20" class="input_text" alt="blank" emsg="Type duration of subscription in days">
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ getGS('Value of the subscription') }}:    
-					</td>
-				</tr>
-				<tr>
-					<td align="left" valign="top">
-						<input type="text" name="sub_name" value="10.90" maxlength="100" size="20" class="input_text" alt="blank" emsg="Type value of the subscription">
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ getGS('Currency') }}:    
-					</td>
-				</tr>
-				<tr>
-					<td align="left" valign="top">
-						<input type="text" name="sub_name" value="EUR" maxlength="100" size="20" class="input_text" alt="blank" emsg="Type currency">
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2"><hr></td>
-				</tr>
-				<tr>
-					<td colspan="2" align="right" style="padding-top: 10px;">
-						<input type="submit" name="next" value="Next" class="button">
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<div id="manage">
-		<p>tab2..</p>
-	</div>
-	<div id="settings">
-		<p>tab3..</p>
-	</div>
-</div>
+{% block admin_stylesheets %}{% endblock %}
+{% block admin_scripts %}
 <script type="text/javascript">
 <!--
 $(document).ready(function() {
@@ -100,4 +14,99 @@ $(document).ready(function() {
 });
 //-->
 </script>
+{% endblock %}
+
+{% block admin_content %}
+<div id="subscription" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top"><a href="#configure">{{ getGS('Configure Subscriptions') }}</a></li>
+		<li class="ui-state-default ui-corner-top"><a href="#manage">{{ getGS('Manage Subscriptions') }}</a></li>
+		<li class="ui-state-default ui-corner-top"><a href="#settings">{{ getGS('Configure Paywall') }}</a></li>
+	</ul>
+	<div id="configure">
+		<form action="{{ path('newscoop_paywall_admin_admin') }}" method="post" {{ form_enctype(form) }} >
+
+			
+
+			<table border="0" cellspacing="0" cellpadding="0" class="box_table">
+				<tbody>
+					<tr>
+						<td colspan="2" align="left">
+							<div class="errors">
+				{{ form_errors(form) }}
+			</div>
+							<input class="save-button" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
+							<input class="button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
+							<strong>Please specify the name and value for your new subscription. You can set up various diffrent types<br> of subscriptions, but just one after the other.</strong>
+						</td>
+					</tr>
+					<tr>
+						<td align="left">	
+							{{ form_label(form.name) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left" valign="top">
+							{{ form_widget(form.name, {'attr' : {'class' : 'input_text'}}) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
+							{{ form_label(form.type) }} 
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{{ form_widget(form.type, {'attr' : {'class' : 'input_select'}}) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
+							{{ form_label(form.range) }}    
+						</td>
+					</tr>
+					<tr>
+						<td align="left" valign="top">
+							{{ form_widget(form.range, {'attr' : {'class' : 'input_text'}}) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
+							{{ form_label(form.price) }}    
+						</td>
+					</tr>
+					<tr>
+						<td align="left" valign="top">
+							{{ form_widget(form.price, {'attr' : {'class' : 'input_text'}}) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
+							{{ form_label(form.currency) }}    
+						</td>
+					</tr>
+					<tr>
+						<td align="left" valign="top">
+							{{ form_widget(form.currency, {'attr' : {'class' : 'input_text'}}) }}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"><hr></td>
+					</tr>
+					<tr>
+						<td colspan="2" align="right" style="padding-top: 10px;">
+							<input type="submit" name="next" value="Next" class="save-button">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+	<div id="manage">
+		<p>tab2..</p>
+	</div>
+	<div id="settings">
+		<p>tab3..</p>
+	</div>
+</div>
 {% endblock %}
