@@ -25,16 +25,13 @@ $(document).ready(function() {
 	</ul>
 	<div id="configure">
 		<form action="{{ path('newscoop_paywall_admin_admin') }}" method="post" {{ form_enctype(form) }} >
-
-			
-
 			<table border="0" cellspacing="0" cellpadding="0" class="box_table">
 				<tbody>
 					<tr>
 						<td colspan="2" align="left">
 							<div class="errors">
-				{{ form_errors(form) }}
-			</div>
+								{{ form_errors(form) }}
+							</div>
 							<input class="save-button" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
 							<input class="button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
 							<strong>Please specify the name and value for your new subscription. You can set up various diffrent types<br> of subscriptions, but just one after the other.</strong>
@@ -47,7 +44,7 @@ $(document).ready(function() {
 					</tr>
 					<tr>
 						<td align="left" valign="top">
-							{{ form_widget(form.name, {'attr' : {'class' : 'input_text'}}) }}
+							{{ form_widget(form.name) }}
 						</td>
 					</tr>
 					<tr>
