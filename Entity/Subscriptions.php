@@ -11,6 +11,7 @@ namespace Newscoop\PaywallBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Newscoop\PaywallBundle\Validator\Constraints as decimalvalidator;
 
 /**
  * Subscriptions entity
@@ -47,6 +48,7 @@ class Subscriptions
     private $range;
 
     /**
+     * @decimalvalidator\ContainsDecimal(entity="Newscoop\PaywallBundle\Entity\Subscriptions", property="price")
      * @ORM\Column(type="decimal", name="price")
      * @var decimal
      */

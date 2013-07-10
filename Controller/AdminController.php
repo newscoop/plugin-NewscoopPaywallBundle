@@ -24,8 +24,19 @@ class AdminController extends Controller
         /*zrób też ajaxa który sprawdzi czy nazwa do subskrypcji nie jest zajęta
          i jak jest ok to niech podłetla ją na zialono (tekst w inpucie ma być zielony) jak nie jest ok to ma byc na czerwono i alert js'owy o ttym że jest zła
         */
+        $em = $this->getDoctrine()->getManager();
         $subscription = new Subscriptions();
         $form = $this->createForm('subscriptionconf', $subscription);
+
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+
+            if($form->isValid()) {
+                print_r('test');
+                return new RedirectResponse($this->generateUrl('newscoop_paywall_admin_admin'));
+            }
+        }
+
         return array(
             'form' => $form->createView()
         );
