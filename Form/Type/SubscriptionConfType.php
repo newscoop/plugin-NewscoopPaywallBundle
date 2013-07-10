@@ -14,7 +14,6 @@ class SubscriptionConfType extends AbstractType
         $builder
         ->add('name', null, array(
             'label' => 'Name of subscription: ',
-            'attr' => array('class'=>'input_text', 'style'=>'width:300px'),
             'error_bubbling' => true,
             'invalid_message' => 'Subscription name can not be empty.'
             ))
@@ -44,7 +43,7 @@ class SubscriptionConfType extends AbstractType
             'error_bubbling' => true,
             'required' => true,
             'invalid_message' => 'Type currency.'
-            )) 
+            ))
         ;
     }
 

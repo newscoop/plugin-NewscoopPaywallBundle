@@ -1,0 +1,8 @@
+Newscoop\PaywallBundle\Entity\Subscriptions:
+    properties:
+        price:
+            - NotBlank: ~
+            - Range:
+                min: 1
+                minMessage: Value must be greater than 1
+            - Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimal: ~

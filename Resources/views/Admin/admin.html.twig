@@ -11,6 +11,20 @@ $(document).ready(function() {
     // tabs
     $('#subscription').tabs()
     .css('border', 'none');
+
+    $('#step2').hide();
+
+    $('form').submit(function(e){
+	    $('#step1').hide();
+	    $('#step2').show();
+	    e.preventDefault();      
+	});
+	
+	$('#step1btn').click(function(e){
+	    $('#step1').show();
+	    $('#step2').hide();
+	    e.preventDefault();
+	});
 });
 //-->
 </script>
@@ -25,7 +39,7 @@ $(document).ready(function() {
 	</ul>
 	<div id="configure">
 		<form action="{{ path('newscoop_paywall_admin_admin') }}" method="post" {{ form_enctype(form) }} >
-			<table border="0" cellspacing="0" cellpadding="0" class="box_table">
+			<table id="step1" border="0" cellspacing="0" cellpadding="0" class="box_table">
 				<tbody>
 					<tr>
 						<td colspan="2" align="left">
@@ -44,7 +58,7 @@ $(document).ready(function() {
 					</tr>
 					<tr>
 						<td align="left" valign="top">
-							{{ form_widget(form.name) }}
+							{{ form_widget(form.name, {'attr' : {'class' : 'input_text'}}) }}
 						</td>
 					</tr>
 					<tr>
@@ -92,9 +106,25 @@ $(document).ready(function() {
 					</tr>
 					<tr>
 						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="submit" name="next" value="Next" class="save-button">
+							<input type="submit" id="next" name="next" value="Next" class="save-button">
 						</td>
 					</tr>
+				</tbody>
+			</table>
+			<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
+				<tbody>
+					<tr>
+						<td colspan="2" align="left">
+							<div class="errors">
+								{{ form_errors(form) }}
+							</div>
+							<input class="button" type="submit" id="step1btn" name="step1" value="{{ getGS('(1) Specify type and value') }}">
+							<input class="save-button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
+							<strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
+							<span class="article-title">Articles of Section:</span>
+						</td>
+					</tr>
+					
 				</tbody>
 			</table>
 		</form>
