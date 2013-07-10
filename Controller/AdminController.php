@@ -32,7 +32,6 @@ class AdminController extends Controller
             $form->bind($request);
 
             if($form->isValid()) {
-                print_r('test');
                 return new RedirectResponse($this->generateUrl('newscoop_paywall_admin_admin'));
             }
         }

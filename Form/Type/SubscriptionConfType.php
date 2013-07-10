@@ -17,16 +17,14 @@ class SubscriptionConfType extends AbstractType
             'error_bubbling' => true,
             'invalid_message' => 'Subscription name can not be empty.'
             ))
-        ->add('type', 'entity', array(
-            'class' => 'Newscoop\Entity\Section',
+        ->add('type', 'choice', array(
             'label'  => 'Type of subscription: ',
-            'property' => 'name',
-            'query_builder' => function(EntityRepository $er) {
-                return $er->createQueryBuilder('s')
-                    ->groupBy('s.name')
-                    ->orderBy('s.name', 'ASC');
-                }
-            ))
+            'choices'   => array(
+                'article'   => 'Article',
+                'section' => 'Section',
+                'issue'   => 'Issue',
+                'publication'   => 'Publication',
+            )))
         ->add('range', null, array(
             'label' => 'Duration of subscription in days: ',
             'error_bubbling' => true,
