@@ -13,18 +13,45 @@ $(document).ready(function() {
     .css('border', 'none');
 
     $('#step2').hide();
+    $('#sub_type_table').hide();
 
-    $('form').submit(function(e){
-	    $('#step1').hide();
-	    $('#step2').show();
-	    e.preventDefault();      
-	});
-	
-	$('#step1btn').click(function(e){
-	    $('#step1').show();
-	    $('#step2').hide();
-	    e.preventDefault();
-	});
+    $("#confForm").submit(function(){
+    	var name = $("#subscriptionconf_name").val();
+    	var type = $("#subscriptionconf_type").val();
+    	/*$.ajax({
+    		type: "POST",
+    		url: "/admin/paywall_plugin/test",
+    		data: { nameSub: name }
+    	}).done(function( msg ) {
+    		alert( "Data Saved: " + msg );
+		$('#subscriptionconf_name').css({'background-color' : '#FF2200'});
+	});*/
+    $('#step1').hide();
+    $('#step2').show();
+    $('#sub_type_table').show();
+
+    if(type == 'publication') {
+    	$('#sub_type_title').html('');
+    	$('#sub_type_title').append('Articles of Publication: ');
+    }else if(type == 'issue') {
+    	$('#sub_type_title').html('');
+    	$('#sub_type_title').append('Articles of Issue: ')
+    }else if(type == 'section') {
+    	$('#sub_type_title').html('');
+    	$('#sub_type_title').append('Articles of Section: ')
+    }else if(type == 'article') {
+    	$('#sub_type_title').html('');
+    	$('#sub_type_title').append('Articles: ')
+    }
+
+    return false;      
+});
+
+    $('#step1btn').click(function(e){
+    	$('#step1').show();
+    	$('#step2').hide();
+    	e.preventDefault();
+    });
 });
 //-->
 </script>
@@ -33,12 +60,13 @@ $(document).ready(function() {
 {% block admin_content %}
 <div id="subscription" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
 	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<li class="ui-state-default ui-corner-top"><a href="#configure">{{ getGS('Configure Subscriptions') }}</a></li>
+		<li class="ui-state-default ui-corner-top"><a href="#configure">Add new subscription</a></li>
 		<li class="ui-state-default ui-corner-top"><a href="#manage">{{ getGS('Manage Subscriptions') }}</a></li>
+		<li class="ui-state-default ui-corner-top"><a href="#manageuser">Manage User Subscriptions</a></li>
 		<li class="ui-state-default ui-corner-top"><a href="#settings">{{ getGS('Configure Paywall') }}</a></li>
 	</ul>
 	<div id="configure">
-		<form action="{{ path('newscoop_paywall_admin_admin') }}" method="post" {{ form_enctype(form) }} >
+		<form id="confForm" action="{{ path('newscoop_paywall_admin_admin') }}" method="post" {{ form_enctype(form) }} >
 			<table id="step1" border="0" cellspacing="0" cellpadding="0" class="box_table">
 				<tbody>
 					<tr>
@@ -106,9 +134,10 @@ $(document).ready(function() {
 					</tr>
 					<tr>
 						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="submit" id="next" name="next" value="Next" class="save-button">
+							<input type="submit" id="next" value="Next" class="save-button">
 						</td>
 					</tr>
+					{{ form_rest(form) }}
 				</tbody>
 			</table>
 			<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
@@ -121,12 +150,27 @@ $(document).ready(function() {
 							<input class="button" type="submit" id="step1btn" name="step1" value="{{ getGS('(1) Specify type and value') }}">
 							<input class="save-button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
 							<strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
-							<span class="article-title">Articles of Section:</span>
+							<span id="sub_type_title" class="article-title"></span>
 						</td>
 					</tr>
-					
 				</tbody>
 			</table>
+			<table id="sub_type_table" border="0" cellspacing="1" cellpadding="3" class="table_list">
+				<tbody><tr class="table_list_header">
+							<td align="center" valign="top">Numer</td>
+					<td align="left" valign="top">Nazwa<br></td>
+					<td align="left" valign="top">Domyślny alias strony</td>
+				</tr>
+				<tr class="list_row_odd">
+					<td align="center"></td>
+					<td>
+						
+					</td>
+					<td>
+						
+					</td>
+				</tr>
+			</tbody></table>
 		</form>
 	</div>
 	<div id="manage">

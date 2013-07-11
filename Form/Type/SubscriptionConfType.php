@@ -20,13 +20,14 @@ class SubscriptionConfType extends AbstractType
         ->add('type', 'choice', array(
             'label'  => 'Type of subscription: ',
             'choices'   => array(
-                'article'   => 'Article',
-                'section' => 'Section',
-                'issue'   => 'Issue',
                 'publication'   => 'Publication',
+                'issue'   => 'Issue',
+                'section' => 'Section',
+                'article'   => 'Article',
             )))
         ->add('range', null, array(
             'label' => 'Duration of subscription in days: ',
+            'attr' => array('min'=>'1'),
             'error_bubbling' => true,
             'invalid_message' => 'Type duration of subscription in days.'
             ))
