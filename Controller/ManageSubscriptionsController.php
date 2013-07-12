@@ -19,12 +19,12 @@ class ManageSubscriptionsController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
-        $subs = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
-        ->findAll();
+        $subscriptions = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+            ->findAll();
 
         return $this->render(
             'NewscoopPaywallBundle:ManageSubscriptions:manage.html.twig', array(
-                'subs' => $subs,
+                'subscriptions' => $subscriptions,
                 ));
     }
 }

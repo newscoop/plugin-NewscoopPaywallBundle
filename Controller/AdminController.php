@@ -21,10 +21,6 @@ class AdminController extends Controller
     	/*$this->container->get('dispatcher')->dispatch('plugin.install', new \Newscoop\EventDispatcher\Events\GenericEvent($this, array(
                 'Paywall Plugin' => ''
                 )));*/
-        //TODO
-        /*zrób też ajaxa który sprawdzi czy nazwa do subskrypcji nie jest zajęta
-         i jak jest ok to niech podłetla ją na zialono (tekst w inpucie ma być zielony) jak nie jest ok to ma byc na czerwono i alert js'owy o ttym że jest zła
-        */
          $subscription = new Subscriptions();
          $form = $this->createForm('subscriptionconf', $subscription);
 
@@ -55,22 +51,23 @@ class AdminController extends Controller
     } 
 
     /**
-     * @Route("/admin/paywall_plugin/test")
+     * @Route("/admin/paywall_plugin/check", defaults={"_format": "json"})
      * @Template()
      */
-    public function testAction(Request $request)
+    public function checkAction(Request $request)
     {
-       $name = strtolower($request->request->get('nameSub'));
+        if ($request->isMethod('POST')) {
+           $name = strtolower($request->request->get('subscriptionName'));
 
-       $em = $this->getDoctrine()->getManager();
-       $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
-       ->findOneBy(array('name' => $name));
-       
-       if($entity) {
-           return new Response(json_encode(array('status' => true)));
-       } else {
-           return new Response(json_encode(array('status' => false)));
-           throw $this->createNotFoundException('Brak takiej subskrypcji');
+           $em = $this->getDoctrine()->getManager();
+           $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+               ->findOneBy(array('name' => $name));
+
+           if(!$entity) {
+               return new Response(json_encode(array('status' => true)));
+           } else {
+               return new Response(json_encode(array('status' => false)));
+           }
        }
    }
 }

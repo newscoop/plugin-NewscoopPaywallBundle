@@ -1,45 +1,84 @@
-{% block admin_content %}
-<br><br>
-{% for subscription in subs %}
-        <li>
-            {{ subscription.name }}
-        </li>
-    {% endfor %}
-<!--<table border="0" cellspacing="1" cellpadding="3" class="table_list">
-<tbody><tr class="table_list_header">
-	<td align="center" valign="top">Numer</td>
-    <td align="LEFT" valign="TOP">Nazwa<br><small>(kliknij by zobaczyć wydania)</small></td>
-    <td align="LEFT" valign="TOP">Domyślny alias strony</td>
-    <td align="LEFT" valign="TOP">Domyślny język</td>
-        <td align="LEFT" valign="TOP">Komentarze włączone</td>
-    <td align="center" valign="TOP">Typ URL</td>
-    <td align="LEFT" valign="TOP">Konfiguracja</td>
-        <td align="LEFT" valign="TOP">Usuń</td>
-    </tr>
-        <tr class="list_row_odd">
-        <td align="center">2</td>
-        <td>
-            <a href="/admin/issues/?Pub=2">The New Custodian</a>
-        </td>
-        <td>
-            newscoop.dev&nbsp;
-        </td>
-        <td>
-            English&nbsp;
-        </td>
-                <td align="center">
-                            <img src="http://newscoop.dev/admin-style/images/is_shown.png" border="0">
-                    </td>
-        <td align="center">
-            krótkie nazwy&nbsp;
-        </td>
-        <td align="CENTER">
-            <a href="/admin/pub/edit.php?Pub=2"><img src="http://newscoop.dev/admin-style/images/configure.png" alt="Konfiguracja" title="Konfiguracja" border="0"></a>
-        </td>
-                <td align="CENTER">
-        <a href="/admin/pub/do_del.php?Pub=2&amp;security_token=kSKqtd9tluDkj8umVwFWyGpbvHeuFtY0" onclick="return confirm('Czy na pewno chcesz usunąć publikację The New Custodian?');"><img src="http://newscoop.dev/admin-style/images/delete.png" border="0" alt="Usuń publikację The New Custodian" title="Usuń publikację The New Custodian"></a>
-        </td>
-        </tr>
-</tbody></table>-->
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
+{% block admin_title %}Paywall{% endblock %}
+{% block admin_page_title_content %}{{ getGS('Configuration') }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/tables.css') }}" />
+{% endblock %}
+{% block admin_scripts %}
+<script type="text/javascript">
+function fnFeaturesInit ()
+{
+$('ul.limit_length>li').each( function(i) {
+    if ( i > 10 ) {
+        this.style.display = 'none';
+    }
+} );
+
+$('ul.limit_length').append( '<li class="css_link">Show more<\/li>' );
+$('ul.limit_length li.css_link').click( function () {
+    $('ul.limit_length li').each( function(i) {
+        if ( i > 5 ) {
+            this.style.display = 'list-item';
+        }
+    } );
+    $('ul.limit_length li.css_link').css( 'display', 'none' );
+} );
+}
+$(document).ready(function(){
+    fnFeaturesInit();
+    $('#subscriptionsTable').dataTable( {
+        "bJQueryUI": true,
+        "sPaginationType": "full_numbers"
+    } );
+});
+</script>
+{% endblock %}
+{% block admin_content %}
+<div id="subscription" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+        <li class="ui-state-default ui-corner-top"><a href="{{ path('newscoop_paywall_admin_admin') }}">Add new subscription</a></li>
+        <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="{{ path('newscoop_paywall_managesubscriptions_manage') }}">Manage Subscriptions</a></li>
+        <li class="ui-state-default ui-corner-top"><a href="#manageuser">Manage User Subscriptions</a></li>
+        <li class="ui-state-default ui-corner-top"><a href="#settings">{{ getGS('Configure Paywall') }}</a></li>
+    </ul>
+    <table cellpadding="0" cellspacing="0" border="0" class="display" id="subscriptionsTable">
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Duration in days</th>
+            <th>Value</th>
+            <th>Currency</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for subscription in subscriptions %}
+      <tr class="odd">
+        <td>{{ subscription.id }}</td>
+        <td>{{ subscription.name }}</td>
+        <td class="center">{{ subscription.type }}</td>
+        <td class="center">{{ subscription.range }}</td>
+        <td class="center">{{ subscription.price}}</td>
+        <td class="center">{{ subscription.currency }}</td>
+        <td><a class="#" href="#">Delete</a>, <a href="#">Edit</a></td>
+    </tr>
+    {% endfor %}
+</tbody>
+<tfoot>
+  <tr>
+    <th>Number</th>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Duration in days</th>
+    <th>Value</th>
+    <th>Currency</th>
+    <th>Options</th>
+</tr>
+</tfoot>
+</table>
+</div>
 {% endblock %}
