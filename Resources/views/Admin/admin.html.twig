@@ -174,7 +174,8 @@ $(document).ready(function() {
 		</form>
 	</div>
 	<div id="manage">
-		<p>tab2..</p>
+		<!--{{ render(controller('NewscoopPaywallBundle:ManageSubscriptions:manage') }} -->
+		{% include 'NewscoopPaywallBundle:ManageSubscriptions:manage.html.twig' %}
 	</div>
 	<div id="settings">
 		<p>tab3..</p>

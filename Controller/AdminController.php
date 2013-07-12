@@ -31,55 +31,46 @@ class AdminController extends Controller
          if ($request->isMethod('POST')) {
             $form->bind($request);
 
-          if($form->isValid()) {
-
-            $data = $request->request->get($form->getName());
-            $name = $data['name'];
-            $type = $data['type'];
-            $range = $data['range'];
-            $price = $data['price'];
-            $currency = $data['currency'];
-
-            $subscription->setName($name);
-            $subscription->setType($type);
-            $subscription->setRange($range);
-            $subscription->setPrice($price);
-            $subscription->setCurrency($currency);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($subscription);
-            $em->flush();
-            return $this->redirect($this->generateUrl('newscoop_paywall_admin_admin'));
-          }
+            if($form->isValid()) {
+                $data = $request->request->get($form->getName());
+                $name = $data['name'];
+                $type = $data['type'];
+                $range = $data['range'];
+                $price = $data['price'];
+                $currency = $data['currency'];
+                $subscription->setName($name);
+                $subscription->setType($type);
+                $subscription->setRange($range);
+                $subscription->setPrice($price);
+                $subscription->setCurrency($currency);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($subscription);
+                $em->flush();
+                return $this->redirect($this->generateUrl('newscoop_paywall_admin_admin'));
+            }
         }
-
         return array(
           'form' => $form->createView()
           );
-      } 
-      
+    } 
+
     /**
      * @Route("/admin/paywall_plugin/test")
      * @Template()
      */
     public function testAction(Request $request)
     {
-         $name = $request->request->get('nameSub');
-         $name = strtolower($name);
+       $name = strtolower($request->request->get('nameSub'));
 
-         $em = $this->getDoctrine()->getManager();
-         $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
-         ->findOneBy(array('name' => $name));
-
-         if($entity) {
-
-          return new Response(json_encode(array('status' => true)));
-
-         } else {
-
-          return new Response(json_encode(array('status' => false)));
-          throw $this->createNotFoundException('Brak takiej subskrypcji');
-
-         }
-    }
+       $em = $this->getDoctrine()->getManager();
+       $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+       ->findOneBy(array('name' => $name));
+       
+       if($entity) {
+           return new Response(json_encode(array('status' => true)));
+       } else {
+           return new Response(json_encode(array('status' => false)));
+           throw $this->createNotFoundException('Brak takiej subskrypcji');
+       }
+   }
 }

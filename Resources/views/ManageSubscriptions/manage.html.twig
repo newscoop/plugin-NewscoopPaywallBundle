@@ -1,0 +1,45 @@
+{% block admin_content %}
+<br><br>
+{% for subscription in subs %}
+        <li>
+            {{ subscription.name }}
+        </li>
+    {% endfor %}
+<!--<table border="0" cellspacing="1" cellpadding="3" class="table_list">
+<tbody><tr class="table_list_header">
+	<td align="center" valign="top">Numer</td>
+    <td align="LEFT" valign="TOP">Nazwa<br><small>(kliknij by zobaczyć wydania)</small></td>
+    <td align="LEFT" valign="TOP">Domyślny alias strony</td>
+    <td align="LEFT" valign="TOP">Domyślny język</td>
+        <td align="LEFT" valign="TOP">Komentarze włączone</td>
+    <td align="center" valign="TOP">Typ URL</td>
+    <td align="LEFT" valign="TOP">Konfiguracja</td>
+        <td align="LEFT" valign="TOP">Usuń</td>
+    </tr>
+        <tr class="list_row_odd">
+        <td align="center">2</td>
+        <td>
+            <a href="/admin/issues/?Pub=2">The New Custodian</a>
+        </td>
+        <td>
+            newscoop.dev&nbsp;
+        </td>
+        <td>
+            English&nbsp;
+        </td>
+                <td align="center">
+                            <img src="http://newscoop.dev/admin-style/images/is_shown.png" border="0">
+                    </td>
+        <td align="center">
+            krótkie nazwy&nbsp;
+        </td>
+        <td align="CENTER">
+            <a href="/admin/pub/edit.php?Pub=2"><img src="http://newscoop.dev/admin-style/images/configure.png" alt="Konfiguracja" title="Konfiguracja" border="0"></a>
+        </td>
+                <td align="CENTER">
+        <a href="/admin/pub/do_del.php?Pub=2&amp;security_token=kSKqtd9tluDkj8umVwFWyGpbvHeuFtY0" onclick="return confirm('Czy na pewno chcesz usunąć publikację The New Custodian?');"><img src="http://newscoop.dev/admin-style/images/delete.png" border="0" alt="Usuń publikację The New Custodian" title="Usuń publikację The New Custodian"></a>
+        </td>
+        </tr>
+</tbody></table>-->
+
+{% endblock %}
