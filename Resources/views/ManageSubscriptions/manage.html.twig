@@ -1,33 +1,16 @@
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
 {% block admin_title %}Paywall{% endblock %}
-{% block admin_page_title_content %}{{ getGS('Configuration') }}{% endblock %}
+{% block admin_page_title_content %}Manage subscriptions{% endblock %}
 
 {% block admin_stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/tables.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('admin-style/ColVis.css') }}" />
 {% endblock %}
 {% block admin_scripts %}
 <script type="text/javascript">
-function fnFeaturesInit ()
-{
-$('ul.limit_length>li').each( function(i) {
-    if ( i > 10 ) {
-        this.style.display = 'none';
-    }
-} );
-
-$('ul.limit_length').append( '<li class="css_link">Show more<\/li>' );
-$('ul.limit_length li.css_link').click( function () {
-    $('ul.limit_length li').each( function(i) {
-        if ( i > 5 ) {
-            this.style.display = 'list-item';
-        }
-    } );
-    $('ul.limit_length li.css_link').css( 'display', 'none' );
-} );
-}
 $(document).ready(function(){
-    fnFeaturesInit();
+    $('#subscriptionsTable').css('font-size', '13px');
     $('#subscriptionsTable').dataTable( {
         "bJQueryUI": true,
         "sPaginationType": "full_numbers"
@@ -56,28 +39,28 @@ $(document).ready(function(){
         </tr>
     </thead>
     <tbody>
-      {% for subscription in subscriptions %}
-      <tr class="odd">
-        <td>{{ subscription.id }}</td>
-        <td>{{ subscription.name }}</td>
-        <td class="center">{{ subscription.type }}</td>
-        <td class="center">{{ subscription.range }}</td>
-        <td class="center">{{ subscription.price}}</td>
-        <td class="center">{{ subscription.currency }}</td>
-        <td><a class="#" href="#">Delete</a>, <a href="#">Edit</a></td>
+        {% for subscription in subscriptions %}
+        <tr>
+            <td>{{ subscription.id }}</td>
+            <td>{{ subscription.name }}</td>
+            <td>{{ subscription.type }}</td>
+            <td>{{ subscription.range }}</td>
+            <td>{{ subscription.price}}</td>
+            <td>{{ subscription.currency }}</td>
+            <td><a class="#" href="#">Delete</a>, <a href="#">Edit</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>Number</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Duration in days</th>
+        <th>Value</th>
+        <th>Currency</th>
+        <th>Options</th>
     </tr>
-    {% endfor %}
-</tbody>
-<tfoot>
-  <tr>
-    <th>Number</th>
-    <th>Name</th>
-    <th>Type</th>
-    <th>Duration in days</th>
-    <th>Value</th>
-    <th>Currency</th>
-    <th>Options</th>
-</tr>
 </tfoot>
 </table>
 </div>
