@@ -1,4 +1,10 @@
 <?php
+/**
+ * @author Rafał Muszyński <rmuszynski1@gmail.com>
+ * @package Newscoop
+ * @copyright 2013 Sourcefabric o.p.s.
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ */
 
 namespace Newscoop\PaywallBundle\Controller;
 
@@ -23,5 +29,53 @@ class ManageSubscriptionsController extends Controller
             ->findAll();
 
         return array('subscriptions' => $subscriptions);
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/manage/delete/{id}")
+     */
+    public function deleteAction(Request $request, Subscriptions $subscription)
+    {
+        if ($request->isMethod('POST')) {
+            if($subscription) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($subscription);
+                $em->flush();
+                return new Response(json_encode(array('status' => true)));
+            }
+
+            return new Response(json_encode(array('status' => false)));
+        }
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/manage/edit")
+     */
+    public function editAction(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            $id = $this->get('request')->request->get('row_id');
+            $value = $this->get('request')->request->get('value');
+            $column = $this->get('request')->request->get('column');
+            $em = $this->getDoctrine()->getManager();
+                $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+                   ->findOneBy(array('id' => $id));
+            switch($column){
+                case "1":
+                    $entity->setName($value);
+                    break;
+                case "3":
+                    $entity->setRange($value);
+                    break;
+                case "4":
+                    $entity->setPrice($value);
+                    break;
+                case "5":
+                    $entity->setCurrency($value);
+                    break;
+            }
+            $em->flush();
+            return new Response(json_encode(array('data' => $value)));
+        }
     }
 }

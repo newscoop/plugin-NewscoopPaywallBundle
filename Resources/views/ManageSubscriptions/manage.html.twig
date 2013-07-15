@@ -8,12 +8,43 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-style/ColVis.css') }}" />
 {% endblock %}
 {% block admin_scripts %}
+<script src="{{ asset('public/bundles/newscooppaywall/js/jquery.jeditable.js') }}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
     $('#subscriptionsTable').css('font-size', '13px');
     $('#subscriptionsTable').dataTable( {
         "bJQueryUI": true,
-        "sPaginationType": "full_numbers"
+        "sPaginationType": "full_numbers",
+    } );
+
+    $('#subscriptionsTable').on('click', '.delete-subscription', function(event){
+        var dataTableCell = $(this).parent();
+        var dataTableRow = dataTableCell.parent().get(0);
+        event.preventDefault();
+        $.post($(this).attr('href'), 
+         function(data) {
+            if (data.status) {
+                flashMessage('Subscription has been deleted.');
+                dataTableRow.remove();
+                return false;
+            }
+        });
+    });
+
+    var oTable = $('#subscriptionsTable').dataTable();
+    $('td[class!="readonly"]', oTable.fnGetNodes()).editable( '{{ path('newscoop_paywall_managesubscriptions_edit') }}', {
+        "callback": function( sValue ) {
+            var aPos = oTable.fnGetPosition( this );
+            oTable.fnUpdate( sValue, aPos[0], aPos[1] );
+            flashMessage('Subscription has been updated.');
+        },
+        "submitdata": function ( value, settings ) {
+            return {
+                "row_id": this.parentNode.getAttribute('id'),
+                "column": oTable.fnGetPosition( this )[2]
+            };
+        },
+        "height": "14px"
     } );
 });
 </script>
@@ -40,14 +71,14 @@ $(document).ready(function(){
     </thead>
     <tbody>
         {% for subscription in subscriptions %}
-        <tr>
-            <td>{{ subscription.id }}</td>
+        <tr id="{{ subscription.id }}">
+            <td class="readonly">{{ subscription.id }}</td>
             <td>{{ subscription.name }}</td>
-            <td>{{ subscription.type }}</td>
+            <td class="readonly">{{ subscription.type }}</td>
             <td>{{ subscription.range }}</td>
             <td>{{ subscription.price}}</td>
             <td>{{ subscription.currency }}</td>
-            <td><a class="#" href="#">Delete</a>, <a href="#">Edit</a></td>
+            <td class="readonly"><a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a></td>
         </tr>
         {% endfor %}
     </tbody>
