@@ -22,7 +22,7 @@ $(document).ready(function(){
         var dataTableRow = dataTableCell.parent().get(0);
         event.preventDefault();
         $.post($(this).attr('href'), 
-         function(data) {
+           function(data) {
             if (data.status) {
                 flashMessage('Subscription has been deleted.');
                 dataTableRow.remove();
@@ -60,19 +60,18 @@ $(document).ready(function(){
     <table cellpadding="0" cellspacing="0" border="0" class="display" id="subscriptionsTable">
         <thead>
           <tr>
-            <th>Number</th>
             <th>Name</th>
             <th>Type</th>
             <th>Duration in days</th>
             <th>Value</th>
             <th>Currency</th>
+            <th>Added</th>
             <th>Options</th>
         </tr>
     </thead>
     <tbody>
         {% for subscription in subscriptions %}
         <tr id="{{ subscription.id }}">
-            <td class="readonly">{{ subscription.id }}</td>
             <td>{{ subscription.name }}</td>
             <td class="readonly">{{ subscription.type }}</td>
             <td>{{ subscription.range }}</td>
@@ -84,12 +83,12 @@ $(document).ready(function(){
     </tbody>
     <tfoot>
       <tr>
-        <th>Number</th>
         <th>Name</th>
         <th>Type</th>
         <th>Duration in days</th>
         <th>Value</th>
         <th>Currency</th>
+        <th>Added</th>
         <th>Options</th>
     </tr>
 </tfoot>

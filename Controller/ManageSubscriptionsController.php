@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Rafał Muszyński <rmuszynski1@gmail.com>
- * @package Newscoop
+ * @package Newscoop\PaywallBundle
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -26,7 +26,7 @@ class ManageSubscriptionsController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $subscriptions = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
-            ->findAll();
+            ->findBy(array('is_active' => true));
 
         return array('subscriptions' => $subscriptions);
     }
@@ -34,17 +34,15 @@ class ManageSubscriptionsController extends Controller
     /**
      * @Route("/admin/paywall_plugin/manage/delete/{id}")
      */
-    public function deleteAction(Request $request, Subscriptions $subscription)
+    public function deleteAction($id, Request $request)
     {
         if ($request->isMethod('POST')) {
-            if($subscription) {
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($subscription);
-                $em->flush();
-                return new Response(json_encode(array('status' => true)));
-            }
-
-            return new Response(json_encode(array('status' => false)));
+            $em = $this->getDoctrine()->getManager();
+            $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+                ->findOneBy(array('id' => $id));
+            $entity->setIsActive(false);
+            $em->flush();
+            return new Response(json_encode(array('status' => true)));
         }
     }
 
@@ -58,7 +56,7 @@ class ManageSubscriptionsController extends Controller
             $value = $this->get('request')->request->get('value');
             $column = $this->get('request')->request->get('column');
             $em = $this->getDoctrine()->getManager();
-                $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+            $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
                    ->findOneBy(array('id' => $id));
             switch($column){
                 case "1":
