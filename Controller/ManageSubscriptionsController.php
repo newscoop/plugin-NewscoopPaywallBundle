@@ -22,9 +22,6 @@ class ManageSubscriptionsController extends Controller
         $subscriptions = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
             ->findAll();
 
-        return $this->render(
-            'NewscoopPaywallBundle:ManageSubscriptions:manage.html.twig', array(
-                'subscriptions' => $subscriptions,
-                ));
+        return array('subscriptions' => $subscriptions);
     }
 }

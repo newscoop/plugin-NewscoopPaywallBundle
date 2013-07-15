@@ -51,8 +51,7 @@ class AdminController extends Controller
     } 
 
     /**
-     * @Route("/admin/paywall_plugin/check", defaults={"_format": "json"})
-     * @Template()
+     * @Route("/admin/paywall_plugin/check")
      */
     public function checkAction(Request $request)
     {
@@ -65,9 +64,9 @@ class AdminController extends Controller
 
            if(!$entity) {
                return new Response(json_encode(array('status' => true)));
-           } else {
-               return new Response(json_encode(array('status' => false)));
            }
+
+           return new Response(json_encode(array('status' => false)));
        }
    }
 }
