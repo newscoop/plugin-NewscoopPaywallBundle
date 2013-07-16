@@ -30,18 +30,19 @@ $(document).ready(function() {
 			$('#step2').show();
 			$('#sub_type_table').show();
 
+			titleBox.html('');
+			typeBox.html('');
+			durationBox.html('');
+			valueBox.html('');
+			currencyBox.html('');
+			titleBox.append($('#subscriptionconf_name').val());
+			typeBox.append($('#subscriptionconf_type').val());
+			durationBox.append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
+			valueBox.append($('#subscriptionconf_price').val());
+			currencyBox.append($('#subscriptionconf_currency').val());
+
 			if(type == 'publication') {
 				subTitle.html('');
-				titleBox.html('');
-				typeBox.html('');
-				durationBox.html('');
-				valueBox.html('');
-				currencyBox.html('');
-				titleBox.append($('#subscriptionconf_name').val());
-				typeBox.append($('#subscriptionconf_type').val());
-				durationBox.append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
-				valueBox.append($('#subscriptionconf_price').val());
-				currencyBox.append($('#subscriptionconf_currency').val());
 				subTitle.append('Articles of Publication: ');
 
 				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
@@ -206,24 +207,32 @@ $('.chzn-select').chosen();
 										<td align="left" id="titleBox" valign="top"></td>
 										<td align="center" valign="top"></td>
 										<tr>
-											<td align="left">Type</td>
+											<td align="left">Type:</td>
 											<td id="typeBox"></td>
 										</tr>
 										<tr>
-											<td align="left">Duration</td>
+											<td align="left">Duration:</td>
 											<td id="durationBox"></td>
 										</tr>
 										<tr>
-											<td align="left">Value</td>
+											<td align="left">Value:</td>
 											<td id="valueBox"></td>
 										</tr>
 										<tr>
-											<td align="left">Currency</td>
+											<td align="left">Currency:</td>
 											<td id="currencyBox"></td>
 										</tr>
 									</tbody></table>
 								</div>
 							</div>
+						</td>
+					</tr>
+					<tr>
+						<tr>
+							<td colspan="2"><hr></td>
+						</tr>
+						<td colspan="2" align="right" style="padding-top: 10px;">
+							<input type="submit" id="save" value="Save" class="save-button">
 						</td>
 					</tr>
 				</tbody>

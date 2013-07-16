@@ -90,9 +90,8 @@ class AdminController extends Controller
            foreach ($entity as $publication) {
                $publications[] = array('name' => $publication->getName());
            }
-           //if(!$publications) {
-               return new Response(json_encode($publications));
-           //}
+           
+           return new Response(json_encode($publications));
        }
    }
 }
