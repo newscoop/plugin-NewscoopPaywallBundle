@@ -75,4 +75,24 @@ class AdminController extends Controller
            return new Response(json_encode(array('status' => false)));
        }
    }
+
+   /**
+     * @Route("/admin/paywall_plugin/getpublications")
+     */
+    public function getPublicationsAction(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+
+           $em = $this->getDoctrine()->getManager();
+           $entity = $em->getRepository('Newscoop\Entity\Publication')
+               ->findAll();
+           $publications = array();
+           foreach ($entity as $publication) {
+               $publications[] = array('name' => $publication->getName());
+           }
+           //if(!$publications) {
+               return new Response(json_encode($publications));
+           //}
+       }
+   }
 }

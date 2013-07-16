@@ -12,56 +12,86 @@
 <script type="text/javascript">
 <!--
 $(document).ready(function() {
-    $('#step2').hide();
-    $('#sub_type_table').hide();
+	$('#step2').hide();
+	$('#step1').show();
+	$('#sub_type_table').hide();
 
-    $("#confForm").submit(function(){
-    	if ($('#subscriptionconf_name').data('validName')) {
-    		$('#step1').hide();
-    		$('#step2').show();
-    		$('#sub_type_table').show();
+	$("#confForm").submit(function(){
 
-    		if(type == 'publication') {
-    			$('#sub_type_title').html('');
-    			$('#sub_type_title').append('Articles of Publication: ');
-    		}else if(type == 'issue') {
-    			$('#sub_type_title').html('');
-    			$('#sub_type_title').append('Articles of Issue: ')
-    		}else if(type == 'section') {
-    			$('#sub_type_title').html('');
-    			$('#sub_type_title').append('Articles of Section: ')
-    		}else if(type == 'article') {
-    			$('#sub_type_title').html('');
-    			$('#sub_type_title').append('Articles: ')
-    		}
-    	}else{
-    		alert('Name of subscription already exists!');
-    	}
-    	return false;      
-    });
-    $('#step1btn').click(function(e){
+		var subTitle = $('#sub_type_title');
+		var titleBox = $('#titleBox');
+		var typeBox = $('#typeBox');
+		var durationBox = $('#durationBox');
+		var valueBox = $('#valueBox');
+		var currencyBox = $('#currencyBox');
+		if ($('#subscriptionconf_name').data('validName')) {
+			var type = $('#subscriptionconf_type').val();
+			$('#step1').hide();
+			$('#step2').show();
+			$('#sub_type_table').show();
 
-    	$('#step1').show();
-    	$('#step2').hide();
-    	e.preventDefault();
-    });
+			if(type == 'publication') {
+				subTitle.html('');
+				titleBox.html('');
+				typeBox.html('');
+				durationBox.html('');
+				valueBox.html('');
+				currencyBox.html('');
+				titleBox.append($('#subscriptionconf_name').val());
+				typeBox.append($('#subscriptionconf_type').val());
+				durationBox.append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
+				valueBox.append($('#subscriptionconf_price').val());
+				currencyBox.append($('#subscriptionconf_currency').val());
+				subTitle.append('Articles of Publication: ');
 
-    $('#subscriptionconf_name').change(function() {
-    	var name = $('#subscriptionconf_name');
-    	$.post('{{ path('newscoop_paywall_admin_check') }}', {
-    		'subscriptionName': $(this).val()
-    	}, function (data) {
-    		if (data.status) {
-    			name.css('color', 'rgb(0, 128, 0)');
-    			name.data('validName', true);
-    		} else {
-    			name.css('color', 'rgb(255, 0, 0)');
-    			name.data('validName', false);
-    		}
-    	}, 'json');
-    }).keyup(function() {
-    	$(this).change();
-    });
+				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
+					function (data) {
+						$.each(data, function() {
+							$('#selectField').html('');
+							$.each(this, function(key, value) {
+								$('#selectField').append($('<option>', { value : key }).text(value));
+							});
+						});
+					}, 'json');
+
+			}else if(type == 'issue') {
+				subTitle.html('');
+				subTitle.append('Articles of Issue: ')
+			}else if(type == 'section') {
+				subTitle.html('');
+				subTitle.append('Articles of Section: ')
+			}else if(type == 'article') {
+				subTitle.html('');
+				subTitle.append('Articles: ')
+			}
+		}else{
+			alert('Name of subscription already exists!');
+		}
+		return false;      
+	});
+$('#step1btn').click(function(e){
+
+	$('#step1').show();
+	$('#step2').hide();
+	e.preventDefault();
+});
+
+$('#subscriptionconf_name').change(function() {
+	var name = $('#subscriptionconf_name');
+	$.post('{{ path('newscoop_paywall_admin_check') }}', {
+		'subscriptionName': $(this).val()
+	}, function (data) {
+		if (data.status) {
+			name.css('color', 'rgb(0, 128, 0)');
+			name.data('validName', true);
+		} else {
+			name.css('color', 'rgb(255, 0, 0)');
+			name.data('validName', false);
+		}
+	}, 'json');
+}).keyup(function() {
+	$(this).change();
+});
 
 });
 //-->
@@ -163,23 +193,42 @@ $('.chzn-select').chosen();
 							</div>
 							<input class="button" type="submit" id="step1btn" name="step1" value="{{ getGS('(1) Specify type and value') }}">
 							<input class="save-button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
-							<strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
-							<span id="sub_type_title" class="article-title"></span>
-							<div>       
-								<select data-placeholder="Choose..." class="chzn-select" style="width:350px;" tabindex="2">
-									<option value=""></option> 
-									<option value="United States">United States</option> 
-									<option value="United Kingdom">United Kingdom</option> 
-									<option value="Afghanistan">Afghanistan</option> 
-									<option value="Aland Islands">Aland Islands</option> 
-								</select>
+							<div style="float: left"><strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
+								<span id="sub_type_title" class="article-title"></span>
+								<div>       
+									<select id="selectField" data-placeholder="Choose..." class="chzn-select" style="width:350px;" tabindex="2">
+									</select>
+								</div>
 							</div>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</form>
-</div>
+							<div style="float: right">
+								<table border="0" cellspacing="1" cellpadding="3" class="table_list">
+									<tbody><tr class="table_list_header">
+										<td align="left" id="titleBox" valign="top"></td>
+										<td align="center" valign="top"></td>
+										<tr>
+											<td align="left">Type</td>
+											<td id="typeBox"></td>
+										</tr>
+										<tr>
+											<td align="left">Duration</td>
+											<td id="durationBox"></td>
+										</tr>
+										<tr>
+											<td align="left">Value</td>
+											<td id="valueBox"></td>
+										</tr>
+										<tr>
+											<td align="left">Currency</td>
+											<td id="currencyBox"></td>
+										</tr>
+									</tbody></table>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
 </div>
 {% endblock %}

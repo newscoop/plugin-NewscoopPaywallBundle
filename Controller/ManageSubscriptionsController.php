@@ -34,7 +34,7 @@ class ManageSubscriptionsController extends Controller
     /**
      * @Route("/admin/paywall_plugin/manage/delete/{id}")
      */
-    public function deleteAction($id, Request $request)
+    public function deleteAction(Request $request, $id)
     {
         if ($request->isMethod('POST')) {
             $em = $this->getDoctrine()->getManager();
@@ -42,6 +42,7 @@ class ManageSubscriptionsController extends Controller
                 ->findOneBy(array('id' => $id));
             $entity->setIsActive(false);
             $em->flush();
+
             return new Response(json_encode(array('status' => true)));
         }
     }
@@ -73,6 +74,7 @@ class ManageSubscriptionsController extends Controller
                     break;
             }
             $em->flush();
+            
             return new Response(json_encode(array('data' => $value)));
         }
     }
