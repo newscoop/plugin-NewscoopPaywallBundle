@@ -44,6 +44,20 @@ $(document).ready(function() {
 			if(type == 'publication') {
 				subTitle.html('');
 				subTitle.append('Articles of Publication: ');
+				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
+					function (data) {
+						$.each(data, function() {
+							$('#selectField').html('');
+							$.each(this, function(key, value) {
+								$('#selectField').append($('<option>', { value : key }).text(value));
+							});
+						});
+						$('.chzn-select').chosen();
+					}, 'json');
+			}else if(type == 'issue') {
+				subTitle.html('');
+				subTitle.append('Articles of Issue: ');
+				$('#selectBoxes').append('<select id="selectIssues" data-placeholder="Choose..." class="chzn-select" style="width:350px;" tabindex="2"><option value=""></option></select>');
 
 				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
 					function (data) {
@@ -54,20 +68,28 @@ $(document).ready(function() {
 							});
 						});
 					}, 'json');
+				
+				$.post('{{ path('newscoop_paywall_admin_getissues') }}', 
+					function (data) {
+						$.each(data, function() {
+							$.each(this, function(key, value) {
+								$('#selectIssues').append($('<option>', { value : key }).text(value));
+							});
+						});
+						$('.chzn-select').chosen();
+					}, 'json');
 
-			}else if(type == 'issue') {
-				subTitle.html('');
-				subTitle.append('Articles of Issue: ')
 			}else if(type == 'section') {
 				subTitle.html('');
-				subTitle.append('Articles of Section: ')
+				subTitle.append('Articles of Section: ');
 			}else if(type == 'article') {
 				subTitle.html('');
-				subTitle.append('Articles: ')
+				subTitle.append('Articles: ');
 			}
 		}else{
 			alert('Name of subscription already exists!');
 		}
+
 		return false;      
 	});
 $('#step1btn').click(function(e){
@@ -96,9 +118,6 @@ $('#subscriptionconf_name').change(function() {
 
 });
 //-->
-</script>
-<script type="text/javascript"> 
-$('.chzn-select').chosen();
 </script>
 {% endblock %}
 
@@ -196,8 +215,8 @@ $('.chzn-select').chosen();
 							<input class="save-button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
 							<div style="float: left"><strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
 								<span id="sub_type_title" class="article-title"></span>
-								<div>       
-									<select id="selectField" data-placeholder="Choose..." class="chzn-select" style="width:350px;" tabindex="2">
+								<div id="selectBoxes">       
+									<select id="selectField" data-placeholder="Choose publication..." class="chzn-select" style="width:350px;" tabindex="2">
 									</select>
 								</div>
 							</div>

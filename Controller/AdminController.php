@@ -35,16 +35,11 @@ class AdminController extends Controller
 
             if($form->isValid()) {
                 $data = $request->request->get($form->getName());
-                $name = $data['name'];
-                $type = $data['type'];
-                $range = $data['range'];
-                $price = $data['price'];
-                $currency = $data['currency'];
-                $subscription->setName($name);
-                $subscription->setType($type);
-                $subscription->setRange($range);
-                $subscription->setPrice($price);
-                $subscription->setCurrency($currency);
+                $subscription->setName($data['name']);
+                $subscription->setType($data['type']);
+                $subscription->setRange($data['range']);
+                $subscription->setPrice($data['price']);
+                $subscription->setCurrency($data['currency']);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($subscription);
                 $em->flush();
@@ -92,6 +87,25 @@ class AdminController extends Controller
            }
            
            return new Response(json_encode($publications));
+       }
+   }
+
+   /**
+     * @Route("/admin/paywall_plugin/getissues")
+     */
+    public function getIssuesAction(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+
+           $em = $this->getDoctrine()->getManager();
+           $entity = $em->getRepository('Newscoop\Entity\Issue')
+               ->findAll();
+           $issues = array();
+           foreach ($entity as $issue) {
+               $issues[] = array('name' => $issue->getName());
+           }
+           
+           return new Response(json_encode($issues));
        }
    }
 }
