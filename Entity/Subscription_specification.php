@@ -10,6 +10,7 @@ namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping AS ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Subscription_specification entity
@@ -28,7 +29,8 @@ class Subscription_specification
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscriptions")
+     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscriptions", inversedBy="specification")
+     * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id")
      * @var Newscoop\PaywallBundle\Entity\Subscriptions
      */
     private $subscription;

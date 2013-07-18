@@ -36,6 +36,12 @@ class Subscriptions
     private $name;
 
     /**
+     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\Subscription_specification", mappedBy="subscription")
+     * @var array
+     */
+    private $specification;
+
+    /**
      * @ORM\Column(type="text", name="type")
      * @var string
      */
@@ -73,6 +79,7 @@ class Subscriptions
     private $is_active;
 
     public function __construct() {
+        $this->specification = new ArrayCollection();
         $this->setCreatedAt(new \DateTime());
         $this->setIsActive(true);
     }
@@ -97,6 +104,16 @@ class Subscriptions
         $this->name = $name;
         
         return $name;
+    }
+
+    /**
+     * Get specification
+     *
+     * @return array
+     */
+    public function getSpecification()
+    {
+        return $this->specification;
     }
 
     public function getType()

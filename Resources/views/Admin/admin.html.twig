@@ -16,7 +16,9 @@ $(document).ready(function() {
 	$('#step1').show();
 	$('#sub_type_table').hide();
 
-	$("#confForm").submit(function(){
+	$("#next").click(function(){
+
+
 
 		var subTitle = $('#sub_type_title');
 		var titleBox = $('#titleBox');
@@ -25,6 +27,16 @@ $(document).ready(function() {
 		var valueBox = $('#valueBox');
 		var currencyBox = $('#currencyBox');
 		if ($('#subscriptionconf_name').data('validName')) {
+			var url = $('#confForm').attr("action");
+			$.ajax({
+				type: "POST",
+				url: url,
+				data: $('#confForm').serialize(),
+				dataType: "html",
+				success: function(msg){
+
+				}
+			});
 			var type = $('#subscriptionconf_type').val();
 			$('#step1').hide();
 			$('#step2').show();
@@ -41,28 +53,31 @@ $(document).ready(function() {
 			valueBox.append($('#subscriptionconf_price').val());
 			currencyBox.append($('#subscriptionconf_currency').val());
 
-			if(type == 'publication') {
+			if (type == 'publication') {
 				subTitle.html('');
 				subTitle.append('Articles of Publication: ');
+				$('#selectIssues').remove();
+				$('#selectIssues_chzn').remove();
 				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
 					function (data) {
 						$.each(data, function() {
 							$('#selectField').html('');
 							$.each(this, function(key, value) {
-								$('#selectField').append($('<option>', { value : key }).text(value));
+								$('#selectField').append($('<option>', { id : key }).text(value));
 							});
 						});
 						$('.chzn-select').chosen();
 					}, 'json');
-			}else if(type == 'issue') {
+			} else if (type == 'issue') {
 				subTitle.html('');
 				subTitle.append('Articles of Issue: ');
+				$('#selectField').html('');
+				$('#selectIssues').html('');
 				$('#selectBoxes').append('<select id="selectIssues" data-placeholder="Choose..." class="chzn-select" style="width:350px;" tabindex="2"><option value=""></option></select>');
 
 				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
 					function (data) {
-						$.each(data, function() {
-							$('#selectField').html('');
+						$.each(data, function() {	
 							$.each(this, function(key, value) {
 								$('#selectField').append($('<option>', { value : key }).text(value));
 							});
@@ -78,22 +93,31 @@ $(document).ready(function() {
 						});
 						$('.chzn-select').chosen();
 					}, 'json');
-
-			}else if(type == 'section') {
+			} else if (type == 'section') {
 				subTitle.html('');
 				subTitle.append('Articles of Section: ');
-			}else if(type == 'article') {
+			} else if (type == 'article') {
 				subTitle.html('');
 				subTitle.append('Articles: ');
 			}
-		}else{
+		} else {
 			alert('Name of subscription already exists!');
 		}
-
 		return false;      
 	});
+$('#save').click(function() {
+	$.post('{{ path('newscoop_paywall_admin_addspecification') }}', {
+		'subscriptionName': $('#subscriptionconf_name').val(),
+		'publicationId': $('#selectField').children(":selected").attr("id")
+	}, function (data) {
+		flashMessage('Subscription has been successfully added.');
+		setInterval("window.location = location.href",2000); 
+	}, 'json');
+});
+$('#skip').click(function() {
+	location.reload();
+});
 $('#step1btn').click(function(e){
-
 	$('#step1').show();
 	$('#step2').hide();
 	e.preventDefault();
@@ -115,7 +139,6 @@ $('#subscriptionconf_name').change(function() {
 }).keyup(function() {
 	$(this).change();
 });
-
 });
 //-->
 </script>
@@ -198,7 +221,7 @@ $('#subscriptionconf_name').change(function() {
 					</tr>
 					<tr>
 						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="submit" id="next" value="Next" class="save-button">
+							<input type="button" id="next" value="Next" class="save-button">
 						</td>
 					</tr>
 					{{ form_rest(form) }}
@@ -251,7 +274,8 @@ $('#subscriptionconf_name').change(function() {
 							<td colspan="2"><hr></td>
 						</tr>
 						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="submit" id="save" value="Save" class="save-button">
+							<input type="button" id="skip" value="Skip" class="button">
+							<input type="button" id="save" value="Save" class="save-button">
 						</td>
 					</tr>
 				</tbody>

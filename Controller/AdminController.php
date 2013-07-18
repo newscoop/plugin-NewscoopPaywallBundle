@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Newscoop\PaywallBundle\Form\SubscriptionConfType;
 use Newscoop\PaywallBundle\Entity\Subscriptions;
+use Newscoop\PaywallBundle\Entity\Subscription_specification;
 
 class AdminController extends Controller
 {
@@ -58,7 +59,6 @@ class AdminController extends Controller
     {
         if ($request->isMethod('POST')) {
            $name = strtolower($request->request->get('subscriptionName'));
-
            $em = $this->getDoctrine()->getManager();
            $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
                ->findOneBy(array('name' => $name));
@@ -77,13 +77,12 @@ class AdminController extends Controller
     public function getPublicationsAction(Request $request)
     {
         if ($request->isMethod('POST')) {
-
            $em = $this->getDoctrine()->getManager();
            $entity = $em->getRepository('Newscoop\Entity\Publication')
                ->findAll();
            $publications = array();
            foreach ($entity as $publication) {
-               $publications[] = array('name' => $publication->getName());
+               $publications[] = array($publication->getId() => $publication->getName());
            }
            
            return new Response(json_encode($publications));
@@ -96,16 +95,39 @@ class AdminController extends Controller
     public function getIssuesAction(Request $request)
     {
         if ($request->isMethod('POST')) {
-
            $em = $this->getDoctrine()->getManager();
            $entity = $em->getRepository('Newscoop\Entity\Issue')
-               ->findAll();
+               ->findBy(array('publication' => '2'));
            $issues = array();
            foreach ($entity as $issue) {
                $issues[] = array('name' => $issue->getName());
            }
            
            return new Response(json_encode($issues));
+       }
+   }
+
+   /**
+     * @Route("/admin/paywall_plugin/addspecification")
+     */
+    public function addSpecificationAction(Request $request)
+    {
+        $specification = new Subscription_specification();
+        if ($request->isMethod('POST')) {
+           $name = strtolower($request->request->get('subscriptionName'));
+           $publication_id = $request->request->get('publicationId');
+           $em = $this->getDoctrine()->getManager();
+           $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+               ->findOneBy(array('name' => $name, 'is_active' => true));
+           $specification->setSubscription($entity);
+           $specification->setPublication($publication_id);
+           $specification->setIssue($publication_id);
+           $specification->setSection($publication_id);
+           $specification->setArticle($publication_id);
+           $em->persist($specification);
+           $em->flush();
+
+           return new Response(json_encode(array('status' => true)));
        }
    }
 }
