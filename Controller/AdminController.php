@@ -93,12 +93,13 @@ class AdminController extends Controller
     public function getIssuesAction(Request $request)
     {
         if ($request->isMethod('POST')) {
+           $publication_id = $request->request->get('publicationId');
            $em = $this->getDoctrine()->getManager();
            $entity = $em->getRepository('Newscoop\Entity\Issue')
-               ->findBy(array('publication' => '2'));
+               ->findBy(array('publication' => $publication_id));
            $issues = array();
            foreach ($entity as $issue) {
-               $issues[] = array('name' => $issue->getName());
+               $issues[] = array($issue->getId() => $issue->getName());
            }
            
            return new Response(json_encode($issues));
@@ -114,6 +115,7 @@ class AdminController extends Controller
         if ($request->isMethod('POST')) {
            $name = strtolower($request->request->get('subscriptionName'));
            $publication_id = $request->request->get('publicationId');
+           $issue_id = $request->request->get('publicationId');
            $em = $this->getDoctrine()->getManager();
            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                ->findOneBy(array(
@@ -122,7 +124,7 @@ class AdminController extends Controller
                 ));
            $specification->setSubscription($entity);
            $specification->setPublication($publication_id);
-           //$specification->setIssue($publication_id);
+           $specification->setIssue($issue_id);
            //$specification->setSection($publication_id);
            //$specification->setArticle($publication_id);
            $em->persist($specification);

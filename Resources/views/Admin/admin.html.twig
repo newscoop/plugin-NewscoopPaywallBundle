@@ -15,8 +15,9 @@ $(document).ready(function() {
 	$('#step2').hide();
 	$('#step1').show();
 	$('#sub_type_table').hide();
-	
-	$("#confForm").submit(function(){
+
+	$("#next").click(function(){
+
 		var subTitle = $('#sub_type_title');
 		var titleBox = $('#titleBox');
 		var typeBox = $('#typeBox');
@@ -38,7 +39,15 @@ $(document).ready(function() {
 			durationBox.append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
 			valueBox.append($('#subscriptionconf_price').val());
 			currencyBox.append($('#subscriptionconf_currency').val());
-
+			var url = $('#confForm').attr("action");
+			$.ajax({
+				type: "POST",
+				url: url,
+				data: $('#confForm').serialize(),
+				dataType: "json",
+				success: function(msg){
+				}
+			});
 			if (type == 'publication') {
 				subTitle.html('');
 				subTitle.append('Articles of Publication: ');
@@ -59,26 +68,18 @@ $(document).ready(function() {
 				subTitle.append('Articles of Issue: ');
 				$('#selectField').html('');
 				$('#selectIssues').html('');
-				$('#selectBoxes').append('<select id="selectIssues" data-placeholder="Choose..." class="chzn-select" style="width:350px;" tabindex="2"><option value=""></option></select>');
-
+				$('#selectIssues').prop('disabled', 'disabled');
+				$('#selectField').append($('<option>', { id : '0' }).text('Choose publication'));
 				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
 					function (data) {
 						$.each(data, function() {	
 							$.each(this, function(key, value) {
-								$('#selectField').append($('<option>', { value : key }).text(value));
+								$('#selectField').append($('<option>', { id : key }).text(value));
 							});
 						});
+						//$('.chzn-select').chosen();
 					}, 'json');
 				
-				$.post('{{ path('newscoop_paywall_admin_getissues') }}', 
-					function (data) {
-						$.each(data, function() {
-							$.each(this, function(key, value) {
-								$('#selectIssues').append($('<option>', { value : key }).text(value));
-							});
-						});
-						$('.chzn-select').chosen();
-					}, 'json');
 			} else if (type == 'section') {
 				subTitle.html('');
 				subTitle.append('Articles of Section: ');
@@ -92,9 +93,11 @@ $(document).ready(function() {
 		return false;      
 	});
 $('#save').click(function() {
+	alert($('#selectIssues').children(":selected").attr("id"));
 	$.post('{{ path('newscoop_paywall_admin_addspecification') }}', {
 		'subscriptionName': $('#subscriptionconf_name').val(),
-		'publicationId': $('#selectField').children(":selected").attr("id")
+		'publicationId': $('#selectField').children(":selected").attr("id"),
+		'issueId': $('#selectIssues').children(":selected").attr("id")
 	}, function (data) {
 		flashMessage('Subscription has been successfully added.');
 		setInterval("window.location = location.href",4000); 
@@ -103,12 +106,19 @@ $('#save').click(function() {
 $('#skip').click(function() {
 	location.reload();
 });
-$('#step1btn').click(function(e){
-	$('#step1').show();
-	$('#step2').hide();
-	e.preventDefault();
+$('#selectField').change(function() {
+	$('#selectIssues').empty();
+	$.post('{{ path('newscoop_paywall_admin_getissues') }}', {
+		'publicationId': $('#selectField').children(":selected").attr("id")
+	}, function (data) {
+		$.each(data, function() {
+			$.each(this, function(key, value) {
+				$('#selectIssues').append($('<option>', { id : key }).text(value));
+			});
+		});
+		$('#selectIssues').prop('disabled', false);
+	}, 'json');
 });
-
 $('#subscriptionconf_name').change(function() {
 	var name = $('#subscriptionconf_name');
 	$.post('{{ path('newscoop_paywall_admin_check') }}', {
@@ -220,13 +230,13 @@ $('#subscriptionconf_name').change(function() {
 							<div class="errors">
 								{{ form_errors(form) }}
 							</div>
-							<input class="button" type="submit" id="step1btn" name="step1" value="{{ getGS('(1) Specify type and value') }}">
+							<input class="button" type="submit" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
 							<input class="save-button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
 							<div style="float: left"><strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
 								<span id="sub_type_title" class="article-title"></span>
 								<div id="selectBoxes">       
-									<select id="selectField" data-placeholder="Choose publication..." class="chzn-select" style="width:350px;" tabindex="2">
-									</select>
+									<select id="selectField" data-placeholder="Choose publication..." class="chzn-select" style="width:350px;" tabindex="2"><option value=""></option></select><br>
+									<select id="selectIssues" data-placeholder="Choose an issue..." class="chzn-select" style="width:350px;" tabindex="2"><option value=""></option></select>
 								</div>
 							</div>
 							<div style="float: right">
