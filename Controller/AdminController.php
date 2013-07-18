@@ -107,6 +107,29 @@ class AdminController extends Controller
    }
 
    /**
+     * @Route("/admin/paywall_plugin/getsections")
+     */
+    public function getSectionsAction(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+           $publication_id = $request->request->get('publicationId');
+           $issue_id = $request->request->get('issueId');
+           $em = $this->getDoctrine()->getManager();
+           $entity = $em->getRepository('Newscoop\Entity\Section')
+               ->findBy(array(
+                 'publication' => $publication_id, 
+                 'issue' => $issue_id
+                ));
+           $sections = array();
+           foreach ($entity as $section) {
+               $sections[] = array($section->getId() => $section->getName());
+           }
+           
+           return new Response(json_encode($sections));
+       }
+   }
+
+   /**
      * @Route("/admin/paywall_plugin/addspecification")
      */
     public function addSpecificationAction(Request $request)
@@ -116,6 +139,7 @@ class AdminController extends Controller
            $name = strtolower($request->request->get('subscriptionName'));
            $publication_id = $request->request->get('publicationId');
            $issue_id = $request->request->get('publicationId');
+           $section_id = $request->request->get('sectionId');
            $em = $this->getDoctrine()->getManager();
            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                ->findOneBy(array(
@@ -125,7 +149,7 @@ class AdminController extends Controller
            $specification->setSubscription($entity);
            $specification->setPublication($publication_id);
            $specification->setIssue($issue_id);
-           //$specification->setSection($publication_id);
+           $specification->setSection($section_id);
            //$specification->setArticle($publication_id);
            $em->persist($specification);
            $em->flush();
