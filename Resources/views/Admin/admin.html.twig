@@ -15,11 +15,8 @@ $(document).ready(function() {
 	$('#step2').hide();
 	$('#step1').show();
 	$('#sub_type_table').hide();
-
-	$("#next").click(function(){
-
-
-
+	
+	$("#confForm").submit(function(){
 		var subTitle = $('#sub_type_title');
 		var titleBox = $('#titleBox');
 		var typeBox = $('#typeBox');
@@ -27,21 +24,10 @@ $(document).ready(function() {
 		var valueBox = $('#valueBox');
 		var currencyBox = $('#currencyBox');
 		if ($('#subscriptionconf_name').data('validName')) {
-			var url = $('#confForm').attr("action");
-			$.ajax({
-				type: "POST",
-				url: url,
-				data: $('#confForm').serialize(),
-				dataType: "html",
-				success: function(msg){
-
-				}
-			});
 			var type = $('#subscriptionconf_type').val();
 			$('#step1').hide();
 			$('#step2').show();
 			$('#sub_type_table').show();
-
 			titleBox.html('');
 			typeBox.html('');
 			durationBox.html('');
@@ -111,7 +97,7 @@ $('#save').click(function() {
 		'publicationId': $('#selectField').children(":selected").attr("id")
 	}, function (data) {
 		flashMessage('Subscription has been successfully added.');
-		setInterval("window.location = location.href",2000); 
+		setInterval("window.location = location.href",4000); 
 	}, 'json');
 });
 $('#skip').click(function() {
@@ -221,7 +207,7 @@ $('#subscriptionconf_name').change(function() {
 					</tr>
 					<tr>
 						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="button" id="next" value="Next" class="save-button">
+							<input type="submit" id="next" value="Next" class="save-button">
 						</td>
 					</tr>
 					{{ form_rest(form) }}

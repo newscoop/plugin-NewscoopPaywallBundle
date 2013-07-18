@@ -42,19 +42,19 @@ class Subscription_specification
     private $publication;
 
     /**
-     * @ORM\Column(type="integer", name="issue")
+     * @ORM\Column(type="integer", name="issue", nullable=true)
      * @var int
      */
     private $issue;
 
     /**
-     * @ORM\Column(type="integer", name="section")
+     * @ORM\Column(type="integer", name="section", nullable=true)
      * @var int
      */
     private $section;
 
     /**
-     * @ORM\Column(type="integer", name="article")
+     * @ORM\Column(type="integer", name="article", nullable=true)
      * @var int
      */
     private $article;

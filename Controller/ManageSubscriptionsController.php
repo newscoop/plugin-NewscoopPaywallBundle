@@ -25,7 +25,7 @@ class ManageSubscriptionsController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
-        $subscriptions = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+        $subscriptions = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
             ->findBy(array('is_active' => true));
 
         return array('subscriptions' => $subscriptions);
@@ -38,7 +38,7 @@ class ManageSubscriptionsController extends Controller
     {
         if ($request->isMethod('POST')) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                 ->findOneBy(array('id' => $id));
             $entity->setIsActive(false);
             $em->flush();
@@ -57,7 +57,7 @@ class ManageSubscriptionsController extends Controller
             $value = $this->get('request')->request->get('value');
             $column = $this->get('request')->request->get('column');
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                    ->findOneBy(array('id' => $id));
             switch($column){
                 case "1":

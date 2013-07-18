@@ -30,10 +30,8 @@ class AdminController extends Controller
                 )));*/
          $subscription = new Subscriptions();
          $form = $this->createForm('subscriptionconf', $subscription);
-
          if ($request->isMethod('POST')) {
             $form->bind($request);
-
             if($form->isValid()) {
                 $data = $request->request->get($form->getName());
                 $subscription->setName($data['name']);
@@ -60,7 +58,7 @@ class AdminController extends Controller
         if ($request->isMethod('POST')) {
            $name = strtolower($request->request->get('subscriptionName'));
            $em = $this->getDoctrine()->getManager();
-           $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
+           $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                ->findOneBy(array('name' => $name));
 
            if(!$entity) {
@@ -117,13 +115,16 @@ class AdminController extends Controller
            $name = strtolower($request->request->get('subscriptionName'));
            $publication_id = $request->request->get('publicationId');
            $em = $this->getDoctrine()->getManager();
-           $entity = $em->getRepository('NewscoopPaywallBundle:Subscriptions')
-               ->findOneBy(array('name' => $name, 'is_active' => true));
+           $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+               ->findOneBy(array(
+                  'name' => $name, 
+                  'is_active' => true
+                ));
            $specification->setSubscription($entity);
            $specification->setPublication($publication_id);
-           $specification->setIssue($publication_id);
-           $specification->setSection($publication_id);
-           $specification->setArticle($publication_id);
+           //$specification->setIssue($publication_id);
+           //$specification->setSection($publication_id);
+           //$specification->setArticle($publication_id);
            $em->persist($specification);
            $em->flush();
 
