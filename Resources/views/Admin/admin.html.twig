@@ -62,6 +62,8 @@ $(document).ready(function() {
 				});
 			}
 			if(type == 'issue' || type == 'section' || type == 'article') {
+				if(type == 'issue')
+					titleIssue.append('Issues: ');
 				titleSection.empty();
 				titleArticle.empty();
 				$('#selectSections').prop('disabled', 'disabled');
@@ -89,6 +91,8 @@ $(document).ready(function() {
 				});
 			}
 			if(type == 'section' || type == 'article') {
+				titleIssue.append('Issues: ');
+				titleSection.append('Sections: ');
 				titleArticle.empty();
 				$('#selectArticles').prop('disabled', 'disabled');
 				$("#selectSections").select2({
@@ -116,6 +120,9 @@ $(document).ready(function() {
 				}); 
 			}
 			if(type == 'article') {
+				titleIssue.append('Issues: ');
+				titleSection.append('Sections: ');
+				titleArticle.append('Articles: ');
 				$("#selectArticles").select2({
 					placeholder: "Select an article",
 					ajax: {
