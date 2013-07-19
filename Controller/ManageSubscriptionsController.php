@@ -38,9 +38,9 @@ class ManageSubscriptionsController extends Controller
     {
         if ($request->isMethod('POST')) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                 ->findOneBy(array('id' => $id));
-            $entity->setIsActive(false);
+            $subscription->setIsActive(false);
             $em->flush();
 
             return new Response(json_encode(array('status' => true)));
@@ -57,20 +57,20 @@ class ManageSubscriptionsController extends Controller
             $value = $this->get('request')->request->get('value');
             $column = $this->get('request')->request->get('column');
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                    ->findOneBy(array('id' => $id));
             switch($column){
                 case "1":
-                    $entity->setName($value);
+                    $subscription->setName($value);
                     break;
                 case "3":
-                    $entity->setRange($value);
+                    $subscription->setRange($value);
                     break;
                 case "4":
-                    $entity->setPrice($value);
+                    $subscription->setPrice($value);
                     break;
                 case "5":
-                    $entity->setCurrency($value);
+                    $subscription->setCurrency($value);
                     break;
             }
             $em->flush();

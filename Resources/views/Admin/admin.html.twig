@@ -4,101 +4,140 @@
 {% block admin_page_title_content %}{{ getGS('Configuration') }}{% endblock %}
 
 {% block admin_stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/chosen/chosen.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.css') }}" />
 {% endblock %}
 
 {% block admin_scripts %}
-<script src="{{ asset('public/bundles/newscooppaywall/scripts/chosen/chosen.jquery.js') }}"></script>
+<script src="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.js') }}"></script>
 <script type="text/javascript">
 <!--
 $(document).ready(function() {
 	$('#step2').hide();
 	$('#step1').show();
-	$('#sub_type_table').hide();
-	var selectPublication = $('#selectField');
 	$("#next").click(function(){
-
-		var subTitle = $('#sub_type_title');
-		var titleBox = $('#titleBox');
-		var typeBox = $('#typeBox');
-		var durationBox = $('#durationBox');
-		var valueBox = $('#valueBox');
-		var currencyBox = $('#currencyBox');
+		var titleIssue = $('#title-issue');
+		var titleSection = $('#title-section');
+		var titleArticle = $('#title-article');
 		if ($('#subscriptionconf_name').data('validName')) {
 			var type = $('#subscriptionconf_type').val();
 			$('#step1').hide();
 			$('#step2').show();
-			$('#sub_type_table').show();
-			titleBox.html('');
-			typeBox.html('');
-			durationBox.html('');
-			valueBox.html('');
-			currencyBox.html('');
-			titleBox.append($('#subscriptionconf_name').val());
-			typeBox.append($('#subscriptionconf_type').val());
-			durationBox.append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
-			valueBox.append($('#subscriptionconf_price').val());
-			currencyBox.append($('#subscriptionconf_currency').val());
+			$('#titleBox').append($('#subscriptionconf_name').val());
+			$('#typeBox').append($('#subscriptionconf_type').val());
+			$('#durationBox').append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
+			$('#valueBox').append($('#subscriptionconf_price').val());
+			$('#currencyBox').append($('#subscriptionconf_currency').val());
 			var url = $('#confForm').attr("action");
 			$.ajax({
 				type: "POST",
 				url: url,
-				data: $('#confForm').serialize(),
+				data: $('#confForm').serializeArray(),
 				dataType: "json",
 				success: function(msg){
 				}
 			});
-			if (type == 'publication') {
-				subTitle.html('');
-				subTitle.append('Articles of Publication: ');
-				$('#selectIssues').remove();
-				$('#selectIssues_chzn').remove();
-				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
-					function (data) {
-						$.each(data, function() {
-							selectPublication.html('');
-							$.each(this, function(key, value) {
-								$('#selectField').append($('<option>', { id : key }).text(value));
-							});
-						});
-						$('.chzn-select').chosen();
-					}, 'json');
-			} else if (type == 'issue') {
-				subTitle.html('');
-				subTitle.append('Articles of Issue: ');
-				selectPublication.html('');
-				$('#selectIssues').html('');
+			if(type == 'publication' || type == 'issue' || type == 'section' || type == 'article') {
+				titleIssue.empty();
+				titleSection.empty();
+				titleArticle.empty();
 				$('#selectIssues').prop('disabled', 'disabled');
-				selectPublication.append($('<option>', { id : '0' }).text('Choose publication'));
-				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
-					function (data) {
-						$.each(data, function() {	
-							$.each(this, function(key, value) {
-								selectPublication.append($('<option>', { id : key }).text(value));
-							});
-						});
-						//$('.chzn-select').chosen();
-					}, 'json');
-			} else if (type == 'section') {
-				subTitle.html('');
-				subTitle.append('Articles of Section: ');
-				selectPublication.html('');
-				$('#selectIssues').html('');
-				$('#selectSections').html('');
-				$('#selectIssues').prop('disabled', 'disabled');
-				selectPublication.append($('<option>', { id : '0' }).text('Choose publication'));
-				$.post('{{ path('newscoop_paywall_admin_getpublications') }}', 
-					function (data) {
-						$.each(data, function() {	
-							$.each(this, function(key, value) {
-								selectPublication.append($('<option>', { id : key }).text(value));
-							});
-						});
-						//$('.chzn-select').chosen();
-					}, 'json');
-			} else if (type == 'article') {
-				subTitle.html('');
-				subTitle.append('Articles: ');
+				$("#selectPublications").select2({
+					placeholder: "Select publication",
+					ajax: {
+						url: "{{ path('newscoop_paywall_admin_getpublications') }}",
+						dataType: 'json',
+						results: function (data) {
+							return {results: data};
+						}
+					},
+					initSelection: function(element, callback) {
+						var data = {id: element.val(), text: element.val()};
+						callback(data);
+						$('#selectIssues').prop('disabled', false);
+					},
+					escapeMarkup: function (m) { return m; }
+
+				}).on("change", function (e) {
+					$("#selectIssues").select2("enable", true);             
+				});
+			}
+			if(type == 'issue' || type == 'section' || type == 'article') {
+				titleSection.empty();
+				titleArticle.empty();
+				$('#selectSections').prop('disabled', 'disabled');
+				$("#selectIssues").select2({
+					placeholder: "Select an issue",
+					ajax: {
+						url: "{{ path('newscoop_paywall_admin_getissues') }}",
+						dataType: 'json',
+						data: function () {
+							return {
+								publicationId: $("#selectPublications").select2("val")
+							};
+						},
+						results: function (data) {
+							return {results: data};
+						}
+					},
+					initSelection: function(element, callback) {
+						var data = {id: element.val(), text: element.val()};
+						callback(data);
+					},
+					escapeMarkup: function (m) { return m; }
+				}).on("change", function (e) {
+					$("#selectSections").select2("enable", true);             
+				});
+			}
+			if(type == 'section' || type == 'article') {
+				titleArticle.empty();
+				$('#selectArticles').prop('disabled', 'disabled');
+				$("#selectSections").select2({
+					placeholder: "Select section",
+					ajax: {
+						url: "{{ path('newscoop_paywall_admin_getsections') }}",
+						dataType: 'json',
+						data: function () {
+							return {
+								publicationId: $("#selectPublications").select2("val"),
+								issueId: $("#selectIssues").select2("val")
+							};
+						},
+						results: function (data) {
+							return {results: data};
+						}
+					},
+					initSelection: function(element, callback) {
+						var data = {id: element.val(), text: element.val()};
+						callback(data);
+					},
+					escapeMarkup: function (m) { return m; }
+				}).on("change", function (e) {
+					$("#selectArticles").select2("enable", true);             
+				}); 
+			}
+			if(type == 'article') {
+				$("#selectArticles").select2({
+					placeholder: "Select an article",
+					ajax: {
+						url: "{{ path('newscoop_paywall_admin_getarticles') }}",
+						dataType: 'json',
+						data: function () {
+							return {
+								publicationId: $("#selectPublications").select2("val"),
+								issueId: $("#selectIssues").select2("val"),
+								sectionId: $("#selectSections").select2("val")
+							};
+						},
+						results: function (data) {
+							return {results: data};
+						}
+					},
+					initSelection: function(element, callback) {
+						var data = {id: element.val(), text: element.val()};
+						callback(data);
+					},
+					escapeMarkup: function (m) { return m; }
+				});
 			}
 		} else {
 			alert('Name of subscription already exists!');
@@ -106,12 +145,12 @@ $(document).ready(function() {
 		return false;      
 	});
 $('#save').click(function() {
-	alert($('#selectIssues').children(":selected").attr("id"));
 	$.post('{{ path('newscoop_paywall_admin_addspecification') }}', {
 		'subscriptionName': $('#subscriptionconf_name').val(),
-		'publicationId': selectPublication.children(":selected").attr("id"),
-		'issueId': $('#selectIssues').children(":selected").attr("id"),
-		'sectionId': $('#selectSection').children(":selected").attr("id")
+		'publicationId': $("#selectPublications").select2("val"),
+		'issueId': $("#selectIssues").select2("val"),
+		'sectionId': $("#selectSections").select2("val"),
+		'articleId': $("#selectArticles").select2("val")
 	}, function (data) {
 		flashMessage('Subscription has been successfully added.');
 		setInterval("window.location = location.href",4000); 
@@ -120,33 +159,7 @@ $('#save').click(function() {
 $('#skip').click(function() {
 	location.reload();
 });
-$('#selectField').change(function() {
-	$('#selectIssues').empty();
-	$.post('{{ path('newscoop_paywall_admin_getissues') }}', {
-		'publicationId': selectPublication.children(":selected").attr("id")
-	}, function (data) {
-		$.each(data, function() {
-			$.each(this, function(key, value) {
-				$('#selectIssues').append($('<option>', { id : key }).text(value));
-			});
-		});
-		$('#selectIssues').prop('disabled', false);
-	}, 'json');
-});
-$('#selectIssues').change(function() {
-	$('#selectSection').empty();
-	$.post('{{ path('newscoop_paywall_admin_getsections') }}', {
-		'publicationId': selectPublication.children(":selected").attr("id"), 
-		'issueId': $('#selectIssues').children(":selected").attr("id")
-	}, function (data) {
-		$.each(data, function() {
-			$.each(this, function(key, value) {
-				$('#selectSection').append($('<option>', { id : key }).text(value));
-			});
-		});
-		$('#selectSection').prop('disabled', false);
-	}, 'json');
-});
+
 $('#subscriptionconf_name').change(function() {
 	var name = $('#subscriptionconf_name');
 	$.post('{{ path('newscoop_paywall_admin_check') }}', {
@@ -261,12 +274,51 @@ $('#subscriptionconf_name').change(function() {
 							<input class="button" type="submit" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
 							<input class="save-button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
 							<div style="float: left"><strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
-								<span id="sub_type_title" class="article-title"></span>
-								<div id="selectBoxes">       
-									<select id="selectField" data-placeholder="Choose publication..." class="chzn-select" style="width:350px;" tabindex="2"><option value=""></option></select><br>
-									<select id="selectIssues" data-placeholder="Choose an issue..." class="chzn-select" style="width:350px;" tabindex="2"><option value=""></option></select><br>
-									<select id="selectSection" data-placeholder="Choose section..." class="chzn-select" style="width:350px;" tabindex="2"><option value=""></option></select>
-								</div>
+								
+								<table border="0" cellspacing="0" cellpadding="0" class="display">
+									<tbody>
+										<tr>
+											<td align="left">	
+												Publications:
+											</td>
+										</tr>
+										<tr>
+											<td align="left" valign="top">
+												<div id="selectPublications" style="width:350px" class="populate placeholder"></div>
+											</td>
+										</tr>
+										<tr>
+											<td id="title-issue" align="left">
+												Issues: 
+											</td>
+										</tr>
+										<tr>
+											<td align="left" valign="top">
+												<div id="selectIssues" style="width:350px" class="populate placeholder"></div>
+											</td>
+										</tr>
+										<tr>
+											<td id="title-section" align="left">
+												Sections: 
+											</td>
+										</tr>
+										<tr>
+											<td align="left" valign="top">
+												<div id="selectSections" style="width:350px" class="populate placeholder"></div>
+											</td>
+										</tr>
+										<tr>
+											<td id="title-article" align="left">
+												Articles: 
+											</td>
+										</tr>
+										<tr>
+											<td align="left" valign="top">
+												<div id="selectArticles" style="width:350px" class="populate placeholder"></div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 							<div style="float: right">
 								<table border="0" cellspacing="1" cellpadding="3" class="table_list">

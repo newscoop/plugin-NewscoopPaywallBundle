@@ -42,12 +42,14 @@ class AdminController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($subscription);
                 $em->flush();
+                
                 return $this->redirect($this->generateUrl('newscoop_paywall_admin_admin'));
             }
         }
+
         return array(
-          'form' => $form->createView()
-          );
+            'form' => $form->createView()
+        );
     } 
 
     /**
@@ -56,105 +58,129 @@ class AdminController extends Controller
     public function checkAction(Request $request)
     {
         if ($request->isMethod('POST')) {
-           $name = strtolower($request->request->get('subscriptionName'));
-           $em = $this->getDoctrine()->getManager();
-           $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-               ->findOneBy(array('name' => $name));
+            $name = strtolower($request->request->get('subscriptionName'));
+            $em = $this->getDoctrine()->getManager();
+            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                ->findOneBy(array('name' => $name));
 
-           if(!$entity) {
-               return new Response(json_encode(array('status' => true)));
-           }
+            if(!$entity) {
+                return new Response(json_encode(array('status' => true)));
+            }
 
-           return new Response(json_encode(array('status' => false)));
-       }
-   }
+            return new Response(json_encode(array('status' => false)));
+        }
+    }
 
-   /**
+    /**
      * @Route("/admin/paywall_plugin/getpublications")
      */
     public function getPublicationsAction(Request $request)
     {
-        if ($request->isMethod('POST')) {
-           $em = $this->getDoctrine()->getManager();
-           $entity = $em->getRepository('Newscoop\Entity\Publication')
-               ->findAll();
-           $publications = array();
-           foreach ($entity as $publication) {
-               $publications[] = array($publication->getId() => $publication->getName());
-           }
+            $em = $this->getDoctrine()->getManager();
+            $publications = $em->getRepository('Newscoop\Entity\Publication')
+                ->findAll();
+            $publicationsArray = array();
+            foreach ($publications as $publication) {
+                $publicationsArray[] = array(
+                    'id' => $publication->getId(),
+                    'text' => $publication->getName()
+                );
+            }
            
-           return new Response(json_encode($publications));
-       }
+            return new Response(json_encode($publicationsArray));
    }
 
-   /**
+    /**
      * @Route("/admin/paywall_plugin/getissues")
      */
     public function getIssuesAction(Request $request)
     {
-        if ($request->isMethod('POST')) {
-           $publication_id = $request->request->get('publicationId');
-           $em = $this->getDoctrine()->getManager();
-           $entity = $em->getRepository('Newscoop\Entity\Issue')
-               ->findBy(array('publication' => $publication_id));
-           $issues = array();
-           foreach ($entity as $issue) {
-               $issues[] = array($issue->getId() => $issue->getName());
-           }
-           
-           return new Response(json_encode($issues));
-       }
-   }
+            $em = $this->getDoctrine()->getManager();
+            $issues = $em->getRepository('Newscoop\Entity\Issue')
+                ->findBy(array(
+                    'publication' => $request->get('publicationId')
+                ));
 
-   /**
+            $issuesArray = array();
+            foreach ($issues as $issue) {
+                $issuesArray[] = array(
+                    'id' => $issue->getId(), 
+                    'text' => $issue->getName()
+                );
+            }
+           
+            return new Response(json_encode($issuesArray));
+    }
+
+    /**
      * @Route("/admin/paywall_plugin/getsections")
      */
     public function getSectionsAction(Request $request)
     {
-        if ($request->isMethod('POST')) {
-           $publication_id = $request->request->get('publicationId');
-           $issue_id = $request->request->get('issueId');
-           $em = $this->getDoctrine()->getManager();
-           $entity = $em->getRepository('Newscoop\Entity\Section')
-               ->findBy(array(
-                 'publication' => $publication_id, 
-                 'issue' => $issue_id
+            $em = $this->getDoctrine()->getManager();
+            $sections = $em->getRepository('Newscoop\Entity\Section')
+                ->findBy(array(
+                    'publication' => $request->get('publicationId'), 
+                    'issue' => $request->get('issueId')
                 ));
-           $sections = array();
-           foreach ($entity as $section) {
-               $sections[] = array($section->getId() => $section->getName());
-           }
+            $sectionsArray = array();
+            foreach ($sections as $section) {
+                $sectionsArray[] = array(
+                    'id' => $section->getId(), 
+                    'text' => $section->getName()
+                );
+            }
            
-           return new Response(json_encode($sections));
-       }
-   }
+            return new Response(json_encode($sectionsArray));
+    }
 
-   /**
+    /**
+     * @Route("/admin/paywall_plugin/getarticles")
+     */
+    public function getArticlesAction(Request $request)
+    {
+            
+            $em = $this->getDoctrine()->getManager();
+            $articles = $em->getRepository('Newscoop\Entity\Article')
+                ->findBy(array(
+                    'publication' => $request->get('publicationId'), 
+                    'issue' => $request->get('issueId'),
+                    'section' => $request->get('sectionId')
+                ));
+            $articlesArray = array();
+            foreach ($articles as $article) {
+                $articlesArray[] = array(
+                    'id' => $article->getId(), 
+                    'text' => $article->getName()
+                );
+            }
+           
+            return new Response(json_encode($articlesArray));
+    }
+
+    /**
      * @Route("/admin/paywall_plugin/addspecification")
      */
     public function addSpecificationAction(Request $request)
     {
         $specification = new Subscription_specification();
         if ($request->isMethod('POST')) {
-           $name = strtolower($request->request->get('subscriptionName'));
-           $publication_id = $request->request->get('publicationId');
-           $issue_id = $request->request->get('publicationId');
-           $section_id = $request->request->get('sectionId');
-           $em = $this->getDoctrine()->getManager();
-           $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-               ->findOneBy(array(
-                  'name' => $name, 
-                  'is_active' => true
+            $name = strtolower($request->request->get('subscriptionName'));
+            $em = $this->getDoctrine()->getManager();
+            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                ->findOneBy(array(
+                    'name' => $name, 
+                    'is_active' => true
                 ));
-           $specification->setSubscription($entity);
-           $specification->setPublication($publication_id);
-           $specification->setIssue($issue_id);
-           $specification->setSection($section_id);
-           //$specification->setArticle($publication_id);
-           $em->persist($specification);
-           $em->flush();
+            $specification->setSubscription($entity);
+            $specification->setPublication($request->get('publicationId'));
+            $specification->setIssue($request->get('issueId'));
+            $specification->setSection($request->get('sectionId'));
+            $specification->setArticle($request->get('articleId'));
+            $em->persist($specification);
+            $em->flush();
 
-           return new Response(json_encode(array('status' => true)));
-       }
-   }
+            return new Response(json_encode(array('status' => true)));
+        }
+    }
 }
