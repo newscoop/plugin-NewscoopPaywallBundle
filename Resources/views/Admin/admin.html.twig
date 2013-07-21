@@ -20,6 +20,7 @@ $(document).ready(function() {
 		var titleArticle = $('#title-article');
 		if ($('#subscriptionconf_name').data('validName')) {
 			var type = $('#subscriptionconf_type').val();
+
 			$('#step1').hide();
 			$('#step2').show();
 			$('#titleBox').append($('#subscriptionconf_name').val());
@@ -28,15 +29,16 @@ $(document).ready(function() {
 			$('#valueBox').append($('#subscriptionconf_price').val());
 			$('#currencyBox').append($('#subscriptionconf_currency').val());
 			var url = $('#confForm').attr("action");
+
 			$.ajax({
 				type: "POST",
 				url: url,
 				data: $('#confForm').serializeArray(),
 				dataType: "json",
-				success: function(msg){
-				}
+				success: function(msg){}
 			});
-			if(type == 'publication' || type == 'issue' || type == 'section' || type == 'article') {
+
+			if (type == 'publication' || type == 'issue' || type == 'section' || type == 'article') {
 				titleIssue.empty();
 				titleSection.empty();
 				titleArticle.empty();
@@ -61,9 +63,12 @@ $(document).ready(function() {
 					$("#selectIssues").select2("enable", true);             
 				});
 			}
-			if(type == 'issue' || type == 'section' || type == 'article') {
-				if(type == 'issue')
+
+			if (type == 'issue' || type == 'section' || type == 'article') {
+				if(type == 'issue') {
 					titleIssue.append('Issues: ');
+				}
+
 				titleSection.empty();
 				titleArticle.empty();
 				$('#selectSections').prop('disabled', 'disabled');
@@ -90,7 +95,8 @@ $(document).ready(function() {
 					$("#selectSections").select2("enable", true);             
 				});
 			}
-			if(type == 'section' || type == 'article') {
+
+			if (type == 'section' || type == 'article') {
 				titleIssue.append('Issues: ');
 				titleSection.append('Sections: ');
 				titleArticle.empty();
@@ -119,7 +125,8 @@ $(document).ready(function() {
 					$("#selectArticles").select2("enable", true);             
 				}); 
 			}
-			if(type == 'article') {
+
+			if (type == 'article') {
 				titleIssue.append('Issues: ');
 				titleSection.append('Sections: ');
 				titleArticle.append('Articles: ');
@@ -149,40 +156,43 @@ $(document).ready(function() {
 		} else {
 			alert('Name of subscription already exists!');
 		}
+
 		return false;      
 	});
-$('#save').click(function() {
-	$.post('{{ path('newscoop_paywall_admin_addspecification') }}', {
-		'subscriptionName': $('#subscriptionconf_name').val(),
-		'publicationId': $("#selectPublications").select2("val"),
-		'issueId': $("#selectIssues").select2("val"),
-		'sectionId': $("#selectSections").select2("val"),
-		'articleId': $("#selectArticles").select2("val")
-	}, function (data) {
-		flashMessage('Subscription has been successfully added.');
-		setInterval("window.location = location.href",4000); 
-	}, 'json');
-});
-$('#skip').click(function() {
-	location.reload();
-});
 
-$('#subscriptionconf_name').change(function() {
-	var name = $('#subscriptionconf_name');
-	$.post('{{ path('newscoop_paywall_admin_check') }}', {
-		'subscriptionName': $(this).val()
-	}, function (data) {
-		if (data.status) {
-			name.css('color', 'rgb(0, 128, 0)');
-			name.data('validName', true);
-		} else {
-			name.css('color', 'rgb(255, 0, 0)');
-			name.data('validName', false);
-		}
-	}, 'json');
-}).keyup(function() {
-	$(this).change();
-});
+	$('#save').click(function() {
+		$.post('{{ path('newscoop_paywall_admin_addspecification') }}', {
+			'subscriptionName': $('#subscriptionconf_name').val(),
+			'publicationId': $("#selectPublications").select2("val"),
+			'issueId': $("#selectIssues").select2("val"),
+			'sectionId': $("#selectSections").select2("val"),
+			'articleId': $("#selectArticles").select2("val")
+		}, function (data) {
+			flashMessage('Subscription has been successfully added.');
+			setInterval("window.location = location.href",4000); 
+		}, 'json');
+	});
+
+	$('#skip').click(function() {
+		location.reload();
+	});
+
+	$('#subscriptionconf_name').change(function() {
+		var name = $('#subscriptionconf_name');
+		$.post('{{ path('newscoop_paywall_admin_check') }}', {
+			'subscriptionName': $(this).val()
+		}, function (data) {
+			if (data.status) {
+				name.css('color', 'rgb(0, 128, 0)');
+				name.data('validName', true);
+			} else {
+				name.css('color', 'rgb(255, 0, 0)');
+				name.data('validName', false);
+			}
+		}, 'json');
+	}).keyup(function() {
+		$(this).change();
+	});
 });
 //-->
 </script>
@@ -191,10 +201,18 @@ $('#subscriptionconf_name').change(function() {
 {% block admin_content %}
 <div id="subscription" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
 	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="{{ path('newscoop_paywall_admin_admin') }}">Add new subscription</a></li>
-		<li class="ui-state-default ui-corner-top"><a href="{{ path('newscoop_paywall_managesubscriptions_manage') }}">Manage Subscriptions</a></li>
-		<li class="ui-state-default ui-corner-top"><a href="#manageuser">Manage User Subscriptions</a></li>
-		<li class="ui-state-default ui-corner-top"><a href="#settings">{{ getGS('Configure Paywall') }}</a></li>
+		<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+			<a href="{{ path('newscoop_paywall_admin_admin') }}">Add new subscription</a>
+		</li>
+		<li class="ui-state-default ui-corner-top">
+			<a href="{{ path('newscoop_paywall_managesubscriptions_manage') }}">Manage Subscriptions</a>
+		</li>
+		<li class="ui-state-default ui-corner-top">
+			<a href="#manageuser">Manage User Subscriptions</a>
+		</li>
+		<li class="ui-state-default ui-corner-top">
+			<a href="#settings">{{ getGS('Configure Paywall') }}</a>
+		</li>
 	</ul>
 	<div id="configure">
 		<form id="confForm" action="{{ path('newscoop_paywall_admin_admin') }}" method="post" {{ form_enctype(form) }} >
@@ -271,6 +289,7 @@ $('#subscriptionconf_name').change(function() {
 					{{ form_rest(form) }}
 				</tbody>
 			</table>
+			
 			<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
 				<tbody>
 					<tr>

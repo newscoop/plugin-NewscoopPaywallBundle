@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-style/ColVis.css') }}" />
 {% endblock %}
+
 {% block admin_scripts %}
 <script src="{{ asset('public/bundles/newscooppaywall/js/jquery.jeditable.js') }}"></script>
 <script type="text/javascript">
@@ -51,45 +52,54 @@ $(document).ready(function(){
 {% endblock %}
 {% block admin_content %}
 <div id="subscription" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+    <!-- Don't repeat it everywhere - move it to antoher template and include it here -->
     <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-        <li class="ui-state-default ui-corner-top"><a href="{{ path('newscoop_paywall_admin_admin') }}">Add new subscription</a></li>
-        <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="{{ path('newscoop_paywall_managesubscriptions_manage') }}">Manage Subscriptions</a></li>
-        <li class="ui-state-default ui-corner-top"><a href="#manageuser">Manage User Subscriptions</a></li>
-        <li class="ui-state-default ui-corner-top"><a href="#settings">{{ getGS('Configure Paywall') }}</a></li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="{{ path('newscoop_paywall_admin_admin') }}">Add new subscription</a>
+        </li>
+        <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
+            <a href="{{ path('newscoop_paywall_managesubscriptions_manage') }}">Manage Subscriptions</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="#manageuser">Manage User Subscriptions</a>
+        </li>
+        <li class="ui-state-default ui-corner-top">
+            <a href="#settings">{{ getGS('Configure Paywall') }}</a>
+        </li>
     </ul>
     <table cellpadding="0" cellspacing="0" border="0" class="display" id="subscriptionsTable">
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Duration in days</th>
-            <th>Value</th>
-            <th>Currency</th>
-            <th>Options</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for subscription in subscriptions %}
-        <tr id="{{ subscription.id }}">
-            <td>{{ subscription.name }}</td>
-            <td class="readonly">{{ subscription.type }}</td>
-            <td>{{ subscription.range }}</td>
-            <td>{{ subscription.price}}</td>
-            <td>{{ subscription.currency }}</td>
-            <td class="readonly"><a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-    <tfoot>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Duration in days</th>
-        <th>Value</th>
-        <th>Currency</th>
-        <th>Options</th>
-    </tr>
-</tfoot>
-</table>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Duration in days</th>
+                <th>Value</th>
+                <th>Currency</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subscription in subscriptions %}
+            <tr id="{{ subscription.id }}">
+                <td>{{ subscription.name }}</td>
+                <td class="readonly">{{ subscription.type }}</td>
+                <td>{{ subscription.range }}</td>
+                <td>{{ subscription.price}}</td>
+                <td>{{ subscription.currency }}</td>
+                <td class="readonly"><a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Duration in days</th>
+                <th>Value</th>
+                <th>Currency</th>
+                <th>Options</th>
+            </tr>
+        </tfoot>
+    </table>
 </div>
 {% endblock %}

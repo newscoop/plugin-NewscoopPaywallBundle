@@ -53,12 +53,22 @@ class ManageSubscriptionsController extends Controller
     public function editAction(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $id = $this->get('request')->request->get('row_id');
-            $value = $this->get('request')->request->get('value');
-            $column = $this->get('request')->request->get('column');
             $em = $this->getDoctrine()->getManager();
+            $column = $request->get('column');
+            $value = $request->get('value');
+
             $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-                   ->findOneBy(array('id' => $id));
+                   ->findOneBy(array('id' => $request->get('row_id')));
+
+            //TODO: We need validation here.
+            //steps: 
+            //* we need form
+            //* we need request with ajax with PATH method - then symfony will validate only existing properties - more here: https://github.com/symfony/symfony/pull/7849/files
+            //* here is how you can make PATH method with ajax and symfony: http://symfony.com/doc/current/cookbook/routing/method_parameters.html
+            //* just add _method=PATH to your request params.
+            //fyi: You can define in form what method is alowed: http://symfony.com/doc/current/book/forms.html#book-forms-changing-action-and-method
+            //
+            // remove that comment after implementation
             switch($column){
                 case "1":
                     $subscription->setName($value);
@@ -73,6 +83,7 @@ class ManageSubscriptionsController extends Controller
                     $subscription->setCurrency($value);
                     break;
             }
+
             $em->flush();
             
             return new Response(json_encode(array('data' => $value)));

@@ -58,10 +58,11 @@ class AdminController extends Controller
     public function checkAction(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $name = strtolower($request->request->get('subscriptionName'));
             $em = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-                ->findOneBy(array('name' => $name));
+                ->findOneBy(array(
+                    'name' => strtolower($request->request->get('subscriptionName'))
+                ));
 
             if(!$entity) {
                 return new Response(json_encode(array('status' => true)));
@@ -77,8 +78,10 @@ class AdminController extends Controller
     public function getPublicationsAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
+            //TODO: chnage that to smaller query - get only id and name with query builder.
             $publications = $em->getRepository('Newscoop\Entity\Publication')
                 ->findAll();
+
             $publicationsArray = array();
             foreach ($publications as $publication) {
                 $publicationsArray[] = array(
@@ -96,6 +99,7 @@ class AdminController extends Controller
     public function getIssuesAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
+            //TODO: chnage that to smaller query - get only id and name with query builder.
             $issues = $em->getRepository('Newscoop\Entity\Issue')
                 ->findBy(array(
                     'publication' => $request->get('publicationId')
@@ -118,6 +122,7 @@ class AdminController extends Controller
     public function getSectionsAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
+            //TODO: chnage that to smaller query - get only id and name with query builder.
             $sections = $em->getRepository('Newscoop\Entity\Section')
                 ->findBy(array(
                     'publication' => $request->get('publicationId'), 
@@ -141,6 +146,7 @@ class AdminController extends Controller
     {
             
             $em = $this->getDoctrine()->getManager();
+            //TODO: chnage that to smaller query - get only id and name with query builder.
             $articles = $em->getRepository('Newscoop\Entity\Article')
                 ->findBy(array(
                     'publication' => $request->get('publicationId'), 
@@ -165,14 +171,14 @@ class AdminController extends Controller
     {
         $specification = new Subscription_specification();
         if ($request->isMethod('POST')) {
-            $name = strtolower($request->request->get('subscriptionName'));
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                 ->findOneBy(array(
-                    'name' => $name, 
+                    'name' => strtolower($request->request->get('subscriptionName')), 
                     'is_active' => true
                 ));
-            $specification->setSubscription($entity);
+            //TODO: we need form and validation here.
+            $specification->setSubscription($subscription);
             $specification->setPublication($request->get('publicationId'));
             $specification->setIssue($request->get('issueId'));
             $specification->setSection($request->get('sectionId'));
