@@ -5,7 +5,7 @@
 
 {% block admin_stylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
-<link rel="stylesheet" type="text/css" href="{{ asset('admin-style/ColVis.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
 {% endblock %}
 
 {% block admin_scripts %}
@@ -14,9 +14,28 @@
 $(document).ready(function(){
     $('#subscriptionsTable').css('font-size', '13px');
     $('#subscriptionsTable').dataTable( {
+        'oLanguage': {
+            'oPaginate': {
+                'sNext': '{{ getGS('Next') }}',
+                'sLast': '{{ getGS('Last') }}',
+                'sPrevious': '{{ getGS('Previous') }}',
+                'sFirst': '{{ getGS('First') }}'
+            },
+            'sZeroRecords': '{{ getGS('No records found.') }}',
+            'sSearch': '{{ getGS('Search') }}:',
+            'sInfo': '{{ getGS('Showing _START_ to _END_ of _TOTAL_ entries') }}',
+            'sEmpty': '{{ getGS('No entries to show') }}',
+            'sInfoFiltered': '{{ getGS(' - filtering from _MAX_ records') }}',
+            'sLengthMenu': '{{ getGS('Display _MENU_ records') }}',
+            'sInfoEmpty': '',
+        },
+        "bProcessing": true,
+        "bAutoWidth": true,
+        "bPaging": true,
+        "sDom": 'RCf<"clear">rtilp',
         "bJQueryUI": true,
-        "sPaginationType": "full_numbers",
-    } );
+        "sPaginationType": "full_numbers"
+    });
 
     $('#subscriptionsTable').on('click', '.delete-subscription', function(event){
         var dataTableCell = $(this).parent();
@@ -51,55 +70,44 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 {% block admin_content %}
-<div id="subscription" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-    <!-- Don't repeat it everywhere - move it to antoher template and include it here -->
-    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-        <li class="ui-state-default ui-corner-top">
-            <a href="{{ path('newscoop_paywall_admin_admin') }}">Add new subscription</a>
-        </li>
-        <li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active">
-            <a href="{{ path('newscoop_paywall_managesubscriptions_manage') }}">Manage Subscriptions</a>
-        </li>
-        <li class="ui-state-default ui-corner-top">
-            <a href="#manageuser">Manage User Subscriptions</a>
-        </li>
-        <li class="ui-state-default ui-corner-top">
-            <a href="#settings">{{ getGS('Configure Paywall') }}</a>
-        </li>
-    </ul>
-    <table cellpadding="0" cellspacing="0" border="0" class="display" id="subscriptionsTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Duration in days</th>
-                <th>Value</th>
-                <th>Currency</th>
-                <th>Options</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for subscription in subscriptions %}
-            <tr id="{{ subscription.id }}">
-                <td>{{ subscription.name }}</td>
-                <td class="readonly">{{ subscription.type }}</td>
-                <td>{{ subscription.range }}</td>
-                <td>{{ subscription.price}}</td>
-                <td>{{ subscription.currency }}</td>
-                <td class="readonly"><a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Duration in days</th>
-                <th>Value</th>
-                <th>Currency</th>
-                <th>Options</th>
-            </tr>
-        </tfoot>
-    </table>
+<div id="subscription">
+    {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 2} %}
+
+    <div id="manage-subscriptions" style="padding: 10px 10px 30px 10px;">
+        <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Duration in days</th>
+                    <th>Value</th>
+                    <th>Currency</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subscription in subscriptions %}
+                <tr id="{{ subscription.id }}">
+                    <td>{{ subscription.name }}</td>
+                    <td class="readonly">{{ subscription.type }}</td>
+                    <td>{{ subscription.range }}</td>
+                    <td>{{ subscription.price}}</td>
+                    <td>{{ subscription.currency }}</td>
+                    <td class="readonly"><a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Duration in days</th>
+                    <th>Value</th>
+                    <th>Currency</th>
+                    <th>Options</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 {% endblock %}

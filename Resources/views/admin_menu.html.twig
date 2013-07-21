@@ -1,0 +1,8 @@
+<div id="tabs">
+    <ul>
+        <li class="{% if active == 1 %}active{% endif %}"><a class="tab-link" href="{{ url('newscoop_paywall_admin_admin') }}" data-href="">Add new subscription</a></li>
+        <li class="{% if active == 2 %}active{% endif %}"><a class="tab-link" href="{{ url('newscoop_paywall_managesubscriptions_manage') }}" data-href="">Manage Subscriptions</a></li>
+        <li class="{% if active == 3 %}active{% endif %}"><a class="tab-link" href="#manage-user">Manage User Subscriptions</a></li>
+        <li class="{% if active == 4 %}active{% endif %} last"><a class="tab-link" href="#settings">{{ getGS('Configure Paywall') }}</a></li>
+    </ul>
+</div>
