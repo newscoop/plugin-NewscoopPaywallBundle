@@ -42,8 +42,19 @@ class AdminController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($subscription);
                 $em->flush();
+
+                if ($request->isXmlHttpRequest()) {
+                    return array('status' => true);
+                }
                 
                 return $this->redirect($this->generateUrl('newscoop_paywall_admin_admin'));
+            } else {
+                if ($request->isXmlHttpRequest()) {
+                    return array(
+                        'status' => false,
+                        'errors' => json_encode($this->getErrorMessages($form))
+                    );
+                }
             }
         }
 
@@ -58,10 +69,12 @@ class AdminController extends Controller
     public function checkAction(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $name = strtolower($request->request->get('subscriptionName'));
             $em = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-                ->findOneBy(array('name' => $name));
+                ->findOneBy(array(
+                    'name' => strtolower($request->request->get('subscriptionName')),
+                    'is_active' => true
+                ));
 
             if(!$entity) {
                 return new Response(json_encode(array('status' => true)));
@@ -77,8 +90,10 @@ class AdminController extends Controller
     public function getPublicationsAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
+            //TODO: chnage that to smaller query - get only id and name with query builder.
             $publications = $em->getRepository('Newscoop\Entity\Publication')
                 ->findAll();
+
             $publicationsArray = array();
             foreach ($publications as $publication) {
                 $publicationsArray[] = array(
@@ -96,6 +111,7 @@ class AdminController extends Controller
     public function getIssuesAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
+            //TODO: chnage that to smaller query - get only id and name with query builder.
             $issues = $em->getRepository('Newscoop\Entity\Issue')
                 ->findBy(array(
                     'publication' => $request->get('publicationId')
@@ -118,6 +134,7 @@ class AdminController extends Controller
     public function getSectionsAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
+            //TODO: chnage that to smaller query - get only id and name with query builder.
             $sections = $em->getRepository('Newscoop\Entity\Section')
                 ->findBy(array(
                     'publication' => $request->get('publicationId'), 
@@ -139,24 +156,30 @@ class AdminController extends Controller
      */
     public function getArticlesAction(Request $request)
     {
-            
-            $em = $this->getDoctrine()->getManager();
-            $articles = $em->getRepository('Newscoop\Entity\Article')
-                ->findBy(array(
-                    'publication' => $request->get('publicationId'), 
-                    'issue' => $request->get('issueId'),
-                    'section' => $request->get('sectionId')
-                ));
-            $articlesArray = array();
-            foreach ($articles as $article) {
-                $articlesArray[] = array(
-                    'id' => $article->getId(), 
-                    'text' => $article->getName()
-                );
-            }
-           
-            return new Response(json_encode($articlesArray));
+        $em = $this->getDoctrine()->getManager();
+
+        $section = $em->getRepository('Newscoop\Entity\Section')
+            ->findOneBy(array(
+                'id' => $request->get('sectionId'),
+                'publication' => $request->get('publicationId'), 
+                'issue' => $request->get('issueId')
+            ));
+
+        $articles = $em->getRepository('Newscoop\Entity\Article')
+            ->getArticlesForSection($request->get('publicationId'), $section->getNumber())
+            ->getResult();
+
+        $articlesArray = array();
+        foreach ($articles as $article) {
+            $articlesArray[] = array(
+                'id' => $article->getNumber(), 
+                'text' => $article->getName()
+            );
+        }
+       
+        return new Response(json_encode($articlesArray));
     }
+
 
     /**
      * @Route("/admin/paywall_plugin/addspecification")
@@ -165,22 +188,40 @@ class AdminController extends Controller
     {
         $specification = new Subscription_specification();
         if ($request->isMethod('POST')) {
-            $name = strtolower($request->request->get('subscriptionName'));
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                 ->findOneBy(array(
-                    'name' => $name, 
+                    'name' => strtolower($request->request->get('subscriptionName')), 
                     'is_active' => true
                 ));
-            $specification->setSubscription($entity);
+            //TODO: we need form and validation here.
+            $specification->setSubscription($subscription);
             $specification->setPublication($request->get('publicationId'));
             $specification->setIssue($request->get('issueId'));
             $specification->setSection($request->get('sectionId'));
-            $specification->setArticle($request->get('articleId'));
+            //TODO: add articleNumber and ArticleLanguage - we don't have articleId
+            $specification->setArticle($request->get('articleNumber'));
             $em->persist($specification);
             $em->flush();
 
             return new Response(json_encode(array('status' => true)));
         }
+    }
+
+    private function getErrorMessages(\Symfony\Component\Form\Form $form) {      
+        $errors = array();
+        if (count($form) > 0) {
+            foreach ($form->all() as $child) {
+                if (!$child->isValid()) {
+                    $errors[$child->getName()] = $this->getErrorMessages($child);
+                }
+            }
+        }
+
+        foreach ($form->getErrors() as $key => $error) {
+            $errors[] = $error->getMessage();   
+        }
+
+        return $errors;
     }
 }

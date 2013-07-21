@@ -5,6 +5,7 @@
 
 {% block admin_stylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
 {% endblock %}
 
 {% block admin_scripts %}
@@ -19,352 +20,374 @@ $(document).ready(function() {
 		var titleSection = $('#title-section');
 		var titleArticle = $('#title-article');
 		if ($('#subscriptionconf_name').data('validName')) {
-			var type = $('#subscriptionconf_type').val();
-			$('#step1').hide();
-			$('#step2').show();
-			$('#titleBox').append($('#subscriptionconf_name').val());
-			$('#typeBox').append($('#subscriptionconf_type').val());
-			$('#durationBox').append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
-			$('#valueBox').append($('#subscriptionconf_price').val());
-			$('#currencyBox').append($('#subscriptionconf_currency').val());
-			var url = $('#confForm').attr("action");
 			$.ajax({
 				type: "POST",
-				url: url,
-				data: $('#confForm').serializeArray(),
+				url: $('#confForm').attr("action"),
+				data: $('#confForm').serialize(),
 				dataType: "json",
 				success: function(msg){
+					if (msg.status === true) {
+						var type = $('#subscriptionconf_type').val();
+						$('#step1').hide();
+						$('#step2').show();
+						$('#titleBox').append($('#subscriptionconf_name').val());
+						$('#typeBox').append($('#subscriptionconf_type').val());
+						$('#durationBox').append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
+						$('#valueBox').append($('#subscriptionconf_price').val());
+						$('#currencyBox').append($('#subscriptionconf_currency').val());
+
+						if (type == 'publication' || type == 'issue' || type == 'section' || type == 'article') {
+							titleIssue.empty();
+							titleSection.empty();
+							titleArticle.empty();
+							$('#selectIssues').prop('disabled', 'disabled');
+							$("#selectPublications").select2({
+								placeholder: "Select publication",
+								ajax: {
+									url: "{{ path('newscoop_paywall_admin_getpublications') }}",
+									dataType: 'json',
+									results: function (data) {
+										return {results: data};
+									}
+								},
+								initSelection: function(element, callback) {
+									var data = {id: element.val(), text: element.val()};
+									callback(data);
+									$('#selectIssues').prop('disabled', false);
+								},
+								escapeMarkup: function (m) { return m; }
+
+							}).on("change", function (e) {
+								$("#selectIssues").select2("enable", true);             
+							});
+						}
+
+						if (type == 'issue' || type == 'section' || type == 'article') {
+							if(type == 'issue') {
+								titleIssue.append('Issues: ');
+							}
+
+							titleSection.empty();
+							titleArticle.empty();
+							$('#selectSections').prop('disabled', 'disabled');
+							$("#selectIssues").select2({
+								placeholder: "Select an issue",
+								ajax: {
+									url: "{{ path('newscoop_paywall_admin_getissues') }}",
+									dataType: 'json',
+									data: function () {
+										return {
+											publicationId: $("#selectPublications").select2("val")
+										};
+									},
+									results: function (data) {
+										return {results: data};
+									}
+								},
+								initSelection: function(element, callback) {
+									var data = {id: element.val(), text: element.val()};
+									callback(data);
+								},
+								escapeMarkup: function (m) { return m; }
+							}).on("change", function (e) {
+								$("#selectSections").select2("enable", true);             
+							});
+						}
+
+						if (type == 'section' || type == 'article') {
+							titleIssue.append('Issues: ');
+							titleSection.append('Sections: ');
+							titleArticle.empty();
+							$('#selectArticles').prop('disabled', 'disabled');
+							$("#selectSections").select2({
+								placeholder: "Select section",
+								ajax: {
+									url: "{{ path('newscoop_paywall_admin_getsections') }}",
+									dataType: 'json',
+									data: function () {
+										return {
+											publicationId: $("#selectPublications").select2("val"),
+											issueId: $("#selectIssues").select2("val")
+										};
+									},
+									results: function (data) {
+										return {results: data};
+									}
+								},
+								initSelection: function(element, callback) {
+									var data = {id: element.val(), text: element.val()};
+									callback(data);
+								},
+								escapeMarkup: function (m) { return m; }
+							}).on("change", function (e) {
+								$("#selectArticles").select2("enable", true);             
+							}); 
+						}
+
+						if (type == 'article') {
+							titleIssue.append('Issues: ');
+							titleSection.append('Sections: ');
+							titleArticle.append('Articles: ');
+							$("#selectArticles").select2({
+								placeholder: "Select an article",
+								ajax: {
+									url: "{{ path('newscoop_paywall_admin_getarticles') }}",
+									dataType: 'json',
+									data: function () {
+										return {
+											publicationId: $("#selectPublications").select2("val"),
+											issueId: $("#selectIssues").select2("val"),
+											sectionId: $("#selectSections").select2("val")
+										};
+									},
+									results: function (data) {
+										return {results: data};
+									}
+								},
+								initSelection: function(element, callback) {
+									var data = {id: element.val(), text: element.val()};
+									callback(data);
+								},
+								escapeMarkup: function (m) { return m; }
+							});
+						}
+					} else {
+						// TODO: display (and translate error messages)
+						
+						console.log(msg.errors);
+						alert('Your form have errors, check console log');
+					}
 				}
 			});
-			if(type == 'publication' || type == 'issue' || type == 'section' || type == 'article') {
-				titleIssue.empty();
-				titleSection.empty();
-				titleArticle.empty();
-				$('#selectIssues').prop('disabled', 'disabled');
-				$("#selectPublications").select2({
-					placeholder: "Select publication",
-					ajax: {
-						url: "{{ path('newscoop_paywall_admin_getpublications') }}",
-						dataType: 'json',
-						results: function (data) {
-							return {results: data};
-						}
-					},
-					initSelection: function(element, callback) {
-						var data = {id: element.val(), text: element.val()};
-						callback(data);
-						$('#selectIssues').prop('disabled', false);
-					},
-					escapeMarkup: function (m) { return m; }
 
-				}).on("change", function (e) {
-					$("#selectIssues").select2("enable", true);             
-				});
-			}
-			if(type == 'issue' || type == 'section' || type == 'article') {
-				if(type == 'issue')
-					titleIssue.append('Issues: ');
-				titleSection.empty();
-				titleArticle.empty();
-				$('#selectSections').prop('disabled', 'disabled');
-				$("#selectIssues").select2({
-					placeholder: "Select an issue",
-					ajax: {
-						url: "{{ path('newscoop_paywall_admin_getissues') }}",
-						dataType: 'json',
-						data: function () {
-							return {
-								publicationId: $("#selectPublications").select2("val")
-							};
-						},
-						results: function (data) {
-							return {results: data};
-						}
-					},
-					initSelection: function(element, callback) {
-						var data = {id: element.val(), text: element.val()};
-						callback(data);
-					},
-					escapeMarkup: function (m) { return m; }
-				}).on("change", function (e) {
-					$("#selectSections").select2("enable", true);             
-				});
-			}
-			if(type == 'section' || type == 'article') {
-				titleIssue.append('Issues: ');
-				titleSection.append('Sections: ');
-				titleArticle.empty();
-				$('#selectArticles').prop('disabled', 'disabled');
-				$("#selectSections").select2({
-					placeholder: "Select section",
-					ajax: {
-						url: "{{ path('newscoop_paywall_admin_getsections') }}",
-						dataType: 'json',
-						data: function () {
-							return {
-								publicationId: $("#selectPublications").select2("val"),
-								issueId: $("#selectIssues").select2("val")
-							};
-						},
-						results: function (data) {
-							return {results: data};
-						}
-					},
-					initSelection: function(element, callback) {
-						var data = {id: element.val(), text: element.val()};
-						callback(data);
-					},
-					escapeMarkup: function (m) { return m; }
-				}).on("change", function (e) {
-					$("#selectArticles").select2("enable", true);             
-				}); 
-			}
-			if(type == 'article') {
-				titleIssue.append('Issues: ');
-				titleSection.append('Sections: ');
-				titleArticle.append('Articles: ');
-				$("#selectArticles").select2({
-					placeholder: "Select an article",
-					ajax: {
-						url: "{{ path('newscoop_paywall_admin_getarticles') }}",
-						dataType: 'json',
-						data: function () {
-							return {
-								publicationId: $("#selectPublications").select2("val"),
-								issueId: $("#selectIssues").select2("val"),
-								sectionId: $("#selectSections").select2("val")
-							};
-						},
-						results: function (data) {
-							return {results: data};
-						}
-					},
-					initSelection: function(element, callback) {
-						var data = {id: element.val(), text: element.val()};
-						callback(data);
-					},
-					escapeMarkup: function (m) { return m; }
-				});
-			}
 		} else {
 			alert('Name of subscription already exists!');
 		}
+
 		return false;      
 	});
-$('#save').click(function() {
-	$.post('{{ path('newscoop_paywall_admin_addspecification') }}', {
-		'subscriptionName': $('#subscriptionconf_name').val(),
-		'publicationId': $("#selectPublications").select2("val"),
-		'issueId': $("#selectIssues").select2("val"),
-		'sectionId': $("#selectSections").select2("val"),
-		'articleId': $("#selectArticles").select2("val")
-	}, function (data) {
-		flashMessage('Subscription has been successfully added.');
-		setInterval("window.location = location.href",4000); 
-	}, 'json');
-});
-$('#skip').click(function() {
-	location.reload();
-});
+	
+	// TODO: Don't do this with ajax - send normal request and redirect to list of subscription
+	$('#save').click(function() {
+		$.post('{{ path('newscoop_paywall_admin_addspecification') }}', {
+			'subscriptionName': $('#subscriptionconf_name').val(),
+			'publicationId': $("#selectPublications").select2("val"),
+			'issueId': $("#selectIssues").select2("val"),
+			'sectionId': $("#selectSections").select2("val"),
+			'articleNumber': $("#selectArticles").select2("val")
+		}, function (data) {
+			flashMessage('Subscription has been successfully added.');
+			setInterval("window.location = location.href",4000); 
+		}, 'json');
+	});
 
-$('#subscriptionconf_name').change(function() {
-	var name = $('#subscriptionconf_name');
-	$.post('{{ path('newscoop_paywall_admin_check') }}', {
-		'subscriptionName': $(this).val()
-	}, function (data) {
-		if (data.status) {
-			name.css('color', 'rgb(0, 128, 0)');
-			name.data('validName', true);
-		} else {
-			name.css('color', 'rgb(255, 0, 0)');
-			name.data('validName', false);
-		}
-	}, 'json');
-}).keyup(function() {
-	$(this).change();
-});
+	// TODO: go to subscriptions list
+	$('#skip').click(function() {
+		location.reload();
+	});
+
+	var delay = (function(){
+		var timer = 0;
+	  	return function(callback, ms){
+	    	clearTimeout (timer);
+	    	timer = setTimeout(callback, ms);
+	  	};
+	})();
+
+	$('#subscriptionconf_name').change(function() {
+		var name = $('#subscriptionconf_name');
+		$.post('{{ path('newscoop_paywall_admin_check') }}', {
+			'subscriptionName': $(this).val()
+		}, function (data) {
+			if (data.status) {
+				name.css('color', 'rgb(0, 128, 0)');
+				name.data('validName', true);
+			} else {
+				name.css('color', 'rgb(255, 0, 0)');
+				name.data('validName', false);
+			}
+		}, 'json');
+	}).keyup(function() {
+		delay(function(){
+			$('#subscriptionconf_name').change();
+	    }, 1000 );
+	});
 });
 //-->
 </script>
 {% endblock %}
 
 {% block admin_content %}
-<div id="subscription" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-		<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="{{ path('newscoop_paywall_admin_admin') }}">Add new subscription</a></li>
-		<li class="ui-state-default ui-corner-top"><a href="{{ path('newscoop_paywall_managesubscriptions_manage') }}">Manage Subscriptions</a></li>
-		<li class="ui-state-default ui-corner-top"><a href="#manageuser">Manage User Subscriptions</a></li>
-		<li class="ui-state-default ui-corner-top"><a href="#settings">{{ getGS('Configure Paywall') }}</a></li>
-	</ul>
-	<div id="configure">
-		<form id="confForm" action="{{ path('newscoop_paywall_admin_admin') }}" method="post" {{ form_enctype(form) }} >
-			<table id="step1" border="0" cellspacing="0" cellpadding="0" class="box_table">
-				<tbody>
-					<tr>
-						<td colspan="2" align="left">
-							<div class="errors">
-								{{ form_errors(form) }}
+{% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 1} %}
+<div id="add-subscription" style="padding: 10px 10px 30px 10px;">
+	<form id="confForm" action="{{ path('newscoop_paywall_admin_admin') }}" method="post" {{ form_enctype(form) }} >
+		<table id="step1" border="0" cellspacing="0" cellpadding="0" class="box_table">
+			<tbody>
+				<tr>
+					<td colspan="2" align="left">
+						<div class="errors">
+							{{ form_errors(form) }}
+						</div>
+						<input class="save-button" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
+						<input class="button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
+						<strong>Please specify the name and value for your new subscription. You can set up various diffrent types<br> of subscriptions, but just one after the other.</strong>
+					</td>
+				</tr>
+				<tr>
+					<td align="left">	
+						{{ form_label(form.name) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">
+						{{ form_widget(form.name, {'attr' : {'class' : 'input_text'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						{{ form_label(form.type) }} 
+					</td>
+				</tr>
+				<tr>
+					<td>
+						{{ form_widget(form.type, {'attr' : {'class' : 'input_select'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						{{ form_label(form.range) }}    
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">
+						{{ form_widget(form.range, {'attr' : {'class' : 'input_text'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						{{ form_label(form.price) }}    
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">
+						{{ form_widget(form.price, {'attr' : {'class' : 'input_text'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						{{ form_label(form.currency) }}    
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">
+						{{ form_widget(form.currency, {'attr' : {'class' : 'input_text'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><hr></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right" style="padding-top: 10px;">
+						<input type="submit" id="next" value="Next" class="save-button">
+					</td>
+				</tr>
+				{{ form_rest(form) }}
+			</tbody>
+		</table>
+
+		<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
+			<tbody>
+				<tr>
+					<td colspan="2" align="left">
+						<div class="errors">
+							{{ form_errors(form) }}
+						</div>
+						<input class="button" type="submit" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
+						<input class="save-button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
+						<div style="float: left"><strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
+							
+							<table border="0" cellspacing="0" cellpadding="0" class="display">
+								<tbody>
+									<tr>
+										<td align="left">	
+											Publications:
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<div id="selectPublications" style="width:350px" class="populate placeholder"></div>
+										</td>
+									</tr>
+									<tr>
+										<td id="title-issue" align="left">
+											Issues: 
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<div id="selectIssues" style="width:350px" class="populate placeholder"></div>
+										</td>
+									</tr>
+									<tr>
+										<td id="title-section" align="left">
+											Sections: 
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<div id="selectSections" style="width:350px" class="populate placeholder"></div>
+										</td>
+									</tr>
+									<tr>
+										<td id="title-article" align="left">
+											Articles: 
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<div id="selectArticles" style="width:350px" class="populate placeholder"></div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<div style="float: right">
+							<table border="0" cellspacing="1" cellpadding="3" class="table_list">
+								<tbody><tr class="table_list_header">
+									<td align="left" id="titleBox" valign="top"></td>
+									<td align="center" valign="top"></td>
+									<tr>
+										<td align="left">Type:</td>
+										<td id="typeBox"></td>
+									</tr>
+									<tr>
+										<td align="left">Duration:</td>
+										<td id="durationBox"></td>
+									</tr>
+									<tr>
+										<td align="left">Value:</td>
+										<td id="valueBox"></td>
+									</tr>
+									<tr>
+										<td align="left">Currency:</td>
+										<td id="currencyBox"></td>
+									</tr>
+								</tbody></table>
 							</div>
-							<input class="save-button" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
-							<input class="button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
-							<strong>Please specify the name and value for your new subscription. You can set up various diffrent types<br> of subscriptions, but just one after the other.</strong>
-						</td>
-					</tr>
-					<tr>
-						<td align="left">	
-							{{ form_label(form.name) }}
-						</td>
-					</tr>
-					<tr>
-						<td align="left" valign="top">
-							{{ form_widget(form.name, {'attr' : {'class' : 'input_text'}}) }}
-						</td>
-					</tr>
-					<tr>
-						<td align="left">
-							{{ form_label(form.type) }} 
-						</td>
-					</tr>
-					<tr>
-						<td>
-							{{ form_widget(form.type, {'attr' : {'class' : 'input_select'}}) }}
-						</td>
-					</tr>
-					<tr>
-						<td align="left">
-							{{ form_label(form.range) }}    
-						</td>
-					</tr>
-					<tr>
-						<td align="left" valign="top">
-							{{ form_widget(form.range, {'attr' : {'class' : 'input_text'}}) }}
-						</td>
-					</tr>
-					<tr>
-						<td align="left">
-							{{ form_label(form.price) }}    
-						</td>
-					</tr>
-					<tr>
-						<td align="left" valign="top">
-							{{ form_widget(form.price, {'attr' : {'class' : 'input_text'}}) }}
-						</td>
-					</tr>
-					<tr>
-						<td align="left">
-							{{ form_label(form.currency) }}    
-						</td>
-					</tr>
-					<tr>
-						<td align="left" valign="top">
-							{{ form_widget(form.currency, {'attr' : {'class' : 'input_text'}}) }}
-						</td>
-					</tr>
+						</div>
+					</td>
+				</tr>
+				<tr>
 					<tr>
 						<td colspan="2"><hr></td>
 					</tr>
-					<tr>
-						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="submit" id="next" value="Next" class="save-button">
-						</td>
-					</tr>
-					{{ form_rest(form) }}
-				</tbody>
-			</table>
-			<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
-				<tbody>
-					<tr>
-						<td colspan="2" align="left">
-							<div class="errors">
-								{{ form_errors(form) }}
-							</div>
-							<input class="button" type="submit" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
-							<input class="save-button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
-							<div style="float: left"><strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
-								
-								<table border="0" cellspacing="0" cellpadding="0" class="display">
-									<tbody>
-										<tr>
-											<td align="left">	
-												Publications:
-											</td>
-										</tr>
-										<tr>
-											<td align="left" valign="top">
-												<div id="selectPublications" style="width:350px" class="populate placeholder"></div>
-											</td>
-										</tr>
-										<tr>
-											<td id="title-issue" align="left">
-												Issues: 
-											</td>
-										</tr>
-										<tr>
-											<td align="left" valign="top">
-												<div id="selectIssues" style="width:350px" class="populate placeholder"></div>
-											</td>
-										</tr>
-										<tr>
-											<td id="title-section" align="left">
-												Sections: 
-											</td>
-										</tr>
-										<tr>
-											<td align="left" valign="top">
-												<div id="selectSections" style="width:350px" class="populate placeholder"></div>
-											</td>
-										</tr>
-										<tr>
-											<td id="title-article" align="left">
-												Articles: 
-											</td>
-										</tr>
-										<tr>
-											<td align="left" valign="top">
-												<div id="selectArticles" style="width:350px" class="populate placeholder"></div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							<div style="float: right">
-								<table border="0" cellspacing="1" cellpadding="3" class="table_list">
-									<tbody><tr class="table_list_header">
-										<td align="left" id="titleBox" valign="top"></td>
-										<td align="center" valign="top"></td>
-										<tr>
-											<td align="left">Type:</td>
-											<td id="typeBox"></td>
-										</tr>
-										<tr>
-											<td align="left">Duration:</td>
-											<td id="durationBox"></td>
-										</tr>
-										<tr>
-											<td align="left">Value:</td>
-											<td id="valueBox"></td>
-										</tr>
-										<tr>
-											<td align="left">Currency:</td>
-											<td id="currencyBox"></td>
-										</tr>
-									</tbody></table>
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<tr>
-							<td colspan="2"><hr></td>
-						</tr>
-						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="button" id="skip" value="Skip" class="button">
-							<input type="button" id="save" value="Save" class="save-button">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</form>
-	</div>
+					<td colspan="2" align="right" style="padding-top: 10px;">
+						<input type="button" id="skip" value="Skip" class="button">
+						<input type="button" id="save" value="Save" class="save-button">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
 </div>
 {% endblock %}

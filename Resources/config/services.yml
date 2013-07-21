@@ -23,7 +23,7 @@ services:
         tags:
             - { name: form.type, alias: subscriptionconf }
 
-    validator.unique.containsdecimal:
+    newscoop_paywall.validator.unique.containsdecimal:
         class: Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimalValidator
         tags:
             - { name: validator.constraint_validator, alias: decimal_validator }

@@ -1,0 +1,16 @@
+#tabs {}
+#tabs ul {
+    border: 1px solid #ccc;
+    width: 690px;
+    padding-left: 0px;
+}
+#tabs ul li {
+    display: inline-block;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+}
+#tabs ul li:after {content: none}
+#tabs ul li.last {border-right: none;}
+#tabs ul li.active {background-color: #007fb3;}
+#tabs ul li a {font-size: 14px;}
+#tabs ul li.active a {color: #FFF;}
