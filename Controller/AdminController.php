@@ -119,17 +119,12 @@ class AdminController extends Controller
             $em = $this->getDoctrine()->getManager();
             //TODO: chnage that to smaller query - get only id and name with query builder.
             $publications = $em->getRepository('Newscoop\Entity\Publication')
-                ->findAll();
-
-            $publicationsArray = array();
-            foreach ($publications as $publication) {
-                $publicationsArray[] = array(
-                    'id' => $publication->getId(),
-                    'text' => $publication->getName()
-                );
-            }
+                ->createQueryBuilder('p')
+                ->select('p.id', 'p.name')
+                ->getQuery()
+                ->getArrayResult();
            
-            return new Response(json_encode($publicationsArray));
+            return new Response(json_encode($publications));
    }
 
     /**
@@ -138,21 +133,13 @@ class AdminController extends Controller
     public function getIssuesAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
-            //TODO: chnage that to smaller query - get only id and name with query builder.
             $issues = $em->getRepository('Newscoop\Entity\Issue')
-                ->findBy(array(
-                    'publication' => $request->get('publicationId')
-                ));
-
-            $issuesArray = array();
-            foreach ($issues as $issue) {
-                $issuesArray[] = array(
-                    'id' => $issue->getId(), 
-                    'text' => $issue->getName()
-                );
-            }
+                ->createQueryBuilder('p')
+                ->select('p.id', 'p.name')
+                ->getQuery()
+                ->getArrayResult();
            
-            return new Response(json_encode($issuesArray));
+            return new Response(json_encode($issues));
     }
 
     /**
@@ -161,21 +148,13 @@ class AdminController extends Controller
     public function getSectionsAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
-            //TODO: chnage that to smaller query - get only id and name with query builder.
             $sections = $em->getRepository('Newscoop\Entity\Section')
-                ->findBy(array(
-                    'publication' => $request->get('publicationId'), 
-                    'issue' => $request->get('issueId')
-                ));
-            $sectionsArray = array();
-            foreach ($sections as $section) {
-                $sectionsArray[] = array(
-                    'id' => $section->getId(), 
-                    'text' => $section->getName()
-                );
-            }
+                ->createQueryBuilder('p')
+                ->select('p.id', 'p.name')
+                ->getQuery()
+                ->getArrayResult();
            
-            return new Response(json_encode($sectionsArray));
+            return new Response(json_encode($sections));
     }
 
     /**

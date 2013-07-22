@@ -11,6 +11,8 @@
 {% block admin_scripts %}
 <script src="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.js') }}"></script>
 <script type="text/javascript">
+function format(item) { return item.name; };
+function formatDiv(item) { return "<div class='select2-results'>" + item.name + "</div>"; }
 <!--
 $(document).ready(function() {
 	$('#step2').hide();
@@ -50,6 +52,8 @@ $(document).ready(function() {
 										return {results: data};
 									}
 								},
+								formatResult: formatDiv,
+							    formatSelection: format,
 								initSelection: function(element, callback) {
 									var data = {id: element.val(), text: element.val()};
 									callback(data);
@@ -84,6 +88,8 @@ $(document).ready(function() {
 										return {results: data};
 									}
 								},
+								formatResult: formatDiv,
+							    formatSelection: format,
 								initSelection: function(element, callback) {
 									var data = {id: element.val(), text: element.val()};
 									callback(data);
@@ -114,6 +120,8 @@ $(document).ready(function() {
 										return {results: data};
 									}
 								},
+								formatResult: formatDiv,
+							    formatSelection: format,
 								initSelection: function(element, callback) {
 									var data = {id: element.val(), text: element.val()};
 									callback(data);
