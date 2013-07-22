@@ -30,6 +30,7 @@ class AdminController extends Controller
                 )));*/
          $subscription = new Subscriptions();
          $form = $this->createForm('subscriptionconf', $subscription);
+         $formSpecification = $this->createForm('specificationForm');
          if ($request->isMethod('POST')) {
             $form->bind($request);
             if($form->isValid()) {
@@ -59,7 +60,8 @@ class AdminController extends Controller
         }
 
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'formSpecification' =>$formSpecification->createView()
         );
     }
 
@@ -69,24 +71,31 @@ class AdminController extends Controller
     public function step2Action(Request $request)
     {
         $specification = new Subscription_specification();
+        $formSpecification = $this->createForm('specificationForm');
         if ($request->isMethod('POST')) {
-            $em = $this->getDoctrine()->getManager();
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-                ->findOneBy(array(
-                    'name' => strtolower($request->request->get('subscriptionTitle')), 
-                    'is_active' => true
-                ));
-            //TODO: we need form and validation here.
-            $specification->setSubscription($subscription);
-            $specification->setPublication($request->get('publicationId'));
-            $specification->setIssue($request->get('issueId'));
-            $specification->setSection($request->get('sectionId'));
-            //TODO: add articleNumber and ArticleLanguage - we don't have articleId
-            $specification->setArticle($request->get('articleNumber'));
-            $em->persist($specification);
-            $em->flush();
+            $formSpecification->bind($request);
+            if($formSpecification->isValid()) {
+                $data = $request->request->get($formSpecification->getName());
+                var_dump($data);
+                $em = $this->getDoctrine()->getManager();
+                $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                    ->findOneBy(array(
+                        'name' => strtolower($request->request->get('subscriptionTitle')), 
+                        'is_active' => true
+                    ));
+                $specification->setSubscription($subscription);
+                $specification->setPublication($data['publicationId']);
+                $specification->setIssue($data['issueId']);
+                $specification->setSection($data['sectionId']);
+                //TODO: add articleNumber and ArticleLanguage - we don't have articleId
+                $specification->setArticle($data['articleNumber']);
+                $em->persist($specification);
+                $em->flush();
             
-            return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
+                return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
+            } else { 
+                print_r($formSpecification->getErrors()); 
+            }
         }
     } 
 

@@ -177,14 +177,10 @@ $(document).ready(function() {
 	
 	$('#step2Form').submit(function() {
 		$('#subscriptionName').attr('value', $('#subscriptionconf_name').val());
-		$('#s2id_autogen1').attr('name', 'publicationId');
-		$('#s2id_autogen1').attr('value', $("#selectPublications").select2("val"));
-		$('#s2id_autogen2').attr('name', 'issueId');
-		$('#s2id_autogen2').attr('value', $("#selectIssues").select2("val"));
-		$('#s2id_autogen3').attr('name', 'sectionId');
-		$('#s2id_autogen3').attr('value', $("#selectSections").select2("val"));
-		$('#s2id_autogen4').attr('name', 'articleNumber');
-		$('#s2id_autogen5').attr('value', $("#selectArticles").select2("val"));
+		$('#specificationForm_publicationId').attr('value', $("#selectPublications").select2("val"));
+		$('#specificationForm_issueId').attr('value', $("#selectIssues").select2("val"));
+		$('#specificationForm_sectionId').attr('value', $("#selectSections").select2("val"));
+		$('#specificationForm_articleNumber').attr('value', $("#selectArticles").select2("val"));
 	});
 
 	$('#skip').click(function() {
@@ -300,7 +296,7 @@ $(document).ready(function() {
 			</tbody>
 		</table>
 	</form>
-	<form id="step2Form" action="{{ path('newscoop_paywall_admin_step2') }}" method="post">
+	<form id="step2Form" action="{{ path('newscoop_paywall_admin_step2') }}" method="post" {{ form_enctype(formSpecification) }}>
 		<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
 			<tbody>
 				<tr>
@@ -324,6 +320,7 @@ $(document).ready(function() {
 									<tr>
 										<td align="left" valign="top">
 											<div id="selectPublications" style="width:350px" class="populate placeholder"></div>
+											{{ form_widget(formSpecification.publicationId, {'attr' : {'style' : 'display: none'}}) }}
 										</td>
 									</tr>
 									<tr>
@@ -334,6 +331,7 @@ $(document).ready(function() {
 									<tr>
 										<td align="left" valign="top">
 											<div id="selectIssues" style="width:350px" class="populate placeholder"></div>
+											{{ form_widget(formSpecification.issueId, {'attr' : {'style' : 'display: none'}}) }}
 										</td>
 									</tr>
 									<tr>
@@ -344,6 +342,7 @@ $(document).ready(function() {
 									<tr>
 										<td align="left" valign="top">
 											<div id="selectSections" style="width:350px" class="populate placeholder"></div>
+											{{ form_widget(formSpecification.sectionId, {'attr' : {'style' : 'display: none'}}) }}
 										</td>
 									</tr>
 									<tr>
@@ -354,8 +353,10 @@ $(document).ready(function() {
 									<tr>
 										<td align="left" valign="top">
 											<div id="selectArticles" name="articleNumber" style="width:350px" class="populate placeholder"></div>
+											{{ form_widget(formSpecification.articleNumber, {'attr' : {'style' : 'display: none'}}) }}
 										</td>
 									</tr>
+									{{ form_widget(formSpecification._token) }}
 								</tbody>
 							</table>
 						</div>

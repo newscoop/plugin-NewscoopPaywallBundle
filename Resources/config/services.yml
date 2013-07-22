@@ -23,6 +23,11 @@ services:
         tags:
             - { name: form.type, alias: subscriptionconf }
 
+    newscoop_paywall.form.type.specification:
+        class: Newscoop\PaywallBundle\Form\Type\SpecificationType
+        tags:
+            - { name: form.type, alias: specificationForm }
+
     newscoop_paywall.validator.unique.containsdecimal:
         class: Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimalValidator
         tags:
