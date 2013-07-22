@@ -47,7 +47,7 @@ class AdminController extends Controller
                     return array('status' => true);
                 }
                 
-                return $this->redirect($this->generateUrl('newscoop_paywall_admin_admin'));
+                return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
             } else {
                 if ($request->isXmlHttpRequest()) {
                     return array(
@@ -61,6 +61,33 @@ class AdminController extends Controller
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/step2")
+     */
+    public function step2Action(Request $request)
+    {
+        $specification = new Subscription_specification();
+        if ($request->isMethod('POST')) {
+            $em = $this->getDoctrine()->getManager();
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                ->findOneBy(array(
+                    'name' => strtolower($request->request->get('subscriptionTitle')), 
+                    'is_active' => true
+                ));
+            //TODO: we need form and validation here.
+            $specification->setSubscription($subscription);
+            $specification->setPublication($request->get('publicationId'));
+            $specification->setIssue($request->get('issueId'));
+            $specification->setSection($request->get('sectionId'));
+            //TODO: add articleNumber and ArticleLanguage - we don't have articleId
+            $specification->setArticle($request->get('articleNumber'));
+            $em->persist($specification);
+            $em->flush();
+            
+            return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
+        }
     } 
 
     /**
@@ -178,34 +205,6 @@ class AdminController extends Controller
         }
        
         return new Response(json_encode($articlesArray));
-    }
-
-
-    /**
-     * @Route("/admin/paywall_plugin/addspecification")
-     */
-    public function addSpecificationAction(Request $request)
-    {
-        $specification = new Subscription_specification();
-        if ($request->isMethod('POST')) {
-            $em = $this->getDoctrine()->getManager();
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-                ->findOneBy(array(
-                    'name' => strtolower($request->request->get('subscriptionName')), 
-                    'is_active' => true
-                ));
-            //TODO: we need form and validation here.
-            $specification->setSubscription($subscription);
-            $specification->setPublication($request->get('publicationId'));
-            $specification->setIssue($request->get('issueId'));
-            $specification->setSection($request->get('sectionId'));
-            //TODO: add articleNumber and ArticleLanguage - we don't have articleId
-            $specification->setArticle($request->get('articleNumber'));
-            $em->persist($specification);
-            $em->flush();
-
-            return new Response(json_encode(array('status' => true)));
-        }
     }
 
     private function getErrorMessages(\Symfony\Component\Form\Form $form) {      

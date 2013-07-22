@@ -167,23 +167,20 @@ $(document).ready(function() {
 		return false;      
 	});
 	
-	// TODO: Don't do this with ajax - send normal request and redirect to list of subscription
-	$('#save').click(function() {
-		$.post('{{ path('newscoop_paywall_admin_addspecification') }}', {
-			'subscriptionName': $('#subscriptionconf_name').val(),
-			'publicationId': $("#selectPublications").select2("val"),
-			'issueId': $("#selectIssues").select2("val"),
-			'sectionId': $("#selectSections").select2("val"),
-			'articleNumber': $("#selectArticles").select2("val")
-		}, function (data) {
-			flashMessage('Subscription has been successfully added.');
-			setInterval("window.location = location.href",4000); 
-		}, 'json');
+	$('#step2Form').submit(function() {
+		$('#subscriptionName').attr('value', $('#subscriptionconf_name').val());
+		$('#s2id_autogen1').attr('name', 'publicationId');
+		$('#s2id_autogen1').attr('value', $("#selectPublications").select2("val"));
+		$('#s2id_autogen2').attr('name', 'issueId');
+		$('#s2id_autogen2').attr('value', $("#selectIssues").select2("val"));
+		$('#s2id_autogen3').attr('name', 'sectionId');
+		$('#s2id_autogen3').attr('value', $("#selectSections").select2("val"));
+		$('#s2id_autogen4').attr('name', 'articleNumber');
+		$('#s2id_autogen5').attr('value', $("#selectArticles").select2("val"));
 	});
 
-	// TODO: go to subscriptions list
 	$('#skip').click(function() {
-		location.reload();
+		window.location.href = "{{ path('newscoop_paywall_managesubscriptions_manage') }}";
 	});
 
 	var delay = (function(){
@@ -294,14 +291,12 @@ $(document).ready(function() {
 				{{ form_rest(form) }}
 			</tbody>
 		</table>
-
+	</form>
+	<form id="step2Form" action="{{ path('newscoop_paywall_admin_step2') }}" method="post">
 		<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
 			<tbody>
 				<tr>
 					<td colspan="2" align="left">
-						<div class="errors">
-							{{ form_errors(form) }}
-						</div>
 						<input class="button" type="submit" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
 						<input class="save-button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
 						<div style="float: left"><strong>Please specify which articles exactly should be visible for subscribers only.</strong><br><br>
@@ -311,6 +306,11 @@ $(document).ready(function() {
 									<tr>
 										<td align="left">	
 											Publications:
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<input id="subscriptionName" name="subscriptionTitle" type="hidden"></input>
 										</td>
 									</tr>
 									<tr>
@@ -345,7 +345,7 @@ $(document).ready(function() {
 									</tr>
 									<tr>
 										<td align="left" valign="top">
-											<div id="selectArticles" style="width:350px" class="populate placeholder"></div>
+											<div id="selectArticles" name="articleNumber" style="width:350px" class="populate placeholder"></div>
 										</td>
 									</tr>
 								</tbody>
@@ -383,7 +383,7 @@ $(document).ready(function() {
 					</tr>
 					<td colspan="2" align="right" style="padding-top: 10px;">
 						<input type="button" id="skip" value="Skip" class="button">
-						<input type="button" id="save" value="Save" class="save-button">
+						<input type="submit" id="save" value="Save" class="save-button">
 					</td>
 				</tr>
 			</tbody>
