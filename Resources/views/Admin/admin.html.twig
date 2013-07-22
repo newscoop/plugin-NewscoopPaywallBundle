@@ -161,7 +161,7 @@ $(document).ready(function() {
 						}
 					} else {
 						// TODO: display (and translate error messages)
-						
+						$('#errors').append(msg.errors);
 						console.log(msg.errors);
 						alert('Your form have errors, check console log');
 					}

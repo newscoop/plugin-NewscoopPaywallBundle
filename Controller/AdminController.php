@@ -117,7 +117,6 @@ class AdminController extends Controller
     public function getPublicationsAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
-            //TODO: chnage that to smaller query - get only id and name with query builder.
             $publications = $em->getRepository('Newscoop\Entity\Publication')
                 ->createQueryBuilder('p')
                 ->select('p.id', 'p.name')
@@ -134,8 +133,8 @@ class AdminController extends Controller
     {
             $em = $this->getDoctrine()->getManager();
             $issues = $em->getRepository('Newscoop\Entity\Issue')
-                ->createQueryBuilder('p')
-                ->select('p.id', 'p.name')
+                ->createQueryBuilder('i')
+                ->select('i.id', 'i.name')
                 ->getQuery()
                 ->getArrayResult();
            
@@ -149,8 +148,8 @@ class AdminController extends Controller
     {
             $em = $this->getDoctrine()->getManager();
             $sections = $em->getRepository('Newscoop\Entity\Section')
-                ->createQueryBuilder('p')
-                ->select('p.id', 'p.name')
+                ->createQueryBuilder('s')
+                ->select('s.id', 's.name')
                 ->getQuery()
                 ->getArrayResult();
            

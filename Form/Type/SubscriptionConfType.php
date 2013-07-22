@@ -33,7 +33,7 @@ class SubscriptionConfType extends AbstractType
             'invalid_message' => 'Type duration of subscription in days.'
         ))
         ->add('price', null, array(
-            'label' => 'Value of the subscription: ',
+            'label' => 'Price: ',
             'error_bubbling' => true,
             'required' => true,
             'invalid_message' => 'Type the value of the subscription.'
