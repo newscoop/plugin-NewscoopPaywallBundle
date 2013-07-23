@@ -52,13 +52,13 @@ $(document).ready(function() {
 										return {results: data};
 									}
 								},
-								formatResult: formatDiv,
-							    formatSelection: format,
 								initSelection: function(element, callback) {
 									var data = {id: element.val(), text: element.val()};
 									callback(data);
 									$('#selectIssues').prop('disabled', false);
 								},
+								formatResult: formatDiv,
+							    formatSelection: format,
 								escapeMarkup: function (m) { return m; }
 
 							}).on("change", function (e) {
@@ -67,10 +67,9 @@ $(document).ready(function() {
 						}
 
 						if (type == 'issue' || type == 'section' || type == 'article') {
-							if(type == 'issue') {
+							if (type == 'issue') {
 								titleIssue.append('Issues: ');
 							}
-
 							titleSection.empty();
 							titleArticle.empty();
 							$('#selectSections').prop('disabled', 'disabled');
@@ -88,12 +87,12 @@ $(document).ready(function() {
 										return {results: data};
 									}
 								},
-								formatResult: formatDiv,
-							    formatSelection: format,
 								initSelection: function(element, callback) {
 									var data = {id: element.val(), text: element.val()};
 									callback(data);
 								},
+								formatResult: formatDiv,
+							    formatSelection: format,
 								escapeMarkup: function (m) { return m; }
 							}).on("change", function (e) {
 								$("#selectSections").select2("enable", true);             
@@ -120,12 +119,12 @@ $(document).ready(function() {
 										return {results: data};
 									}
 								},
-								formatResult: formatDiv,
-							    formatSelection: format,
 								initSelection: function(element, callback) {
 									var data = {id: element.val(), text: element.val()};
 									callback(data);
 								},
+								formatResult: formatDiv,
+							    formatSelection: format,
 								escapeMarkup: function (m) { return m; }
 							}).on("change", function (e) {
 								$("#selectArticles").select2("enable", true);             

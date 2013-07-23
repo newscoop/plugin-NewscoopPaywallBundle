@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Newscoop\PaywallBundle\Form\SubscriptionConfType;
 use Newscoop\PaywallBundle\Entity\Subscriptions;
 use Newscoop\PaywallBundle\Entity\Subscription_specification;
+use Doctrine\ORM\Query\Expr\Join;
 
 class AdminController extends Controller
 {
@@ -140,7 +141,9 @@ class AdminController extends Controller
             $em = $this->getDoctrine()->getManager();
             $issues = $em->getRepository('Newscoop\Entity\Issue')
                 ->createQueryBuilder('i')
-                ->select('i.id', 'i.name')
+                ->select('i.number as id', 'i.name')
+                ->where('i.publication = ?1')
+                ->setParameter(1, $request->get('publicationId'))
                 ->getQuery()
                 ->getArrayResult();
            
@@ -156,6 +159,10 @@ class AdminController extends Controller
             $sections = $em->getRepository('Newscoop\Entity\Section')
                 ->createQueryBuilder('s')
                 ->select('s.id', 's.name')
+                ->innerJoin('s.issue', 'i', 'WITH', 'i.number = ?2')
+                ->where('s.publication = ?1')
+                ->setParameter(1, $request->get('publicationId'))
+                ->setParameter(2, $request->get('issueId'))
                 ->getQuery()
                 ->getArrayResult();
            
@@ -168,16 +175,20 @@ class AdminController extends Controller
     public function getArticlesAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-
-        $section = $em->getRepository('Newscoop\Entity\Section')
-            ->findOneBy(array(
-                'id' => $request->get('sectionId'),
-                'publication' => $request->get('publicationId'), 
-                'issue' => $request->get('issueId')
-            ));
+        
+        $number = $em->getRepository('Newscoop\Entity\Section')
+                ->createQueryBuilder('s')
+                ->select('s.number')
+                ->innerJoin('s.issue', 'i', 'WITH', 'i.number = ?2')
+                ->where('s.publication = ?1 AND s.id = ?3')
+                ->setParameter(1, $request->get('publicationId'))
+                ->setParameter(2, $request->get('issueId'))
+                ->setParameter(3, $request->get('sectionId'))
+                ->getQuery()
+                ->getSingleResult();
 
         $articles = $em->getRepository('Newscoop\Entity\Article')
-            ->getArticlesForSection($request->get('publicationId'), $section->getNumber())
+            ->getArticlesForSection($request->get('publicationId'), reset($number))
             ->getResult();
 
         $articlesArray = array();

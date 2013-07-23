@@ -7,7 +7,15 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
 {% endblock %}
 
-{% block admin_scripts %}{% endblock %}
+{% block admin_scripts %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#cancelBtn').click(function() {
+        window.location.href = "{{ path('newscoop_paywall_managesubscriptions_manage') }}";
+    });
+});
+</script>
+{% endblock %}
 
 {% block admin_content %}
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 2} %}
@@ -58,6 +66,7 @@
             </tr>
             <tr>
                 <td colspan="5" align="right" style="padding-top: 10px;">
+                    <input type="button" id="cancelBtn" value="Cancel" class="button">
                     <input type="submit" value="Save" class="save-button">
                 </td>
             </tr>
