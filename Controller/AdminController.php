@@ -93,8 +93,6 @@ class AdminController extends Controller
                 $em->flush();
             
                 return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
-            } else { 
-                print_r($formSpecification->getErrors()); 
             }
         }
     } 

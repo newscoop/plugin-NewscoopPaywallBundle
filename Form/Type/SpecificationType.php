@@ -12,7 +12,7 @@ class SpecificationType extends AbstractType
     {
         $builder
         ->add('publicationId', 'integer', array(
-            'required' => false
+            'required' => true
         ))
         ->add('issueId', 'integer', array(
             'required' => false
@@ -24,13 +24,6 @@ class SpecificationType extends AbstractType
             'required' => false
         ));
     }
-
-    /*public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'data_class' => 'Newscoop\PaywallBundle\Entity\Subscription_specification'
-        ));
-    }*/
 
     public function getName()
     {
