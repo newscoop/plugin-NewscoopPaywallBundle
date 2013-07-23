@@ -1,7 +1,7 @@
 Newscoop\PaywallBundle\Entity\Subscriptions:
     properties:
         price:
-            - NotBlank: ~
+            - NotBlank: { message: "Price field can not be empty." }
             - Range:
                 min: 1
                 minMessage: Value must be greater than 1

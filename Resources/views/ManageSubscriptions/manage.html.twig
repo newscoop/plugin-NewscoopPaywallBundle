@@ -95,7 +95,10 @@ $(document).ready(function(){
                         <td><div class="editable">{{ subscription.range }}</div></td>
                         <td>{{ subscription.price}}</td>
                         <td>{{ subscription.currency }}</td>
-                        <td class="readonly"><a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a></td>
+                        <td class="readonly">
+                            <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a> | 
+                            <a class="edit-subscription" href="{{ path('newscoop_paywall_managesubscriptions_update', {'id': subscription.id}) }}">Edit</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
