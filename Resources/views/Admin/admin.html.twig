@@ -177,7 +177,7 @@ $(document).ready(function() {
 		return false;      
 	});
 	
-	$('#step2Form').submit(function() {
+	$('#save').click(function() {
 		$('#subscriptionName').attr('value', $('#subscriptionconf_name').val());
 		$('#specificationForm_publicationId').attr('value', $("#selectPublications").select2("val"));
 		$('#specificationForm_issueId').attr('value', $("#selectIssues").select2("val"));
@@ -235,9 +235,7 @@ $(document).ready(function() {
 				</tr>
 				<tr>
 					<td>
-						<div class="errors">
-							{{ form_errors(form) }}
-						</div>
+						<div class="errors"></div>
 					</td>
 				</tr>
 				<tr>

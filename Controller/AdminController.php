@@ -76,7 +76,6 @@ class AdminController extends Controller
             $formSpecification->bind($request);
             if($formSpecification->isValid()) {
                 $data = $request->request->get($formSpecification->getName());
-                var_dump($data);
                 $em = $this->getDoctrine()->getManager();
                 $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                     ->findOneBy(array(
@@ -201,11 +200,11 @@ class AdminController extends Controller
                 }
             }
         }
-        
+
         foreach ($form->getErrors() as $key => $error) {
             $errors[] = $error->getMessage();   
         }
-        
+
         return $errors;
     }
 }

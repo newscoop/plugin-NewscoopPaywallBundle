@@ -34,7 +34,7 @@ $(document).ready(function(){
         "bPaging": true,
         "sDom": 'RCf<"clear">rtilp',
         "bJQueryUI": true,
-        "sPaginationType": "full_numbers"
+        "sPaginationType": "full_numbers",
     });
 
     $('#subscriptionsTable').on('click', '.delete-subscription', function(event){
@@ -52,7 +52,7 @@ $(document).ready(function(){
     });
 
     var oTable = $('#subscriptionsTable').dataTable();
-    $('td[class!="readonly"]', oTable.fnGetNodes()).editable( '{{ path('newscoop_paywall_managesubscriptions_edit') }}', {
+    $('td[class!="readonly"]', oTable.fnGetNodes()).editable( '{{ path('newscoop_paywall_edit') }}', {
         "callback": function( sValue ) {
             var aPos = oTable.fnGetPosition( this );
             oTable.fnUpdate( sValue, aPos[0], aPos[1] );
@@ -65,7 +65,7 @@ $(document).ready(function(){
             };
         },
         "height": "14px"
-    } );
+    });
 });
 </script>
 {% endblock %}
@@ -74,40 +74,43 @@ $(document).ready(function(){
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 2} %}
 
     <div id="manage-subscriptions" style="padding: 10px 10px 30px 10px;">
-        <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Duration in days</th>
-                    <th>Value</th>
-                    <th>Currency</th>
-                    <th>Options</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for subscription in subscriptions %}
-                <tr id="{{ subscription.id }}">
-                    <td>{{ subscription.name }}</td>
-                    <td class="readonly">{{ subscription.type }}</td>
-                    <td>{{ subscription.range }}</td>
-                    <td>{{ subscription.price}}</td>
-                    <td>{{ subscription.currency }}</td>
-                    <td class="readonly"><a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Duration in days</th>
-                    <th>Value</th>
-                    <th>Currency</th>
-                    <th>Options</th>
-                </tr>
-            </tfoot>
-        </table>
+        <form id="editForm" action="{{ path('newscoop_paywall_edit') }}" method="post" {{ form_enctype(form) }}>
+            <input type="hidden" name="_method" value="PUT" />
+            <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Duration in days</th>
+                        <th>Value</th>
+                        <th>Currency</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subscription in subscriptions %}
+                    <tr id="{{ subscription.id }}">
+                        <td>{{ subscription.name }}</td>
+                        <td class="readonly">{{ subscription.type }}</td>
+                        <td><div class="editable">{{ subscription.range }}</div></td>
+                        <td>{{ subscription.price}}</td>
+                        <td>{{ subscription.currency }}</td>
+                        <td class="readonly"><a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Duration in days</th>
+                        <th>Value</th>
+                        <th>Currency</th>
+                        <th>Options</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
     </div>
 </div>
 {% endblock %}
