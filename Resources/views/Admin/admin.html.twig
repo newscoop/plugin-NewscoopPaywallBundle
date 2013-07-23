@@ -160,10 +160,12 @@ $(document).ready(function() {
 							});
 						}
 					} else {
-						// TODO: display (and translate error messages)
-						$('#errors').append(msg.errors);
-						console.log(msg.errors);
-						alert('Your form have errors, check console log');
+						var ul = $('<ul></ul>');
+						ul.appendTo($('.errors'));
+						$('.errors').css('color', '#FF2200');
+						$.each($.parseJSON(msg.errors), function (i, obj) {
+						    ul.append('<li>'+obj+'</li>');
+						});
 					}
 				}
 			});
@@ -226,12 +228,16 @@ $(document).ready(function() {
 			<tbody>
 				<tr>
 					<td colspan="2" align="left">
-						<div class="errors">
-							{{ form_errors(form) }}
-						</div>
 						<input class="save-button" name="step1" value="{{ getGS('(1) Specify type and value') }}" disabled>
 						<input class="button" name="step2" value="{{ getGS('(2) Specify articles') }}" disabled><br><br>
 						<strong>Please specify the name and value for your new subscription. You can set up various diffrent types<br> of subscriptions, but just one after the other.</strong>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="errors">
+							{{ form_errors(form) }}
+						</div>
 					</td>
 				</tr>
 				<tr>

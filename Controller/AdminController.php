@@ -201,11 +201,11 @@ class AdminController extends Controller
                 }
             }
         }
-
+        
         foreach ($form->getErrors() as $key => $error) {
             $errors[] = $error->getMessage();   
         }
-
+        
         return $errors;
     }
 }
