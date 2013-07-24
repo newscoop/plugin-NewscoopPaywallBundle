@@ -1,7 +1,7 @@
 <?php
 /**
- * @author Rafał Muszyński <rmuszynski1@gmail.com>
  * @package Newscoop\PaywallBundle
+ * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -10,6 +10,7 @@ namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,6 +53,7 @@ class ManageSubscriptionsController extends Controller
 
     /**
      * @Route("/admin/paywall_plugin/manage/edit")
+     * @Method("PATH")
      */
     public function editAction(Request $request)
     {
@@ -96,40 +98,5 @@ class ManageSubscriptionsController extends Controller
                 
             return new Response(json_encode(array('data' => $value)));
         }
-    }
-
-    /**
-     * @Route("/admin/paywall_plugin/manage/update/{id}")
-     * @Template()
-     */
-    public function updateAction(Request $request, $id)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-            ->findOneBy(array(
-                'id' => $id
-            ));
-        $form = $this->createForm('subscriptionconf', $subscription);
-        if ($request->isMethod('POST')) {
-            $form->bind($request);
-            if($form->isValid()) {
-                $data = $request->request->get($form->getName());
-                $subscription->setName($data['name']);
-                $subscription->setType($data['type']);
-                $subscription->setRange($data['range']);
-                $subscription->setPrice($data['price']);
-                $subscription->setCurrency($data['currency']);
-                $em->persist($subscription);
-                $em->flush();
-                
-                return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
-            }
-        }
-
-        return $this->render('NewscoopPaywallBundle:ManageSubscriptions:update.html.twig',
-            array(
-                'form' => $form->createView(),
-                'subscription_id' => $id
-            ));
     }
 }

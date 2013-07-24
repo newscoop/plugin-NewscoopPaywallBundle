@@ -52,7 +52,7 @@ $(document).ready(function(){
     });
 
     var oTable = $('#subscriptionsTable').dataTable();
-    $('td[class!="readonly"]', oTable.fnGetNodes()).editable( '{{ path('newscoop_paywall_edit') }}', {
+    $('td[class!="readonly"]', oTable.fnGetNodes()).editable( '{{ path('newscoop_paywall_managesubscriptions_edit') }}', {
         "callback": function( sValue ) {
             var aPos = oTable.fnGetPosition( this );
             oTable.fnUpdate( sValue, aPos[0], aPos[1] );
@@ -74,7 +74,7 @@ $(document).ready(function(){
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 2} %}
 
     <div id="manage-subscriptions" style="padding: 10px 10px 30px 10px;">
-        <form id="editForm" action="{{ path('newscoop_paywall_edit') }}" method="post" {{ form_enctype(form) }}>
+        <form id="editForm" action="{{ path('newscoop_paywall_managesubscriptions_edit') }}" method="post" {{ form_enctype(form) }}>
             <input type="hidden" name="_method" value="PUT" />
             <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
                 <thead>
@@ -97,7 +97,7 @@ $(document).ready(function(){
                         <td>{{ subscription.currency }}</td>
                         <td class="readonly">
                             <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a> | 
-                            <a class="edit-subscription" href="{{ path('newscoop_paywall_managesubscriptions_update', {'id': subscription.id}) }}">Edit</a>
+                            <a class="edit-subscription" href="{{ path('newscoop_paywall_admin_update', {'id': subscription.id}) }}">Edit</a>
                         </td>
                     </tr>
                     {% endfor %}

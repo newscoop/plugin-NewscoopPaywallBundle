@@ -11,16 +11,16 @@ class SpecificationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('publicationId', 'integer', array(
+        ->add('publication', 'integer', array(
             'required' => true
         ))
-        ->add('issueId', 'integer', array(
+        ->add('issue', 'integer', array(
             'required' => false
         ))
-        ->add('sectionId', 'integer', array(
+        ->add('section', 'integer', array(
             'required' => false
         ))
-        ->add('articleNumber', 'integer', array(
+        ->add('article', 'integer', array(
             'required' => false
         ));
     }

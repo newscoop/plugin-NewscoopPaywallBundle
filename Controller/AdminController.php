@@ -1,7 +1,7 @@
 <?php
 /**
- * @author Rafał Muszyński <rmuszynski1@gmail.com>
  * @package Newscoop\PaywallBundle
+ * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
@@ -22,17 +22,37 @@ class AdminController extends Controller
 {
     /**
      * @Route("/admin/paywall_plugin")
+     * @Route("/admin/paywall_plugin/update/{id}", name="newscoop_paywall_admin_update")
      * @Template()
      */
-    public function adminAction(Request $request)
+    public function adminAction(Request $request, $id = null)
     {
     	/*$this->container->get('dispatcher')->dispatch('plugin.install', new \Newscoop\EventDispatcher\Events\GenericEvent($this, array(
                 'Paywall Plugin' => ''
-                )));*/
-         $subscription = new Subscriptions();
-         $form = $this->createForm('subscriptionconf', $subscription);
-         $formSpecification = $this->createForm('specificationForm');
-         if ($request->isMethod('POST')) {
+                        )));*/
+        $em = $this->getDoctrine()->getManager();
+        if ($id) {
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                ->findOneBy(array(
+                    'id' => $id
+                ));
+
+            if (!$subscription) {
+                return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
+            }
+
+            $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription_specification')
+                ->findOneBy(array(
+                    'subscription' => $subscription
+                ));
+        } else {
+            $subscription = new Subscriptions();
+            $specification = new Subscription_specification();
+        }
+
+        $form = $this->createForm('subscriptionconf', $subscription);
+        $formSpecification = $this->createForm('specificationForm', $specification);
+        if ($request->isMethod('POST')) {
             $form->bind($request);
             if($form->isValid()) {
                 $data = $request->request->get($form->getName());
@@ -42,7 +62,9 @@ class AdminController extends Controller
                 $subscription->setPrice($data['price']);
                 $subscription->setCurrency($data['currency']);
                 $em = $this->getDoctrine()->getManager();
-                $em->persist($subscription);
+                if (!$id) {
+                    $em->persist($subscription);
+                }
                 $em->flush();
 
                 if ($request->isXmlHttpRequest()) {
@@ -84,11 +106,11 @@ class AdminController extends Controller
                         'is_active' => true
                     ));
                 $specification->setSubscription($subscription);
-                $specification->setPublication($data['publicationId']);
-                $specification->setIssue($data['issueId']);
-                $specification->setSection($data['sectionId']);
+                $specification->setPublication($data['publication']);
+                $specification->setIssue($data['issue']);
+                $specification->setSection($data['section']);
                 //TODO: add articleNumber and ArticleLanguage - we don't have articleId
-                $specification->setArticle($data['articleNumber']);
+                $specification->setArticle($data['article']);
                 $em->persist($specification);
                 $em->flush();
             
@@ -119,19 +141,22 @@ class AdminController extends Controller
     }
 
     /**
+     * @Route("/admin/paywall_plugin/getall")
+     */
+    public function getAllAction(Request $request)
+    {
+            $em = $this->getDoctrine()->getManager();
+            return new Response(json_encode($this->getAll($request, $em)));
+    }
+
+    /**
      * @Route("/admin/paywall_plugin/getpublications")
      */
     public function getPublicationsAction(Request $request)
-    {
+    {       
             $em = $this->getDoctrine()->getManager();
-            $publications = $em->getRepository('Newscoop\Entity\Publication')
-                ->createQueryBuilder('p')
-                ->select('p.id', 'p.name')
-                ->getQuery()
-                ->getArrayResult();
-           
-            return new Response(json_encode($publications));
-   }
+            return new Response(json_encode($this->getPublication($em)));
+    }
 
     /**
      * @Route("/admin/paywall_plugin/getissues")
@@ -139,15 +164,7 @@ class AdminController extends Controller
     public function getIssuesAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
-            $issues = $em->getRepository('Newscoop\Entity\Issue')
-                ->createQueryBuilder('i')
-                ->select('i.number as id', 'i.name')
-                ->where('i.publication = ?1')
-                ->setParameter(1, $request->get('publicationId'))
-                ->getQuery()
-                ->getArrayResult();
-           
-            return new Response(json_encode($issues));
+            return new Response(json_encode($this->getIssue($request, $em)));
     }
 
     /**
@@ -156,17 +173,7 @@ class AdminController extends Controller
     public function getSectionsAction(Request $request)
     {
             $em = $this->getDoctrine()->getManager();
-            $sections = $em->getRepository('Newscoop\Entity\Section')
-                ->createQueryBuilder('s')
-                ->select('s.id', 's.name')
-                ->innerJoin('s.issue', 'i', 'WITH', 'i.number = ?2')
-                ->where('s.publication = ?1')
-                ->setParameter(1, $request->get('publicationId'))
-                ->setParameter(2, $request->get('issueId'))
-                ->getQuery()
-                ->getArrayResult();
-           
-            return new Response(json_encode($sections));
+            return new Response(json_encode($this->getSection($request, $em)));
     }
 
     /**
@@ -174,32 +181,8 @@ class AdminController extends Controller
      */
     public function getArticlesAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        
-        $number = $em->getRepository('Newscoop\Entity\Section')
-                ->createQueryBuilder('s')
-                ->select('s.number')
-                ->innerJoin('s.issue', 'i', 'WITH', 'i.number = ?2')
-                ->where('s.publication = ?1 AND s.id = ?3')
-                ->setParameter(1, $request->get('publicationId'))
-                ->setParameter(2, $request->get('issueId'))
-                ->setParameter(3, $request->get('sectionId'))
-                ->getQuery()
-                ->getSingleResult();
-
-        $articles = $em->getRepository('Newscoop\Entity\Article')
-            ->getArticlesForSection($request->get('publicationId'), reset($number))
-            ->getResult();
-
-        $articlesArray = array();
-        foreach ($articles as $article) {
-            $articlesArray[] = array(
-                'id' => $article->getNumber(), 
-                'text' => $article->getName()
-            );
-        }
-       
-        return new Response(json_encode($articlesArray));
+            $em = $this->getDoctrine()->getManager();
+            return new Response(json_encode($this->getArticle($request, $em)));
     }
 
     private function getErrorMessages(\Symfony\Component\Form\Form $form) {      
@@ -217,5 +200,86 @@ class AdminController extends Controller
         }
 
         return $errors;
+    }
+
+    private function getPublication($em) {
+
+        $publications = $em->getRepository('Newscoop\Entity\Publication')
+            ->createQueryBuilder('p')
+            ->select('p.id', 'p.name')
+            ->getQuery()
+            ->getArrayResult();
+
+        return $publications;
+    }
+
+    private function getIssue($request, $em) {
+
+        $issues = $em->getRepository('Newscoop\Entity\Issue')
+            ->createQueryBuilder('i')
+            ->select('i.number as id', 'i.name')
+            ->where('i.publication = ?1')
+            ->setParameter(1, $request->get('publicationId'))
+            ->getQuery()
+            ->getArrayResult();
+
+        return $issues;
+    }
+
+    private function getSection($request, $em) {
+        
+        $sections = $em->getRepository('Newscoop\Entity\Section')
+            ->createQueryBuilder('s')
+            ->select('s.id', 's.name')
+            ->innerJoin('s.issue', 'i', 'WITH', 'i.number = ?2')
+            ->where('s.publication = ?1')
+            ->setParameter(1, $request->get('publicationId'))
+            ->setParameter(2, $request->get('issueId'))
+            ->getQuery()
+            ->getArrayResult();
+
+        return $sections;
+    }
+
+    private function getArticle($request, $em) {
+        
+        $number = $em->getRepository('Newscoop\Entity\Section')
+            ->createQueryBuilder('s')
+            ->select('s.number')
+            ->innerJoin('s.issue', 'i', 'WITH', 'i.number = :issueId')
+            ->where('s.publication = :publicationId AND s.id = :sectionId')
+            ->setParameters(array(
+                'publicationId' => $request->get('publicationId'), 
+                'issueId' => $request->get('issueId'),
+                'sectionId' => $request->get('sectionId')
+            ))
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        $articles = $em->getRepository('Newscoop\Entity\Article')
+            ->getArticlesForSection($request->get('publicationId'), reset($number))
+            ->getResult();
+
+        $articlesArray = array();
+        foreach ($articles as $article) {
+            $articlesArray[] = array(
+                'id' => $article->getNumber(), 
+                'text' => $article->getName()
+            );
+        }
+
+        return $articlesArray;
+    }
+
+    private function getAll($request, $em) {
+
+        $resultArray = array(
+            'Publications' => $this->getPublication($em), 
+            'Issues' => $this->getIssue($request, $em), 
+            'Sections' => $this->getSection($request, $em), 
+            'Articles' => $this->getArticle($request,$em)
+        );
+
+        return $resultArray;
     }
 }

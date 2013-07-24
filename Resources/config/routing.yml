@@ -2,8 +2,3 @@ newscoop_paywall:
     resource: "@NewscoopPaywallBundle/Controller/"
     type:     annotation
     prefix:   /
-
-newscoop_paywall_edit:
-    path:     /paywall_plugin/manage/edit
-    defaults: { _controller: NewscoopPaywallBundle:ManageSubscriptions:edit }
-    methods: [PUT]

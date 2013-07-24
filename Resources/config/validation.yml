@@ -5,4 +5,8 @@ Newscoop\PaywallBundle\Entity\Subscriptions:
             - Range:
                 min: 1
                 minMessage: Value must be greater than 1
-            - Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimal: ~
+            - Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimal: { message: "Price field must be greater or equal 1." }
+        range:
+            - NotBlank: { message: "Range field can not be empty." }
+        currency:
+            - NotBlank: { message: "Currency field can not be empty." }
