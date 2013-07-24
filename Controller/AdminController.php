@@ -97,13 +97,19 @@ class AdminController extends Controller
     public function step2Action(Request $request, $id = null)
     {
         $em = $this->getDoctrine()->getManager();
+        $create = false;
         if ($id) {
             $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription_specification')
                 ->findOneBy(array(
                     'subscription' => $id
                 ));
+            if (!$specification) {
+                $specification = new Subscription_specification();
+                $create = true;
+            }
         } else {
             $specification = new Subscription_specification();
+            $create = true;
         }
         
         $formSpecification = $this->createForm('specificationForm', $specification);
@@ -122,7 +128,7 @@ class AdminController extends Controller
                 $specification->setSection($data['section']);
                 //TODO: add articleNumber and ArticleLanguage - we don't have articleId
                 $specification->setArticle($data['article']);
-                if (!$id) {
+                if (!$id || $create) {
                     $em->persist($specification);
                 }
                 $em->flush();
