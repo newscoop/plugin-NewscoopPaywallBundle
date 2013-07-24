@@ -62,7 +62,9 @@ $(document).ready(function() {
 								escapeMarkup: function (m) { return m; }
 
 							}).on("change", function (e) {
-								$("#selectIssues").select2("enable", true);             
+								$("#selectIssues").select2("enable", true);
+								$('#subscriptionName').attr('value', $('#subscriptionconf_name').val());
+								$('#specificationForm_publication').attr('value', $("#selectPublications").select2("val"));         
 							});
 						}
 
@@ -95,7 +97,8 @@ $(document).ready(function() {
 							    formatSelection: format,
 								escapeMarkup: function (m) { return m; }
 							}).on("change", function (e) {
-								$("#selectSections").select2("enable", true);             
+								$("#selectSections").select2("enable", true);
+								$('#specificationForm_issue').attr('value', $("#selectIssues").select2("val"));           
 							});
 						}
 
@@ -127,7 +130,8 @@ $(document).ready(function() {
 							    formatSelection: format,
 								escapeMarkup: function (m) { return m; }
 							}).on("change", function (e) {
-								$("#selectArticles").select2("enable", true);             
+								$("#selectArticles").select2("enable", true);
+								$('#specificationForm_section').attr('value', $("#selectSections").select2("val"));          
 							}); 
 						}
 
@@ -154,6 +158,8 @@ $(document).ready(function() {
 									callback(data);
 								},
 								escapeMarkup: function (m) { return m; }
+							}).on("change", function (e) {
+								$('#specificationForm_article').attr('value', $("#selectArticles").select2("val"));
 							});
 						}
 						$.post('{{ path('newscoop_paywall_admin_getall') }}', {
@@ -187,14 +193,6 @@ $(document).ready(function() {
 		}
 
 		return false;      
-	});
-	
-	$('#save').click(function() {
-		$('#subscriptionName').attr('value', $('#subscriptionconf_name').val());
-		$('#specificationForm_publication').attr('value', $("#selectPublications").select2("val"));
-		$('#specificationForm_issue').attr('value', $("#selectIssues").select2("val"));
-		$('#specificationForm_section').attr('value', $("#selectSections").select2("val"));
-		$('#specificationForm_article').attr('value', $("#selectArticles").select2("val"));
 	});
 
 	$('#skip').click(function() {
@@ -235,7 +233,7 @@ $(document).ready(function() {
 {% block admin_content %}
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 1} %}
 <div id="add-subscription" style="padding: 10px 10px 30px 10px;">
-	<form id="confForm" action="{{ path('newscoop_paywall_admin_admin') }}" method="post" {{ form_enctype(form) }} >
+	<form id="confForm" action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(form) }} >
 		<table id="step1" border="0" cellspacing="0" cellpadding="0" class="box_table">
 			<tbody>
 				<tr>
@@ -312,7 +310,7 @@ $(document).ready(function() {
 			</tbody>
 		</table>
 	</form>
-	<form id="step2Form" action="{{ path('newscoop_paywall_admin_step2') }}" method="post" {{ form_enctype(formSpecification) }}>
+	<form id="step2Form" action="{{ path('newscoop_paywall_admin_step2', {'id': subscription_id }) }}" method="post" {{ form_enctype(formSpecification) }}>
 		<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
 			<tbody>
 				<tr>

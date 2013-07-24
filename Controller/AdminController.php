@@ -34,7 +34,8 @@ class AdminController extends Controller
         if ($id) {
             $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                 ->findOneBy(array(
-                    'id' => $id
+                    'id' => $id,
+                    'is_active' => true
                 ));
 
             if (!$subscription) {
@@ -84,22 +85,32 @@ class AdminController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'formSpecification' =>$formSpecification->createView()
+            'formSpecification' => $formSpecification->createView(),
+            'subscription_id' => $subscription->getId()
         );
     }
 
     /**
      * @Route("/admin/paywall_plugin/step2")
+     * @Route("/admin/paywall_plugin/step2/update/{id}", name="newscoop_paywall_admin_step2")
      */
-    public function step2Action(Request $request)
+    public function step2Action(Request $request, $id = null)
     {
-        $specification = new Subscription_specification();
-        $formSpecification = $this->createForm('specificationForm');
+        $em = $this->getDoctrine()->getManager();
+        if ($id) {
+            $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription_specification')
+                ->findOneBy(array(
+                    'subscription' => $id
+                ));
+        } else {
+            $specification = new Subscription_specification();
+        }
+        
+        $formSpecification = $this->createForm('specificationForm', $specification);
         if ($request->isMethod('POST')) {
             $formSpecification->bind($request);
             if($formSpecification->isValid()) {
                 $data = $request->request->get($formSpecification->getName());
-                $em = $this->getDoctrine()->getManager();
                 $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                     ->findOneBy(array(
                         'name' => strtolower($request->request->get('subscriptionTitle')), 
@@ -111,7 +122,9 @@ class AdminController extends Controller
                 $specification->setSection($data['section']);
                 //TODO: add articleNumber and ArticleLanguage - we don't have articleId
                 $specification->setArticle($data['article']);
-                $em->persist($specification);
+                if (!$id) {
+                    $em->persist($specification);
+                }
                 $em->flush();
             
                 return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));

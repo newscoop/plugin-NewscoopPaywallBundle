@@ -53,7 +53,7 @@ class ManageSubscriptionsController extends Controller
 
     /**
      * @Route("/admin/paywall_plugin/manage/edit")
-     * @Method("PATH")
+     * @Method("PATCH")
      */
     public function editAction(Request $request)
     {
@@ -92,10 +92,10 @@ class ManageSubscriptionsController extends Controller
                         $subscription->setCurrency($value);
                         break;
                 }
-            }
 
-            $em->flush();
-                
+                $em->flush();
+            }
+            
             return new Response(json_encode(array('data' => $value)));
         }
     }
