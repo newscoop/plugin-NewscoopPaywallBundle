@@ -22,7 +22,10 @@ $(document).ready(function() {
 		var titleIssue = $('#title-issue');
 		var titleSection = $('#title-section');
 		var titleArticle = $('#title-article');
+		$('.errors').empty();
+		$(this).prop("disabled", true);
 		if ($('#subscriptionconf_name').data('validName')) {
+			$('#next').prop("disabled", true);
 			$.ajax({
 				type: "POST",
 				url: $('#confForm').attr("action"),
@@ -162,21 +165,23 @@ $(document).ready(function() {
 								$('#specificationForm_article').attr('value', $("#selectArticles").select2("val"));
 							});
 						}
-						$.post('{{ path('newscoop_paywall_admin_getall') }}', {
-							'publicationId': $("#specificationForm_publication").val(),
-							'issueId': $("#specificationForm_issue").val(),
-							'sectionId': $("#specificationForm_section").val(),
-							'articleId': $("#specificationForm_article").val()
-						}, function (data) {
-							$("#s2id_selectPublications .select2-choice .select2-chosen").empty();
-							$("#s2id_selectPublications .select2-choice .select2-chosen").append(data.Publications[0].name);
-							$("#s2id_selectIssues .select2-choice .select2-chosen").empty();
-							$("#s2id_selectIssues .select2-choice .select2-chosen").append(data.Issues[0].name);
-							$("#s2id_selectSections .select2-choice .select2-chosen").empty();
-							$("#s2id_selectSections .select2-choice .select2-chosen").append(data.Sections[0].name);
-							$("#s2id_selectArticles .select2-choice .select2-chosen").empty();
-							$("#s2id_selectArticles .select2-choice .select2-chosen").append(data.Articles[0].text);
-						}, 'json');
+						if (window.location.pathname === '{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}') {
+							$.post('{{ path('newscoop_paywall_admin_getall') }}', {
+								'publicationId': $("#specificationForm_publication").val(),
+								'issueId': $("#specificationForm_issue").val(),
+								'sectionId': $("#specificationForm_section").val(),
+								'articleId': $("#specificationForm_article").val()
+							}, function (data) {
+								$("#s2id_selectPublications .select2-choice .select2-chosen").empty();
+								$("#s2id_selectPublications .select2-choice .select2-chosen").append(data.Publications[0].name);
+								$("#s2id_selectIssues .select2-choice .select2-chosen").empty();
+								$("#s2id_selectIssues .select2-choice .select2-chosen").append(data.Issues[0].name);
+								$("#s2id_selectSections .select2-choice .select2-chosen").empty();
+								$("#s2id_selectSections .select2-choice .select2-chosen").append(data.Sections[0].name);
+								$("#s2id_selectArticles .select2-choice .select2-chosen").empty();
+								$("#s2id_selectArticles .select2-choice .select2-chosen").append(data.Articles[0].text);
+							}, 'json');
+						}
 					} else {
 						var ul = $('<ul></ul>');
 						ul.appendTo($('.errors'));
@@ -189,7 +194,8 @@ $(document).ready(function() {
 			});
 
 		} else {
-			alert('Name of subscription already exists!');
+			$('#next').prop("disabled", false);
+			$('.errors').css('color', '#FF2200').append('<ul><li>Name of subscription already exists or field is empty!</li></ul>');
 		}
 
 		return false;      
@@ -215,6 +221,7 @@ $(document).ready(function() {
 			if (data.status) {
 				name.css('color', 'rgb(0, 128, 0)');
 				name.data('validName', true);
+				$('.errors').empty();
 			} else {
 				name.css('color', 'rgb(255, 0, 0)');
 				name.data('validName', false);
