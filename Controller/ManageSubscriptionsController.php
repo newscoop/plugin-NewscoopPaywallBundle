@@ -65,8 +65,6 @@ class ManageSubscriptionsController extends Controller
         if ($request->isMethod('PATCH')) {
             $form->bind($request);
             if ($form->isValid()) {
-                $data = $request->request->get($form->getName());
-                $subscription->setName($data['name']);
                 $em->flush();
 
                 if ($request->isXmlHttpRequest()) {

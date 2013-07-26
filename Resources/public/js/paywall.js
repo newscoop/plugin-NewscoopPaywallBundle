@@ -192,7 +192,6 @@ $(document).ready(function() {
     });
 
     $('#save').click(function(e) {
-        alert($("#selectPublications").select2("val"));
         if(!$("#selectIssues").select2("val") || !$("#selectSections").select2("val") || !$("#selectArticles").select2("val")) {
             alert('You must fill all selects.');
             return false;

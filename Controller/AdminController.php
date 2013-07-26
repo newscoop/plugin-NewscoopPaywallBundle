@@ -53,12 +53,6 @@ class AdminController extends Controller
         if ($request->isMethod('POST')) {
             $form->bind($request);
             if ($form->isValid()) {
-                $data = $request->request->get($form->getName());
-                $subscription->setName($data['name']);
-                $subscription->setType($data['type']);
-                $subscription->setRange($data['range']);
-                $subscription->setPrice($data['price']);
-                $subscription->setCurrency($data['currency']);
                 $em = $this->getDoctrine()->getManager();
                 if (!$id) {
                     $em->persist($subscription);
@@ -120,10 +114,6 @@ class AdminController extends Controller
                         'is_active' => true
                     ));
                 $specification->setSubscription($subscription);
-                $specification->setPublication($data['publication']);
-                $specification->setIssue($data['issue']);
-                $specification->setSection($data['section']);
-                $specification->setArticle($data['article']);
                 if (!$id || $create) {
                     $em->persist($specification);
                 }
@@ -160,8 +150,7 @@ class AdminController extends Controller
      */
     public function getAllAction(Request $request)
     {
-            $em = $this->getDoctrine()->getManager();
-            return new Response(json_encode($this->getAll($request, $em)));
+        return new Response(json_encode($this->getAll($request, $this->getDoctrine()->getManager()))); 
     }
 
     /**
@@ -169,8 +158,7 @@ class AdminController extends Controller
      */
     public function getPublicationsAction(Request $request)
     {       
-            $em = $this->getDoctrine()->getManager();
-            return new Response(json_encode($this->getPublication($em)));
+        return new Response(json_encode($this->getPublication($this->getDoctrine()->getManager()))); 
     }
 
     /**
@@ -178,8 +166,7 @@ class AdminController extends Controller
      */
     public function getIssuesAction(Request $request)
     {
-            $em = $this->getDoctrine()->getManager();
-            return new Response(json_encode($this->getIssue($request, $em)));
+        return new Response(json_encode($this->getIssue($request, $this->getDoctrine()->getManager()))); 
     }
 
     /**
@@ -187,8 +174,7 @@ class AdminController extends Controller
      */
     public function getSectionsAction(Request $request)
     {
-            $em = $this->getDoctrine()->getManager();
-            return new Response(json_encode($this->getSection($request, $em)));
+        return new Response(json_encode($this->getSection($request, $this->getDoctrine()->getManager()))); 
     }
 
     /**
@@ -196,8 +182,7 @@ class AdminController extends Controller
      */
     public function getArticlesAction(Request $request)
     {
-            $em = $this->getDoctrine()->getManager();
-            return new Response(json_encode($this->getArticle($request, $em)));
+        return new Response(json_encode($this->getArticle($request, $this->getDoctrine()->getManager()))); 
     }
 
     private function getErrorMessages(\Symfony\Component\Form\Form $form) {      
