@@ -10,12 +10,16 @@ function formatDiv(item) { return "<div class='select2-results'>" + item.name + 
 $(document).ready(function() {
     $('#step2').hide();
     $('#step1').show();
+    var subscription_name = $('#subscriptionconf_name');
     $("#next").click(function(){
         var titleIssue = $('#title-issue');
         var titleSection = $('#title-section');
         var titleArticle = $('#title-article');
         $('.errors').empty();
-        if ($('#subscriptionconf_name').data('validName')) {
+        if (subscription_name.val() && window.location.pathname === $('#confForm').attr('action')) {
+            subscription_name.data('validName', true);
+        }
+        if (subscription_name.data('validName')) {
             $.ajax({
                 type: "POST",
                 url: $('#confForm').attr("action"),
@@ -26,7 +30,7 @@ $(document).ready(function() {
                         var type = $('#subscriptionconf_type').val();
                         $('#step1').hide();
                         $('#step2').show();
-                        $('#titleBox').append($('#subscriptionconf_name').val());
+                        $('#titleBox').append(subscription_name.val());
                         $('#typeBox').append($('#subscriptionconf_type').val());
                         $('#durationBox').append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
                         $('#valueBox').append($('#subscriptionconf_price').val());
@@ -211,17 +215,19 @@ $(document).ready(function() {
     })();
 
     $('#subscriptionconf_name').change(function() {
-        var name = $('#subscriptionconf_name');
         $.post(Routing.generate('newscoop_paywall_admin_check'), {
             'subscriptionName': $(this).val()
         }, function (data) {
             if (data.status) {
-                name.css('color', 'rgb(0, 128, 0)');
-                name.data('validName', true);
+                subscription_name.css('color', 'rgb(0, 128, 0)');
+                subscription_name.data('validName', true);
                 $('.errors').empty();
             } else {
-                name.css('color', 'rgb(255, 0, 0)');
-                name.data('validName', false);
+                subscription_name.css('color', 'rgb(255, 0, 0)');
+                subscription_name.data('validName', false);
+                if (window.location.pathname === $('#confForm').attr('action')) {
+                    subscription_name.css('color', 'rgb(0, 128, 0)');
+                }
             }
         }, 'json');
     }).keyup(function() {
