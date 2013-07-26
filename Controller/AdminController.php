@@ -22,7 +22,7 @@ class AdminController extends Controller
 {
     /**
      * @Route("/admin/paywall_plugin")
-     * @Route("/admin/paywall_plugin/update/{id}", name="newscoop_paywall_admin_update")
+     * @Route("/admin/paywall_plugin/update/{id}", name="newscoop_paywall_admin_update", options={"expose"=true})
      * @Template()
      */
     public function adminAction(Request $request, $id = null)
@@ -160,7 +160,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/getall")
+     * @Route("/admin/paywall_plugin/getall", options={"expose"=true})
      */
     public function getAllAction(Request $request)
     {
@@ -169,7 +169,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/getpublications")
+     * @Route("/admin/paywall_plugin/getpublications", options={"expose"=true})
      */
     public function getPublicationsAction(Request $request)
     {       
@@ -178,7 +178,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/getissues")
+     * @Route("/admin/paywall_plugin/getissues", options={"expose"=true})
      */
     public function getIssuesAction(Request $request)
     {
@@ -187,7 +187,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/getsections")
+     * @Route("/admin/paywall_plugin/getsections", options={"expose"=true})
      */
     public function getSectionsAction(Request $request)
     {
@@ -196,7 +196,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/getarticles")
+     * @Route("/admin/paywall_plugin/getarticles", options={"expose"=true})
      */
     public function getArticlesAction(Request $request)
     {

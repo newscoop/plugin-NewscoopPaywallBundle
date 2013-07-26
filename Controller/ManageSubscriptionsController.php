@@ -19,7 +19,7 @@ use Newscoop\PaywallBundle\Entity\Subscriptions;
 class ManageSubscriptionsController extends Controller
 {
     /**
-     * @Route("/admin/paywall_plugin/manage")
+     * @Route("/admin/paywall_plugin/manage", options={"expose"=true})
      * @Template()
      */
     public function manageAction(Request $request)

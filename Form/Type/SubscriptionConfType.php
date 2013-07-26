@@ -30,13 +30,13 @@ class SubscriptionConfType extends AbstractType
             'label' => 'Duration of subscription in days: ',
             'attr' => array('min'=>'1'),
             'error_bubbling' => true,
-            'invalid_message' => 'Type duration of subscription in days.'
+            'invalid_message' => 'Duration field is invalid.'
         ))
         ->add('price', null, array(
             'label' => 'Price: ',
             'error_bubbling' => true,
             'required' => true,
-            'invalid_message' => 'Type the value of the subscription.'
+            'invalid_message' => 'Price field is invalid.'
         ))
         ->add('currency', null, array(
             'label' => 'Currency: ',
