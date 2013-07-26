@@ -55,7 +55,7 @@ class AdminController extends Controller
         $formSpecification = $this->createForm('specificationForm', $specification);
         if ($request->isMethod('POST')) {
             $form->bind($request);
-            if($form->isValid()) {
+            if ($form->isValid()) {
                 $data = $request->request->get($form->getName());
                 $subscription->setName($data['name']);
                 $subscription->setType($data['type']);
@@ -139,7 +139,7 @@ class AdminController extends Controller
     } 
 
     /**
-     * @Route("/admin/paywall_plugin/check")
+     * @Route("/admin/paywall_plugin/check", options={"expose"=true})
      */
     public function checkAction(Request $request)
     {
@@ -296,7 +296,7 @@ class AdminController extends Controller
             'Publications' => $this->getPublication($em), 
             'Issues' => $this->getIssue($request, $em), 
             'Sections' => $this->getSection($request, $em), 
-            'Articles' => $this->getArticle($request,$em)
+            'Articles' => $this->getArticle($request, $em)
         );
 
         return $resultArray;

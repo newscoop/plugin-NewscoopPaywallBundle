@@ -49,7 +49,8 @@ class SubscriptionConfType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Newscoop\PaywallBundle\Entity\Subscriptions'
+            'data_class' => 'Newscoop\PaywallBundle\Entity\Subscriptions',
+            'csrf_protection' => false
         ));
     }
 
