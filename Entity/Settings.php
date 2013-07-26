@@ -67,11 +67,22 @@ class Settings
         return $this->id;
     }
 
+    /**
+     * Get name
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return string
+     */
     public function setName($name)
     {
         $this->name = $name;
@@ -79,11 +90,22 @@ class Settings
         return $name;
     }
 
+    /**
+     * Get value
+     *
+     * @return string
+     */
     public function getValue()
     {
         return $this->value;
     }
 
+    /**
+     * Set value
+     *
+     * @param string $value
+     * @return string
+     */
     public function setValue($value)
     {
         $this->value = $value;
@@ -91,11 +113,22 @@ class Settings
         return $this;
     }
 
+    /**
+     * Get status
+     *
+     * @return boolean
+     */
     public function getIsActive()
     {
         return $this->is_active;
     }
 
+    /**
+     * Set status
+     *
+     * @param boolean $is_active
+     * @return boolean
+     */
     public function setIsActive($is_active)
     {
         $this->is_active = $is_active;
@@ -103,11 +136,22 @@ class Settings
         return $this;
     }
 
+    /**
+     * Get create date
+     *
+     * @return datetime
+     */
     public function getCreatedAt()
     {
         return $this->created_at;
     }
 
+    /**
+     * Set create date
+     *
+     * @param datetime $created_at
+     * @return datetime
+     */
     public function setCreatedAt(\DateTime $created_at)
     {
         $this->created_at = $created_at;
@@ -115,4 +159,3 @@ class Settings
         return $this;
     }
 }
-

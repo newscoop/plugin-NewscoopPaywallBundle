@@ -33,7 +33,7 @@ class ManageSubscriptionsController extends Controller
         return array(
             'subscriptions' => $subscriptions,
             'form' => $form->createView()
-            );
+        );
     }
 
     /**

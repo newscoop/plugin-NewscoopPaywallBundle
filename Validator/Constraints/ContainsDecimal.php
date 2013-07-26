@@ -1,4 +1,10 @@
 <?php
+/**
+ * @package Newscoop\PaywallBundle
+ * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
+ * @copyright 2013 Sourcefabric o.p.s.
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ */
 
 namespace Newscoop\PaywallBundle\Validator\Constraints;
 
@@ -13,6 +19,11 @@ class ContainsDecimal extends Constraint
     public $entity;
     public $property;
 
+    /**
+     * Use ContainsDecimalValidator class when actually performing the validation
+     *
+     * @return Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimalValidator
+     */
     public function validatedBy()
     {
         return 'decimal_validator';

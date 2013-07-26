@@ -78,7 +78,7 @@ class Subscription_specification
     }
 
     /**
-     * Get id
+     * Get specification id
      *
      * @return integer
      */
@@ -87,11 +87,22 @@ class Subscription_specification
         return $this->id;
     }
 
+    /**
+     * Get subscription
+     *
+     * @return Newscoop\PaywallBundle\Entity\Subscriptions
+     */
     public function getSubscription()
     {
         return $this->subscription;
     }
 
+    /**
+     * Get subscription
+     *
+     * @param Newscoop\PaywallBundle\Entity\Subscriptions $subscription
+     * @return Newscoop\PaywallBundle\Entity\Subscriptions
+     */
     public function setSubscription($subscription)
     {
         $this->subscription = $subscription;
@@ -99,11 +110,22 @@ class Subscription_specification
         return $subscription;
     }
 
+    /**
+     * Get publication id
+     *
+     * @return integer
+     */
     public function getPublication()
     {
         return $this->publication;
     }
 
+    /**
+     * Set publication id
+     *
+     * @param integer $publication
+     * @return integer
+     */
     public function setPublication($publication)
     {
         $this->publication = $publication;
@@ -111,11 +133,22 @@ class Subscription_specification
         return $this;
     }
 
+    /**
+     * Get issue id
+     *
+     * @return integer
+     */
     public function getIssue()
     {
         return $this->issue;
     }
 
+    /**
+     * Set issue id
+     *
+     * @param integer $issue
+     * @return integer
+     */
     public function setIssue($issue)
     {
         $this->issue = $issue;
@@ -123,11 +156,22 @@ class Subscription_specification
         return $this;
     }
 
+    /**
+     * Get section id
+     *
+     * @return integer
+     */
     public function getSection()
     {
         return $this->section;
     }
 
+    /**
+     * Set section id
+     *
+     * @param integer $section
+     * @return integer
+     */
     public function setSection($section)
     {
         $this->section = $section;
@@ -135,11 +179,22 @@ class Subscription_specification
         return $this;
     }
 
+    /**
+     * Get article id
+     *
+     * @return integer
+     */
     public function getArticle()
     {
         return $this->article;
     }
 
+    /**
+     * Set article id
+     *
+     * @param integer $article
+     * @return integer
+     */
     public function setArticle($article)
     {
         $this->article = $article;
@@ -147,11 +202,22 @@ class Subscription_specification
         return $this;
     }
 
+    /**
+     * Get specification status
+     *
+     * @return boolean
+     */
     public function getIsActive()
     {
         return $this->is_active;
     }
 
+    /**
+     * Set specification status
+     *
+     * @param boolean $is_active
+     * @return boolean
+     */
     public function setIsActive($is_active)
     {
         $this->is_active = $is_active;
@@ -159,11 +225,22 @@ class Subscription_specification
         return $this;
     }
 
+    /**
+     * Get specification create date
+     *
+     * @return datetime
+     */
     public function getCreatedAt()
     {
         return $this->created_at;
     }
 
+    /**
+     * Set specification create date
+     *
+     * @param datetime $created_at
+     * @return datetime
+     */
     public function setCreatedAt(\DateTime $created_at)
     {
         $this->created_at = $created_at;

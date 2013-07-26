@@ -27,9 +27,6 @@ class AdminController extends Controller
      */
     public function adminAction(Request $request, $id = null)
     {
-    	/*$this->container->get('dispatcher')->dispatch('plugin.install', new \Newscoop\EventDispatcher\Events\GenericEvent($this, array(
-                'Paywall Plugin' => ''
-                        )));*/
         $em = $this->getDoctrine()->getManager();
         if ($id) {
             $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
@@ -126,7 +123,6 @@ class AdminController extends Controller
                 $specification->setPublication($data['publication']);
                 $specification->setIssue($data['issue']);
                 $specification->setSection($data['section']);
-                //TODO: add articleNumber and ArticleLanguage - we don't have articleId
                 $specification->setArticle($data['article']);
                 if (!$id || $create) {
                     $em->persist($specification);

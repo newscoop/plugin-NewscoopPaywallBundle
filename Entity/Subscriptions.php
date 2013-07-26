@@ -11,7 +11,7 @@ namespace Newscoop\PaywallBundle\Entity;
 use Doctrine\ORM\Mapping AS ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
-use Newscoop\PaywallBundle\Validator\Constraints as PaywalValidators;
+use Newscoop\PaywallBundle\Validator\Constraints as PaywallValidators;
 
 /**
  * Subscriptions entity
@@ -54,7 +54,7 @@ class Subscriptions
     private $range;
 
     /**
-     * @PaywalValidators\ContainsDecimal(entity="Newscoop\PaywallBundle\Entity\Subscriptions", property="price")
+     * @PaywallValidators\ContainsDecimal(entity="Newscoop\PaywallBundle\Entity\Subscriptions", property="price")
      * @ORM\Column(type="decimal", name="price")
      * @var decimal
      */
@@ -85,7 +85,7 @@ class Subscriptions
     }
 
     /**
-     * Get id
+     * Get subscription id
      *
      * @return integer
      */
@@ -94,11 +94,22 @@ class Subscriptions
         return $this->id;
     }
 
+    /**
+     * Get subscription name
+     *
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * Set subscription name
+     * 
+     * @param string $name
+     * @return string
+     */
     public function setName($name)
     {
         $this->name = $name;
@@ -116,11 +127,22 @@ class Subscriptions
         return $this->specification;
     }
 
+    /**
+     * Get subscription type
+     *
+     * @return integer
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * Set subscription type
+     *
+     * @param integer $type
+     * @return integer
+     */
     public function setType($type)
     {
         $this->type = $type;
@@ -128,11 +150,22 @@ class Subscriptions
         return $this;
     }
 
+    /**
+     * Get subscription range
+     *
+     * @return integer
+     */
     public function getRange()
     {
         return $this->range;
     }
 
+    /**
+     * Set subscription range
+     *
+     * @param integer $range
+     * @return integer
+     */
     public function setRange($range)
     {
         $this->range = $range;
@@ -140,11 +173,22 @@ class Subscriptions
         return $this;
     }
 
+    /**
+     * Get subscription price
+     *
+     * @return decimal
+     */
     public function getPrice()
     {
         return $this->price;
     }
 
+    /**
+     * Set subscription price
+     *  
+     * @param decimal $price
+     * @return decimal
+     */
     public function setPrice($price)
     {
         $this->price = $price;
@@ -152,11 +196,22 @@ class Subscriptions
         return $this;
     }
 
+    /**
+     * Get subscription currency
+     *
+     * @return string
+     */
     public function getCurrency()
     {
         return $this->currency;
     }
 
+    /**
+     * Set subscription currency
+     *
+     * @param string $currency
+     * @return string
+     */
     public function setCurrency($currency)
     {
         $this->currency = $currency;
@@ -164,11 +219,22 @@ class Subscriptions
         return $this;
     }
 
+    /**
+     * Get subscription status
+     *
+     * @return boolean
+     */
     public function getIsActive()
     {
         return $this->is_active;
     }
 
+    /**
+     * Set subscription status
+     *
+     * @param boolean $is_active
+     * @return boolean
+     */
     public function setIsActive($is_active)
     {
         $this->is_active = $is_active;
@@ -176,11 +242,22 @@ class Subscriptions
         return $this;
     }
 
+    /**
+     * Get subscription create date
+     *
+     * @return datetime
+     */
     public function getCreatedAt()
     {
         return $this->created_at;
     }
 
+    /**
+     * Set subscription create date
+     *
+     * @param datetime $created_at
+     * @return datetime
+     */
     public function setCreatedAt(\DateTime $created_at)
     {
         $this->created_at = $created_at;

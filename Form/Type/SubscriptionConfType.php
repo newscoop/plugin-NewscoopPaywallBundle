@@ -1,11 +1,16 @@
 <?php
+/**
+ * @package Newscoop\PaywallBundle
+ * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
+ * @copyright 2013 Sourcefabric o.p.s.
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ */
 
 namespace Newscoop\PaywallBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Doctrine\ORM\EntityRepository;
 
 class SubscriptionConfType extends AbstractType
 {
