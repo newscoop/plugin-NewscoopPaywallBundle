@@ -5,3 +5,30 @@ services:
     newscoop.paywall.adapter:
         class: %newscoop.paywall.adapter.class%
         arguments: ["@subscription.service"]
+
+    newscoop_paywall.lifecyclesubscriber:
+        class: Newscoop\PaywallBundle\EventListener\LifecycleSubscriber
+        arguments:
+            - @em
+        tags:
+            - { name: kernel.event_subscriber}
+
+    newscoop_paywall.configure_menu_listener:
+        class: Newscoop\PaywallBundle\EventListener\ConfigureMenuListener
+        tags:
+          - { name: kernel.event_listener, event: newscoop_newscoop.menu_configure, method: onMenuConfigure }
+
+    newscoop_paywall.form.type.subscriptionconf:
+        class: Newscoop\PaywallBundle\Form\Type\SubscriptionConfType
+        tags:
+            - { name: form.type, alias: subscriptionconf }
+
+    newscoop_paywall.form.type.specification:
+        class: Newscoop\PaywallBundle\Form\Type\SpecificationType
+        tags:
+            - { name: form.type, alias: specificationForm }
+
+    newscoop_paywall.validator.unique.containsdecimal:
+        class: Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimalValidator
+        tags:
+            - { name: validator.constraint_validator, alias: decimal_validator }

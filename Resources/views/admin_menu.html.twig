@@ -1,0 +1,8 @@
+<div id="tabs">
+    <ul>
+        <li class="{% if active == 1 %}active{% endif %}"><a class="tab-link" href="{{ url('newscoop_paywall_admin_admin') }}" data-href="">{{ 'menu.label.addsubscription'|trans }}</a></li>
+        <li class="{% if active == 2 %}active{% endif %}"><a class="tab-link" href="{{ url('newscoop_paywall_managesubscriptions_manage') }}" data-href="">{{ 'menu.label.managesubscriptions'|trans }}</a></li>
+        <li class="{% if active == 3 %}active{% endif %}"><a class="tab-link" href="#manage-user">{{ 'menu.label.subscriptions.user'|trans }}</a></li>
+        <li class="{% if active == 4 %}active{% endif %} last"><a class="tab-link" href="#settings">{{ 'menu.label.configure.paywall'|trans }}</a></li>
+    </ul>
+</div>

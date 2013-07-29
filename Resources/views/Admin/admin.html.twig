@@ -1,0 +1,195 @@
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}{{ 'title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'toolbar.label.configuration'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+<script src="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.js') }}"></script>
+<script src="{{ asset('public/bundles/newscooppaywall/js/paywall.js') }}"></script>
+{% endblock %}
+
+{% block admin_content %}
+{% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 1} %}
+<div id="add-subscription" style="padding: 10px 10px 30px 10px;">
+	<form id="confForm" action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(form) }} >
+		<table id="step1" border="0" cellspacing="0" cellpadding="0" class="box_table">
+			<tbody>
+				<tr>
+					<td colspan="2" align="left" style="width: 634px">
+						<input class="save-button" name="step1" value="{{ 'step1.button1'|trans }} (1)" disabled>
+						<input class="button" name="step2" value="{{ 'step1.button2'|trans }} (2)" disabled><br><br>
+						<strong>{{ 'step1.header'|trans }}</strong>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="errors"></div>
+					</td>
+				</tr>
+				<tr>
+					<td align="left">	
+						{{ form_label(form.name) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">
+						{{ form_widget(form.name, {'attr' : {'class' : 'input_text'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						{{ form_label(form.type) }} 
+					</td>
+				</tr>
+				<tr>
+					<td>
+						{{ form_widget(form.type, {'attr' : {'class' : 'input_select'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						{{ form_label(form.range) }}    
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">
+						{{ form_widget(form.range, {'attr' : {'class' : 'input_text'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						{{ form_label(form.price) }}    
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">
+						{{ form_widget(form.price, {'attr' : {'class' : 'input_text'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						{{ form_label(form.currency) }}    
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">
+						{{ form_widget(form.currency, {'attr' : {'class' : 'input_text'}}) }}
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><hr></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right" style="padding-top: 10px;">
+						<input type="submit" id="next" value="{{ 'next.btn'|trans }}" class="save-button">
+					</td>
+				</tr>
+				{{ form_rest(form) }}
+			</tbody>
+		</table>
+	</form>
+	<form id="step2Form" action="{{ path('newscoop_paywall_admin_step2', {'id': subscription_id }) }}" method="post" {{ form_enctype(formSpecification) }}>
+		<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
+			<tbody>
+				<tr>
+					<td colspan="2" align="left">
+						<input class="button" type="submit" name="step1" value="{{ 'Specify type and price'|trans }} (1)" disabled>
+						<input class="save-button" name="step2" value="{{ 'Specify articles'|trans }} (2)" disabled><br><br>
+						<div style="float: left"><strong>{{ 'step2.header'|trans }}</strong><br><br>
+							
+							<table border="0" cellspacing="0" cellpadding="0" class="display">
+								<tbody>
+									<tr>
+										<td align="left">	
+											{{ 'step2.publication.label'|trans }}:
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<input id="subscriptionName" name="subscriptionTitle" type="hidden"></input>
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<div id="selectPublications" style="width:350px" class="populate placeholder"></div>
+											{{ form_widget(formSpecification.publication, {'attr' : {'style' : 'display: none'}}) }}
+										</td>
+									</tr>
+									<tr>
+										<td id="title-issue" align="left"></td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<div id="selectIssues" style="width:350px" class="populate placeholder"></div>
+											{{ form_widget(formSpecification.issue, {'attr' : {'style' : 'display: none'}}) }}
+										</td>
+									</tr>
+									<tr>
+										<td id="title-section" align="left"></td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<div id="selectSections" style="width:350px" class="populate placeholder"></div>
+											{{ form_widget(formSpecification.section, {'attr' : {'style' : 'display: none'}}) }}
+										</td>
+									</tr>
+									<tr>
+										<td id="title-article" align="left">
+											{{ 'step2.article.label'|trans }}:
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<div id="selectArticles" name="articleNumber" style="width:350px" class="populate placeholder"></div>
+											{{ form_widget(formSpecification.article, {'attr' : {'style' : 'display: none'}}) }}
+										</td>
+									</tr>
+									{{ form_widget(formSpecification._token) }}
+								</tbody>
+							</table>
+						</div>
+						<div style="float: right">
+							<table border="0" cellspacing="1" cellpadding="3" class="table_list">
+								<tbody><tr class="table_list_header">
+									<td align="left" id="titleBox" valign="top"></td>
+									<td align="center" valign="top"></td>
+									<tr>
+										<td align="left">{{ 'type'|trans }}:</td>
+										<td id="typeBox"></td>
+									</tr>
+									<tr>
+										<td align="left">{{ 'duration'|trans }}:</td>
+										<td id="durationBox"></td>
+									</tr>
+									<tr>
+										<td align="left">{{ 'price'|trans }}:</td>
+										<td id="valueBox"></td>
+									</tr>
+									<tr>
+										<td align="left">{{ 'currency'|trans }}:</td>
+										<td id="currencyBox"></td>
+									</tr>
+								</tbody></table>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<tr>
+						<td colspan="2"><hr></td>
+					</tr>
+					<td colspan="2" align="right" style="padding-top: 10px;">
+						<input type="button" id="skip" value="{{ 'skip.btn'|trans }}" class="button">
+						<input type="submit" id="save" value="{{ 'save.btn'|trans }}" class="save-button">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>
+{% endblock %}

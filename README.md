@@ -1,7 +1,7 @@
 NewscoopPaywallBundle
 =====================
 
-NewscoopPaywallBundle - add paywals support for newscoop subscriptions.
+NewscoopPaywallBundle - add paywalls support for newscoop subscriptions.
 
 
 ## Sample application/configs/subscriptions/subscriptions.yml configuration 

@@ -1,0 +1,140 @@
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}{{ 'Newscoop Paywall Plugin'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'Manage Subscriptions'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+<script src="{{ asset('public/bundles/newscooppaywall/js/jquery.jeditable.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#subscriptionsTable').css('font-size', '13px');
+    $('#subscriptionsTable').dataTable( {
+        'oLanguage': {
+            'oPaginate': {
+                'sNext': '{{ getGS('Next') }}',
+                'sLast': '{{ getGS('Last') }}',
+                'sPrevious': '{{ getGS('Previous') }}',
+                'sFirst': '{{ getGS('First') }}'
+            },
+            'sZeroRecords': '{{ getGS('No records found.') }}',
+            'sSearch': '{{ getGS('Search') }}:',
+            'sInfo': '{{ getGS('Showing _START_ to _END_ of _TOTAL_ entries') }}',
+            'sEmpty': '{{ getGS('No entries to show') }}',
+            'sInfoFiltered': '{{ getGS(' - filtering from _MAX_ records') }}',
+            'sLengthMenu': '{{ getGS('Display _MENU_ records') }}',
+            'sInfoEmpty': '',
+        },
+        "bProcessing": true,
+        "bAutoWidth": true,
+        "bPaging": true,
+        "sDom": 'RCf<"clear">rtilp',
+        "bJQueryUI": true,
+        "sPaginationType": "full_numbers",
+    });
+
+    $('#subscriptionsTable').on('click', '.delete-subscription', function(event){
+        var dataTableCell = $(this).parent();
+        var dataTableRow = dataTableCell.parent().get(0);
+        event.preventDefault();
+        $.post($(this).attr('href'), 
+           function(data) {
+            if (data.status) {
+                flashMessage('{{ 'flash.message.subscription.deleted'|trans }}');
+                dataTableRow.remove();
+                return false;
+            }
+        });
+    });
+
+    var oTable = $('#subscriptionsTable').dataTable();
+    $('td[class!="readonly"]', oTable.fnGetNodes()).editable( '{{ path('newscoop_paywall_managesubscriptions_edit', {'_method':'PATCH'}) }}', {
+        "callback": function( sValue ) {
+            var aPos = oTable.fnGetPosition( this );
+            oTable.fnUpdate( sValue, aPos[0], aPos[1] );
+            flashMessage('{{ 'flash.message.subscription.updated'|trans }}');
+        },
+        "submitdata": function ( value, settings ) {
+            return {
+                "row_id": this.parentNode.getAttribute('id'),
+                "column": oTable.fnGetPosition( this )[2],
+                "subscriptionconf[name]": $('#subscriptionname').val(),
+                "subscriptionconf[duration]": $('#subscriptionduration').val(),
+                "subscriptionconf[range]": $('#subscriptionrange').val(),
+                "subscriptionconf[price]": $('#subscriptionprice').val(),
+                "subscriptionconf[currency]": $('#subscriptioncurrency').val()
+                
+            };
+        },
+        "height": "18px"
+    });
+    $("#name").click(function(){
+        $(this).parent().find('input').attr({'id': 'subscriptionname', 'name': 'subscriptionconf[name]'});
+    });
+    $("#type").click(function(){
+        $(this).parent().find('input').attr({'id': 'subscriptiontype', 'name': 'subscriptionconf[type]'});
+    });
+    $("#range").click(function(){
+        $(this).parent().find('input').attr({'id': 'subscriptionrange', 'name': 'subscriptionconf[range]'});
+    });
+    $("#price").click(function(){
+        $(this).parent().find('input').attr({'id': 'subscriptionprice', 'name': 'subscriptionconf[price]'});
+    });
+    $("#currency").click(function(){
+        $(this).parent().find('input').attr({'id': 'subscriptioncurrency', 'name': 'subscriptionconf[currency]'});
+    });
+});
+</script>
+{% endblock %}
+{% block admin_content %}
+<div id="subscription">
+    {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 2} %}
+
+    <div id="manage-subscriptions" style="padding: 10px 10px 30px 10px;">
+        <form id="editForm" action="{{ path('newscoop_paywall_managesubscriptions_edit') }}" {{ form_enctype(form) }}>
+            <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
+                <thead>
+                    <tr>
+                        <th>{{ 'name'|trans }}</th>
+                        <th>{{ 'type'|trans }}</th>
+                        <th>{{ 'duration.days'|trans }}</th>
+                        <th>{{ 'price'|trans }}</th>
+                        <th>{{ 'currency'|trans }}</th>
+                        <th>{{ 'options'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subscription in subscriptions %}
+                    <tr id="{{ subscription.id }}">
+                        <td id="name">{{ subscription.name }}</td>
+                        <td id="type" class="readonly">{{ subscription.type }}</td>
+                        <td id="range">{{ subscription.range }}</td>
+                        <td id="price">{{ subscription.price}}</td>
+                        <td id="currency">{{ subscription.currency }}</td>
+                        <td class="readonly">
+                            <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">{{ 'delete.btn'|trans }}</a> | 
+                            <a class="edit-subscription" href="{{ path('newscoop_paywall_admin_update', {'id': subscription.id}) }}">{{ 'edit.btn'|trans }}</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                   
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>{{ 'name'|trans }}</th>
+                        <th>{{ 'type'|trans }}</th>
+                        <th>{{ 'duration.days'|trans }}</th>
+                        <th>{{ 'price'|trans }}</th>
+                        <th>{{ 'currency'|trans }}</th>
+                        <th>{{ 'options'|trans }}</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </form>
+    </div>
+</div>
+{% endblock %}
