@@ -1,6 +1,6 @@
-step1.form.error.price.decimal: Price field must be greater or equal 1.
-step1.form.error.price.blank: Price field can not be empty.
-step1.form.error.range.blank: Range field can not be empty.
-step1.form.error.currency.blank: Currency field can not be empty.
-step1.form.error.price.decimal.custom: The price field contains an illegal character: it can only contain numbers.
-step1.form.error.name.blank: Name field can not be empty.
+step1.form.error.price.decimal: "Price field must be greater or equal 1."
+step1.form.error.price.blank: "Price field can not be empty."
+step1.form.error.range.blank: "Range field can not be empty."
+step1.form.error.currency.blank: "Currency field can not be empty."
+step1.form.error.price.decimal.custom: "The price field contains an illegal character: it can only contain numbers."
+step1.form.error.name.blank: "Name field can not be empty."
