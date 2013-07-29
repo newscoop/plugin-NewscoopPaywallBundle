@@ -1,42 +1,40 @@
-step1.header: Please specify the name and value for your new subscription. You can set up various diffrent types of subscriptions, but just one after the other.
-title: Newscoop Paywall Plugin
-toolbar.label.configuration: Configuration
-step1.button1: Specify type and price
-step2.header: Please specify which articles exactly should be visible for subscribers only.
-step2.publication.label: Publications
-step2.article.label: Articles
-type: Type
-duration: Duration
-price: Price
-currency: Currency
-skip.btn: Skip
-save.btn: Save
-toolbar.label.managesubscriptions: Manage Subscriptions
-flash.message.subscription.deleted: Subscription has been deleted.
-flash.message.subscription.updated: Subscription has been updated.
-name.label: Name
-duration.days: Duration in days
-options.label: Options
-delete.btn: Delete
-edit.btn: Edit
-next.btn: Next
-step1.button2: Specify articles
-#####Form labels#####
-step1.form.label.name: Name of subscription:
-step1.form.label.type: Type of subscription:
-step1.form.label.duration: Duration of subscription in days:
-step1.form.label.price: Price:
-step1.form.label.currency: Currency:
-step1.form.select.type.publication: Publication
-step1.form.select.type.issue: Issue
-step1.form.select.type.section: Section
-step1.form.select.type.article: Article
-#####Form errors#####
-step1.form.error.name: Subscription name can not be empty.
-step1.form.error.duration: Duration field is invalid.
-step1.form.error.price: Price field is invalid.
-step1.form.error.currency: Type currency.
-menu.label.addsubscription: Add new subscription
-menu.label.managesubscriptions: Manage Subscriptions
-menu.label.subscriptions.user: Manage User Subscriptions
-menu.label.configure.paywall: Configure Paywall
+step1.header: "Please specify the name and value for your new subscription. You can set up various diffrent types of subscriptions, but just one after the other."
+title: "Newscoop Paywall Plugin"
+toolbar.label.configuration: "Configuration"
+step1.button1: "Specify type and price"
+step2.header: "Please specify which articles exactly should be visible for subscribers only."
+step2.publication.label: "Publications"
+step2.article.label: "Articles"
+type: "Type"
+duration: "Duration"
+price: "Price"
+currency: "Currency"
+skip.btn: "Skip"
+save.btn: "Save"
+toolbar.label.managesubscriptions: "Manage Subscriptions"
+flash.message.subscription.deleted: "Subscription has been deleted."
+flash.message.subscription.updated: "Subscription has been updated."
+name.label: "Name"
+duration.days: "Duration in days"
+options.label: "Options"
+delete.btn: "Delete"
+edit.btn: "Edit"
+next.btn: "Next"
+step1.button2: "Specify articles"
+step1.form.label.name: "Name of subscription:"
+step1.form.label.type: "Type of subscription:"
+step1.form.label.duration: "Duration of subscription in days:"
+step1.form.label.price: "Price:"
+step1.form.label.currency: "Currency:"
+step1.form.select.type.publication: "Publication"
+step1.form.select.type.issue: "Issue"
+step1.form.select.type.section: "Section"
+step1.form.select.type.article: "Article"
+step1.form.error.name: "Subscription name can not be empty."
+step1.form.error.duration: "Duration field is invalid."
+step1.form.error.price: "Price field is invalid."
+step1.form.error.currency: "Type currency."
+menu.label.addsubscription: "Add new subscription"
+menu.label.managesubscriptions: "Manage Subscriptions"
+menu.label.subscriptions.user: "Manage User Subscriptions"
+menu.label.configure.paywall: "Configure Paywall"
