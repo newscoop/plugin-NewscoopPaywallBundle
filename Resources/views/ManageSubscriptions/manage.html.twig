@@ -1,7 +1,7 @@
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
-{% block admin_title %}Paywall{% endblock %}
-{% block admin_page_title_content %}Manage subscriptions{% endblock %}
+{% block admin_title %}{{ 'Newscoop Paywall Plugin'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'Manage Subscriptions'|trans }}{% endblock %}
 
 {% block admin_stylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
@@ -44,7 +44,7 @@ $(document).ready(function(){
         $.post($(this).attr('href'), 
            function(data) {
             if (data.status) {
-                flashMessage('Subscription has been deleted.');
+                flashMessage('{{ 'flash.message.subscription.deleted'|trans }}');
                 dataTableRow.remove();
                 return false;
             }
@@ -56,7 +56,7 @@ $(document).ready(function(){
         "callback": function( sValue ) {
             var aPos = oTable.fnGetPosition( this );
             oTable.fnUpdate( sValue, aPos[0], aPos[1] );
-            flashMessage('Subscription has been updated.');
+            flashMessage('{{ 'flash.message.subscription.updated'|trans }}');
         },
         "submitdata": function ( value, settings ) {
             return {
@@ -99,12 +99,12 @@ $(document).ready(function(){
             <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Duration in days</th>
-                        <th>Value</th>
-                        <th>Currency</th>
-                        <th>Options</th>
+                        <th>{{ 'name'|trans }}</th>
+                        <th>{{ 'type'|trans }}</th>
+                        <th>{{ 'duration.days'|trans }}</th>
+                        <th>{{ 'price'|trans }}</th>
+                        <th>{{ 'currency'|trans }}</th>
+                        <th>{{ 'options'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -116,8 +116,8 @@ $(document).ready(function(){
                         <td id="price">{{ subscription.price}}</td>
                         <td id="currency">{{ subscription.currency }}</td>
                         <td class="readonly">
-                            <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">Delete</a> | 
-                            <a class="edit-subscription" href="{{ path('newscoop_paywall_admin_update', {'id': subscription.id}) }}">Edit</a>
+                            <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">{{ 'delete.btn'|trans }}</a> | 
+                            <a class="edit-subscription" href="{{ path('newscoop_paywall_admin_update', {'id': subscription.id}) }}">{{ 'edit.btn'|trans }}</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -125,12 +125,12 @@ $(document).ready(function(){
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Duration in days</th>
-                        <th>Value</th>
-                        <th>Currency</th>
-                        <th>Options</th>
+                        <th>{{ 'name'|trans }}</th>
+                        <th>{{ 'type'|trans }}</th>
+                        <th>{{ 'duration.days'|trans }}</th>
+                        <th>{{ 'price'|trans }}</th>
+                        <th>{{ 'currency'|trans }}</th>
+                        <th>{{ 'options'|trans }}</th>
                     </tr>
                 </tfoot>
             </table>

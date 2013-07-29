@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class ContainsDecimal extends Constraint
 {
-    public $message = 'The "%string%" field contains an illegal character: it can only contain numbers.';
+    public $message = 'step1.form.error.price.decimal.custom';
     public $entity;
     public $property;
 

@@ -18,36 +18,36 @@ class SubscriptionConfType extends AbstractType
     {
         $builder
         ->add('name', null, array(
-            'label' => 'Name of subscription: ',
+            'label' => 'step1.form.label.name',
             'error_bubbling' => true,
-            'invalid_message' => 'Subscription name can not be empty.'
+            'invalid_message' => 'step1.form.error.name'
         ))
         ->add('type', 'choice', array(
-            'label'  => 'Type of subscription: ',
+            'label'  => 'step1.form.label.type',
             'choices'   => array(
-                'publication'   => 'Publication',
-                'issue'   => 'Issue',
-                'section' => 'Section',
-                'article'   => 'Article',
+                'publication'   => 'step1.form.select.type.publication',
+                'issue'   => 'step1.form.select.type.issue',
+                'section' => 'step1.form.select.type.section',
+                'article'   => 'step1.form.select.type.article',
             )
         ))
         ->add('range', null, array(
-            'label' => 'Duration of subscription in days: ',
+            'label' => 'step1.form.label.duration',
             'attr' => array('min'=>'1'),
             'error_bubbling' => true,
-            'invalid_message' => 'Duration field is invalid.'
+            'invalid_message' => 'step1.form.error.duration'
         ))
         ->add('price', null, array(
-            'label' => 'Price: ',
+            'label' => 'step1.form.label.price',
             'error_bubbling' => true,
             'required' => true,
-            'invalid_message' => 'Price field is invalid.'
+            'invalid_message' => 'step1.form.error.price'
         ))
         ->add('currency', null, array(
-            'label' => 'Currency: ',
+            'label' => 'step1.form.label.currency',
             'error_bubbling' => true,
             'required' => true,
-            'invalid_message' => 'Type currency.'
+            'invalid_message' => 'step1.form.error.price'
         ));
     }
 

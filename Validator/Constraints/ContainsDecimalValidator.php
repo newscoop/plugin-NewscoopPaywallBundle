@@ -23,7 +23,7 @@ class ContainsDecimalValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!is_numeric($value)) {
-            $this->context->addViolation($constraint->message, array('%string%' => $value));
+            $this->context->addViolation($constraint->message);
         }
     }
 }

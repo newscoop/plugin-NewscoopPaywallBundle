@@ -1,12 +1,13 @@
 Newscoop\PaywallBundle\Entity\Subscriptions:
     properties:
+        name:
+            - NotBlank: { message: "step1.form.error.name.blank" }
         price:
-            - NotBlank: { message: "Price field can not be empty." }
+            - NotBlank: { message: "step1.form.error.price.blank" }
             - Range:
                 min: 1
-                minMessage: Value must be greater than 1
-            - Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimal: { message: "Price field must be greater or equal 1." }
+            - Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimal: { message: "step1.form.error.price.decimal" }
         range:
-            - NotBlank: { message: "Range field can not be empty." }
+            - NotBlank: { message: "step1.form.error.range.blank" }
         currency:
-            - NotBlank: { message: "Currency field can not be empty." }
+            - NotBlank: { message: "step1.form.error.currency.blank" }

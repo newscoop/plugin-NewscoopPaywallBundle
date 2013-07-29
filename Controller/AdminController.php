@@ -107,7 +107,6 @@ class AdminController extends Controller
         if ($request->isMethod('POST')) {
             $formSpecification->bind($request);
             if($formSpecification->isValid()) {
-                $data = $request->request->get($formSpecification->getName());
                 $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                     ->findOneBy(array(
                         'name' => strtolower($request->request->get('subscriptionTitle')), 

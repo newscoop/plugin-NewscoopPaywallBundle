@@ -8,6 +8,17 @@ function format(item) { return item.name; };
 function formatDiv(item) { return "<div class='select2-results'>" + item.name + "</div>"; }
 <!--
 $(document).ready(function() {
+    var translations = {'name.error': 'Name of subscription already exists or field is empty!', 
+        'step2.error.selects.blank': 'You must fill all selects.', 
+        'step2.select.publication.label': 'Select publication',
+        'step2.select.issue.label': 'Select an issue',
+        'step2.select.section.label': 'Select section',
+        'step2.select.article.label': 'Select an article',
+        'step2.label.js.issue': 'Issues',
+        'step2.label.js.section': 'Sections',
+        'step2.label.js.article': 'Articles',
+
+    };
     $('#step2').hide();
     $('#step1').show();
     var subscription_name = $('#subscriptionconf_name');
@@ -42,7 +53,7 @@ $(document).ready(function() {
                             titleArticle.empty();
                             $('#selectIssues').prop('disabled', 'disabled');
                             $("#selectPublications").select2({
-                                placeholder: "Select publication",
+                                placeholder: translations['step2.select.publication.label'],
                                 ajax: {
                                     url: Routing.generate('newscoop_paywall_admin_getpublications'),
                                     dataType: 'json',
@@ -67,13 +78,13 @@ $(document).ready(function() {
 
                         if (type == 'issue' || type == 'section' || type == 'article') {
                             if (type == 'issue') {
-                                titleIssue.append('Issues: ');
+                                titleIssue.append(translations['step2.label.js.issue']+': ');
                             }
                             titleSection.empty();
                             titleArticle.empty();
                             $('#selectSections').prop('disabled', 'disabled');
                             $("#selectIssues").select2({
-                                placeholder: "Select an issue",
+                                placeholder: translations['step2.select.issue.label'],
                                 ajax: {
                                     url: Routing.generate('newscoop_paywall_admin_getissues'),
                                     dataType: 'json',
@@ -100,12 +111,12 @@ $(document).ready(function() {
                         }
 
                         if (type == 'section' || type == 'article') {
-                            titleIssue.append('Issues: ');
-                            titleSection.append('Sections: ');
+                            titleIssue.append(translations['step2.label.js.issue']+': ');
+                            titleSection.append(translations['step2.label.js.section']+': ');
                             titleArticle.empty();
                             $('#selectArticles').prop('disabled', 'disabled');
                             $("#selectSections").select2({
-                                placeholder: "Select section",
+                                placeholder: translations['step2.select.section.label'],
                                 ajax: {
                                     url: Routing.generate('newscoop_paywall_admin_getsections'),
                                     dataType: 'json',
@@ -133,9 +144,9 @@ $(document).ready(function() {
                         }
 
                         if (type == 'article') {
-                            titleArticle.append('Articles: ');
+                            titleArticle.append(translations['step2.label.js.article']+': ');
                             $("#selectArticles").select2({
-                                placeholder: "Select an article",
+                                placeholder: translations['step2.select.article.label'],
                                 ajax: {
                                     url: Routing.generate('newscoop_paywall_admin_getarticles'),
                                     dataType: 'json',
@@ -189,7 +200,7 @@ $(document).ready(function() {
             });
 
         } else {
-            $('.errors').css('color', '#FF2200').append('<ul><li>Name of subscription already exists or field is empty!</li></ul>');
+            $('.errors').css('color', '#FF2200').append('<ul><li>'+translations['name.error']+'</li></ul>');
         }
 
         return false;      
@@ -197,7 +208,7 @@ $(document).ready(function() {
 
     $('#save').click(function(e) {
         if(!$("#selectIssues").select2("val") || !$("#selectSections").select2("val") || !$("#selectArticles").select2("val")) {
-            alert('You must fill all selects.');
+            alert(translations['step2.error.selects.blank']);
             return false;
         }
     });
