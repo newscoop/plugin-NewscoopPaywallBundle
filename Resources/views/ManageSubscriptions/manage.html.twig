@@ -99,7 +99,7 @@ $(document).ready(function(){
             <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
                 <thead>
                     <tr>
-                        <th>{{ 'name'|trans }}</th>
+                        <th>{{ 'name.label'|trans }}</th>
                         <th>{{ 'type'|trans }}</th>
                         <th>{{ 'duration.days'|trans }}</th>
                         <th>{{ 'price'|trans }}</th>
@@ -116,8 +116,8 @@ $(document).ready(function(){
                         <td id="price">{{ subscription.price}}</td>
                         <td id="currency">{{ subscription.currency }}</td>
                         <td class="readonly">
-                            <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">{{ 'delete.btn'|trans }}</a> | 
-                            <a class="edit-subscription" href="{{ path('newscoop_paywall_admin_update', {'id': subscription.id}) }}">{{ 'edit.btn'|trans }}</a>
+                            <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">{{ 'btn.delete'|trans }}</a> | 
+                            <a class="edit-subscription" href="{{ path('newscoop_paywall_admin_update', {'id': subscription.id}) }}">{{ 'btn.edit'|trans }}</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -125,7 +125,7 @@ $(document).ready(function(){
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th>{{ 'name'|trans }}</th>
+                        <th>{{ 'name.label'|trans }}</th>
                         <th>{{ 'type'|trans }}</th>
                         <th>{{ 'duration.days'|trans }}</th>
                         <th>{{ 'price'|trans }}</th>

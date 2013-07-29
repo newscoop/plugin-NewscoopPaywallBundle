@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class ContainsDecimal extends Constraint
 {
-    public $message = 'step1.form.error.price.decimal.custom';
+    public $message = 'step1.form.error.price.custom';
     public $entity;
     public $property;
 
