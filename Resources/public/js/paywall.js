@@ -17,7 +17,8 @@ $(document).ready(function() {
         'step2.label.js.issue': 'Issues',
         'step2.label.js.section': 'Sections',
         'step2.label.js.article': 'Articles',
-
+        'day': 'day',
+        'days': 'days',
     };
     $('#step2').hide();
     $('#step1').show();
@@ -43,7 +44,7 @@ $(document).ready(function() {
                         $('#step2').show();
                         $('#titleBox').append(subscription_name.val());
                         $('#typeBox').append($('#subscriptionconf_type').val());
-                        $('#durationBox').append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' day': $('#subscriptionconf_range').val()+' days');
+                        $('#durationBox').append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' '+translations['day']: $('#subscriptionconf_range').val()+' '+translations['days']);
                         $('#valueBox').append($('#subscriptionconf_price').val());
                         $('#currencyBox').append($('#subscriptionconf_currency').val());
                         
