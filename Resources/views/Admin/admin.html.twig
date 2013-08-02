@@ -1,7 +1,7 @@
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
-{% block admin_title %}{{ 'title'|trans }}{% endblock %}
-{% block admin_page_title_content %}{{ 'toolbar.label.configuration'|trans }}{% endblock %}
+{% block admin_title %}{{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.toolbar.label.configuration'|trans }}{% endblock %}
 
 {% block admin_stylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.css') }}" />
@@ -21,9 +21,9 @@
 			<tbody>
 				<tr>
 					<td colspan="2" align="left" style="width: 634px">
-						<input class="save-button" name="step1" value="{{ 'step1.button1'|trans }} (1)" disabled>
-						<input class="button" name="step2" value="{{ 'step1.button2'|trans }} (2)" disabled><br><br>
-						<strong>{{ 'step1.header'|trans }}</strong>
+						<input class="save-button" name="step1" value="{{ 'paywall.btn.button1'|trans }} (1)" disabled>
+						<input class="button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (2)" disabled><br><br>
+						<strong>{{ 'paywall.step1.header'|trans }}</strong>
 					</td>
 				</tr>
 				<tr>
@@ -86,7 +86,7 @@
 				</tr>
 				<tr>
 					<td colspan="2" align="right" style="padding-top: 10px;">
-						<input type="submit" id="next" value="{{ 'btn.next'|trans }}" class="save-button">
+						<input type="submit" id="next" value="{{ 'paywall.btn.next'|trans }}" class="save-button">
 					</td>
 				</tr>
 				{{ form_rest(form) }}
@@ -98,15 +98,15 @@
 			<tbody>
 				<tr>
 					<td colspan="2" align="left">
-						<input class="button" type="submit" name="step1" value="{{ 'Specify type and price'|trans }} (1)" disabled>
-						<input class="save-button" name="step2" value="{{ 'Specify articles'|trans }} (2)" disabled><br><br>
-						<div style="float: left"><strong>{{ 'step2.header'|trans }}</strong><br><br>
+						<input class="button" type="submit" name="step1" value="{{ 'paywall.btn.button1'|trans }} (1)" disabled>
+						<input class="save-button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (2)" disabled><br><br>
+						<div style="float: left"><strong>{{ 'paywall.step2.header'|trans }}</strong><br><br>
 							
 							<table border="0" cellspacing="0" cellpadding="0" class="display">
 								<tbody>
 									<tr>
 										<td align="left">	
-											{{ 'step2.publication.label'|trans }}:
+											{{ 'paywall.step2.label.publication'|trans }}:
 										</td>
 									</tr>
 									<tr>
@@ -140,7 +140,7 @@
 									</tr>
 									<tr>
 										<td id="title-article" align="left">
-											{{ 'step2.article.label'|trans }}:
+											{{ 'paywall.step2.label.article'|trans }}:
 										</td>
 									</tr>
 									<tr>
@@ -159,19 +159,19 @@
 									<td align="left" id="titleBox" valign="top"></td>
 									<td align="center" valign="top"></td>
 									<tr>
-										<td align="left">{{ 'type'|trans }}:</td>
+										<td align="left">{{ 'paywall.step2.label.type'|trans }}:</td>
 										<td id="typeBox"></td>
 									</tr>
 									<tr>
-										<td align="left">{{ 'duration'|trans }}:</td>
+										<td align="left">{{ 'paywall.step2.label.durationbox'|trans }}:</td>
 										<td id="durationBox"></td>
 									</tr>
 									<tr>
-										<td align="left">{{ 'price'|trans }}:</td>
+										<td align="left">{{ 'paywall.step2.label.price'|trans }}:</td>
 										<td id="valueBox"></td>
 									</tr>
 									<tr>
-										<td align="left">{{ 'currency'|trans }}:</td>
+										<td align="left">{{ 'paywall.step2.label.currency'|trans }}:</td>
 										<td id="currencyBox"></td>
 									</tr>
 								</tbody></table>
@@ -184,8 +184,8 @@
 						<td colspan="2"><hr></td>
 					</tr>
 					<td colspan="2" align="right" style="padding-top: 10px;">
-						<input type="button" id="skip" value="{{ 'btn.skip'|trans }}" class="button">
-						<input type="submit" id="save" value="{{ 'btn.save'|trans }}" class="save-button">
+						<input type="button" id="skip" value="{{ 'paywall.btn.skip'|trans }}" class="button">
+						<input type="submit" id="save" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
 					</td>
 				</tr>
 			</tbody>

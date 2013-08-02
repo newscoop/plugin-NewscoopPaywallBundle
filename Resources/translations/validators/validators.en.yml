@@ -1,13 +1,14 @@
-step1:
-  form:
-    error:
-      price:
-        decimal: "Price field must be greater or equal 1."
-        custom: "The price field contains an illegal character: it can only contain numbers."
-        blank: "Price field can not be empty."
-      range:
-        blank: "Range field can not be empty."
-      currency:
-        blank: "Currency field can not be empty."
-      name:
-        blank: "Name field can not be empty."
+paywall:
+  step1:
+    form:
+      error:
+        price:
+          decimal: "Price field must be greater or equal 1."
+          custom: "The price field contains an illegal character: it can only contain numbers."
+          blank: "Price field can not be empty."
+        range:
+          blank: "Range field can not be empty."
+        currency:
+          blank: "Currency field can not be empty."
+        name:
+          blank: "Name field can not be empty."

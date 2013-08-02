@@ -1,13 +1,13 @@
 Newscoop\PaywallBundle\Entity\Subscriptions:
     properties:
         name:
-            - NotBlank: { message: "step1.form.error.name.blank" }
+            - NotBlank: { message: "paywall.step1.form.error.name.blank" }
         price:
-            - NotBlank: { message: "step1.form.error.price.blank" }
+            - NotBlank: { message: "paywall.step1.form.error.price.blank" }
             - Range:
                 min: 1
-            - Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimal: { message: "step1.form.error.price.decimal" }
+            - Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimal: { message: "paywall.step1.form.error.price.decimal" }
         range:
-            - NotBlank: { message: "step1.form.error.range.blank" }
+            - NotBlank: { message: "paywall.step1.form.error.range.blank" }
         currency:
-            - NotBlank: { message: "step1.form.error.currency.blank" }
+            - NotBlank: { message: "paywall.step1.form.error.currency.blank" }
