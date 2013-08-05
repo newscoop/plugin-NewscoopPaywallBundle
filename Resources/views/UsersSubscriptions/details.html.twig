@@ -124,11 +124,12 @@ $(document).ready(function(){
             <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="sectionsTable">
                 <thead>
                     <tr>
-                        <th>Section</th>
+                        <th>Issue</th>
                         <th>Language</th>
                         <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
                         <th>Days</th>
                         <th>Paid days</th>
+                        <th>Options</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -139,17 +140,22 @@ $(document).ready(function(){
                         <td>{{ issue.date|date('Y-m-d') }}</td>
                         <td>{{ issue.days }}</td>
                         <td>{{ issue.paid }}</td>
+                        <td>
+                            <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_remove', {'id': issue.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
+                            <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'id': issue.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
+                        </td>
                     </tr>
                     {% endfor %}
 
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th>Section</th>
+                        <th>Issue</th>
                         <th>Language</th>
                         <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
                         <th>Days</th>
                         <th>Paid days</th>
+                        <th>Options</th>
                     </tr>
                 </tfoot>
             </table>
@@ -166,6 +172,7 @@ $(document).ready(function(){
                         <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
                         <th>Days</th>
                         <th>Paid days</th>
+                        <th>Options</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -176,6 +183,10 @@ $(document).ready(function(){
                         <td>{{ section.date|date('Y-m-d') }}</td>
                         <td>{{ section.days }}</td>
                         <td>{{ section.paid }}</td>
+                        <td>
+                            <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_remove', {'id': section.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
+                            <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'id': section.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
+                        </td>
                     </tr>
                     {% endfor %}
 
@@ -187,6 +198,7 @@ $(document).ready(function(){
                         <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
                         <th>Days</th>
                         <th>Paid days</th>
+                        <th>Options</th>
                     </tr>
                 </tfoot>
             </table>
@@ -203,6 +215,7 @@ $(document).ready(function(){
                         <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
                         <th>Days</th>
                         <th>Paid days</th>
+                        <th>Options</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -213,6 +226,10 @@ $(document).ready(function(){
                         <td>{{ article.date|date('Y-m-d') }}</td>
                         <td>{{ article.days }}</td>
                         <td>{{ article.paid }}</td>
+                        <td>
+                            <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_remove', {'id': article.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
+                            <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'id': article.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
+                        </td>
                     </tr>
                     {% endfor %}
 
@@ -224,6 +241,7 @@ $(document).ready(function(){
                         <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
                         <th>Days</th>
                         <th>Paid days</th>
+                        <th>Options</th>
                     </tr>
                 </tfoot>
             </table>
