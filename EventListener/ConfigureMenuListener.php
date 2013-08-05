@@ -29,5 +29,11 @@ class ConfigureMenuListener
             array('uri' => $event->getRouter()->generate('newscoop_paywall_managesubscriptions_manage')
         ));
         $menu[getGS('Plugins')][getGS('Newscoop Paywall')][getGS('Manage subscriptions')]->setDisplay(false);
+
+        $menu[getGS('Plugins')][getGS('Newscoop Paywall')]->addChild(
+            getGS('Manage User Subscriptions'), 
+            array('uri' => $event->getRouter()->generate('newscoop_paywall_userssubscriptions_index')
+        ));
+        $menu[getGS('Plugins')][getGS('Newscoop Paywall')][getGS('Manage User Subscriptions')]->setDisplay(false);
     }
 }

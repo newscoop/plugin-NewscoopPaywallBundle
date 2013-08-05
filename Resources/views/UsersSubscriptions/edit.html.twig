@@ -1,0 +1,89 @@
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}{{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.toolbar.label.manageusers'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#subscriptionsTable').css('font-size', '13px');
+    $('#subscriptionsTable').dataTable( {
+        'oLanguage': {
+            'oPaginate': {
+                'sNext': '{{ getGS('Next') }}',
+                'sLast': '{{ getGS('Last') }}',
+                'sPrevious': '{{ getGS('Previous') }}',
+                'sFirst': '{{ getGS('First') }}'
+            },
+            'sZeroRecords': '{{ getGS('No records found.') }}',
+            'sSearch': '{{ getGS('Search') }}:',
+            'sInfo': '{{ getGS('Showing _START_ to _END_ of _TOTAL_ entries') }}',
+            'sEmpty': '{{ getGS('No entries to show') }}',
+            'sInfoFiltered': '{{ getGS(' - filtering from _MAX_ records') }}',
+            'sLengthMenu': '{{ getGS('Display _MENU_ records') }}',
+            'sInfoEmpty': '',
+        },
+        "bProcessing": true,
+        "bAutoWidth": true,
+        "bPaging": true,
+        "sDom": 'RCf<"clear">rtilp',
+        "bJQueryUI": true,
+        "sPaginationType": "full_numbers",
+    });
+
+    $('#subscriptionsTable').on('click', '.delete-subscription', function(event){
+        var dataTableCell = $(this).parent();
+        var dataTableRow = dataTableCell.parent().get(0);
+        event.preventDefault();
+        $.post($(this).attr('href'), 
+           function(data) {
+            if (data.status) {
+                flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
+                dataTableRow.remove();
+                return false;
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+{% block admin_content %}
+{% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
+<table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
+    <thead>
+        <tr>
+            <th>Section</th>
+            <th>Language</th>
+            <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+            <th>Days</th>
+            <th>Paid days</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for section in sections %}
+        <tr>
+            <td>{{ section.name }}</td>
+            <td>{{ section.language }}</td>
+            <td>{{ section.date|date('Y-m-d') }}</td>
+            <td>{{ section.days }}</td>
+            <td>{{ section.paid }}</td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>Section</th>
+            <th>Language</th>
+            <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+            <th>Days</th>
+            <th>Paid days</th>
+        </tr>
+    </tfoot>
+</table>
+{% endblock %}

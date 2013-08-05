@@ -4,6 +4,7 @@ paywall:
     label:
       configuration: "Configuration"
       manage: "Manage Subscriptions"
+      manageusers: "Manage User Subscriptions"
   step1:
     header: "Please specify the name and value for your new subscription. You can set up various diffrent types of subscriptions, but just one after the other."
     form:
@@ -41,6 +42,7 @@ paywall:
     next: "Next"
     button1: "Specify type and price"
     button2: "Specify articles"
+    details: "Details"
   flash:
     message:
       subscription:
@@ -51,6 +53,9 @@ paywall:
       name: "Name"
       duration: "Duration in days"
       options: "Options"
+      username: "Username"
+      topay: "To pay"
+      active: "Active"
   menu:
     label:
       addsubscription: "Add new subscription"

@@ -1,0 +1,111 @@
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}{{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.toolbar.label.manageusers'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#subscriptionsTable').css('font-size', '13px');
+    $('#subscriptionsTable').dataTable( {
+        'oLanguage': {
+            'oPaginate': {
+                'sNext': '{{ getGS('Next') }}',
+                'sLast': '{{ getGS('Last') }}',
+                'sPrevious': '{{ getGS('Previous') }}',
+                'sFirst': '{{ getGS('First') }}'
+            },
+            'sZeroRecords': '{{ getGS('No records found.') }}',
+            'sSearch': '{{ getGS('Search') }}:',
+            'sInfo': '{{ getGS('Showing _START_ to _END_ of _TOTAL_ entries') }}',
+            'sEmpty': '{{ getGS('No entries to show') }}',
+            'sInfoFiltered': '{{ getGS(' - filtering from _MAX_ records') }}',
+            'sLengthMenu': '{{ getGS('Display _MENU_ records') }}',
+            'sInfoEmpty': '',
+        },
+        "bProcessing": true,
+        "bAutoWidth": true,
+        "bPaging": true,
+        "sDom": 'RCf<"clear">rtilp',
+        "bJQueryUI": true,
+        "sPaginationType": "full_numbers",
+    });
+
+    $('#subscriptionsTable').on('click', '.delete-subscription', function(event){
+        var dataTableCell = $(this).parent();
+        var dataTableRow = dataTableCell.parent().get(0);
+        event.preventDefault();
+        $.post($(this).attr('href'), 
+         function(data) {
+            if (data.status) {
+                flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
+                dataTableRow.remove();
+                return false;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+{% block admin_content %}
+<div id="subscription">
+    {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
+
+    <div id="manage-users" style="padding: 10px 10px 30px 10px;">
+        <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
+            <thead>
+                <tr>
+                    <th>{{ 'paywall.manage.label.username'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.name'|trans }}</th>
+                    <th>{{ 'paywall.step1.form.select.type.publication'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.topay'|trans }}</th>
+                    <th>{{ 'paywall.step2.label.currency'|trans }}</th>
+                    <th>{{ 'paywall.step2.label.type'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr id="{{ user.id }}">
+                    <td id="username" class="readonly"><a href="../user/edit/user/{{ user.id }}">{{ user.username }}</a></td>
+                    <td id="name" class="readonly">{{ user.name }}</td>
+                    <td id="publication" class="readonly">{{ user.publication }}</td>
+                    <td id="topay">{{ user.topay }}</td>
+                    <td id="currency">{{ user.currency }}</td>
+                    <td id="type">
+                        {% if (user.type == "P") %}
+                        Paid
+                        {% elseif (user.type == "PN") %}
+                        Paid now
+                        {% elseif (user.type == "T") %}
+                        Trial
+                        {% endif %}
+                    </td>
+                    <td class="readonly">
+                        <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_delete', {'id': user.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
+                        <a class="edit-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'id': user.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>{{ 'paywall.manage.label.username'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.name'|trans }}</th>
+                    <th>{{ 'paywall.step1.form.select.type.publication'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.topay'|trans }}</th>
+                    <th>{{ 'paywall.step2.label.currency'|trans }}</th>
+                    <th>{{ 'paywall.step2.label.type'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}
