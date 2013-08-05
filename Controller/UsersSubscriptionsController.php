@@ -56,6 +56,10 @@ class UsersSubscriptionsController extends Controller
     {
         $service = $this->get('subscription.service');
 
-        return $service->getBySubscription($id);
+        return array(
+            'issues' => $service->getIssues($id),
+            'sections' => $service->getSections($id),
+            'articles' => $service->getArticles($id),
+        );
     }
 }

@@ -55,11 +55,32 @@ class PaywallService extends SubscriptionService
         return $users;
     }
 
-    public function getBySubscription($id) {
+    public function getIssues($id) {
+        $issue = $this->em->getRepository('Newscoop\Subscription\Issue')
+            ->findBy(array(
+                'subscription' => $id,
+            ));
+
+        $issues = array();
+        foreach ($issue as $i) {
+            $issues[] = array(
+                'name' => $i->getName(),
+                'language' => $i->getLanguage()->getName(),
+                'date' => $i->getStartDate(),
+                'days' => $i->getDays(),
+                'paid' => $i->getPaidDays(),
+            );
+        }
+
+        return $issues;
+    }
+
+    public function getSections($id) {
         $section = $this->em->getRepository('Newscoop\Subscription\Section')
             ->findBy(array(
                 'subscription' => $id,
             ));
+
         $sections = array();
         foreach ($section as $s) {
             $sections[] = array(
@@ -71,8 +92,26 @@ class PaywallService extends SubscriptionService
             );
         }
         
-        return array(
-            'sections' => $sections,
-        );
+        return $sections;
+    }
+
+    public function getArticles($id) {
+        $article = $this->em->getRepository('Newscoop\Subscription\Article')
+            ->findBy(array(
+                'subscription' => $id,
+            ));
+
+        $articles = array();
+        foreach ($article as $a) {
+            $article[] = array(
+                'name' => $a->getName(),
+                'language' => $a->getLanguage()->getName(),
+                'date' => $a->getStartDate(),
+                'days' => $a->getDays(),
+                'paid' => $a->getPaidDays(),
+            );
+        }
+        
+        return $articles;
     }
 }

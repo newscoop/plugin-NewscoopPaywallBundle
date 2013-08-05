@@ -11,7 +11,31 @@
 {% block admin_scripts %}
 <script type="text/javascript">
 $(document).ready(function(){
-    $('#subscriptionsTable').css('font-size', '13px');
+    $('#sectionsTable').css('font-size', '13px');
+    $('#sectionsTable').dataTable( {
+        'oLanguage': {
+            'oPaginate': {
+                'sNext': '{{ getGS('Next') }}',
+                'sLast': '{{ getGS('Last') }}',
+                'sPrevious': '{{ getGS('Previous') }}',
+                'sFirst': '{{ getGS('First') }}'
+            },
+            'sZeroRecords': '{{ getGS('No records found.') }}',
+            'sSearch': '{{ getGS('Search') }}:',
+            'sInfo': '{{ getGS('Showing _START_ to _END_ of _TOTAL_ entries') }}',
+            'sEmpty': '{{ getGS('No entries to show') }}',
+            'sInfoFiltered': '{{ getGS(' - filtering from _MAX_ records') }}',
+            'sLengthMenu': '{{ getGS('Display _MENU_ records') }}',
+            'sInfoEmpty': '',
+        },
+        "bProcessing": true,
+        "bAutoWidth": true,
+        "bPaging": true,
+        "sDom": 'RCf<"clear">rtilp',
+        "bJQueryUI": true,
+        "sPaginationType": "full_numbers",
+    });
+
     $('#subscriptionsTable').dataTable( {
         'oLanguage': {
             'oPaginate': {
@@ -41,7 +65,7 @@ $(document).ready(function(){
         var dataTableRow = dataTableCell.parent().get(0);
         event.preventDefault();
         $.post($(this).attr('href'), 
-           function(data) {
+         function(data) {
             if (data.status) {
                 flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
                 dataTableRow.remove();
@@ -49,41 +73,161 @@ $(document).ready(function(){
             }
         });
     });
+
+    $('#articlesTable').dataTable( {
+        'oLanguage': {
+            'oPaginate': {
+                'sNext': '{{ getGS('Next') }}',
+                'sLast': '{{ getGS('Last') }}',
+                'sPrevious': '{{ getGS('Previous') }}',
+                'sFirst': '{{ getGS('First') }}'
+            },
+            'sZeroRecords': '{{ getGS('No records found.') }}',
+            'sSearch': '{{ getGS('Search') }}:',
+            'sInfo': '{{ getGS('Showing _START_ to _END_ of _TOTAL_ entries') }}',
+            'sEmpty': '{{ getGS('No entries to show') }}',
+            'sInfoFiltered': '{{ getGS(' - filtering from _MAX_ records') }}',
+            'sLengthMenu': '{{ getGS('Display _MENU_ records') }}',
+            'sInfoEmpty': '',
+        },
+        "bProcessing": true,
+        "bAutoWidth": true,
+        "bPaging": true,
+        "sDom": 'RCf<"clear">rtilp',
+        "bJQueryUI": true,
+        "sPaginationType": "full_numbers",
+    });
+
+    $('#articlesTable').on('click', '.delete-subscription', function(event){
+        var dataTableCell = $(this).parent();
+        var dataTableRow = dataTableCell.parent().get(0);
+        event.preventDefault();
+        $.post($(this).attr('href'), 
+         function(data) {
+            if (data.status) {
+                flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
+                dataTableRow.remove();
+                return false;
+            }
+        });
+    });
+});
 </script>
 {% endblock %}
 
 {% block admin_content %}
-{% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
-<table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
-    <thead>
-        <tr>
-            <th>Section</th>
-            <th>Language</th>
-            <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-            <th>Days</th>
-            <th>Paid days</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for section in sections %}
-        <tr>
-            <td>{{ section.name }}</td>
-            <td>{{ section.language }}</td>
-            <td>{{ section.date|date('Y-m-d') }}</td>
-            <td>{{ section.days }}</td>
-            <td>{{ section.paid }}</td>
-        </tr>
-        {% endfor %}
+<div id="subscription">
+    {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
+    {% if issues %}
+        <h1><strong>Issues:</strong></h1>
+        <div id="issues" style="padding: 10px 10px 30px 10px;">
+            <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="sectionsTable">
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th>Language</th>
+                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                        <th>Days</th>
+                        <th>Paid days</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                    <tr>
+                        <td>{{ issue.name }}</td>
+                        <td>{{ issue.language }}</td>
+                        <td>{{ issue.date|date('Y-m-d') }}</td>
+                        <td>{{ issue.days }}</td>
+                        <td>{{ issue.paid }}</td>
+                    </tr>
+                    {% endfor %}
 
-    </tbody>
-    <tfoot>
-        <tr>
-            <th>Section</th>
-            <th>Language</th>
-            <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-            <th>Days</th>
-            <th>Paid days</th>
-        </tr>
-    </tfoot>
-</table>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Section</th>
+                        <th>Language</th>
+                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                        <th>Days</th>
+                        <th>Paid days</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
+    {% if sections %}
+        <h1><strong>Sections:</strong></h1>
+        <div id="sections" style="padding: 10px 10px 30px 10px;">
+            <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th>Language</th>
+                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                        <th>Days</th>
+                        <th>Paid days</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for section in sections %}
+                    <tr>
+                        <td>{{ section.name }}</td>
+                        <td>{{ section.language }}</td>
+                        <td>{{ section.date|date('Y-m-d') }}</td>
+                        <td>{{ section.days }}</td>
+                        <td>{{ section.paid }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Section</th>
+                        <th>Language</th>
+                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                        <th>Days</th>
+                        <th>Paid days</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
+    {% if articles %}
+        <h1><strong>Articles:</strong></h1>
+        <div id="articles" style="padding: 10px 10px 30px 10px;">
+            <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="articlesTable">
+                <thead>
+                    <tr>
+                        <th>Article</th>
+                        <th>Language</th>
+                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                        <th>Days</th>
+                        <th>Paid days</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <td>{{ article.name }}</td>
+                        <td>{{ article.language }}</td>
+                        <td>{{ article.date|date('Y-m-d') }}</td>
+                        <td>{{ article.days }}</td>
+                        <td>{{ article.paid }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Article</th>
+                        <th>Language</th>
+                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                        <th>Days</th>
+                        <th>Paid days</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
