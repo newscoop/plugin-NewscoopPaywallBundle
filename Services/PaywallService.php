@@ -13,8 +13,16 @@ use Newscoop\Subscription\Subscription;
 use Newscoop\Subscription\SubscriptionData;
 use Newscoop\Services\SubscriptionService;
 
+/**
+ * PaywallService manages user's subscriptions
+ */
 class PaywallService extends SubscriptionService
 {
+    /**
+     * Gets all user's subscriptions
+     *
+     * @return array
+     */
     public function getByAll() {
         $subscriptions = $this->em->getRepository('Newscoop\Subscription\Subscription')
             ->findAll();
@@ -36,6 +44,13 @@ class PaywallService extends SubscriptionService
         return $subscriptionsArray;
     }
 
+    /**
+     * Gets user's subscriptions for issues by given Id
+     *
+     * @param integer $id Subscription Id to search for
+     *
+     * @return array
+     */
     public function getIssues($id) {
         $issues = $this->em->getRepository('Newscoop\Subscription\Issue')
             ->findBy(array(
@@ -57,6 +72,13 @@ class PaywallService extends SubscriptionService
         return $issuesArray;
     }
 
+    /**
+     * Gets user's subscriptions for sections by given Id
+     *
+     * @param integer $id Subscription Id to search for
+     *
+     * @return array
+     */
     public function getSections($id) {
         $sections = $this->em->getRepository('Newscoop\Subscription\Section')
             ->findBy(array(
@@ -78,6 +100,13 @@ class PaywallService extends SubscriptionService
         return $sectionsArray;
     }
 
+    /**
+     * Gets user's subscriptions for articles by given Id
+     *
+     * @param integer $id Subscription Id to search for
+     *
+     * @return array
+     */
     public function getArticles($id) {
         $articles = $this->em->getRepository('Newscoop\Subscription\Article')
             ->findBy(array(
