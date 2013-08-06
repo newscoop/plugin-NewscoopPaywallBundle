@@ -127,20 +127,4 @@ class PaywallService extends SubscriptionService
         
         return $articlesArray;
     }
-
-    /**
-     * Gets user's subscriptions for articles by given Id
-     *
-     * @param integer $id Subscription Id to search for
-     *
-     * @return array
-     */
-    public function getOneBySubscriptionId($id) {
-        $subscription = $em->getRepository('Newscoop\Subscription\Section')
-            ->findOneBy(array(
-                'id' => $id,
-            ));
-        
-        return $subscription;
-    }
 }
