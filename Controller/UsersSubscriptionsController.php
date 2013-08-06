@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 class UsersSubscriptionsController extends Controller
 {
     /**
-     * @Route("/admin/paywall_plugin/users-subscriptions")
+     * @Route("/admin/paywall_plugin/users-subscriptions", options={"expose"=true})
      * @Template()
      */
     public function indexAction(Request $request)
@@ -51,7 +51,6 @@ class UsersSubscriptionsController extends Controller
             $service = $this->get('subscription.service');
             $em = $this->getDoctrine()->getManager();
             $subscription = $this->findByType($em, $type, $id);
-
             $em->remove($subscription);
             $em->flush();
 
@@ -113,24 +112,24 @@ class UsersSubscriptionsController extends Controller
     private function findByType($em, $type, $id) {
 
         if ($type === 'section') {
-                $subscription = $em->getRepository('Newscoop\Subscription\Section')
-                    ->findOneBy(array(
-                        'id' => $id,
-                    ));
+            $subscription = $em->getRepository('Newscoop\Subscription\Section')
+                ->findOneBy(array(
+                    'id' => $id,
+                ));
         }
 
         if ($type === 'issue') {
-                $subscription = $em->getRepository('Newscoop\Subscription\Issue')
-                    ->findOneBy(array(
-                        'id' => $id,
-                    ));
+            $subscription = $em->getRepository('Newscoop\Subscription\Issue')
+                ->findOneBy(array(
+                    'id' => $id,
+                ));
         }
 
         if ($type === 'article') {
-                $subscription = $em->getRepository('Newscoop\Subscription\Article')
-                    ->findOneBy(array(
-                        'id' => $id,
-                    ));
+            $subscription = $em->getRepository('Newscoop\Subscription\Article')
+                ->findOneBy(array(
+                    'id' => $id,
+                ));
         }
 
         return $subscription;

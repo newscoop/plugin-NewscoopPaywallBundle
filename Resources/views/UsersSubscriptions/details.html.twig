@@ -62,6 +62,9 @@ $(document).ready(function() {
     deleteSubscription($('#articlesTable'), $('#articlesTable tbody'), $('#articles'));
     deleteSubscription($('#sectionsTable'), $('#sectionsTable tbody'), $('#sections'));
     deleteSubscription($('#issuesTable'), $('#issuesTable tbody'), $('#issues'));
+    $('#back').click(function() {
+        window.location.href = Routing.generate('newscoop_paywall_userssubscriptions_index');
+    });
 });
 </script>
 {% endblock %}
@@ -69,6 +72,9 @@ $(document).ready(function() {
 {% block admin_content %}
 <div id="subscription">
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
+    <fieldset class="actions" style="background-color: #fff;">
+        <input type="button" id="back" class="button" value="Go back to users subscriptions">
+    </fieldset>
     {% if issues %}
     <div id="issues" style="padding: 10px 10px 30px 10px;">
         <fieldset class="actions" id="details-header">

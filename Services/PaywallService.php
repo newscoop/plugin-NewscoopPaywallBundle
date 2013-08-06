@@ -61,7 +61,7 @@ class PaywallService extends SubscriptionService
         foreach ($issues as $issue) {
             $issuesArray[] = array(
                 'id' => $issue->getId(),
-                'name' => $issue->getName(),
+                'name' => $issue->getIssue()->getName(),
                 'language' => $issue->getLanguage()->getName(),
                 'date' => $issue->getStartDate(),
                 'days' => $issue->getDays(),
