@@ -13,10 +13,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Newscoop\PaywallBundle\Form\SubscriptionConfType;
-use Newscoop\PaywallBundle\Entity\Subscriptions;
-use Newscoop\PaywallBundle\Entity\Subscription_specification;
-use Doctrine\ORM\Query\Expr\Join;
 
 class UsersSubscriptionsController extends Controller
 {
@@ -47,13 +43,17 @@ class UsersSubscriptionsController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/users-subscriptions/remove/{id}")
+     * @Route("/admin/paywall_plugin/users-subscriptions/remove/{type}/{id}")
      */
-    public function removeAction(Request $request, $id)
+    public function removeAction(Request $request, $type, $id)
     {
         if ($request->isMethod('POST')) {
             $service = $this->get('subscription.service');
-            //TODO
+            $em = $this->getDoctrine()->getManager();
+            $subscription = $this->findByType($em, $type, $id);
+
+            $em->remove($subscription);
+            $em->flush();
 
             return new Response(json_encode(array('status' => true)));
         }
@@ -66,26 +66,7 @@ class UsersSubscriptionsController extends Controller
     public function editAction(Request $request, $type, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        if ($type === 'section') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Section')
-                ->findOneBy(array(
-                    'id' => $id,
-                ));
-        }
-        
-        if ($type === 'issue') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Issue')
-                ->findOneBy(array(
-                    'id' => $id,
-                ));
-        }
-
-        if ($type === 'article') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Article')
-                ->findOneBy(array(
-                    'id' => $id,
-                ));
-        }
+        $subscription = $this->findByType($em, $type, $id);
 
         $form = $this->createForm('detailsForm', $subscription);
         if ($request->isMethod('POST')) {
@@ -118,5 +99,40 @@ class UsersSubscriptionsController extends Controller
             'sections' => $service->getSections($id),
             'articles' => $service->getArticles($id),
         );
+    }
+
+    /**
+     * Finds proper Entity object by given Type
+     *
+     * @param Doctrine\ORM\EntityManager $em
+     * @param string $type                   Subscription type
+     * @param string $id                     Subscription id
+     *
+     * @return Entity object
+     */
+    private function findByType($em, $type, $id) {
+
+        if ($type === 'section') {
+                $subscription = $em->getRepository('Newscoop\Subscription\Section')
+                    ->findOneBy(array(
+                        'id' => $id,
+                    ));
+        }
+
+        if ($type === 'issue') {
+                $subscription = $em->getRepository('Newscoop\Subscription\Issue')
+                    ->findOneBy(array(
+                        'id' => $id,
+                    ));
+        }
+
+        if ($type === 'article') {
+                $subscription = $em->getRepository('Newscoop\Subscription\Article')
+                    ->findOneBy(array(
+                        'id' => $id,
+                    ));
+        }
+
+        return $subscription;
     }
 }
