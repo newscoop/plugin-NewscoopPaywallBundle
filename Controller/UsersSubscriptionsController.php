@@ -60,17 +60,53 @@ class UsersSubscriptionsController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/users-subscriptions/edit/{id}")
+     * @Route("/admin/paywall_plugin/users-subscriptions/edit/{type}/{id}")
+     * @Template()
      */
-    public function editAction(Request $request, $id)
+    public function editAction(Request $request, $type, $id)
     {
-        $service = $this->get('subscription.service');
+        $em = $this->getDoctrine()->getManager();
+        if ($type === 'section') {
+            $subscription = $em->getRepository('Newscoop\Subscription\Section')
+                ->findOneBy(array(
+                    'id' => $id,
+                ));
+        }
+        
+        if ($type === 'issue') {
+            $subscription = $em->getRepository('Newscoop\Subscription\Issue')
+                ->findOneBy(array(
+                    'id' => $id,
+                ));
+        }
 
-        //TODO
+        if ($type === 'article') {
+            $subscription = $em->getRepository('Newscoop\Subscription\Article')
+                ->findOneBy(array(
+                    'id' => $id,
+                ));
+        }
+
+        $form = $this->createForm('detailsForm', $subscription);
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $em->flush();
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'id' => $subscription->getId(),
+            'type' => $type,
+            'subscription' => $subscription->getSubscription()->getId(),
+            'name' => $subscription->getName(),
+            'language' => $subscription->getLanguage()->getName(),
+        );
     }
 
     /**
-     * @Route("/admin/paywall_plugin/users-subscriptions/details/{id}")
+     * @Route("/admin/paywall_plugin/users-subscriptions/details/{id}", options={"expose"=true})
      * @Template()
      */
     public function detailsAction(Request $request, $id)

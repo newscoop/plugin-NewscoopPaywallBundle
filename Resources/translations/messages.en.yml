@@ -43,6 +43,7 @@ paywall:
     button1: "Specify type and price"
     button2: "Specify articles"
     details: "Details"
+    back: "Back"
   flash:
     message:
       subscription:

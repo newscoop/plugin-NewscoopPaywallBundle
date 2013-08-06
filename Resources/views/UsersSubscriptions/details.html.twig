@@ -65,7 +65,7 @@ $(document).ready(function(){
         var dataTableRow = dataTableCell.parent().get(0);
         event.preventDefault();
         $.post($(this).attr('href'), 
-         function(data) {
+           function(data) {
             if (data.status) {
                 flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
                 dataTableRow.remove();
@@ -103,7 +103,7 @@ $(document).ready(function(){
         var dataTableRow = dataTableCell.parent().get(0);
         event.preventDefault();
         $.post($(this).attr('href'), 
-         function(data) {
+           function(data) {
             if (data.status) {
                 flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
                 dataTableRow.remove();
@@ -119,133 +119,139 @@ $(document).ready(function(){
 <div id="subscription">
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
     {% if issues %}
-        <h1><strong>Issues:</strong></h1>
-        <div id="issues" style="padding: 10px 10px 30px 10px;">
-            <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="sectionsTable">
-                <thead>
-                    <tr>
-                        <th>Issue</th>
-                        <th>Language</th>
-                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                        <th>Days</th>
-                        <th>Paid days</th>
-                        <th>Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for issue in issues %}
-                    <tr>
-                        <td>{{ issue.name }}</td>
-                        <td>{{ issue.language }}</td>
-                        <td>{{ issue.date|date('Y-m-d') }}</td>
-                        <td>{{ issue.days }}</td>
-                        <td>{{ issue.paid }}</td>
-                        <td>
-                            <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_remove', {'id': issue.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
-                            <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'id': issue.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+    <fieldset class="actions" id="details-header">
+        <span>Issues:</span>
+    </fieldset>
+    <div id="issues" style="padding: 10px 10px 30px 10px;">
+        <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="sectionsTable">
+            <thead>
+                <tr>
+                    <th>Issue</th>
+                    <th>Language</th>
+                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>Days</th>
+                    <th>Paid days</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                <tr>
+                    <td>{{ issue.name }}</td>
+                    <td align="center">{{ issue.language }}</td>
+                    <td align="center">{{ issue.date|date('Y-m-d') }}</td>
+                    <td align="center">{{ issue.days }}</td>
+                    <td align="center">{{ issue.paid }}</td>
+                    <td>
+                        <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_remove', {'id': issue.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
+                        <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'type': 'issue', 'id': issue.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
 
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>Issue</th>
-                        <th>Language</th>
-                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                        <th>Days</th>
-                        <th>Paid days</th>
-                        <th>Options</th>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Issue</th>
+                    <th>Language</th>
+                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>Days</th>
+                    <th>Paid days</th>
+                    <th>Options</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
     {% endif %}
     {% if sections %}
-        <h1><strong>Sections:</strong></h1>
-        <div id="sections" style="padding: 10px 10px 30px 10px;">
-            <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
-                <thead>
-                    <tr>
-                        <th>Section</th>
-                        <th>Language</th>
-                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                        <th>Days</th>
-                        <th>Paid days</th>
-                        <th>Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for section in sections %}
-                    <tr>
-                        <td>{{ section.name }}</td>
-                        <td>{{ section.language }}</td>
-                        <td>{{ section.date|date('Y-m-d') }}</td>
-                        <td>{{ section.days }}</td>
-                        <td>{{ section.paid }}</td>
-                        <td>
-                            <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_remove', {'id': section.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
-                            <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'id': section.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+    <fieldset class="actions" id="details-header">
+        <span>Sections:</span>
+    </fieldset>
+    <div id="sections" style="padding: 10px 10px 30px 10px;">
+        <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
+            <thead>
+                <tr>
+                    <th>Section</th>
+                    <th>Language</th>
+                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>Days</th>
+                    <th>Paid days</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for section in sections %}
+                <tr>
+                    <td>{{ section.name }}</td>
+                    <td align="center">{{ section.language }}</td>
+                    <td align="center">{{ section.date|date('Y-m-d') }}</td>
+                    <td align="center">{{ section.days }}</td>
+                    <td align="center">{{ section.paid }}</td>
+                    <td>
+                        <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_remove', {'id': section.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
+                        <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'type': 'section', 'id': section.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
 
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>Section</th>
-                        <th>Language</th>
-                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                        <th>Days</th>
-                        <th>Paid days</th>
-                        <th>Options</th>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Section</th>
+                    <th>Language</th>
+                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>Days</th>
+                    <th>Paid days</th>
+                    <th>Options</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
     {% endif %}
     {% if articles %}
-        <h1><strong>Articles:</strong></h1>
-        <div id="articles" style="padding: 10px 10px 30px 10px;">
-            <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="articlesTable">
-                <thead>
-                    <tr>
-                        <th>Article</th>
-                        <th>Language</th>
-                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                        <th>Days</th>
-                        <th>Paid days</th>
-                        <th>Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for article in articles %}
-                    <tr>
-                        <td>{{ article.name }}</td>
-                        <td>{{ article.language }}</td>
-                        <td>{{ article.date|date('Y-m-d') }}</td>
-                        <td>{{ article.days }}</td>
-                        <td>{{ article.paid }}</td>
-                        <td>
-                            <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_remove', {'id': article.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
-                            <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'id': article.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+    <fieldset class="actions" id="details-header">
+        <span>Articles:</span>
+    </fieldset>
+    <div id="articles" style="padding: 10px 10px 30px 10px;">
+        <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="articlesTable">
+            <thead>
+                <tr>
+                    <th>Article</th>
+                    <th>Language</th>
+                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>Days</th>
+                    <th>Paid days</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td>{{ article.name }}</td>
+                    <td align="center">{{ article.language }}</td>
+                    <td align="center">{{ article.date|date('Y-m-d') }}</td>
+                    <td align="center">{{ article.days }}</td>
+                    <td align="center">{{ article.paid }}</td>
+                    <td>
+                        <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_remove', {'id': article.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
+                        <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_edit', {'type': 'article', 'id': article.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
 
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th>Article</th>
-                        <th>Language</th>
-                        <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                        <th>Days</th>
-                        <th>Paid days</th>
-                        <th>Options</th>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Article</th>
+                    <th>Language</th>
+                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>Days</th>
+                    <th>Paid days</th>
+                    <th>Options</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
     {% endif %}
 </div>
 {% endblock %}
