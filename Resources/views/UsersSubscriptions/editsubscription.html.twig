@@ -11,7 +11,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('#back').click(function() {
-        window.location.href = Routing.generate('newscoop_paywall_userssubscriptions_details', {id: {{ subscription }}});
+        window.location.href = Routing.generate('newscoop_paywall_userssubscriptions_index');
     });
 });
 </script>
@@ -19,13 +19,23 @@ $(document).ready(function() {
 
 {% block admin_content %}
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
-<div id="details-subscription" style="padding: 10px 10px 30px 10px;">
-    <form id="detailsForm" action="{{ path('newscoop_paywall_userssubscriptions_edit', {'type': type, 'id': id}) }}" method="post" {{ form_enctype(form) }}>
+<div id="edit-subscription" style="padding: 10px 10px 30px 10px;">
+    <form id="subscriptioneditForm" action="{{ path('newscoop_paywall_userssubscriptions_editsubscription', {'id': id}) }}" method="post" {{ form_enctype(form) }}>
         <table border="0" cellspacing="1" cellpadding="0" class="box_table" style="width: 355px">
             <tbody>
                <tr>
                     <td>
-                        <div class="errors"></div>
+                        <div class="errors">{{ form_errors(form) }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left">   
+                        <strong>Username</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        {{ username }}
                     </td>
                 </tr>
                 <tr>
@@ -40,42 +50,42 @@ $(document).ready(function() {
                 </tr>
                 <tr>
                     <td align="left">   
-                        <strong>Language</strong>
+                        <strong>Publication</strong>
                     </td>
                 </tr>
                 <tr>
                     <td align="left" valign="top">
-                        {{ language }}
+                        {{ publication }}
                     </td>
                 </tr>
                 <tr>
                     <td align="left">
-                        <strong>{{ form_label(form.startDate) }}</strong>
+                        <strong>{{ form_label(form.topay) }}</strong>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        {{ form_widget(form.startDate, {'attr' : {'class' : 'input_text'}}) }}
+                        {{ form_widget(form.topay, {'attr' : {'class' : 'input_text'}}) }}
                     </td>
                 </tr>
                 <tr>
                     <td align="left">
-                        <strong>{{ form_label(form.days) }}</strong> 
+                        <strong>{{ form_label(form.currency) }}</strong> 
                     </td>
                 </tr>
                 <tr>
                     <td align="left" valign="top">
-                        {{ form_widget(form.days, {'attr' : {'class' : 'input_text'}}) }}
+                        {{ form_widget(form.currency, {'attr' : {'class' : 'input_text'}}) }}
                     </td>
                 </tr>
                 <tr>
                     <td align="left">
-                        <strong>{{ form_label(form.paidDays) }}</strong>    
+                        <strong>{{ form_label(form.type) }}</strong>    
                     </td>
                 </tr>
                 <tr>
                     <td align="left" valign="top">
-                        {{ form_widget(form.paidDays, {'attr' : {'class' : 'input_text'}}) }}
+                        {{ form_widget(form.type, {'attr' : {'class' : 'input_select'}}) }}
                     </td>
                 </tr>
                 <tr>

@@ -12,8 +12,8 @@
 <script src="{{ asset('public/bundles/newscooppaywall/js/jquery.jeditable.js') }}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-    $('#subscriptionsTable').css('font-size', '13px');
-    $('#subscriptionsTable').dataTable( {
+    $('#users-subscriptionsTable').css('font-size', '13px');
+    $('#users-subscriptionsTable').dataTable( {
         'oLanguage': {
             'oPaginate': {
                 'sNext': '{{ getGS('Next') }}',
@@ -37,7 +37,7 @@ $(document).ready(function(){
         "sPaginationType": "full_numbers",
     });
 
-    $('#subscriptionsTable').on('click', '.delete-subscription', function(event){
+    $('#users-subscriptionsTable').on('click', '.delete-subscription', function(event){
         var dataTableCell = $(this).parent();
         var dataTableRow = dataTableCell.parent().get(0);
         event.preventDefault();
@@ -94,8 +94,8 @@ $(document).ready(function(){
 <div id="subscription">
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
 
-    <div id="manage-users" style="padding: 10px 10px 30px 10px;">
-        <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
+    <div id="users-subscriptions" style="padding: 10px 10px 30px 10px;">
+        <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="users-subscriptionsTable">
             <thead>
                 <tr>
                     <th>{{ 'paywall.manage.label.username'|trans }}</th>
@@ -126,6 +126,7 @@ $(document).ready(function(){
                         </td>
                         <td class="readonly">
                             <a class="delete-subscription" href="{{ path('newscoop_paywall_userssubscriptions_delete', {'id': subscription.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
+                            <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_editsubscription', {'id': subscription.id}) }}">{{ 'paywall.btn.edit'|trans }}</a> |
                             <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_details', {'id': subscription.id}) }}">{{ 'paywall.btn.details'|trans }}</a>
                         </td>
                     </tr>

@@ -22,10 +22,8 @@ class UsersSubscriptionsController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $service = $this->get('subscription.service');
-
         return array(
-            'subscriptions' => $service->getByAll(),
+            'subscriptions' => $this->get('subscription.service')->getByAll(),
         );
     }
 
@@ -35,8 +33,7 @@ class UsersSubscriptionsController extends Controller
     public function deleteAction(Request $request, $id)
     {
         if ($request->isMethod('POST')) {
-            $service = $this->get('subscription.service');
-            $service->removeById($id);
+            $this->get('subscription.service')->removeById($id);
 
             return new Response(json_encode(array('status' => true)));
         }
@@ -48,7 +45,6 @@ class UsersSubscriptionsController extends Controller
     public function removeAction(Request $request, $type, $id)
     {
         if ($request->isMethod('POST')) {
-            $service = $this->get('subscription.service');
             $em = $this->getDoctrine()->getManager();
             $subscription = $this->findByType($em, $type, $id);
             $em->remove($subscription);
@@ -72,6 +68,8 @@ class UsersSubscriptionsController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $em->flush();
+
+                return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details'));
             }
         }
 
@@ -82,6 +80,37 @@ class UsersSubscriptionsController extends Controller
             'subscription' => $subscription->getSubscription()->getId(),
             'name' => $subscription->getName(),
             'language' => $subscription->getLanguage()->getName(),
+        );
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/users-subscriptions/edit/{id}")
+     * @Template()
+     */
+    public function editsubscriptionAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $subscription = $this->get('subscription.service')->getOneById($id);
+
+        $form = $this->createForm('subscriptioneditForm', $subscription);
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_index'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'id' => $subscription->getId(),
+            'username' => $subscription->getUser()->getUsername(),
+            'name' => $subscription->getUser()->getName(),
+            'publication' => $subscription->getPublicationName(),
+            'topay' => $subscription->getToPay(),
+            'currency' => $subscription->getCurrency(),
+            'type' => $subscription->getType(),
         );
     }
 
