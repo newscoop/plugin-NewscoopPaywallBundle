@@ -56,12 +56,36 @@ function deleteSubscription(element, tbody, div) {
 };
 
 $(document).ready(function() {
+    var edit_template = $('#edit-all-template');
+    var editForm = $('#editForm');
     jsTable($('#issuesTable'));
     jsTable($('#sectionsTable'));
     jsTable($('#articlesTable'));
     deleteSubscription($('#articlesTable'), $('#articlesTable tbody'), $('#articles'));
     deleteSubscription($('#sectionsTable'), $('#sectionsTable tbody'), $('#sections'));
     deleteSubscription($('#issuesTable'), $('#issuesTable tbody'), $('#issues'));
+
+    $('#edit-all-sections').click(function() {
+        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_edit', {'type': $(this).attr('id'), 'id': {{ id }} }));
+
+        edit_template.attr('title', 'Edit all sections');
+        edit_template.dialog();
+    });
+
+    $('#edit-all-articles').click(function() {
+        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_edit', {'type': $(this).attr('id'), 'id': {{ id }} }));
+
+        edit_template.attr('title', 'Edit all articles');
+        edit_template.dialog();
+    });
+
+    $('#edit-all-issues').click(function() {
+        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_edit', {'type': $(this).attr('id'), 'id': {{ id }} }));
+
+        edit_template.attr('title', 'Edit all issues');
+        edit_template.dialog();
+    });
+
     $('#back').click(function() {
         window.location.href = Routing.generate('newscoop_paywall_userssubscriptions_index');
     });
@@ -74,7 +98,46 @@ $(document).ready(function() {
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
     <fieldset class="actions" style="background-color: #fff;">
         <input type="button" id="back" class="button" value="Go back to users subscriptions">
+        {% if issues %}
+            <input type="button" id="edit-all-issues" class="button" value="Edit all issues">
+        {% endif %}
+        {% if sections %}
+            <input type="button" id="edit-all-sections" class="button" value="Edit all sections">
+        {% endif %}
+        {% if articles %}
+            <input type="button" id="edit-all-articles" class="button" value="Edit all articles">
+        {% endif %}
     </fieldset>
+    <div id="edit-all-template" style="display: none">
+        <form id="editForm" method="post" {{ form_enctype(form) }}>
+            <div class="table">
+                <div class="tr">
+                    <div class="td"><strong>{{ form_label(form.startDate) }}</strong></div>
+                </div>
+                <div class="tr">
+                    <div class="td">{{ form_widget(form.startDate, {'attr' : {'class' : 'input_text'}}) }}</div>
+                </div>
+                <div class="tr">
+                    <div class="td"><strong>{{ form_label(form.days) }}</strong></div>
+                </div>
+                <div class="tr">
+                    <div class="td">{{ form_widget(form.days, {'attr' : {'class' : 'input_text'}}) }}</div>
+                </div>
+                <div class="tr">
+                    <div class="td"><strong>{{ form_label(form.paidDays) }}</strong> </div>
+                </div>
+                <div class="tr">
+                    <div class="td">{{ form_widget(form.paidDays, {'attr' : {'class' : 'input_text'}}) }}</div>
+                </div>
+                <hr>
+                <div class="tr">
+                    <div class="td">
+                        <input type="submit" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
+                    </div>
+                </div>
+            </div>
+    </form>
+    </div>
     {% if issues %}
     <div id="issues" style="padding: 10px 10px 30px 10px;">
         <fieldset class="actions" id="details-header">

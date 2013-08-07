@@ -25,7 +25,7 @@ class SubscriptionDetailsType extends AbstractType
             'attr' => array('min' => '1'),
             'required' => true
         ))
-        ->add('paidDays', null, array(
+        ->add('paidDays', 'integer', array(
             'attr' => array('min' => '1'),
             'required' => true
         ));
