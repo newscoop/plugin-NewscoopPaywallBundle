@@ -127,4 +127,25 @@ class PaywallService extends SubscriptionService
         
         return $articlesArray;
     }
+
+    public function getSectionsByLanguageAndId($language, $subscription_id) {
+
+        $sections = $this->em->getRepository('Newscoop\Subscription\Section')
+            ->findBy(array(
+                'language' => $language,
+                'subscription' => $subscription_id,
+        ));
+
+        return $sections;
+    }
+
+    public function getSectionsByLanguageId($language_id) {
+
+        $sections = $this->em->getRepository('Newscoop\Entity\Section')
+            ->findBy(array(
+                'language' => $language_id,
+            ));
+
+        return $sections;
+    }
 }

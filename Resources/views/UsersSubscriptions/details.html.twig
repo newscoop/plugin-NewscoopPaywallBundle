@@ -4,11 +4,13 @@
 {% block admin_page_title_content %}{{ 'paywall.toolbar.label.manageusers'|trans }}{% endblock %}
 
 {% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
 {% endblock %}
 
 {% block admin_scripts %}
+<script src="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.js') }}"></script>
 <script type="text/javascript">
 function jsTable(element) {
     element.dataTable( {
@@ -42,7 +44,7 @@ function deleteSubscription(element, tbody, div) {
         var dataTableRow = dataTableCell.parent().get(0);
         event.preventDefault();
         $.post($(this).attr('href'), 
-           function(data) {
+         function(data) {
             if (data.status) {
                 flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
                 dataTableRow.remove();
@@ -55,6 +57,9 @@ function deleteSubscription(element, tbody, div) {
     });
 };
 
+function format(item) { return item.name; };
+function formatDiv(item) { return "<div class='select2-results'>" + item.id + " " + item.name + "</div>"; }
+
 $(document).ready(function() {
     var edit_template = $('#edit-all-template');
     var editForm = $('#editForm');
@@ -64,25 +69,72 @@ $(document).ready(function() {
     deleteSubscription($('#articlesTable'), $('#articlesTable tbody'), $('#articles'));
     deleteSubscription($('#sectionsTable'), $('#sectionsTable tbody'), $('#sections'));
     deleteSubscription($('#issuesTable'), $('#issuesTable tbody'), $('#issues'));
+    $('#selectSections').prop('disabled', 'disabled');
+    $("#selectLanguages").select2().on("change", function (e) {
+        $("#selectSections").select2("enable", true);   
+    });
+
+    $("#selectSections").select2({
+        placeholder: "Select section",
+        ajax: {
+            url: Routing.generate('newscoop_paywall_userssubscriptions_getsections'),
+            dataType: 'json',
+            data: function () {
+                return {
+                    subscriptionId: $("#subscriptionId").val(),
+                    languageId: $("#languageId").val()
+                };
+            },
+            results: function (data) {
+                return {results: data};
+            }
+        },
+        initSelection: function(element, callback) {
+            var data = {id: element.val(), text: element.val()};
+            callback(data);
+        },
+        formatResult: formatDiv,
+        formatSelection: format,
+        escapeMarkup: function (m) { return m; }
+
+    }).on("change", function (e) {
+        $('#sectionId').val($("#selectSections").select2("val"));  
+    });
 
     $('#edit-all-sections').click(function() {
         editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_edit', {'type': $(this).attr('id'), 'id': {{ id }} }));
-
+        $('.tr.language').hide();
+        $('.tr.section').hide();
+        $('#ui-dialog-title-edit-all-template').text('Edit all sections');
         edit_template.attr('title', 'Edit all sections');
         edit_template.dialog();
     });
 
     $('#edit-all-articles').click(function() {
         editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_edit', {'type': $(this).attr('id'), 'id': {{ id }} }));
-
+        $('.tr.language').hide();
+        $('.tr.section').hide();
+        $('#ui-dialog-title-edit-all-template').text('Edit all articles');
         edit_template.attr('title', 'Edit all articles');
         edit_template.dialog();
     });
 
     $('#edit-all-issues').click(function() {
         editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_edit', {'type': $(this).attr('id'), 'id': {{ id }} }));
-
+        $('.tr.language').hide();
+        $('.tr.section').hide();
+        $('#ui-dialog-title-edit-all-template').text('Edit all issues');
         edit_template.attr('title', 'Edit all issues');
+        edit_template.dialog();
+    });
+
+    $('#section').click(function() {
+        $('#selectSections').select2("enable", false);
+        $('.tr.language').show();
+        $('.tr.section').show();
+        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_add'));
+        $('#ui-dialog-title-edit-all-template').text('Add sections');
+        edit_template.attr('title', 'Add sections');
         edit_template.dialog();
     });
 
@@ -98,19 +150,42 @@ $(document).ready(function() {
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
     <fieldset class="actions" style="background-color: #fff;">
         <input type="button" id="back" class="button" value="Go back to users subscriptions">
+        <input type="button" id="section" class="button" value="Add sections">
         {% if issues %}
-            <input type="button" id="edit-all-issues" class="button" value="Edit all issues">
+        <input type="button" id="edit-all-issues" class="button" value="Edit all issues">
         {% endif %}
         {% if sections %}
-            <input type="button" id="edit-all-sections" class="button" value="Edit all sections">
+        <input type="button" id="edit-all-sections" class="button" value="Edit all sections">
         {% endif %}
         {% if articles %}
-            <input type="button" id="edit-all-articles" class="button" value="Edit all articles">
+        <input type="button" id="edit-all-articles" class="button" value="Edit all articles">
         {% endif %}
     </fieldset>
     <div id="edit-all-template" style="display: none">
         <form id="editForm" method="post" {{ form_enctype(form) }}>
+            <input type="hidden" id="subscriptionId" name="subscriptionId" value="{{ subscription_id }}"></input>
             <div class="table">
+                <div class="tr language">
+                    <div class="td"><strong>Language</strong></div>
+                </div>
+                <div class="tr language">
+                    <div class="td">
+                        <select id="selectLanguages">
+                            <option value="en">Individual languages</option>
+                            <option value="all">Regardless of the language</option>
+                        </select>
+                        <input type="hidden" id="languageId" name="languageId" value="1"></input>
+                    </div>
+                </div>
+                <div class="tr section">
+                    <div class="td"><strong>Sections</strong></div>
+                </div>
+                <div class="tr section">
+                    <div class="td">
+                        <div id="selectSections" class="populate placeholder"></div>
+                        <input type="hidden" id="sectionId" name="sectionId"></input>
+                    </div>
+                </div>
                 <div class="tr">
                     <div class="td"><strong>{{ form_label(form.startDate) }}</strong></div>
                 </div>
@@ -136,7 +211,7 @@ $(document).ready(function() {
                     </div>
                 </div>
             </div>
-    </form>
+        </form>
     </div>
     {% if issues %}
     <div id="issues" style="padding: 10px 10px 30px 10px;">

@@ -13,6 +13,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Newscoop\Subscription\SectionFacade;
+use Newscoop\Entity\User\Subscriber;
 
 class UsersSubscriptionsController extends Controller
 {
@@ -51,6 +53,45 @@ class UsersSubscriptionsController extends Controller
             $em->flush();
 
             return new Response(json_encode(array('status' => true)));
+        }
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/users-subscriptions/add", options={"expose"=true})
+     */
+    public function addAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $subscriptionService = $this->container->get('subscription.service');
+        $subscription = $subscriptionService->getOneById($request->get('subscriptionId'));
+        
+        $form = $this->createForm('detailsForm');
+        if ($request->isMethod('POST')) {
+            $form->bind($request);     
+            if ($form->isValid()) { 
+                $data = $form->getData();
+                $subscriptionData = new \Newscoop\Subscription\SubscriptionData(array(
+                    'startDate' => $data['startDate'],
+                    'paidDays' => $data['paidDays'],
+                    'days' => $data['days']
+                ), $subscription);
+                $language = $subscriptionService->getLanguageRepository()
+                    ->findOneById($request->get('languageId'));
+
+                $section = $subscriptionService->getSectionRepository()
+                    ->findOneByNumber($request->request->get('sectionId'));
+
+                $subscriptionData->addSection($section, $language);
+
+                $subscription = $subscriptionService->update($subscription, $subscriptionData);
+                $subscriptionService->save($subscription);
+
+                return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details', 
+                        array(
+                            'id' => $subscription->getId(), 
+                        )
+                ));
+            }
         }
     }
 
@@ -161,11 +202,45 @@ class UsersSubscriptionsController extends Controller
         $form = $this->createForm('detailsForm');
 
         return array(
+            'subscription_id' => $id,
             'form' => $form->createView(),
             'issues' => $service->getIssues($id),
             'sections' => $service->getSections($id),
             'articles' => $service->getArticles($id),
         );
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/users-subscriptions/getsections", options={"expose"=true})
+     */
+    public function getSections(Request $request) {
+        $subscriptionService = $this->get('subscription.service');
+
+        $subscriptionSections = $subscriptionService
+            ->getSectionsByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
+
+        $entitySections = $subscriptionService->getSectionsByLanguageId($request->get('languageId'));
+
+        $sections = array();
+        $sectionsSub = array();
+        foreach ($entitySections as $section) {
+            $sections[$section->getNumber()] = $section->getName();
+        }
+
+        foreach ($subscriptionSections as $section) {
+            $sectionsSub[$section->getSectionNumber()] = $section->getName();
+        }
+
+        $array = array_unique(array_diff($sections, $sectionsSub));
+        $resultArray = array();
+        foreach ($array as $key => $value) {
+            $resultArray[] = array(
+                'id' => $key, 
+                'name' => $value
+            );
+        }
+
+        return new Response(json_encode($resultArray));
     }
 
     /**
