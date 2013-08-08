@@ -59,25 +59,11 @@ function deleteSubscription(element, tbody, div) {
 
 function format(item) { return item.name; };
 function formatDiv(item) { return "<div class='select2-results'>" + item.id + " " + item.name + "</div>"; }
-
-$(document).ready(function() {
-    var edit_template = $('#edit-all-template');
-    var editForm = $('#editForm');
-    jsTable($('#issuesTable'));
-    jsTable($('#sectionsTable'));
-    jsTable($('#articlesTable'));
-    deleteSubscription($('#articlesTable'), $('#articlesTable tbody'), $('#articles'));
-    deleteSubscription($('#sectionsTable'), $('#sectionsTable tbody'), $('#sections'));
-    deleteSubscription($('#issuesTable'), $('#issuesTable tbody'), $('#issues'));
-    $('#selectSections').prop('disabled', 'disabled');
-    $("#selectLanguages").select2().on("change", function (e) {
-        $("#selectSections").select2("enable", true);   
-    });
-
-    $("#selectSections").select2({
-        placeholder: "Select section",
+function selectBox(type) {
+    $("#select").select2({
+        placeholder: "Select",
         ajax: {
-            url: Routing.generate('newscoop_paywall_userssubscriptions_getsections'),
+            url: Routing.generate('newscoop_paywall_userssubscriptions_getdata', {'type': type}),
             dataType: 'json',
             data: function () {
                 return {
@@ -98,44 +84,58 @@ $(document).ready(function() {
         escapeMarkup: function (m) { return m; }
 
     }).on("change", function (e) {
-        $('#sectionId').val($("#selectSections").select2("val"));  
+        $('#selectedId').val($("#select").select2("val"));  
     });
+};
 
-    $('#edit-all-sections').click(function() {
-        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_edit', {'type': $(this).attr('id'), 'id': {{ id }} }));
+function buttonClick(id, text, url) {
+    id.click(function() {
+        var edit_template = $('#edit-all-template');
+        var editForm = $('#editForm');
+        var attr = id.attr('id');
         $('.tr.language').hide();
-        $('.tr.section').hide();
-        $('#ui-dialog-title-edit-all-template').text('Edit all sections');
-        edit_template.attr('title', 'Edit all sections');
+        $('.tr.select').hide();
+        if (attr === 'issue' || attr === 'section' || attr === 'article') {
+            selectBox(attr);
+            $('#select').select2("enable", false);
+            $('.tr.language').show();
+            $('.tr.select').show();
+        }
+        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_'+url, {'type': attr, 'id': {{ id }} }));
+        $('#ui-dialog-title-edit-all-template').text(text);
+        edit_template.attr('title', text);
         edit_template.dialog();
     });
+};
 
-    $('#edit-all-articles').click(function() {
-        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_edit', {'type': $(this).attr('id'), 'id': {{ id }} }));
-        $('.tr.language').hide();
-        $('.tr.section').hide();
-        $('#ui-dialog-title-edit-all-template').text('Edit all articles');
-        edit_template.attr('title', 'Edit all articles');
-        edit_template.dialog();
+$(document).ready(function() {
+    jsTable($('#issuesTable'));
+    jsTable($('#sectionsTable'));
+    jsTable($('#articlesTable'));
+    deleteSubscription($('#articlesTable'), $('#articlesTable tbody'), $('#articles'));
+    deleteSubscription($('#sectionsTable'), $('#sectionsTable tbody'), $('#sections'));
+    deleteSubscription($('#issuesTable'), $('#issuesTable tbody'), $('#issues'));
+    $('#select').prop('disabled', 'disabled');
+    $("#selectLanguages").select2().on("change", function (e) {
+        $("#select").select2("enable", true);   
     });
+    buttonClick($('#edit-all-issues'), 'Edit all issues', 'edit');
+    buttonClick($('#edit-all-sections'), 'Edit all sections', 'edit');
+    buttonClick($('#edit-all-articles'), 'Edit all articles', 'edit');
+    buttonClick($('#issue'), 'Add issue', 'add');
+    buttonClick($('#section'), 'Add section', 'add');
+    buttonClick($('#article'), 'Add article', 'add');
 
-    $('#edit-all-issues').click(function() {
-        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_edit', {'type': $(this).attr('id'), 'id': {{ id }} }));
-        $('.tr.language').hide();
-        $('.tr.section').hide();
-        $('#ui-dialog-title-edit-all-template').text('Edit all issues');
-        edit_template.attr('title', 'Edit all issues');
-        edit_template.dialog();
-    });
-
-    $('#section').click(function() {
-        $('#selectSections').select2("enable", false);
-        $('.tr.language').show();
-        $('.tr.section').show();
-        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_add'));
-        $('#ui-dialog-title-edit-all-template').text('Add sections');
-        edit_template.attr('title', 'Add sections');
-        edit_template.dialog();
+    $('#save').click(function() {
+        if (!$("#select").select2("val")) {
+            alert('Select box can not be empty!');
+            return false;
+        }
+        if (!$("#selectLanguages").select2("val")) {
+            alert('Select box can not be empty!');
+            return false;
+        }
+        return true;
     });
 
     $('#back').click(function() {
@@ -150,7 +150,9 @@ $(document).ready(function() {
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
     <fieldset class="actions" style="background-color: #fff;">
         <input type="button" id="back" class="button" value="Go back to users subscriptions">
-        <input type="button" id="section" class="button" value="Add sections">
+        <input type="button" id="issue" class="button" value="Add issue">
+        <input type="button" id="section" class="button" value="Add section">
+        <input type="button" id="article" class="button" value="Add article">
         {% if issues %}
         <input type="button" id="edit-all-issues" class="button" value="Edit all issues">
         {% endif %}
@@ -170,20 +172,20 @@ $(document).ready(function() {
                 </div>
                 <div class="tr language">
                     <div class="td">
-                        <select id="selectLanguages">
+                        <select id="selectLanguages" style="width: 240px">
                             <option value="en">Individual languages</option>
                             <option value="all">Regardless of the language</option>
                         </select>
-                        <input type="hidden" id="languageId" name="languageId" value="1"></input>
+                        <input type="hidden" id="languageId" name="languageId" value="{{ subscription_language }}"></input>
                     </div>
                 </div>
-                <div class="tr section">
-                    <div class="td"><strong>Sections</strong></div>
+                <div class="tr select">
+                    <div class="td"><strong>Type</strong></div>
                 </div>
-                <div class="tr section">
+                <div class="tr select">
                     <div class="td">
-                        <div id="selectSections" class="populate placeholder"></div>
-                        <input type="hidden" id="sectionId" name="sectionId"></input>
+                        <div id="select" class="populate placeholder" style="width: 240px"></div>
+                        <input type="hidden" id="selectedId" name="selectedId"></input>
                     </div>
                 </div>
                 <div class="tr">
@@ -207,7 +209,7 @@ $(document).ready(function() {
                 <hr>
                 <div class="tr">
                     <div class="td">
-                        <input type="submit" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
+                        <input type="submit" id="save" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
                     </div>
                 </div>
             </div>

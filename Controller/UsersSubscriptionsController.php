@@ -13,8 +13,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Newscoop\Subscription\SectionFacade;
-use Newscoop\Entity\User\Subscriber;
 
 class UsersSubscriptionsController extends Controller
 {
@@ -57,9 +55,9 @@ class UsersSubscriptionsController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/users-subscriptions/add", options={"expose"=true})
+     * @Route("/admin/paywall_plugin/users-subscriptions/add/{type}", options={"expose"=true})
      */
-    public function addAction(Request $request)
+    public function addAction(Request $request, $type)
     {
         $em = $this->getDoctrine()->getManager();
         $subscriptionService = $this->container->get('subscription.service');
@@ -75,23 +73,43 @@ class UsersSubscriptionsController extends Controller
                     'paidDays' => $data['paidDays'],
                     'days' => $data['days']
                 ), $subscription);
-                $language = $subscriptionService->getLanguageRepository()
-                    ->findOneById($request->get('languageId'));
+                $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('languageId'));
 
-                $section = $subscriptionService->getSectionRepository()
-                    ->findOneByNumber($request->request->get('sectionId'));
+                switch ($type) {
+                    case 'article':
+                        $article = $subscriptionService->getArticleRepository()->findOneByNumber($request->get('selectedId'));
+                        $subscriptionData->addArticle($article, $language);
+                        break;
 
-                $subscriptionData->addSection($section, $language);
+                    case 'section':
+                        $section = $subscriptionService->getSectionRepository()->findOneByNumber($request->get('selectedId'));
+                        $subscriptionData->addSection($section, $language);
+                        break;
+
+                    case 'issue':
+                        $issue = $subscriptionService->getIssueRepository()->findOneByNumber($request->get('selectedId'));
+                        $subscriptionData->addIssue($issue, $language);
+                        break;
+                        
+                    default:
+                        break;
+                }
 
                 $subscription = $subscriptionService->update($subscription, $subscriptionData);
                 $subscriptionService->save($subscription);
 
                 return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details', 
-                        array(
-                            'id' => $subscription->getId(), 
-                        )
+                    array(
+                        'id' => $subscription->getId(), 
+                    )
                 ));
             }
+
+            return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details', 
+                array(
+                    'id' => $subscription->getId(), 
+                )
+            ));
         }
     }
 
@@ -198,48 +216,62 @@ class UsersSubscriptionsController extends Controller
      */
     public function detailsAction(Request $request, $id)
     {
-        $service = $this->get('subscription.service');
+        $subscriptionService = $this->get('subscription.service');
         $form = $this->createForm('detailsForm');
 
         return array(
             'subscription_id' => $id,
+            'subscription_language' => $subscriptionService->getOneById($id)->getPublication()->getLanguage()->getId(),
             'form' => $form->createView(),
-            'issues' => $service->getIssues($id),
-            'sections' => $service->getSections($id),
-            'articles' => $service->getArticles($id),
+            'issues' => $subscriptionService->getIssues($id),
+            'sections' => $subscriptionService->getSections($id),
+            'articles' => $subscriptionService->getArticles($id),
         );
     }
 
     /**
-     * @Route("/admin/paywall_plugin/users-subscriptions/getsections", options={"expose"=true})
+     * @Route("/admin/paywall_plugin/users-subscriptions/getdata/{type}", options={"expose"=true})
      */
-    public function getSections(Request $request) {
+    public function getdata(Request $request, $type) {
         $subscriptionService = $this->get('subscription.service');
+        
+        switch ($type) {
+            case 'issue':
+                $subscriptionEntity = $subscriptionService
+                    ->getIssuesByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
+                $entity = $subscriptionService->getIssuesByLanguageId($request->get('languageId'));
+                break;
+            case 'section':
+                $subscriptionEntity = $subscriptionService
+                    ->getSectionsByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
+                $entity = $subscriptionService->getSectionsByLanguageId($request->get('languageId'));
+                break;
+            case 'article':
+                $subscriptionEntity = $subscriptionService
+                    ->getArticlesByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
+                $entity = $subscriptionService->getArticlesByLanguageId($request->get('languageId'));
+                break;
 
-        $subscriptionSections = $subscriptionService
-            ->getSectionsByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
-
-        $entitySections = $subscriptionService->getSectionsByLanguageId($request->get('languageId'));
-
-        $sections = array();
-        $sectionsSub = array();
-        foreach ($entitySections as $section) {
-            $sections[$section->getNumber()] = $section->getName();
         }
-
-        foreach ($subscriptionSections as $section) {
-            $sectionsSub[$section->getSectionNumber()] = $section->getName();
-        }
-
-        $array = array_unique(array_diff($sections, $sectionsSub));
+        $resultEntity = array();
+        $resultSubscription = array();
         $resultArray = array();
+        foreach ($entity as $section) {
+            $resultEntity[$section->getNumber()] = $section->getName();
+        }
+
+        foreach ($subscriptionEntity as $section) {
+            $resultSubscription[$section->getSectionNumber()] = $section->getName();
+        }
+
+        $array = array_unique(array_diff($resultEntity, $resultSubscription));
         foreach ($array as $key => $value) {
             $resultArray[] = array(
                 'id' => $key, 
                 'name' => $value
             );
         }
-
+        
         return new Response(json_encode($resultArray));
     }
 
