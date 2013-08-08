@@ -21,8 +21,11 @@ class UsersSubscriptionsController extends Controller
      * @Template()
      */
     public function indexAction(Request $request)
-    {
+    {   
+        $form = $this->createForm('subscriptionaddForm');
+
         return array(
+            'form' => $form->createView(),
             'subscriptions' => $this->get('subscription.service')->getByAll(),
         );
     }
@@ -73,8 +76,8 @@ class UsersSubscriptionsController extends Controller
                     'paidDays' => $data['paidDays'],
                     'days' => $data['days']
                 ), $subscription);
-                $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('languageId'));
 
+                $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('languageId'));
                 switch ($type) {
                     case 'article':
                         $article = $subscriptionService->getArticleRepository()->findOneByNumber($request->get('selectedId'));
@@ -90,7 +93,7 @@ class UsersSubscriptionsController extends Controller
                         $issue = $subscriptionService->getIssueRepository()->findOneByNumber($request->get('selectedId'));
                         $subscriptionData->addIssue($issue, $language);
                         break;
-                        
+
                     default:
                         break;
                 }
@@ -111,6 +114,17 @@ class UsersSubscriptionsController extends Controller
                 )
             ));
         }
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/users-subscriptions/add-subscription", options={"expose"=true})
+     */
+    public function addsubscriptionAction(Request $request)
+    {
+        $subscriptionService = $this->container->get('subscription.service');
+        $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
+        //var_dump($subscriptionsConfig->getName());die;
+        
     }
 
     /**

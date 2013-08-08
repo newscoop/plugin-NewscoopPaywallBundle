@@ -44,6 +44,7 @@ paywall:
     button2: "Specify articles"
     details: "Details"
     back: "Back"
+    add: "Add"
   flash:
     message:
       subscription:

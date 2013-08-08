@@ -6,11 +6,13 @@
 {% block admin_stylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.css') }}" />
 {% endblock %}
 
 {% block admin_scripts %}
-<script src="{{ asset('public/bundles/newscooppaywall/js/jquery.jeditable.js') }}"></script>
+<script src="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.js') }}"></script>
 <script type="text/javascript">
+
 $(document).ready(function(){
     $('#users-subscriptionsTable').css('font-size', '13px');
     $('#users-subscriptionsTable').dataTable( {
@@ -51,49 +53,84 @@ $(document).ready(function(){
         });
     });
 
-    var oTable = $('#subscriptionsTable').dataTable();
-    $('td[class!="readonly"]', oTable.fnGetNodes()).editable( '{{ path('newscoop_paywall_managesubscriptions_edit', {'_method':'PATCH'}) }}', {
-        "callback": function( sValue ) {
-            var aPos = oTable.fnGetPosition( this );
-            oTable.fnUpdate( sValue, aPos[0], aPos[1] );
-            flashMessage('{{ 'paywall.flash.message.subscription.updated'|trans }}');
-        },
-        "submitdata": function ( value, settings ) {
-            return {
-                "row_id": this.parentNode.getAttribute('id'),
-                "column": oTable.fnGetPosition( this )[2],
-                "subscriptionconf[name]": $('#subscriptionname').val(),
-                "subscriptionconf[duration]": $('#subscriptionduration').val(),
-                "subscriptionconf[range]": $('#subscriptionrange').val(),
-                "subscriptionconf[price]": $('#subscriptionprice').val(),
-                "subscriptionconf[currency]": $('#subscriptioncurrency').val()
-                
-            };
-        },
-        "height": "18px"
+    $('#add-new-subscription').click(function() {
+        var edit_template = $('#edit-all-template');
+        var addForm = $('#addForm');
+        addForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_index'));
+        $('#ui-dialog-title-edit-all-template').text('Add user subscription');
+        edit_template.attr('title', 'Add new subscription');
+        edit_template.dialog();
     });
-    $("#name").click(function(){
-        $(this).parent().find('input').attr({'id': 'subscriptionname', 'name': 'subscriptionconf[name]'});
+
+    $('#subscriptionaddForm_users').css('width', '250px');
+    $('#subscriptionaddForm_users').select2({
+        placeholder: "Select user",
+        minimumInputLength: 1
     });
-    $("#type").click(function(){
-        $(this).parent().find('input').attr({'id': 'subscriptiontype', 'name': 'subscriptionconf[type]'});
+    $('#subscriptionaddForm_subscriptions').css('width', '250px');
+    $('#subscriptionaddForm_subscriptions').select2({
+        placeholder: "Select subscription",
+        minimumInputLength: 1
     });
-    $("#range").click(function(){
-        $(this).parent().find('input').attr({'id': 'subscriptionrange', 'name': 'subscriptionconf[range]'});
+    $('#subscriptionaddForm_status').css('width', '250px');
+    $('#subscriptionaddForm_status').select2({
+        placeholder: "Choose status"
     });
-    $("#price").click(function(){
-        $(this).parent().find('input').attr({'id': 'subscriptionprice', 'name': 'subscriptionconf[price]'});
-    });
-    $("#currency").click(function(){
-        $(this).parent().find('input').attr({'id': 'subscriptioncurrency', 'name': 'subscriptionconf[currency]'});
-    });
+    
 });
 </script>
 {% endblock %}
 {% block admin_content %}
 <div id="subscription">
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
-
+    <fieldset class="actions" style="background-color: #fff;">
+        <input type="button" id="add-new-subscription" class="save-button" value="Add user subscription">
+    </fieldset>
+    <div id="edit-all-template" style="display: none">
+        <form id="addForm" method="post" {{ form_enctype(form) }}>
+            <div class="table">
+                <div class="tr">
+                    <div class="td"><strong>{{ form_label(form.users) }}</strong></div>
+                </div>
+                <div class="tr">
+                    <div class="td">{{ form_widget(form.users) }}</div>
+                </div>
+                <div class="tr">
+                    <div class="td"><strong>{{ form_label(form.subscriptions) }}</strong></div>
+                </div>
+                <div class="tr">
+                    <div class="td">{{ form_widget(form.subscriptions) }}</div>
+                </div>
+                <div class="tr">
+                    <div class="td"><strong>{{ form_label(form.status) }}</strong></div>
+                </div>
+                <div class="tr">
+                    <div class="td">{{ form_widget(form.status) }}</div>
+                </div>
+                 <div class="tr">
+                    <div class="td"><strong>Subscription Details:</strong></div>
+                </div>
+                <div class="tr">
+                    <div class="td"><strong>Type: </strong></div>
+                </div>
+                <div class="tr">
+                    <div class="td"><strong>Duration: </strong></div>
+                </div>
+                <div class="tr">
+                    <div class="td"><strong>Price: </strong></div>
+                </div>
+                <div class="tr">
+                    <div class="td"><strong>Currency: </strong></div>
+                </div>
+                <hr>
+                <div class="tr">
+                    <div class="td">
+                        <input type="submit" id="save" value="{{ 'paywall.btn.add'|trans }}" class="save-button">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
     <div id="users-subscriptions" style="padding: 10px 10px 30px 10px;">
         <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="users-subscriptionsTable">
             <thead>

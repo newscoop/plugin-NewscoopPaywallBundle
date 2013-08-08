@@ -39,6 +39,11 @@ services:
         tags:
             - { name: form.type, alias: subscriptioneditForm }
 
+    newscoop_paywall.form.type.subscriptionadd:
+        class: Newscoop\PaywallBundle\Form\Type\SubscriptionAddType
+        tags:
+            - { name: form.type, alias: subscriptionaddForm }
+
     newscoop_paywall.validator.unique.containsdecimal:
         class: Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimalValidator
         tags:

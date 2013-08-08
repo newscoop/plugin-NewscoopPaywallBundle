@@ -18,6 +18,11 @@ use Newscoop\Services\SubscriptionService;
  */
 class PaywallService extends SubscriptionService
 {
+
+    public function getSubscriptionsConfig() {
+       
+    }
+
     /**
      * Gets all user's subscriptions
      *
