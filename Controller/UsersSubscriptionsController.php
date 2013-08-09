@@ -119,11 +119,10 @@ class UsersSubscriptionsController extends Controller
     /**
      * @Route("/admin/paywall_plugin/users-subscriptions/add-subscription", options={"expose"=true})
      */
-    public function addsubscriptionAction(Request $request)
+    public function addSubscriptionAction(Request $request)
     {
         $subscriptionService = $this->container->get('subscription.service');
         $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
-        //var_dump($subscriptionsConfig->getName());die;
         
     }
 
@@ -185,11 +184,8 @@ class UsersSubscriptionsController extends Controller
         
         return array(
             'form' => $form->createView(),
-            'id' => $subscription->getId(),
+            'subscription' => $subscription,
             'type' => $type,
-            'subscription' => $subscription->getSubscription()->getId(),
-            'name' => $subscription->getName(),
-            'language' => $subscription->getLanguage()->getName(),
         );
     }
 
@@ -214,13 +210,7 @@ class UsersSubscriptionsController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'id' => $subscription->getId(),
-            'username' => $subscription->getUser()->getUsername(),
-            'name' => $subscription->getUser()->getName(),
-            'publication' => $subscription->getPublicationName(),
-            'topay' => $subscription->getToPay(),
-            'currency' => $subscription->getCurrency(),
-            'type' => $subscription->getType(),
+            'subscription' => $subscription,
         );
     }
 
@@ -241,6 +231,14 @@ class UsersSubscriptionsController extends Controller
             'sections' => $subscriptionService->getSections($id),
             'articles' => $subscriptionService->getArticles($id),
         );
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/users-subscriptions/get-subscription-details", options={"expose"=true})
+     */
+    public function getSubscriptionDetailsAjaxAction(Request $request)
+    {
+        return new Response(json_encode($this->get('subscription.service')->getOneByName($request->get('subscriptionName'))));
     }
 
     /**
@@ -293,8 +291,8 @@ class UsersSubscriptionsController extends Controller
      * Finds proper Entity object|Array Collection by given Type
      *
      * @param Doctrine\ORM\EntityManager $em
-     * @param string $type                   Subscription type
-     * @param string $id                     Subscription id
+     * @param string                     $type Subscription type
+     * @param string                     $id   Subscription id
      *
      * @return Entity object|Array Collection
      */

@@ -25,3 +25,8 @@ div.td {
     display: table-cell;
     padding: 5px 0;
 }
+#typeDetails span, #durationDetails span, 
+#priceDetails span, #currencyDetails span {
+    float: right;
+    margin-right: 100px;
+}

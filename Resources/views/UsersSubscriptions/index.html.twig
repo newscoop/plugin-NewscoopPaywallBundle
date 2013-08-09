@@ -12,8 +12,23 @@
 {% block admin_scripts %}
 <script src="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.js') }}"></script>
 <script type="text/javascript">
-
+function format(item) { return item.name; };
+function formatDiv(item) { return "<div class='select2-results'>" + item.name + "</div>"; }
+function getDetails(typeDetails, durationDetails, priceDetails, currencyDetails ) {
+    $.post(Routing.generate('newscoop_paywall_userssubscriptions_getsubscriptiondetailsajax'), {
+            'subscriptionName': $('#subscriptionaddForm_subscriptions').select2('data').text
+        }, function (data) {
+            typeDetails.append(data[0].type);
+            durationDetails.append(data[0].range);
+            priceDetails.append(data[0].price);
+            currencyDetails.append(data[0].currency);
+        }, 'json');
+};
 $(document).ready(function(){
+    var typeDetails = $('#typeDetails span');
+    var durationDetails = $('#durationDetails span');
+    var priceDetails = $('#priceDetails span');
+    var currencyDetails = $('#currencyDetails span');
     $('#users-subscriptionsTable').css('font-size', '13px');
     $('#users-subscriptionsTable').dataTable( {
         'oLanguage': {
@@ -56,26 +71,29 @@ $(document).ready(function(){
     $('#add-new-subscription').click(function() {
         var edit_template = $('#edit-all-template');
         var addForm = $('#addForm');
-        addForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_index'));
+        addForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_addsubscription'));
         $('#ui-dialog-title-edit-all-template').text('Add user subscription');
-        edit_template.attr('title', 'Add new subscription');
+        edit_template.attr('title', 'Add user subscription');
         edit_template.dialog();
     });
 
     $('#subscriptionaddForm_users').css('width', '250px');
     $('#subscriptionaddForm_users').select2({
-        placeholder: "Select user",
         minimumInputLength: 1
     });
     $('#subscriptionaddForm_subscriptions').css('width', '250px');
     $('#subscriptionaddForm_subscriptions').select2({
-        placeholder: "Select subscription",
         minimumInputLength: 1
+    }).on("change", function (e) {
+        typeDetails.empty();
+        durationDetails.empty();
+        priceDetails.empty();
+        currencyDetails.empty();
+        getDetails(typeDetails, durationDetails, priceDetails, currencyDetails);
     });
+    getDetails(typeDetails, durationDetails, priceDetails, currencyDetails);
     $('#subscriptionaddForm_status').css('width', '250px');
-    $('#subscriptionaddForm_status').select2({
-        placeholder: "Choose status"
-    });
+    $('#subscriptionaddForm_status').select2();
     
 });
 </script>
@@ -111,16 +129,16 @@ $(document).ready(function(){
                     <div class="td"><strong>Subscription Details:</strong></div>
                 </div>
                 <div class="tr">
-                    <div class="td"><strong>Type: </strong></div>
+                    <div class="td" id="typeDetails"><strong>Type: </strong><span></span></div>
                 </div>
                 <div class="tr">
-                    <div class="td"><strong>Duration: </strong></div>
+                    <div class="td" id="durationDetails"><strong>Duration: </strong><span></span></div>
                 </div>
                 <div class="tr">
-                    <div class="td"><strong>Price: </strong></div>
+                    <div class="td" id="priceDetails"><strong>Price: </strong><span></span></div>
                 </div>
                 <div class="tr">
-                    <div class="td"><strong>Currency: </strong></div>
+                    <div class="td" id="currencyDetails"><strong>Currency: </strong><span></span></div>
                 </div>
                 <hr>
                 <div class="tr">

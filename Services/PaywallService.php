@@ -195,4 +195,16 @@ class PaywallService extends SubscriptionService
 
         return $articles;
     }
+
+    public function getOneByName($subscriptionName) {
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            ->createQueryBuilder('s')
+            ->select('s')
+            ->where('s.name = :name')
+            ->setParameter('name', $subscriptionName)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $subscription;
+    }
 }

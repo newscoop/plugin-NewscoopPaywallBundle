@@ -20,7 +20,7 @@ $(document).ready(function() {
 {% block admin_content %}
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
 <div id="edit-subscription" style="padding: 10px 10px 30px 10px;">
-    <form id="subscriptioneditForm" action="{{ path('newscoop_paywall_userssubscriptions_editsubscription', {'id': id}) }}" method="post" {{ form_enctype(form) }}>
+    <form id="subscriptioneditForm" action="{{ path('newscoop_paywall_userssubscriptions_editsubscription', {'id': subscription.id}) }}" method="post" {{ form_enctype(form) }}>
         <table border="0" cellspacing="1" cellpadding="0" class="box_table" style="width: 355px">
             <tbody>
                <tr>
@@ -35,7 +35,7 @@ $(document).ready(function() {
                 </tr>
                 <tr>
                     <td align="left" valign="top">
-                        {{ username }}
+                        {{ subscription.user.username }}
                     </td>
                 </tr>
                 <tr>
@@ -45,7 +45,7 @@ $(document).ready(function() {
                 </tr>
                 <tr>
                     <td align="left" valign="top">
-                        {{ name }}
+                        {{ subscription.user.name }}
                     </td>
                 </tr>
                 <tr>
@@ -55,7 +55,7 @@ $(document).ready(function() {
                 </tr>
                 <tr>
                     <td align="left" valign="top">
-                        {{ publication }}
+                        {{ subscription.publication.name }}
                     </td>
                 </tr>
                 <tr>
