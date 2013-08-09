@@ -205,6 +205,15 @@ class PaywallService extends SubscriptionService
         return $subscription;
     }
 
+    public function getOneSubscriptionById($subscriptionId) {
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            ->findOneBy(array(
+                'id' => $subscriptionId,
+            ));
+
+        return $subscription;
+    }
+
     /**
      * Activate Subscription by Id
      * @param  integer $id User subscription id
@@ -221,5 +230,14 @@ class PaywallService extends SubscriptionService
             $subscription->setActive(true);
             $this->em->flush();
         }
+    }
+
+    public function getSubscriptionsConfig($subscriptionId) {
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription_specification')
+            ->findOneBy(array(
+                'subscription' => $subscriptionId,
+            ));
+
+        return $subscription;
     }
 }

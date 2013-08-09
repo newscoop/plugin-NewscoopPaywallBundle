@@ -150,17 +150,19 @@ $(document).ready(function() {
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
     <fieldset class="actions" style="background-color: #fff;">
         <input type="button" id="back" class="save-button" value="Go back to users subscriptions">
-        <input type="button" id="issue" class="button" value="Add issue">
-        <input type="button" id="section" class="button" value="Add section">
-        <input type="button" id="article" class="button" value="Add article">
+        {% if (type == 'issue') %}
+            <input type="button" id="issue" class="button" value="Add issue">
+        {% elseif (type == 'section') %}
+            <input type="button" id="section" class="button" value="Add section">
+        {% elseif (type == 'article') %}
+            <input type="button" id="article" class="button" value="Add article">
+        {% endif %}
         {% if issues %}
-        <input type="button" id="edit-all-issues" class="button" value="Edit all issues">
-        {% endif %}
-        {% if sections %}
-        <input type="button" id="edit-all-sections" class="button" value="Edit all sections">
-        {% endif %}
-        {% if articles %}
-        <input type="button" id="edit-all-articles" class="button" value="Edit all articles">
+            <input type="button" id="edit-all-issues" class="button" value="Edit all issues">
+        {% elseif sections %}
+            <input type="button" id="edit-all-sections" class="button" value="Edit all sections">
+        {% elseif articles %}
+            <input type="button" id="edit-all-articles" class="button" value="Edit all articles">
         {% endif %}
     </fieldset>
     <div id="edit-all-template" style="display: none">
@@ -259,8 +261,7 @@ $(document).ready(function() {
             </tfoot>
         </table>
     </div>
-    {% endif %}
-    {% if sections %}
+    {% elseif sections %}
     <div id="sections" style="padding: 10px 10px 30px 10px;">
         <fieldset class="actions" id="details-header">
             <span>Sections:</span>
@@ -304,8 +305,7 @@ $(document).ready(function() {
             </tfoot>
         </table>
     </div>
-    {% endif %}
-    {% if articles %}
+    {% elseif articles %}
     <div id="articles" style="padding: 10px 10px 30px 10px;">
         <fieldset class="actions" id="details-header">
             <span>Articles:</span>
@@ -349,6 +349,10 @@ $(document).ready(function() {
             </tfoot>
         </table>
     </div>
+    {% else %}
+        <fieldset class="actions" style="background-color: #fff;">
+            There is no content added yet.
+        </fieldset>
     {% endif %}
 </div>
 {% endblock %}

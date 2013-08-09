@@ -140,17 +140,21 @@ class UsersSubscriptionsController extends Controller
             $form->bind($request);     
             if ($form->isValid()) { 
                 $data = $form->getData();
+                $subscriptionConfig = $subscriptionService->getSubscriptionsConfig($data['subscriptions']);
                 $subscriptionData = new \Newscoop\Subscription\SubscriptionData(array(
                     'userId' => $data['users'],
-                    'publicationId' => $request->get('publicationId'),
-                    'toPay' => $request->get('price'),
-                    'days' => $request->get('range'),
-                    'currency' => $request->get('currency'),
+                    'subscriptionId' => $data['subscriptions'],
+                    'publicationId' => $subscriptionConfig->getPublication(),
+                    'toPay' => $subscriptionConfig->getSubscription()->getPrice(),
+                    'days' => $subscriptionConfig->getSubscription()->getRange(),
+                    'currency' => $subscriptionConfig->getSubscription()->getCurrency(),
                     'type' => $data['type'],
                     'active' => $data['status'] === 'Y' ? true : false
                 ), $subscription);
                 $subscription = $subscriptionService->update($subscription, $subscriptionData);
                 $subscriptionService->save($subscription);
+
+                return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_index'));
             }
         }
     }
@@ -254,6 +258,7 @@ class UsersSubscriptionsController extends Controller
 
         return array(
             'subscription_id' => $id,
+            'type' => $subscriptionService->getOneSubscriptionById($id)->getType(),
             'subscription_language' => $subscriptionService->getOneById($id)->getPublication()->getLanguage()->getId(),
             'form' => $form->createView(),
             'issues' => $subscriptionService->getIssues($id),

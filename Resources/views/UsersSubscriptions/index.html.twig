@@ -22,10 +22,6 @@ function getDetails(typeDetails, durationDetails, priceDetails, currencyDetails 
             durationDetails.append(data[0].range);
             priceDetails.append(data[0].price);
             currencyDetails.append(data[0].currency);
-            $('#publicationId').val(data[0].publication);
-            $('#range').val(data[0].range);
-            $('#currency').val(data[0].currency);
-            $('#price').val(data[0].price);
         }, 'json');
 };
 $(document).ready(function(){
@@ -87,8 +83,6 @@ $(document).ready(function(){
         });
     });
 
-    
-
     $('#add-new-subscription').click(function() {
         var edit_template = $('#edit-all-template');
         var addForm = $('#addForm');
@@ -138,10 +132,6 @@ $(document).ready(function(){
                 </div>
                 <div class="tr">
                     <div class="td"><strong>{{ form_label(form.subscriptions) }}</strong></div>
-                    <input type="hidden" id="publicationId" name="publicationId"/>
-                    <input type="hidden" id="currency" name="currency"/>
-                    <input type="hidden" id="range" name="range"/>
-                    <input type="hidden" id="price" name="price"/>
                 </div>
                 <div class="tr">
                     <div class="td">{{ form_widget(form.subscriptions) }}</div>
