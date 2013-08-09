@@ -31,12 +31,24 @@ class UsersSubscriptionsController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/users-subscriptions/delete/{id}")
+     * @Route("/admin/paywall_plugin/users-subscriptions/delete/{id}", options={"expose"=true})
      */
     public function deleteAction(Request $request, $id)
     {
         if ($request->isMethod('POST')) {
             $this->get('subscription.service')->removeById($id);
+
+            return new Response(json_encode(array('status' => true)));
+        }
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/users-subscriptions/activate/{id}", options={"expose"=true})
+     */
+    public function activateAction(Request $request, $id)
+    {
+        if ($request->isMethod('POST')) {
+            $this->get('subscription.service')->activateById($id);
 
             return new Response(json_encode(array('status' => true)));
         }
@@ -122,8 +134,25 @@ class UsersSubscriptionsController extends Controller
     public function addSubscriptionAction(Request $request)
     {
         $subscriptionService = $this->container->get('subscription.service');
-        $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
-        
+        $subscription = $subscriptionService->create();
+        $form = $this->createForm('subscriptionaddForm');
+        if ($request->isMethod('POST')) {
+            $form->bind($request);     
+            if ($form->isValid()) { 
+                $data = $form->getData();
+                $subscriptionData = new \Newscoop\Subscription\SubscriptionData(array(
+                    'userId' => $data['users'],
+                    'publicationId' => $request->get('publicationId'),
+                    'toPay' => $request->get('price'),
+                    'days' => $request->get('range'),
+                    'currency' => $request->get('currency'),
+                    'type' => $data['type'],
+                    'active' => $data['status'] === 'Y' ? true : false
+                ), $subscription);
+                $subscription = $subscriptionService->update($subscription, $subscriptionData);
+                $subscriptionService->save($subscription);
+            }
+        }
     }
 
     /**
@@ -238,7 +267,7 @@ class UsersSubscriptionsController extends Controller
      */
     public function getSubscriptionDetailsAjaxAction(Request $request)
     {
-        return new Response(json_encode($this->get('subscription.service')->getOneByName($request->get('subscriptionName'))));
+        return new Response(json_encode($this->get('subscription.service')->getSubscriptionDetails($request->get('subscriptionId'))));
     }
 
     /**

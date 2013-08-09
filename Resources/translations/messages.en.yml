@@ -34,6 +34,7 @@ paywall:
       durationbox: "Duration"
       price: "Price"
       currency: "Currency"
+      active: "Status"
   btn: 
     skip: "Skip"
     save: "Save"
@@ -45,11 +46,14 @@ paywall:
     details: "Details"
     back: "Back"
     add: "Add"
+    deactivate: "Deactivate"
+    activate: "Activate"
   flash:
     message:
       subscription:
-        deleted: "Subscription has been deleted."
+        deleted: "Subscription has been deactivated."
         updated: "Subscription has been updated."
+        activated: "Subscription has been activated."
   manage:
     label:
       name: "Name"

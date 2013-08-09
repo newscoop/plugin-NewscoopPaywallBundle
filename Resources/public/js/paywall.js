@@ -17,6 +17,7 @@ $(document).ready(function() {
         'step2.label.js.issue': 'Issues',
         'step2.label.js.section': 'Sections',
         'step2.label.js.article': 'Articles',
+        'step2.error.selects.required': 'Publication is required',
         'day': 'day',
         'days': 'days',
     };
@@ -215,7 +216,12 @@ $(document).ready(function() {
     });
 
     $('#skip').click(function() {
-        window.location.href = Routing.generate('newscoop_paywall_managesubscriptions_manage');
+        if(!$("#selectPublications").select2("val")) {
+            alert(translations['step2.error.selects.required']);
+            return false;
+        } else {
+            $('#step2Form').submit(); 
+        } 
     });
 
     var delay = (function(){

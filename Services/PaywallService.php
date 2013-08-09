@@ -18,11 +18,6 @@ use Newscoop\Services\SubscriptionService;
  */
 class PaywallService extends SubscriptionService
 {
-
-    public function getSubscriptionsConfig() {
-       
-    }
-
     /**
      * Gets all user's subscriptions
      *
@@ -43,6 +38,7 @@ class PaywallService extends SubscriptionService
                 'topay' => $subscription->getToPay(),
                 'currency' => $subscription->getCurrency(),
                 'type' => $subscription->getType(),
+                'active' => $subscription->isActive()
             );
         } 
 
@@ -196,15 +192,34 @@ class PaywallService extends SubscriptionService
         return $articles;
     }
 
-    public function getOneByName($subscriptionName) {
+    public function getSubscriptionDetails($subscriptionId) {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
             ->createQueryBuilder('s')
-            ->select('s')
-            ->where('s.name = :name')
-            ->setParameter('name', $subscriptionName)
+            ->select('s.type', 's.range', 's.price', 's.currency', 'i.publication')
+            ->innerJoin('s.specification', 'i', 'WITH', 'i.subscription = :id')
+            ->where('s.id = :id AND s.is_active = true')
+            ->setParameter('id', $subscriptionId)
             ->getQuery()
             ->getArrayResult();
 
         return $subscription;
+    }
+
+    /**
+     * Activate Subscription by Id
+     * @param  integer $id User subscription id
+     * @return void
+     */
+    public function activateById($id) {
+        
+        $subscription = $this->em->getRepository('Newscoop\Subscription\Subscription')
+            ->findOneBy(array(
+                'id' => $id
+            ));
+            
+        if ($subscription) {
+            $subscription->setActive(true);
+            $this->em->flush();
+        }
     }
 }

@@ -25,12 +25,19 @@ class SubscriptionAddType extends AbstractType
             'class' => 'Newscoop\PaywallBundle\Entity\Subscriptions',
             'property' => 'name',
         ))
-        ->add('status', 'choice', array(
-            'label'  => 'Status',
+        ->add('type', 'choice', array(
+            'label'  => 'Type',
             'choices'   => array(
                 'P'   => 'Paid',
                 'PN'   => 'Paid now',
                 'T' => 'Trial',
+            )
+        ))
+        ->add('status', 'choice', array(
+            'label'  => 'Active',
+            'choices'   => array(
+                'Y'   => 'Yes',
+                'N'   => 'No',
             )
         ));
     }

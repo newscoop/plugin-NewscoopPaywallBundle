@@ -30,3 +30,13 @@ div.td {
     float: right;
     margin-right: 100px;
 }
+#active {
+    background-color: #dff0d8; 
+    border-top: 1px solid #fff; 
+    color: #468847;
+}
+#deactivated {
+    background-color: #f2dede; 
+    border-top: 1px solid #fff; 
+    color: #b94a48;
+}
