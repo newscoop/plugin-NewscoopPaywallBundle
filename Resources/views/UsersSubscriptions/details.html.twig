@@ -109,6 +109,14 @@ function buttonClick(id, text, url) {
 };
 
 $(document).ready(function() {
+    var translations = {'error.empty': 'Select box can not be empty!', 
+        'label.editsections': 'Edit all sections',
+        'label.editissues': 'Edit all issues',
+        'label.editarticles': 'Edit all articles',
+        'label.addissue': 'Add issue',
+        'label.addsection': 'Add section',
+        'label.addarticle': 'Add article'
+    };
     jsTable($('#issuesTable'));
     jsTable($('#sectionsTable'));
     jsTable($('#articlesTable'));
@@ -119,20 +127,20 @@ $(document).ready(function() {
     $("#selectLanguages").select2().on("change", function (e) {
         $("#select").select2("enable", true);   
     });
-    buttonClick($('#edit-all-issues'), 'Edit all issues', 'edit');
-    buttonClick($('#edit-all-sections'), 'Edit all sections', 'edit');
-    buttonClick($('#edit-all-articles'), 'Edit all articles', 'edit');
-    buttonClick($('#issue'), 'Add issue', 'add');
-    buttonClick($('#section'), 'Add section', 'add');
-    buttonClick($('#article'), 'Add article', 'add');
+    buttonClick($('#edit-all-issues'), translations['label.editsections'], 'edit');
+    buttonClick($('#edit-all-sections'), translations['label.editsections'], 'edit');
+    buttonClick($('#edit-all-articles'), translations['label.editarticles'], 'edit');
+    buttonClick($('#issue'), translations['label.addissue'], 'add');
+    buttonClick($('#section'), translations['label.addsection'], 'add');
+    buttonClick($('#article'), translations['label.addarticle'], 'add');
 
     $('#save').click(function() {
         if (!$("#select").select2("val")) {
-            alert('Select box can not be empty!');
+            alert(translations['error.empty']);
             return false;
         }
         if (!$("#selectLanguages").select2("val")) {
-            alert('Select box can not be empty!');
+            alert(translations['error.empty']);
             return false;
         }
         return true;

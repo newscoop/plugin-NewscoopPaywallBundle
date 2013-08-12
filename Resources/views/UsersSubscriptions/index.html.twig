@@ -25,6 +25,12 @@ function getDetails(typeDetails, durationDetails, priceDetails, currencyDetails 
         }, 'json');
 };
 $(document).ready(function(){
+    var translations = {'btn.deactivate': 'Deactivate', 
+        'label.active': 'Active',
+        'label.deactivated': 'Deactivated',
+        'btn.activate': 'Activate',
+        'label.addsubscription': 'Add user subscription'
+    };
     var typeDetails = $('#typeDetails span');
     var durationDetails = $('#durationDetails span');
     var priceDetails = $('#priceDetails span');
@@ -66,17 +72,17 @@ $(document).ready(function(){
                     obj.find('td#deactivated').removeAttr('id');
                     obj.find('td.status').attr('id', 'active');
                     obj.find('.change-status').empty();
-                    obj.find('.change-status').append('Deactivate');
+                    obj.find('.change-status').append(translations['btn.deactivate']);
                     obj.find('.change-status').attr('href', Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': id}));
-                    oTable.fnUpdate('Active', rowIndex, 4);
+                    oTable.fnUpdate(translations['label.active'], rowIndex, 4);
                     flashMessage('{{ 'paywall.flash.message.subscription.activated'|trans }}');
                 } else {
                     obj.find('td#active').removeAttr('id');
                     obj.find('td.status').attr('id', 'deactivated');
                     obj.find('.change-status').empty();
-                    obj.find('.change-status').append('Activate');
+                    obj.find('.change-status').append(translations['btn.activate']);
                     obj.find('.change-status').attr('href', Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': id}));
-                    oTable.fnUpdate('Deactivated', rowIndex, 4);
+                    oTable.fnUpdate(translations['label.deactivated'], rowIndex, 4);
                     flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
                 }
             }
@@ -87,8 +93,8 @@ $(document).ready(function(){
         var edit_template = $('#edit-all-template');
         var addForm = $('#addForm');
         addForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_addsubscription'));
-        $('#ui-dialog-title-edit-all-template').text('Add user subscription');
-        edit_template.attr('title', 'Add user subscription');
+        $('#ui-dialog-title-edit-all-template').text(translations['label.addsubscription']);
+        edit_template.attr('title', translations['label.addsubscription']);
         edit_template.dialog();
     });
 
