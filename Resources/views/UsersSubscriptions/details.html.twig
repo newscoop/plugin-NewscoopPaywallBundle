@@ -68,7 +68,8 @@ function selectBox(type) {
             data: function () {
                 return {
                     subscriptionId: $("#subscriptionId").val(),
-                    languageId: $("#languageId").val()
+                    languageId: $('#selectLanguages').select2('val'),
+                    currentLanguageId: {{ subscription_language }}
                 };
             },
             results: function (data) {
@@ -95,6 +96,7 @@ function buttonClick(id, text, url) {
         var attr = id.attr('id');
         $('.tr.language').hide();
         $('.tr.select').hide();
+        $('#exists-error').hide();
         if (attr === 'issue' || attr === 'section' || attr === 'article') {
             selectBox(attr);
             $('#select').select2("enable", false);
@@ -109,7 +111,7 @@ function buttonClick(id, text, url) {
 };
 
 $(document).ready(function() {
-    var translations = {'error.empty': 'Select box can not be empty!', 
+    var translations = { 
         'label.editsections': 'Edit all sections',
         'label.editissues': 'Edit all issues',
         'label.editarticles': 'Edit all articles',
@@ -117,6 +119,7 @@ $(document).ready(function() {
         'label.addsection': 'Add section',
         'label.addarticle': 'Add article'
     };
+    $('#exists-error').hide();
     jsTable($('#issuesTable'));
     jsTable($('#sectionsTable'));
     jsTable($('#articlesTable'));
@@ -136,11 +139,11 @@ $(document).ready(function() {
 
     $('#save').click(function() {
         if (!$("#select").select2("val")) {
-            alert(translations['error.empty']);
+            $('#exists-error').show();
             return false;
         }
         if (!$("#selectLanguages").select2("val")) {
-            alert(translations['error.empty']);
+            $('#exists-error').show();
             return false;
         }
         return true;
@@ -177,16 +180,19 @@ $(document).ready(function() {
         <form id="editForm" method="post" {{ form_enctype(form) }}>
             <input type="hidden" id="subscriptionId" name="subscriptionId" value="{{ subscription_id }}"></input>
             <div class="table">
+                <div class="tr">
+                    <div class="td alert error" id="exists-error">{{ 'paywall.manage.error.select.empty'|trans }}</div>
+                </div>
                 <div class="tr language">
                     <div class="td"><strong>{{ 'paywall.manage.label.language'|trans }}</strong></div>
                 </div>
                 <div class="tr language">
                     <div class="td">
                         <select id="selectLanguages" style="width: 240px">
-                            <option value="en">{{ 'paywall.manage.label.individuallanguage'|trans }}</option>
+                            <option id="languageId" value="{{ subscription_language }}">{{ 'paywall.manage.label.individuallanguage'|trans }}</option>
                             <option value="all">{{ 'paywall.manage.label.reglanguage'|trans }}</option>
                         </select>
-                        <input type="hidden" id="languageId" name="languageId" value="{{ subscription_language }}"></input>
+                        <input type="hidden" name="languageId" value="{{ subscription_language}}"/>
                     </div>
                 </div>
                 <div class="tr select">

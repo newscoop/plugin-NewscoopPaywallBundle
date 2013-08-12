@@ -51,13 +51,18 @@ paywall:
   flash:
     message:
       subscription:
-        deleted: "Subscription has been deactivated."
+        deleted: "Subscription has been deleted."
         updated: "Subscription has been updated."
         activated: "Subscription has been activated."
+        deactivated: "Subscription has been deactivated."
   manage:
     error:
       currency: "Currency is in invalid format."
       topay: "To pay field value is in wrong format."
+      exists:
+        subscription: "Choosen subscription already exists for this user."
+      select:
+        empty: "Select box can not be empty!"
     label:
       name: "Name"
       duration: "Duration in days"

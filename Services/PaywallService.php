@@ -33,7 +33,6 @@ class PaywallService extends SubscriptionService
                 'id' => $subscription->getId(),
                 'userid' => $subscription->getUser()->getId(),
                 'username' => $subscription->getUser()->getUsername(),
-                'name' => $subscription->getUser()->getName(),
                 'publication' => $subscription->getPublicationName(),
                 'topay' => $subscription->getToPay(),
                 'currency' => $subscription->getCurrency(),
@@ -307,5 +306,88 @@ class PaywallService extends SubscriptionService
             ));
 
         return $subscription;
+    }
+
+    /**
+     * Checks if Subscription by given User Id and Subscription Id exists
+     *
+     * @param  integer $userId         User id
+     * @param  integer $subscriptionId Subscription id
+     *
+     * @return array
+     */
+    public function getOneByUserAndSubscription($userId, $subscriptionId)
+    {
+        $subscription = $this->em->getRepository('Newscoop\Subscription\Subscription')
+            ->findOneBy(array(
+                'user' => $userId,
+                'subscription' => $subscriptionId
+            ));
+
+        if ($subscription) {
+            return array('status' => true);
+        }
+
+        return array('status' => false);
+    }
+
+    /**
+     * Gets all sections diffrent from already added user's sections by given language
+     *
+     * @param  integer $languageId Language Id
+     *
+     * @return array
+     */
+    public function getDiffrentSectionsByLanguage($languageId)
+    {
+        $sections = $this->em->getRepository('Newscoop\Entity\Section')
+            ->createQueryBuilder('s')
+            ->select('s.number', 's.name')
+            ->where('s.language != :id')
+            ->setParameter('id', $languageId)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $sections;
+    }
+
+    /**
+     * Gets all issues diffrent from already added user's issues by given language
+     *
+     * @param  integer $languageId Language Id
+     *
+     * @return array
+     */
+    public function getDiffrentIssuesByLanguage($languageId)
+    {
+        $issues = $this->em->getRepository('Newscoop\Entity\Issue')
+            ->createQueryBuilder('i')
+            ->select('i.number', 'i.name')
+            ->where('i.language != :id')
+            ->setParameter('id', $languageId)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $issues;
+    }
+
+    /**
+     * Gets all articles diffrent from already added user's articles by given language
+     *
+     * @param  integer $languageId Language Id
+     *
+     * @return array
+     */
+    public function getDiffrentArticlesByLanguage($languageId)
+    {
+        $articles = $this->em->getRepository('Newscoop\Entity\Article')
+            ->createQueryBuilder('i')
+            ->select('i.number', 'i.name')
+            ->where('i.language != :id')
+            ->setParameter('id', $languageId)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $articles;
     }
 }

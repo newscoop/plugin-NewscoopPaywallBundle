@@ -83,7 +83,7 @@ $(document).ready(function(){
                     obj.find('.change-status').append(translations['btn.activate']);
                     obj.find('.change-status').attr('href', Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': id}));
                     oTable.fnUpdate(translations['label.deactivated'], rowIndex, 4);
-                    flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
+                    flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
                 }
             }
         });
@@ -92,6 +92,7 @@ $(document).ready(function(){
     $('#add-new-subscription').click(function() {
         var edit_template = $('#edit-all-template');
         var addForm = $('#addForm');
+        $('#exists-error').hide();
         addForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_addsubscription'));
         $('#ui-dialog-title-edit-all-template').text(translations['label.addsubscription']);
         edit_template.attr('title', translations['label.addsubscription']);
@@ -101,18 +102,36 @@ $(document).ready(function(){
     $('#subscriptionaddForm_users').css('width', '250px');
     $('#subscriptionaddForm_users').select2({
         minimumInputLength: 1
+    }).on("change", function () {
+        $('#exists-error').hide();
     });
     $('#subscriptionaddForm_subscriptions').css('width', '250px');
     $('#subscriptionaddForm_subscriptions').select2({
         minimumInputLength: 1
-    }).on("change", function (e) {
+    }).on("change", function () {
         typeDetails.empty();
         durationDetails.empty();
         priceDetails.empty();
         currencyDetails.empty();
+        $('#exists-error').hide();
         getDetails(typeDetails, durationDetails, priceDetails, currencyDetails);
     });
     getDetails(typeDetails, durationDetails, priceDetails, currencyDetails);
+    $('#exists-error').hide();
+    $('#save').click(function(){
+        $('#exists-error').hide();
+        $.post(Routing.generate('newscoop_paywall_userssubscriptions_existcheckajax'), {
+            'userId': $('#subscriptionaddForm_users').select2('data').id,
+            'subscriptionId': $('#subscriptionaddForm_subscriptions').select2('data').id
+        }, function(data) {
+            if (data.status) {
+                $('#exists-error').show();
+            } else {
+                $('#exists-error').hide();
+                $('#addForm').submit();
+            }
+        });
+    });
     $('#subscriptionaddForm_type').css('width', '250px');
     $('#subscriptionaddForm_type').select2();
     $('#subscriptionaddForm_status').css('width', '250px');
@@ -130,6 +149,9 @@ $(document).ready(function(){
     <div id="edit-all-template" style="display: none">
         <form id="addForm" method="post" {{ form_enctype(form) }}>
             <div class="table">
+                 <div class="tr">
+                    <div class="td alert error" id="exists-error">{{ 'paywall.manage.error.exists.subscription'|trans }}</div>
+                </div>
                 <div class="tr">
                     <div class="td"><strong>{{ form_label(form.users) }}</strong></div>
                 </div>
@@ -172,7 +194,7 @@ $(document).ready(function(){
                 <hr>
                 <div class="tr">
                     <div class="td">
-                        <input type="submit" id="save" value="{{ 'paywall.btn.add'|trans }}" class="save-button">
+                        <input type="button" id="save" value="{{ 'paywall.btn.add'|trans }}" class="save-button">
                     </div>
                 </div>
             </div>
@@ -194,7 +216,7 @@ $(document).ready(function(){
             <tbody>
                 {% for subscription in subscriptions %}
                     <tr id="{{ subscription.id }}">
-                        <td><a href="../user/edit/user/{{ subscription.id }}">{{ subscription.username }}</a></td>
+                        <td><a href="../user/edit/user/{{ subscription.userid }}">{{ subscription.username }}</a></td>
                         <td>{{ subscription.publication }}</td>
                         <td align="center">{{ subscription.topay }}</td>
                         <td align="center">{{ subscription.currency }}</td>

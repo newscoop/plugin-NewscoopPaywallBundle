@@ -81,7 +81,7 @@ class UsersSubscriptionsController extends Controller
         $form = $this->createForm('detailsForm');
         if ($request->isMethod('POST')) {
             $form->bind($request);     
-            if ($form->isValid()) { 
+            if ($form->isValid()) {
                 $data = $form->getData();
                 $subscriptionData = new \Newscoop\Subscription\SubscriptionData(array(
                     'startDate' => $data['startDate'],
@@ -135,6 +135,7 @@ class UsersSubscriptionsController extends Controller
     {
         $subscriptionService = $this->container->get('subscription.service');
         $subscription = $subscriptionService->create();
+    
         $form = $this->createForm('subscriptionaddForm');
         if ($request->isMethod('POST')) {
             $form->bind($request);     
@@ -255,10 +256,15 @@ class UsersSubscriptionsController extends Controller
     {
         $subscriptionService = $this->get('subscription.service');
         $form = $this->createForm('detailsForm');
+        if ($subscriptionService->getOneById($id)->getSubscription()) {
+            $type = $subscriptionService->getOneSubscriptionById($subscriptionService->getOneById($id)->getSubscription()->getId())->getType();
+        } else {
+            $type = '';
+        }
 
         return array(
             'subscription_id' => $id,
-            'type' => $subscriptionService->getOneSubscriptionById($subscriptionService->getOneById($id)->getSubscription()->getId())->getType(),
+            'type' => $type,
             'subscription_language' => $subscriptionService->getOneById($id)->getPublication()->getLanguage()->getId(),
             'form' => $form->createView(),
             'issues' => $subscriptionService->getIssues($id),
@@ -276,6 +282,14 @@ class UsersSubscriptionsController extends Controller
     }
 
     /**
+     * @Route("/admin/paywall_plugin/users-subscriptions/exist-check", options={"expose"=true})
+     */
+    public function existCheckAjaxAction(Request $request)
+    {
+        return new Response(json_encode($this->get('subscription.service')->getOneByUserAndSubscription($request->get('userId'), $request->get('subscriptionId'))));
+    }
+
+    /**
      * @Route("/admin/paywall_plugin/users-subscriptions/getdata/{type}", options={"expose"=true})
      */
     public function getdata(Request $request, $type) {
@@ -283,12 +297,19 @@ class UsersSubscriptionsController extends Controller
         $resultEntity = array();
         $resultSubscription = array();
         $resultArray = array();
+        $languageId = $request->get('languageId');
         
         switch ($type) {
             case 'issue':
                 $subscriptionEntity = $subscriptionService
-                    ->getIssuesByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
-                $issues = $subscriptionService->getIssuesByLanguageId($request->get('languageId'));
+                    ->getIssuesByLanguageAndId($languageId, $request->get('subscriptionId'));
+        
+                if ($languageId === 'all') {
+                    $sections = $subscriptionService->getDiffrentIssuesByLanguage($request->get('currentLanguageId'));
+                } else {
+                    $issues = $subscriptionService->getIssuesByLanguageId($languageId);
+                }
+
                 foreach ($issues as $issue) {
                     $resultEntity[$issue->getNumber()] = $issue->getName();
                 }
@@ -298,10 +319,16 @@ class UsersSubscriptionsController extends Controller
                 break;
             case 'section':
                 $sectionsEntity = $subscriptionService
-                    ->getSectionsByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
-                $sections = $subscriptionService->getSectionsByLanguageId($request->get('languageId'));
+                    ->getSectionsByLanguageAndId($languageId, $request->get('subscriptionId'));
+                
+                if ($languageId === 'all') {
+                    $sections = $subscriptionService->getDiffrentSectionsByLanguage($request->get('currentLanguageId'));
+                } else {
+                    $sections = $subscriptionService->getSectionsByLanguageId($languageId);
+                }
+
                 foreach ($sections as $section) {
-                    $resultEntity[$issue->getNumber()] = $issue->getName();
+                    $resultEntity[$section->getNumber()] = $section->getName();
                 }
                 foreach ($sectionsEntity as $section) {
                     $resultSubscription[$section->getSectionNumber()] = $section->getName();
@@ -309,8 +336,14 @@ class UsersSubscriptionsController extends Controller
                 break;
             case 'article':
                 $articlesEntity = $subscriptionService
-                    ->getArticlesByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
-                $articles = $subscriptionService->getArticlesByLanguageId($request->get('languageId'));
+                    ->getArticlesByLanguageAndId($languageId, $request->get('subscriptionId'));
+
+                if ($languageId === 'all') {
+                    $sections = $subscriptionService->getDiffrentArticlesByLanguage($request->get('currentLanguageId'));
+                } else {
+                    $articles = $subscriptionService->getArticlesByLanguageId($languageId);
+                }
+                
                 foreach ($articles as $article) {
                     $resultEntity[$article->getNumber()] = $article->getName();
                 }
