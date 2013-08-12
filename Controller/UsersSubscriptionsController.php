@@ -258,7 +258,7 @@ class UsersSubscriptionsController extends Controller
 
         return array(
             'subscription_id' => $id,
-            'type' => $subscriptionService->getOneSubscriptionById($id)->getType(),
+            'type' => $subscriptionService->getOneSubscriptionById($subscriptionService->getOneById($id)->getSubscription()->getId())->getType(),
             'subscription_language' => $subscriptionService->getOneById($id)->getPublication()->getLanguage()->getId(),
             'form' => $form->createView(),
             'issues' => $subscriptionService->getIssues($id),
@@ -280,36 +280,46 @@ class UsersSubscriptionsController extends Controller
      */
     public function getdata(Request $request, $type) {
         $subscriptionService = $this->get('subscription.service');
+        $resultEntity = array();
+        $resultSubscription = array();
+        $resultArray = array();
         
         switch ($type) {
             case 'issue':
                 $subscriptionEntity = $subscriptionService
                     ->getIssuesByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
-                $entity = $subscriptionService->getIssuesByLanguageId($request->get('languageId'));
+                $issues = $subscriptionService->getIssuesByLanguageId($request->get('languageId'));
+                foreach ($issues as $issue) {
+                    $resultEntity[$issue->getNumber()] = $issue->getName();
+                }
+                foreach ($subscriptionEntity as $issue) {
+                    $resultSubscription[$issue->getIssueNumber()] = $issue->getName();
+                }
                 break;
             case 'section':
-                $subscriptionEntity = $subscriptionService
+                $sectionsEntity = $subscriptionService
                     ->getSectionsByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
-                $entity = $subscriptionService->getSectionsByLanguageId($request->get('languageId'));
+                $sections = $subscriptionService->getSectionsByLanguageId($request->get('languageId'));
+                foreach ($sections as $section) {
+                    $resultEntity[$issue->getNumber()] = $issue->getName();
+                }
+                foreach ($sectionsEntity as $section) {
+                    $resultSubscription[$section->getSectionNumber()] = $section->getName();
+                }
                 break;
             case 'article':
-                $subscriptionEntity = $subscriptionService
+                $articlesEntity = $subscriptionService
                     ->getArticlesByLanguageAndId($request->get('languageId'), $request->get('subscriptionId'));
-                $entity = $subscriptionService->getArticlesByLanguageId($request->get('languageId'));
+                $articles = $subscriptionService->getArticlesByLanguageId($request->get('languageId'));
+                foreach ($articles as $article) {
+                    $resultEntity[$article->getNumber()] = $article->getName();
+                }
+                foreach ($articlesEntity as $article) {
+                    $resultSubscription[$article->getArticleNumber()] = $article->getName();
+                }
                 break;
-
         }
-        $resultEntity = array();
-        $resultSubscription = array();
-        $resultArray = array();
-        foreach ($entity as $section) {
-            $resultEntity[$section->getNumber()] = $section->getName();
-        }
-
-        foreach ($subscriptionEntity as $section) {
-            $resultSubscription[$section->getSectionNumber()] = $section->getName();
-        }
-
+        
         $array = array_unique(array_diff($resultEntity, $resultSubscription));
         foreach ($array as $key => $value) {
             $resultArray[] = array(

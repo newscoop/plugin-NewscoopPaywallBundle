@@ -38,7 +38,7 @@ class PaywallService extends SubscriptionService
                 'topay' => $subscription->getToPay(),
                 'currency' => $subscription->getCurrency(),
                 'type' => $subscription->getType(),
-                'active' => $subscription->isActive()
+                'active' => $subscription->isActive(),
             );
         } 
 
@@ -129,6 +129,14 @@ class PaywallService extends SubscriptionService
         return $articlesArray;
     }
 
+    /**
+     * Gets currently added user's Sections by given language Id and subscription Id
+     *
+     * @param integer $language        Language Id to search for
+     * @param integer $subscription_id Subscription Id to search for
+     *
+     * @return array
+     */
     public function getSectionsByLanguageAndId($language, $subscription_id) {
 
         $sections = $this->em->getRepository('Newscoop\Subscription\Section')
@@ -140,6 +148,13 @@ class PaywallService extends SubscriptionService
         return $sections;
     }
 
+    /**
+     * Gets all available sections by given language Id
+     *
+     * @param integer $language Language Id to search for
+     *
+     * @return array
+     */
     public function getSectionsByLanguageId($language_id) {
 
         $sections = $this->em->getRepository('Newscoop\Entity\Section')
@@ -150,6 +165,14 @@ class PaywallService extends SubscriptionService
         return $sections;
     }
 
+    /**
+     * Gets currently added user's Issues by given language Id and subscription Id
+     *
+     * @param integer $language        Language Id to search for
+     * @param integer $subscription_id Subscription Id to search for
+     *
+     * @return array
+     */
     public function getIssuesByLanguageAndId($language, $subscription_id) {
 
         $issues = $this->em->getRepository('Newscoop\Subscription\Issue')
@@ -161,6 +184,13 @@ class PaywallService extends SubscriptionService
         return $issues;
     }
 
+    /**
+     * Gets all available Issues by given language Id
+     *
+     * @param integer $language Language Id to search for
+     *
+     * @return array
+     */
     public function getIssuesByLanguageId($language_id) {
 
         $issues = $this->em->getRepository('Newscoop\Entity\Issue')
@@ -171,6 +201,14 @@ class PaywallService extends SubscriptionService
         return $issues;
     }
 
+    /**
+     * Gets currently added user's Articles by given language Id and subscription Id
+     *
+     * @param integer $language        Language Id to search for
+     * @param integer $subscription_id Subscription Id to search for
+     *
+     * @return array
+     */
     public function getArticlesByLanguageAndId($language, $subscription_id) {
 
         $articles = $this->em->getRepository('Newscoop\Subscription\Article')
@@ -182,6 +220,13 @@ class PaywallService extends SubscriptionService
         return $articles;
     }
 
+    /**
+     * Gets all available Articles by given language Id
+     *
+     * @param integer $language Language Id to search for
+     *
+     * @return array
+     */
     public function getArticlesByLanguageId($language_id) {
 
         $articles = $this->em->getRepository('Newscoop\Entity\Article')
@@ -192,6 +237,13 @@ class PaywallService extends SubscriptionService
         return $articles;
     }
 
+    /**
+     * Gets subscription details by given subscription Id
+     *
+     * @param integer $subscriptionId Subscription Id to search for
+     *
+     * @return array
+     */
     public function getSubscriptionDetails($subscriptionId) {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
             ->createQueryBuilder('s')
@@ -205,6 +257,13 @@ class PaywallService extends SubscriptionService
         return $subscription;
     }
 
+    /**
+     * Gets one defined subscription by given subscription Id
+     *
+     * @param integer $subscriptionId Subscription Id to search for
+     *
+     * @return entity object
+     */
     public function getOneSubscriptionById($subscriptionId) {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
             ->findOneBy(array(
@@ -215,8 +274,10 @@ class PaywallService extends SubscriptionService
     }
 
     /**
-     * Activate Subscription by Id
+     * Activates Subscription by Id
+     *
      * @param  integer $id User subscription id
+     *
      * @return void
      */
     public function activateById($id) {
@@ -232,6 +293,13 @@ class PaywallService extends SubscriptionService
         }
     }
 
+    /**
+     * Gets Subscription configuration(details) by given Subscription Id
+     *
+     * @param  integer $subscriptionId Subscription id
+     *
+     * @return entity object
+     */
     public function getSubscriptionsConfig($subscriptionId) {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription_specification')
             ->findOneBy(array(
