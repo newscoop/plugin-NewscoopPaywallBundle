@@ -18,26 +18,28 @@ class SubscriptionAddType extends AbstractType
     {
         $builder
         ->add('users', 'entity', array(
+            'label' => 'paywall.manage.label.users',
             'class' => 'Newscoop\Entity\User',
             'property' => 'username',
         ))
         ->add('subscriptions', 'entity', array(
+            'label' => 'paywall.manage.label.subscriptions',
             'class' => 'Newscoop\PaywallBundle\Entity\Subscriptions',
             'property' => 'name',
         ))
         ->add('type', 'choice', array(
-            'label'  => 'Type',
+            'label' => 'paywall.manage.label.paymenttype',
             'choices'   => array(
-                'P'   => 'Paid',
-                'PN'   => 'Paid now',
-                'T' => 'Trial',
+                'P'   => 'paywall.manage.label.paid',
+                'PN'   => 'paywall.manage.label.paidnow',
+                'T' => 'paywall.manage.label.trial',
             )
         ))
         ->add('status', 'choice', array(
-            'label'  => 'Active',
+            'label' => 'paywall.manage.label.active',
             'choices'   => array(
-                'Y'   => 'Yes',
-                'N'   => 'No',
+                'Y'   => 'paywall.manage.label.yes',
+                'N'   => 'paywall.manage.label.no',
             )
         ));
     }

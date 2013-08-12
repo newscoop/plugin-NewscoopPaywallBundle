@@ -119,7 +119,7 @@ $(document).ready(function(){
 <div id="subscription">
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
     <fieldset class="actions" style="background-color: #fff;">
-        <input type="button" id="add-new-subscription" class="save-button" value="Add user subscription">
+        <input type="button" id="add-new-subscription" class="save-button" value="{{ 'paywall.manage.label.addnew'|trans }}">
     </fieldset>
     <div id="edit-all-template" style="display: none">
         <form id="addForm" method="post" {{ form_enctype(form) }}>
@@ -149,19 +149,19 @@ $(document).ready(function(){
                     <div class="td">{{ form_widget(form.status) }}</div>
                 </div>
                  <div class="tr">
-                    <div class="td"><strong>Subscription Details:</strong></div>
+                    <div class="td"><strong>{{ 'paywall.manage.label.subscriptiondetails'|trans }}:</strong></div>
                 </div>
                 <div class="tr">
-                    <div class="td" id="typeDetails"><strong>Type: </strong><span></span></div>
+                    <div class="td" id="typeDetails"><strong>{{ 'paywall.step2.label.type'|trans }}: </strong><span></span></div>
                 </div>
                 <div class="tr">
-                    <div class="td" id="durationDetails"><strong>Duration: </strong><span></span></div>
+                    <div class="td" id="durationDetails"><strong>{{ 'paywall.step2.label.durationbox'|trans }}: </strong><span></span></div>
                 </div>
                 <div class="tr">
-                    <div class="td" id="priceDetails"><strong>Price: </strong><span></span></div>
+                    <div class="td" id="priceDetails"><strong>{{ 'paywall.step2.label.price'|trans }}: </strong><span></span></div>
                 </div>
                 <div class="tr">
-                    <div class="td" id="currencyDetails"><strong>Currency: </strong><span></span></div>
+                    <div class="td" id="currencyDetails"><strong>{{ 'paywall.step2.label.currency'|trans }}: </strong><span></span></div>
                 </div>
                 <hr>
                 <div class="tr">
@@ -181,36 +181,36 @@ $(document).ready(function(){
                     <th>{{ 'paywall.manage.label.topay'|trans }}</th>
                     <th>{{ 'paywall.step2.label.currency'|trans }}</th>
                     <th>{{ 'paywall.step2.label.active'|trans }}</th>
-                    <th>{{ 'paywall.step2.label.type'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.paymenttype'|trans }}</th>
                     <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for subscription in subscriptions %}
                     <tr id="{{ subscription.id }}">
-                        <td id="username" class="readonly"><a href="../user/edit/user/{{ subscription.id }}">{{ subscription.username }}</a></td>
-                        <td id="publication" class="readonly">{{ subscription.publication }}</td>
-                        <td id="topay">{{ subscription.topay }}</td>
-                        <td id="currency">{{ subscription.currency }}</td>
+                        <td><a href="../user/edit/user/{{ subscription.id }}">{{ subscription.username }}</a></td>
+                        <td>{{ subscription.publication }}</td>
+                        <td align="center">{{ subscription.topay }}</td>
+                        <td align="center">{{ subscription.currency }}</td>
                         {% if (subscription.active == "Y") %}
-                            <td class="status" id="active">
-                                Active
+                            <td align="center" class="status" id="active">
+                                {{ 'paywall.manage.label.active'|trans }}
                             </td>
                         {% else %}
-                            <td class="status" id="deactivated">
-                                Deactivated
+                            <td align="center" class="status" id="deactivated">
+                                {{ 'paywall.manage.label.deactivated'|trans }}
                             </td>
                         {% endif %}
-                        <td id="type">
+                        <td align="center">
                             {% if (subscription.type == "P") %}
-                                Paid
+                                {{ 'paywall.manage.label.paid'|trans }}
                             {% elseif (subscription.type == "PN") %}
-                                Paid now
+                                {{ 'paywall.manage.label.paidnow'|trans }}
                             {% elseif (subscription.type == "T") %}
-                                Trial
+                                {{ 'paywall.manage.label.trial'|trans }}
                             {% endif %}
                         </td>
-                        <td class="readonly">
+                        <td>
                             <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_editsubscription', {'id': subscription.id}) }}">{{ 'paywall.btn.edit'|trans }}</a> |
                             <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_details', {'id': subscription.id}) }}">{{ 'paywall.btn.details'|trans }}</a> |
                             {% if (subscription.active == "Y") %}
@@ -229,7 +229,7 @@ $(document).ready(function(){
                     <th>{{ 'paywall.manage.label.topay'|trans }}</th>
                     <th>{{ 'paywall.step2.label.currency'|trans }}</th>
                     <th>{{ 'paywall.step2.label.active'|trans }}</th>
-                    <th>{{ 'paywall.step2.label.type'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.paymenttype'|trans }}</th>
                     <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </tfoot>

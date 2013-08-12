@@ -18,14 +18,17 @@ class SubscriptionDetailsType extends AbstractType
     {
         $builder
         ->add('startDate', 'date', array(
+            'label' => 'paywall.manage.label.startdate',
             'input'  => 'datetime',
             'widget' => 'single_text',
         ))
         ->add('days', 'integer', array(
+            'label' => 'paywall.manage.label.days',
             'attr' => array('min' => '1'),
             'required' => true
         ))
         ->add('paidDays', 'integer', array(
+            'label' => 'paywall.manage.label.paiddays',
             'attr' => array('min' => '1'),
             'required' => true
         ));

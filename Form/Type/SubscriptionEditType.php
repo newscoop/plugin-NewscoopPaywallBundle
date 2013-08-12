@@ -18,23 +18,23 @@ class SubscriptionEditType extends AbstractType
     {
         $builder
         ->add('topay', 'money', array(
-            'label'  => 'paywall.form.label.topay',
+            'label'  => 'paywall.manage.label.topay',
             'error_bubbling' => true,
-            'invalid_message' => 'To pay field value is in wrong format.',
+            'invalid_message' => 'paywall.manage.error.topay',
             'required' => true
         ))
         ->add('currency', null, array(
-            'label'  => 'paywall.form.label.currency',
+            'label'  => 'paywall.step2.label.currency',
             'error_bubbling' => true,
-            'invalid_message' => 'Currency is invalid format.',
+            'invalid_message' => 'paywall.manage.error.currency',
             'required' => true
         ))
-        ->add('type', 'choice', array(
-            'label'  => 'paywall.form.label.type',
+         ->add('type', 'choice', array(
+            'label' => 'paywall.manage.label.paymenttype',
             'choices'   => array(
-                'P' => 'Paid', 
-                'PN' => 'Paid Now', 
-                'T' => 'Trial'
+                'P'   => 'paywall.manage.label.paid',
+                'PN'   => 'paywall.manage.label.paidnow',
+                'T' => 'paywall.manage.label.trial',
             ),
             'required' => true
         ));

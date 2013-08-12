@@ -151,18 +151,18 @@ $(document).ready(function() {
     <fieldset class="actions" style="background-color: #fff;">
         <input type="button" id="back" class="save-button" value="Go back to users subscriptions">
         {% if (type == 'issue') %}
-            <input type="button" id="issue" class="button" value="Add issue">
+            <input type="button" id="issue" class="button" value="{{ 'paywall.manage.label.addissue'|trans }}">
         {% elseif (type == 'section') %}
-            <input type="button" id="section" class="button" value="Add section">
+            <input type="button" id="section" class="button" value="{{ 'paywall.manage.label.addsection'|trans }}">
         {% elseif (type == 'article') %}
-            <input type="button" id="article" class="button" value="Add article">
+            <input type="button" id="article" class="button" value="{{ 'paywall.manage.label.addarticle'|trans }}">
         {% endif %}
         {% if issues %}
-            <input type="button" id="edit-all-issues" class="button" value="Edit all issues">
+            <input type="button" id="edit-all-issues" class="button" value="{{ 'paywall.manage.label.editallissues'|trans }}">
         {% elseif sections %}
-            <input type="button" id="edit-all-sections" class="button" value="Edit all sections">
+            <input type="button" id="edit-all-sections" class="button" value="{{ 'paywall.manage.label.editallsections'|trans }}">
         {% elseif articles %}
-            <input type="button" id="edit-all-articles" class="button" value="Edit all articles">
+            <input type="button" id="edit-all-articles" class="button" value="{{ 'paywall.manage.label.editallarticles'|trans }}">
         {% endif %}
     </fieldset>
     <div id="edit-all-template" style="display: none">
@@ -170,19 +170,19 @@ $(document).ready(function() {
             <input type="hidden" id="subscriptionId" name="subscriptionId" value="{{ subscription_id }}"></input>
             <div class="table">
                 <div class="tr language">
-                    <div class="td"><strong>Language</strong></div>
+                    <div class="td"><strong>{{ 'paywall.manage.label.language'|trans }}</strong></div>
                 </div>
                 <div class="tr language">
                     <div class="td">
                         <select id="selectLanguages" style="width: 240px">
-                            <option value="en">Individual languages</option>
-                            <option value="all">Regardless of the language</option>
+                            <option value="en">{{ 'paywall.manage.label.individuallanguage'|trans }}</option>
+                            <option value="all">{{ 'paywall.manage.label.reglanguage'|trans }}</option>
                         </select>
                         <input type="hidden" id="languageId" name="languageId" value="{{ subscription_language }}"></input>
                     </div>
                 </div>
                 <div class="tr select">
-                    <div class="td"><strong>Type</strong></div>
+                    <div class="td"><strong>{{ 'paywall.manage.label.content'|trans }}</strong></div>
                 </div>
                 <div class="tr select">
                     <div class="td">
@@ -220,17 +220,17 @@ $(document).ready(function() {
     {% if issues %}
     <div id="issues" style="padding: 10px 10px 30px 10px;">
         <fieldset class="actions" id="details-header">
-            <span>Issues:</span>
+            <span>{{ 'paywall.manage.label.issues'|trans }}:</span>
         </fieldset>
         <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="issuesTable">
             <thead>
                 <tr>
-                    <th>Issue</th>
-                    <th>Language</th>
-                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>Days</th>
-                    <th>Paid days</th>
-                    <th>Options</th>
+                    <th>{{ 'paywall.step1.form.select.type.issue'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -251,12 +251,12 @@ $(document).ready(function() {
             </tbody>
             <tfoot>
                 <tr>
-                    <th>Issue</th>
-                    <th>Language</th>
-                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>Days</th>
-                    <th>Paid days</th>
-                    <th>Options</th>
+                    <th>{{ 'paywall.step1.form.select.type.issue'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </tfoot>
         </table>
@@ -264,17 +264,17 @@ $(document).ready(function() {
     {% elseif sections %}
     <div id="sections" style="padding: 10px 10px 30px 10px;">
         <fieldset class="actions" id="details-header">
-            <span>Sections:</span>
+            <span>{{ 'paywall.manage.label.sections'|trans }}:</span>
         </fieldset>
         <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="sectionsTable">
             <thead>
                 <tr>
-                    <th>Section</th>
-                    <th>Language</th>
-                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>Days</th>
-                    <th>Paid days</th>
-                    <th>Options</th>
+                    <th>{{ 'paywall.step1.form.select.type.section'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -295,12 +295,12 @@ $(document).ready(function() {
             </tbody>
             <tfoot>
                 <tr>
-                    <th>Section</th>
-                    <th>Language</th>
-                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>Days</th>
-                    <th>Paid days</th>
-                    <th>Options</th>
+                    <th>{{ 'paywall.step1.form.select.type.section'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </tfoot>
         </table>
@@ -308,17 +308,17 @@ $(document).ready(function() {
     {% elseif articles %}
     <div id="articles" style="padding: 10px 10px 30px 10px;">
         <fieldset class="actions" id="details-header">
-            <span>Articles:</span>
+            <span>{{ 'paywall.manage.label.articles'|trans }}:</span>
         </fieldset>
         <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="articlesTable">
             <thead>
                 <tr>
-                    <th>Article</th>
-                    <th>Language</th>
-                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>Days</th>
-                    <th>Paid days</th>
-                    <th>Options</th>
+                    <th>{{ 'paywall.step1.form.select.type.article'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -339,19 +339,19 @@ $(document).ready(function() {
             </tbody>
             <tfoot>
                 <tr>
-                    <th>Article</th>
-                    <th>Language</th>
-                    <th>Start Date<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>Days</th>
-                    <th>Paid days</th>
-                    <th>Options</th>
+                    <th>{{ 'paywall.step1.form.select.type.article'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
+                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </tfoot>
         </table>
     </div>
     {% else %}
         <fieldset class="actions" style="background-color: #fff;">
-            There is no content added yet.
+            {{ 'paywall.manage.label.nocontent'|trans }}
         </fieldset>
     {% endif %}
 </div>
