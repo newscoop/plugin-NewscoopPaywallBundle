@@ -96,12 +96,18 @@ function buttonClick(id, text, url) {
         $('.tr.language').hide();
         $('.tr.select').hide();
         $('#exists-error').hide();
+        $("#selectLanguages").select2('data', null);
+        $("#select").select2('data', null);
         if (attr === 'issue' || attr === 'section' || attr === 'article') {
             selectBox(attr);
             $('#select').select2("enable", false);
             $('.tr.language').show();
             $('.tr.select').show();
+        } else {
+            $("#selectLanguages").select2("data", {id: "1", text: ""});
+        $("#select").select2("data", {id: "1", text: ""});
         }
+
         editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_'+url, {'type': attr, 'id': {{ id }} }));
         $('#ui-dialog-title-edit-all-template').text(text);
         edit_template.attr('title', text);
