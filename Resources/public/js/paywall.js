@@ -23,12 +23,14 @@ $(document).ready(function() {
     };
     $('#step2').hide();
     $('#step1').show();
+    $('.alert.error').hide();
     var subscription_name = $('#subscriptionconf_name');
     $("#next").click(function(){
         var titleIssue = $('#title-issue');
         var titleSection = $('#title-section');
         var titleArticle = $('#title-article');
-        $('.errors').empty();
+        $('.alert.error').empty();
+        $('.alert.error').hide();
         if (subscription_name.val() && window.location.pathname === $('#confForm').attr('action')) {
             subscription_name.data('validName', true);
         }
@@ -201,17 +203,18 @@ $(document).ready(function() {
                     } else {
                         $('#next').prop("disabled", false);
                         var ul = $('<ul></ul>');
-                        ul.appendTo($('.errors'));
-                        $('.errors').css('color', '#FF2200');
+                        ul.appendTo($('.alert.error'));
                         $.each($.parseJSON(msg.errors), function (i, obj) {
                             ul.append('<li>'+obj+'</li>');
                         });
+                        $('.alert.error').show();
                     }
                 }
             });
 
         } else {
-            $('.errors').css('color', '#FF2200').append('<ul><li>'+translations['name.error']+'</li></ul>');
+            $('.alert.error').append('<ul><li>'+translations['name.error']+'</li></ul>');
+            $('.alert.error').show();
         }
 
         return false;      
@@ -219,14 +222,18 @@ $(document).ready(function() {
 
     $('#save').click(function(e) {
         if(!$("#selectIssues").select2("val") || !$("#selectSections").select2("val") || !$("#selectArticles").select2("val")) {
-            alert(translations['step2.error.selects.blank']);
+            $('.alert.error').empty();
+            $('.alert.error').append(translations['step2.error.selects.blank']);
+            $('.alert.error').show();
             return false;
         }
     });
 
     $('#skip').click(function() {
         if(!$("#selectPublications").select2("val")) {
-            alert(translations['step2.error.selects.required']);
+            $('.alert.error').empty();
+            $('.alert.error').append(translations['step2.error.selects.required']);
+            $('.alert.error').show();
             return false;
         } else {
             $('#step2Form').submit(); 
@@ -248,7 +255,8 @@ $(document).ready(function() {
             if (data.status) {
                 subscription_name.css('color', 'rgb(0, 128, 0)');
                 subscription_name.data('validName', true);
-                $('.errors').empty();
+                $('.alert.error').empty();
+                $('.alert.error').hide();
             } else {
                 subscription_name.css('color', 'rgb(255, 0, 0)');
                 subscription_name.data('validName', false);
