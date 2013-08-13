@@ -95,7 +95,7 @@ $(document).ready(function(){
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 2} %}
 
     <div id="manage-subscriptions" style="padding: 10px 10px 30px 10px;">
-        <form id="editForm" action="{{ path('newscoop_paywall_managesubscriptions_edit') }}" {{ form_enctype(form) }}>
+        <form id="editForm" {{ form_enctype(form) }}>
             <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="subscriptionsTable">
                 <thead>
                     <tr>

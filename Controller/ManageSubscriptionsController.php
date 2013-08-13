@@ -66,7 +66,7 @@ class ManageSubscriptionsController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $em->flush();
-
+                var_dump('asdas');die;
                 if ($request->isXmlHttpRequest()) {
                     return array('status' => true);
                 }
