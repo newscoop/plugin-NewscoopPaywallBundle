@@ -1,0 +1,14 @@
+paywall:
+  step1:
+    form:
+      error:
+        price:
+          decimal: Cena musi być większa lub równa 1.
+          custom: Pole "Cena" zawiera nieprawidłowe wartości. Dozwolone są tylko liczby.
+          blank: Pole "Cena" nie może być puste.
+        range:
+          blank: Pole "Czas trwania" nie może być puste.
+        currency:
+          blank: Pole "Waluta" nie może być puste.
+        name:
+          blank: Pole "Nazwa" nie może być puste.

@@ -1,7 +1,7 @@
 #tabs {}
 #tabs ul {
     border: 1px solid #ccc;
-    width: 690px;
+    background-color: #fff;
     padding-left: 0px;
 }
 #tabs ul li {
