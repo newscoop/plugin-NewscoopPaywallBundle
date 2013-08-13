@@ -98,6 +98,7 @@ paywall:
       articles: "Articles"
       nocontent: "There is no content added yet."
       content: "Content"
+      choose: "Choose..."
   menu:
     label:
       addsubscription: "Add new subscription"

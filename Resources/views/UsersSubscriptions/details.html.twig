@@ -61,7 +61,6 @@ function format(item) { return item.name; };
 function formatDiv(item) { return "<div class='select2-results'>" + item.id + " " + item.name + "</div>"; }
 function selectBox(type) {
     $("#select").select2({
-        placeholder: "Select",
         ajax: {
             url: Routing.generate('newscoop_paywall_userssubscriptions_getdata', {'type': type}),
             dataType: 'json',
@@ -128,6 +127,7 @@ $(document).ready(function() {
     deleteSubscription($('#issuesTable'), $('#issuesTable tbody'), $('#issues'));
     $('#select').prop('disabled', 'disabled');
     $("#selectLanguages").select2().on("change", function (e) {
+        $("#select").select2('data', null);
         $("#select").select2("enable", true);   
     });
     buttonClick($('#edit-all-issues'), translations['label.editsections'], 'edit');
@@ -146,6 +146,7 @@ $(document).ready(function() {
             $('#exists-error').show();
             return false;
         }
+        $('#exists-error').hide();
         return true;
     });
 
@@ -188,7 +189,8 @@ $(document).ready(function() {
                 </div>
                 <div class="tr language">
                     <div class="td">
-                        <select id="selectLanguages" style="width: 240px">
+                        <select id="selectLanguages" data-placeholder="{{ 'paywall.manage.label.choose'|trans }}" style="width: 240px">
+                            <option></option>
                             <option id="languageId" value="{{ subscription_language }}">{{ 'paywall.manage.label.individuallanguage'|trans }}</option>
                             <option value="all">{{ 'paywall.manage.label.reglanguage'|trans }}</option>
                         </select>
@@ -200,7 +202,7 @@ $(document).ready(function() {
                 </div>
                 <div class="tr select">
                     <div class="td">
-                        <div id="select" class="populate placeholder" style="width: 240px"></div>
+                        <div id="select" data-placeholder="{{ 'paywall.manage.label.choose'|trans }}" class="populate placeholder" style="width: 240px"></div>
                         <input type="hidden" id="selectedId" name="selectedId"></input>
                     </div>
                 </div>

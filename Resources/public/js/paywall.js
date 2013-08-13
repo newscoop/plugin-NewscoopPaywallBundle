@@ -72,7 +72,12 @@ $(document).ready(function() {
                                 escapeMarkup: function (m) { return m; }
 
                             }).on("change", function (e) {
+                                $("#selectIssues").select2('data', null);
+                                $("#selectSections").select2('data', null);
+                                $("#selectArticles").select2('data', null);
                                 $("#selectIssues").select2("enable", true);
+                                $('#selectSections').select2("enable", false);
+                                $('#selectArticles').select2("enable", false);
                                 $('#subscriptionName').attr('value', $('#subscriptionconf_name').val());
                                 $('#specificationForm_publication').attr('value', $("#selectPublications").select2("val"));         
                             });
@@ -107,7 +112,10 @@ $(document).ready(function() {
                                 formatSelection: format,
                                 escapeMarkup: function (m) { return m; }
                             }).on("change", function (e) {
+                                $("#selectSections").select2('data', null);
+                                $("#selectArticles").select2('data', null);
                                 $("#selectSections").select2("enable", true);
+                                $('#selectArticles').select2("enable", false);
                                 $('#specificationForm_issue').attr('value', $("#selectIssues").select2("val"));           
                             });
                         }
@@ -140,6 +148,7 @@ $(document).ready(function() {
                                 formatSelection: format,
                                 escapeMarkup: function (m) { return m; }
                             }).on("change", function (e) {
+                                $("#selectArticles").select2('data', null);
                                 $("#selectArticles").select2("enable", true);
                                 $('#specificationForm_section').attr('value', $("#selectSections").select2("val"));          
                             }); 
