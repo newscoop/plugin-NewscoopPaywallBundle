@@ -37,6 +37,9 @@ $(document).ready(function(){
         $.post(Routing.generate('newscoop_paywall_getconfiguration', {id: $('#selectProviders').select2('data').id}), { 
         }, function (data) {
             if (data.status) {
+                $('#current').empty();
+                $('#current').append($('#selectProviders').select2('data').text);
+                $('#selectProviders').select2('data', null);
                 flashMessage('{{ 'paywall.flash.message.provider.changed'|trans }}');
             }
         }, 'json');
@@ -52,7 +55,7 @@ $(document).ready(function(){
         <div class="td"><strong>Current Provider</strong></div>
     </div>
     <div class="tr">
-        <div class="td"></div>
+        <div class="td" id="current">{{ current }}</div>
     </div>
     <div class="tr">
         <div class="td"><strong>{{ 'paywall.manage.label.adapters'|trans }}</strong></div>

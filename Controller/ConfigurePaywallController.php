@@ -25,8 +25,15 @@ class ConfigurePaywallController extends Controller
     public function indexAction(Request $request, $id = null)
     {
         $em = $this->getDoctrine()->getManager();
-        $all = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
-                ->findAll();
+        $inactive = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
+            ->findBy(array(
+                'is_active' => false
+            ));
+
+        $active = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
+            ->findOneBy(array(
+                'is_active' => true
+            ));
 
         if ($id) {
             $settings = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
@@ -42,11 +49,11 @@ class ConfigurePaywallController extends Controller
 
             $settings->setIsActive(true);
             $em->flush();
-            
+
             return new Response(json_encode(array('status' => true)));
         }
         $adapters = array();
-        foreach ($all as $value) {
+        foreach ($inactive as $value) {
             $adapters[] = array(
                 'id' => $value->getId(), 
                 'text' => $value->getName()
@@ -57,6 +64,8 @@ class ConfigurePaywallController extends Controller
             return new Response(json_encode($adapters));
         }
 
-        return array();
+        return array(
+            'current' => $active->getName()
+        );
     }
 }
