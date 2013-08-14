@@ -5,6 +5,7 @@ paywall:
         configuration: "Configuration"
         manage: "Manage Subscriptions"
         manageusers: "Manage User Subscriptions"
+        configure: "Configure Paywall"
     step1:
       header: "Please specify the name and value for your new subscription. You can set up various diffrent types of subscriptions, but just one after the other."
       form:
@@ -50,6 +51,8 @@ paywall:
       activate: "Activate"
     flash:
       message:
+        provider:
+          changed: "Provider successfully changed."
         subscription:
           deleted: "Subscription has been deleted."
           updated: "Subscription has been updated."
@@ -99,6 +102,8 @@ paywall:
         nocontent: "There is no content added yet."
         content: "Content"
         choose: "Choose..."
+        adapters: "Adapters:"
+        email: "Email:"
     menu:
       label:
         addsubscription: "Add new subscription"

@@ -10,7 +10,6 @@ namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,22 +49,5 @@ class ManageSubscriptionsController extends Controller
 
             return new Response(json_encode(array('status' => true)));
         }
-    }
-
-    private function getErrorMessages(\Symfony\Component\Form\Form $form) {      
-        $errors = array();
-        if (count($form) > 0) {
-            foreach ($form->all() as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrorMessages($child);
-                }
-            }
-        }
-
-        foreach ($form->getErrors() as $key => $error) {
-            $errors[] = $error->getMessage();   
-        }
-
-        return $errors;
     }
 }

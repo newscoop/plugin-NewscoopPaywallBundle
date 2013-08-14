@@ -5,12 +5,12 @@ NewscoopPaywallBundle - add paywall support for Newscoop subscriptions.
 Features:
 =====================
 ###Define and add new subscriptions by:
-- type (Publication, Issue, Section, Article)
+- type (`Publication`, `Issue`, `Section`, `Article`)
 - price
 - duration
 - currency
 
-###add subscription specification by defined subscription type
+###Add subscription specification by defined subscription type
 
 ###Manage defined subscriptions
  * delete subscriptions
@@ -32,14 +32,14 @@ Features:
     - publication name
     - to pay amount
     - currency
-    - status (active/deactivated)
-    - payment type (paid, paid now, trial)
+    - status (`Active`/`Deactivated`)
+    - payment type (`Paid`, `Paid now`, `Trial`)
 
 ###Specification management of the user subscription
-- add issues, sections, articles to each user-defined subscriptions by:
+- add Issues, Sections, Articles to each user-defined subscriptions by:
     - Individual languages (ex. all sections by publicaton language)
     - Regardless of the languages (ex. all sections diffrent than publication language)
-- edit all the specifications (issues/sections/articles) of the user subscriptions by:
+- edit all the specifications (`Issues`/`Sections`/`Articles`) of the user subscriptions by:
     - start date
     - paid days
     - days
