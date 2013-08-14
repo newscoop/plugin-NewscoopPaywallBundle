@@ -52,35 +52,6 @@ class ManageSubscriptionsController extends Controller
         }
     }
 
-    /**
-     * @Route("/admin/paywall_plugin/manage/edit")
-     * @Method("PATCH")
-     */
-    public function editAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-                       ->findOneBy(array('id' => $request->get('row_id')));
-        $form = $this->createForm('subscriptionconf', $subscription);
-        if ($request->isMethod('PATCH')) {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $em->flush();
-                var_dump('asdas');die;
-                if ($request->isXmlHttpRequest()) {
-                    return array('status' => true);
-                }
-            } else {
-                if ($request->isXmlHttpRequest()) {
-                    return array(
-                        'status' => false,
-                        'errors' => json_encode($this->getErrorMessages($form))
-                    );
-                }
-            }
-        }
-    }
-
     private function getErrorMessages(\Symfony\Component\Form\Form $form) {      
         $errors = array();
         if (count($form) > 0) {
