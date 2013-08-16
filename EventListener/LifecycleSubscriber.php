@@ -24,6 +24,10 @@ class LifecycleSubscriber implements EventSubscriberInterface
 
     public function install(GenericEvent $event)
     {
+        if ($event->getArgument('plugin_name') != 'newscoop/newscoop-paywall-bundle') {
+            return;
+        }
+
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->updateSchema($this->getClasses(), true);
 
@@ -33,6 +37,11 @@ class LifecycleSubscriber implements EventSubscriberInterface
 
     public function update(GenericEvent $event)
     {
+        if ($event->getArgument('plugin_name') != 'newscoop/newscoop-paywall-bundle') {
+            return;
+        }
+
+
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->updateSchema($this->getClasses(), true);
 
@@ -42,6 +51,10 @@ class LifecycleSubscriber implements EventSubscriberInterface
 
     public function remove(GenericEvent $event)
     {
+        if ($event->getArgument('plugin_name') != 'newscoop/newscoop-paywall-bundle') {
+            return;
+        }
+        
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->dropSchema($this->getClasses(), true);
     }

@@ -13,7 +13,10 @@ paywall:
       save: Zapisz
       skip: Pomiń
     flash:
+      error: "Niepowodzenie."
       message:
+        provider:
+          changed: Dostawca płatności zmieniony pomyślnie.
         subscription:
           activated: Subskrypcja została aktywowana.
           deactivated: Subskrypcja została wyłączona.
@@ -25,10 +28,12 @@ paywall:
         exists:
           subscription: Wybrana subskrypcja już istnieje dla tego użytkownika.
         select:
+          choose: Proszę wybrać dostawcę!
           empty: Pole wyboru nie może być puste!
         topay: Wartość pola "Do zapłaty" jest w złym formacie.
       label:
         active: Aktywa
+        adapters: 'Dostępni dostawcy płatności:'
         addarticle: Dodaj artykuł
         addissue: Dodaj wydanie
         addnew: Dodaj subskrypcję użytkownika
@@ -36,6 +41,7 @@ paywall:
         articles: Artykuły
         choose: Wybierz...
         content: Zawartość
+        current: 'Obecny dostawca płatności:'
         days: Dni
         deactivated: Dezaktywowana
         duration: Czas trwania w dniach
@@ -63,6 +69,7 @@ paywall:
         yes: Tak
         username: Nazwa użytkownika
         users: Użytkownicy
+        goback: Wróć do subskrypcji użytkowników
     menu:
       label:
         addsubscription: Dodaj nową subskrypcję
@@ -90,7 +97,7 @@ paywall:
             issue: Wydanie
             publication: Publikacja
             section: Sekcja
-      header: "Proszę podać nazwę i wartość dla nowej subskrypcji. Można skonfigurować różne rozróżnianie rodzaje subskrypcji, ale tylko jeden po drugim."
+      header: Proszę podać nazwę i wartość dla nowej subskrypcji. Można skonfigurować różne rozróżnianie rodzaje subskrypcji, ale tylko jeden po drugim.
     step2:
       header: "Proszę określić, które artykuły dokładnie powinny być widoczne dla subskrybentów."
       label:
@@ -105,5 +112,6 @@ paywall:
     toolbar:
       label:
         configuration: Konfiguracja
+        configure: Skonfiguruj Paywall
         manage: Zarządzaj subskrypcjami
         manageusers: Zarządzanie subskrypcjami użytkowników

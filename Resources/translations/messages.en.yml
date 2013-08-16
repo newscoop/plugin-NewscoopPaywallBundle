@@ -51,6 +51,7 @@ paywall:
       activate: "Activate"
     flash:
       message:
+        error: "Something went wrong."
         provider:
           changed: "Provider successfully changed."
         subscription:
@@ -66,7 +67,7 @@ paywall:
           subscription: "Choosen subscription already exists for this user."
         select:
           empty: "Select box can not be empty!"
-          choose: "Choose provider first!"
+          choose: "Please choose provider!"
       label:
         name: "Name"
         duration: "Duration in days"
@@ -105,6 +106,7 @@ paywall:
         choose: "Choose..."
         adapters: "Available providers:"
         current: "Current provider:"
+        goback: "Go back to users subscriptions"
     menu:
       label:
         addsubscription: "Add new subscription"

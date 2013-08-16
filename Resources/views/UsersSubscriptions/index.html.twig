@@ -85,6 +85,8 @@ $(document).ready(function(){
                     oTable.fnUpdate(translations['label.deactivated'], rowIndex, 4);
                     flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
                 }
+            } else {
+                flashMessage('{{ 'paywall.flash.message.error.wrong'|trans }}', 'error');
             }
         });
     });

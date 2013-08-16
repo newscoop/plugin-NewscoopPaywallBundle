@@ -52,6 +52,8 @@ function deleteSubscription(element, tbody, div) {
                     div.remove();
                 }
                 return false;
+            } else {
+                flashMessage('{{ 'paywall.flash.message.error.wrong'|trans }}', 'error');
             }
         });
     });
@@ -168,7 +170,7 @@ $(document).ready(function() {
 <div id="subscription">
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
     <fieldset class="actions" style="background-color: #fff;">
-        <input type="button" id="back" class="save-button" value="Go back to users subscriptions">
+        <input type="button" id="back" class="save-button" value="{{ 'paywall.manage.label.goback'|trans }}">
         {% if (type == 'issue') %}
             <input type="button" id="issue" class="button" value="{{ 'paywall.manage.label.addissue'|trans }}">
         {% elseif (type == 'section') %}

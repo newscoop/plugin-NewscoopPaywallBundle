@@ -75,7 +75,7 @@ Go to Newscoop Admin panel and then hit `Plugins` tab. Newscoop Paywall Plugin w
 
 
 Sample:
-=====================
+-------
 ```
 Resources/doc/
 ```

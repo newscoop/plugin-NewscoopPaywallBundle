@@ -36,9 +36,16 @@ class UsersSubscriptionsController extends Controller
     public function deleteAction(Request $request, $id)
     {
         if ($request->isMethod('POST')) {
-            $this->get('subscription.service')->removeById($id);
+            try 
+            {
+                $this->get('subscription.service')->removeById($id);
 
-            return new Response(json_encode(array('status' => true)));
+                return new Response(json_encode(array('status' => true)));
+            } 
+            catch (\Exception $exception) 
+            {
+                return new Response(json_encode(array('status' => false)));
+            }
         }
     }
 
@@ -48,9 +55,16 @@ class UsersSubscriptionsController extends Controller
     public function activateAction(Request $request, $id)
     {
         if ($request->isMethod('POST')) {
-            $this->get('subscription.service')->activateById($id);
+            try 
+            {
+                $this->get('subscription.service')->activateById($id);
 
-            return new Response(json_encode(array('status' => true)));
+                return new Response(json_encode(array('status' => true)));
+            } 
+            catch (\Exception $exception) 
+            {
+                return new Response(json_encode(array('status' => false)));
+            }
         }
     }
 
@@ -60,12 +74,19 @@ class UsersSubscriptionsController extends Controller
     public function removeAction(Request $request, $type, $id)
     {
         if ($request->isMethod('POST')) {
-            $em = $this->getDoctrine()->getManager();
-            $subscription = $this->findByType($em, $type, $id);
-            $em->remove($subscription);
-            $em->flush();
+            try 
+            {
+                $em = $this->getDoctrine()->getManager();
+                $subscription = $this->findByType($em, $type, $id);
+                $em->remove($subscription);
+                $em->flush();
 
-            return new Response(json_encode(array('status' => true)));
+                return new Response(json_encode(array('status' => true)));
+            } 
+            catch (\Exception $exception) 
+            {
+                return new Response(json_encode(array('status' => false)));
+            }
         }
     }
 

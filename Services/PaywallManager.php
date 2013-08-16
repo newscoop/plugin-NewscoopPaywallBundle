@@ -42,11 +42,14 @@ class PaywallManager
     public function getAdapter() {
 
         $settings = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
-            ->findOneByIsActive(true);
+            ->findOneBy(array(
+                'is_active' =>true,
+            ));
 
         $adapter = '\Newscoop\PaywallBundle\Adapter\\'.$settings->getValue();
 
-        if (!@include($adapter)) {
+        if (!class_exists($adapter)) {
+
             return new \Newscoop\PaywallBundle\Adapter\PaypalAdapter($this->subscriptionService);
         }
 

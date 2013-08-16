@@ -25,7 +25,7 @@ $(document).ready(function() {
     $('#step1').show();
     $('.alert.error').hide();
     var subscription_name = $('#subscriptionconf_name');
-    $("#next").click(function(){
+    $("#next").click(function () {  
         var titleIssue = $('#title-issue');
         var titleSection = $('#title-section');
         var titleArticle = $('#title-article');
@@ -217,6 +217,7 @@ $(document).ready(function() {
             $('.alert.error').show();
         }
 
+        $(this).prop('disabled', true);
         return false;      
     });
 
@@ -257,6 +258,7 @@ $(document).ready(function() {
                 subscription_name.data('validName', true);
                 $('.alert.error').empty();
                 $('.alert.error').hide();
+                $("#next").prop('disabled', false);
             } else {
                 subscription_name.css('color', 'rgb(255, 0, 0)');
                 subscription_name.data('validName', false);
