@@ -184,6 +184,13 @@ class AdminController extends Controller
         return new Response(json_encode($this->getArticle($request, $this->getDoctrine()->getManager()))); 
     }
 
+    /**
+     * Gets form errors
+     *
+     * @param \Symfony\Component\Form\Form $form
+     *
+     * @return array
+     */
     private function getErrorMessages(\Symfony\Component\Form\Form $form) {      
         $errors = array();
         if (count($form) > 0) {
@@ -201,6 +208,13 @@ class AdminController extends Controller
         return $errors;
     }
 
+    /**
+     * Gets all publications
+     *
+     * @param Doctrine\ORM\EntityManager $em
+     *
+     * @return array
+     */
     private function getPublication($em) {
 
         $publications = $em->getRepository('Newscoop\Entity\Publication')
@@ -212,6 +226,14 @@ class AdminController extends Controller
         return $publications;
     }
 
+    /**
+     * Gets all issues for given publication Id
+     *
+     * @param Doctrine\ORM\EntityManager               $em
+     * @param Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return array
+     */
     private function getIssue($request, $em) {
 
         $issues = $em->getRepository('Newscoop\Entity\Issue')
@@ -225,6 +247,14 @@ class AdminController extends Controller
         return $issues;
     }
 
+    /**
+     * Gets all sections for given publication and issue Id
+     *
+     * @param Doctrine\ORM\EntityManager               $em
+     * @param Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return array
+     */
     private function getSection($request, $em) {
         
         $sections = $em->getRepository('Newscoop\Entity\Section')
@@ -240,6 +270,14 @@ class AdminController extends Controller
         return $sections;
     }
 
+    /**
+     * Gets all articles for given publication, issue, section Id
+     *
+     * @param Doctrine\ORM\EntityManager               $em
+     * @param Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return array
+     */
     private function getArticle($request, $em) {
         
         $number = $em->getRepository('Newscoop\Entity\Section')
@@ -270,6 +308,14 @@ class AdminController extends Controller
         return $articlesArray;
     }
 
+    /**
+     * Gets all publications, issues, sections, articles
+     *
+     * @param Doctrine\ORM\EntityManager               $em
+     * @param Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return array
+     */
     private function getAll($request, $em) {
 
         $resultArray = array(

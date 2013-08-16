@@ -37,8 +37,7 @@ class PaywallManager
     /**
      * Gets adapter, if adapter doesn't exist, use default one
      *
-     * @param EntityManager       $em
-     * @param SubscriptionService $subscriptionService
+     * @return PaypalAdapter|object
      */
     public function getAdapter() {
 

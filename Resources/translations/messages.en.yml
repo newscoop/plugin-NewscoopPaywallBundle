@@ -66,6 +66,7 @@ paywall:
           subscription: "Choosen subscription already exists for this user."
         select:
           empty: "Select box can not be empty!"
+          choose: "Choose provider first!"
       label:
         name: "Name"
         duration: "Duration in days"
@@ -102,8 +103,8 @@ paywall:
         nocontent: "There is no content added yet."
         content: "Content"
         choose: "Choose..."
-        adapters: "Adapters:"
-        email: "Email:"
+        adapters: "Available providers:"
+        current: "Current provider:"
     menu:
       label:
         addsubscription: "Add new subscription"

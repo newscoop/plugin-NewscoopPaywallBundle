@@ -14,6 +14,7 @@
 function format(item) { return item.text; };
 function formatDiv(item) { return "<div class='select2-results'>" + item.text + "</div>"; }
 $(document).ready(function(){
+    $('.td.alert.error').hide();
     $("#selectProviders").select2({
         placeholder: "Choose...",
         ajax: {
@@ -31,18 +32,25 @@ $(document).ready(function(){
         formatSelection: format,
         escapeMarkup: function (m) { return m; }
 
+    }).on('change', function(){
+        $('.td.alert.error').hide();
     });
 
     $('#save').click(function(){
-        $.post(Routing.generate('newscoop_paywall_getconfiguration', {id: $('#selectProviders').select2('data').id}), { 
-        }, function (data) {
-            if (data.status) {
-                $('#current').empty();
-                $('#current').append($('#selectProviders').select2('data').text);
-                $('#selectProviders').select2('data', null);
-                flashMessage('{{ 'paywall.flash.message.provider.changed'|trans }}');
-            }
-        }, 'json');
+        if ($('#selectProviders').select2('val')) {
+            $('.td.alert.error').hide();
+            $.post(Routing.generate('newscoop_paywall_getconfiguration', {id: $('#selectProviders').select2('data').id}), { 
+            }, function (data) {
+                if (data.status) {
+                    $('#current').empty();
+                    $('#current').append($('#selectProviders').select2('data').text);
+                    $('#selectProviders').select2('data', null);
+                    flashMessage('{{ 'paywall.flash.message.provider.changed'|trans }}');
+                }
+            }, 'json');
+        } else {
+            $('.td.alert.error').show();
+        }
     });
 
 });
@@ -50,9 +58,13 @@ $(document).ready(function(){
 {% endblock %}
 {% block admin_content %}
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 4} %}
+<div style="padding: 10px 10px 30px 10px; width: 400px;" class="box_table">
 <div class="table">
     <div class="tr">
-        <div class="td"><strong>Current Provider</strong></div>
+        <div class="td alert error">{{ 'paywall.manage.error.select.choose'|trans }}</div>
+    </div>
+    <div class="tr">
+        <div class="td"><strong>{{ 'paywall.manage.label.current'|trans }}</strong></div>
     </div>
     <div class="tr">
         <div class="td" id="current">{{ current }}</div>
@@ -69,5 +81,6 @@ $(document).ready(function(){
             <input type="button" id="save" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
         </div>
     </div>
+</div>
 </div>
 {% endblock %}
