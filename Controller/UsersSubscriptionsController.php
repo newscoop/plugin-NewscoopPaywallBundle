@@ -265,6 +265,7 @@ class UsersSubscriptionsController extends Controller
         return array(
             'subscription_id' => $id,
             'type' => $type,
+            'publication_id' => $subscriptionService->getOneById($id)->getPublication()->getId(),
             'subscription_language' => $subscriptionService->getOneById($id)->getPublication()->getLanguage()->getId(),
             'form' => $form->createView(),
             'issues' => $subscriptionService->getIssues($id),
@@ -298,6 +299,7 @@ class UsersSubscriptionsController extends Controller
         $resultSubscription = array();
         $resultArray = array();
         $languageId = $request->get('languageId');
+        $publicationId = $request->get('publicationId');
         
         switch ($type) {
             case 'issue':
@@ -305,7 +307,7 @@ class UsersSubscriptionsController extends Controller
                     ->getIssuesByLanguageAndId($languageId, $request->get('subscriptionId'));
         
                 if ($languageId === 'all') {
-                    $sections = $subscriptionService->getDiffrentIssuesByLanguage($request->get('currentLanguageId'));
+                    $sections = $subscriptionService->getDiffrentIssuesByLanguage($request->get('currentLanguageId'), $publicationId);
                 } else {
                     $issues = $subscriptionService->getIssuesByLanguageId($languageId);
                 }
@@ -322,7 +324,7 @@ class UsersSubscriptionsController extends Controller
                     ->getSectionsByLanguageAndId($languageId, $request->get('subscriptionId'));
                 
                 if ($languageId === 'all') {
-                    $sections = $subscriptionService->getDiffrentSectionsByLanguage($request->get('currentLanguageId'));
+                    $sections = $subscriptionService->getDiffrentSectionsByLanguage($request->get('currentLanguageId'), $publicationId);
                 } else {
                     $sections = $subscriptionService->getSectionsByLanguageId($languageId);
                 }
@@ -339,7 +341,7 @@ class UsersSubscriptionsController extends Controller
                     ->getArticlesByLanguageAndId($languageId, $request->get('subscriptionId'));
 
                 if ($languageId === 'all') {
-                    $sections = $subscriptionService->getDiffrentArticlesByLanguage($request->get('currentLanguageId'));
+                    $sections = $subscriptionService->getDiffrentArticlesByLanguage($request->get('currentLanguageId'), $publicationId);
                 } else {
                     $articles = $subscriptionService->getArticlesByLanguageId($languageId);
                 }

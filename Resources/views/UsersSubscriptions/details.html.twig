@@ -68,7 +68,8 @@ function selectBox(type) {
                 return {
                     subscriptionId: $("#subscriptionId").val(),
                     languageId: $('#selectLanguages').select2('val'),
-                    currentLanguageId: {{ subscription_language }}
+                    currentLanguageId: {{ subscription_language }},
+                    publicationId: {{ publication_id }}
                 };
             },
             results: function (data) {

@@ -51,3 +51,8 @@ div.td {
     -moz-border-radius: 4px;
     border-radius: 4px;
 }
+#configure-paywall {
+    padding: 10px 10px 30px 10px; 
+    width: 400px;
+    font-size: 12px;
+}

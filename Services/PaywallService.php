@@ -33,7 +33,7 @@ class PaywallService extends SubscriptionService
                 'id' => $subscription->getId(),
                 'userid' => $subscription->getUser()->getId(),
                 'username' => $subscription->getUser()->getUsername(),
-                'publication' => $subscription->getPublicationName(),
+                'publication' => $subscription->getPublication()->getId(),
                 'topay' => $subscription->getToPay(),
                 'currency' => $subscription->getCurrency(),
                 'type' => $subscription->getType(),
@@ -333,18 +333,23 @@ class PaywallService extends SubscriptionService
 
     /**
      * Gets all sections diffrent from already added user's sections by given language
+     * and publication
      *
-     * @param  integer $languageId Language Id
+     * @param  integer $languageId    Language Id
+     * @param  integer $publicationId Publication Id
      *
      * @return array
      */
-    public function getDiffrentSectionsByLanguage($languageId)
+    public function getDiffrentSectionsByLanguage($languageId, $publicationId)
     {
         $sections = $this->em->getRepository('Newscoop\Entity\Section')
             ->createQueryBuilder('s')
             ->select('s.number', 's.name')
-            ->where('s.language != :id')
-            ->setParameter('id', $languageId)
+            ->where('s.language != :id AND s.publication = :publicationId')
+            ->setParameters(array(
+                'id' => $languageId,
+                'publicationId' => $publicationId
+            ))
             ->getQuery()
             ->getArrayResult();
 
@@ -353,18 +358,23 @@ class PaywallService extends SubscriptionService
 
     /**
      * Gets all issues diffrent from already added user's issues by given language
+     * and publication
      *
-     * @param  integer $languageId Language Id
+     * @param  integer $languageId    Language Id
+     * @param  integer $publicationId Publication Id
      *
      * @return array
      */
-    public function getDiffrentIssuesByLanguage($languageId)
+    public function getDiffrentIssuesByLanguage($languageId, $publicationId)
     {
         $issues = $this->em->getRepository('Newscoop\Entity\Issue')
             ->createQueryBuilder('i')
             ->select('i.number', 'i.name')
-            ->where('i.language != :id')
-            ->setParameter('id', $languageId)
+            ->where('i.language != :id AND i.publication = :publicationId')
+            ->setParameters(array(
+                'id' => $languageId,
+                'publicationId' => $publicationId
+            ))
             ->getQuery()
             ->getArrayResult();
 
@@ -373,18 +383,23 @@ class PaywallService extends SubscriptionService
 
     /**
      * Gets all articles diffrent from already added user's articles by given language
+     * and publication
      *
-     * @param  integer $languageId Language Id
+     * @param  integer $languageId    Language Id
+     * @param  integer $publicationId Publication Id
      *
      * @return array
      */
-    public function getDiffrentArticlesByLanguage($languageId)
+    public function getDiffrentArticlesByLanguage($languageId, $publicationId)
     {
         $articles = $this->em->getRepository('Newscoop\Entity\Article')
             ->createQueryBuilder('i')
             ->select('i.number', 'i.name')
-            ->where('i.language != :id')
-            ->setParameter('id', $languageId)
+            ->where('i.language != :id AND i.publication = :publicationId')
+            ->setParameters(array(
+                'id' => $languageId,
+                'publicationId' => $publicationId
+            ))
             ->getQuery()
             ->getArrayResult();
 

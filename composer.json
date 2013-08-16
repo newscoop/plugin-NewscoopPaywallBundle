@@ -7,8 +7,8 @@
     "license": "GPL-3.0",
     "authors": [
         {
-            "name": "Pawel Mikolajczuk",
-            "email": "pawel.mikolajczuk@sourcefabric.org"
+            "name": "Rafał Muszyński",
+            "email": "rafal.muszynski@sourcefabric.org"
         }
     ],
     "require": {

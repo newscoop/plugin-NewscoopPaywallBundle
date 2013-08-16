@@ -58,7 +58,7 @@ $(document).ready(function(){
 {% endblock %}
 {% block admin_content %}
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 4} %}
-<div style="padding: 10px 10px 30px 10px; width: 400px;" class="box_table">
+<div id="configure-paywall" class="box_table">
 <div class="table">
     <div class="tr">
         <div class="td alert error">{{ 'paywall.manage.error.select.choose'|trans }}</div>
