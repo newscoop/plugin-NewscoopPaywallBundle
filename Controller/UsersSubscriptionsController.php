@@ -314,7 +314,8 @@ class UsersSubscriptionsController extends Controller
     /**
      * @Route("/admin/paywall_plugin/users-subscriptions/getdata/{type}", options={"expose"=true})
      */
-    public function getdata(Request $request, $type) {
+    public function getData(Request $request, $type) 
+    {
         $subscriptionService = $this->get('subscription.service');
         $resultEntity = array();
         $resultSubscription = array();
@@ -396,7 +397,8 @@ class UsersSubscriptionsController extends Controller
      *
      * @return Entity object|Array Collection
      */
-    private function findByType($em, $type, $id) {
+    private function findByType($em, $type, $id) 
+    {
 
         if ($type === 'section') {
             $subscription = $em->getRepository('Newscoop\Subscription\Section')

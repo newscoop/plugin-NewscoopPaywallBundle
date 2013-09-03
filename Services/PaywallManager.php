@@ -19,7 +19,7 @@ class PaywallManager
     /** @var Doctrine\ORM\EntityManager */
     private $em;
 
-     /** @var Newscoop\Services\SubscriptionService */
+    /** @var Newscoop\Services\SubscriptionService */
     private $subscriptionService;
  
     /**
