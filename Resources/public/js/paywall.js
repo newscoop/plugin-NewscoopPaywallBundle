@@ -17,17 +17,20 @@ $(document).ready(function() {
         'step2.label.js.issue': 'Issues',
         'step2.label.js.section': 'Sections',
         'step2.label.js.article': 'Articles',
+        'step2.error.selects.required': 'Publication is required',
         'day': 'day',
         'days': 'days',
     };
     $('#step2').hide();
     $('#step1').show();
+    $('.alert.error').hide();
     var subscription_name = $('#subscriptionconf_name');
-    $("#next").click(function(){
+    $("#next").click(function () {  
         var titleIssue = $('#title-issue');
         var titleSection = $('#title-section');
         var titleArticle = $('#title-article');
-        $('.errors').empty();
+        $('.alert.error').empty();
+        $('.alert.error').hide();
         if (subscription_name.val() && window.location.pathname === $('#confForm').attr('action')) {
             subscription_name.data('validName', true);
         }
@@ -71,7 +74,12 @@ $(document).ready(function() {
                                 escapeMarkup: function (m) { return m; }
 
                             }).on("change", function (e) {
+                                $("#selectIssues").select2('data', null);
+                                $("#selectSections").select2('data', null);
+                                $("#selectArticles").select2('data', null);
                                 $("#selectIssues").select2("enable", true);
+                                $('#selectSections').select2("enable", false);
+                                $('#selectArticles').select2("enable", false);
                                 $('#subscriptionName').attr('value', $('#subscriptionconf_name').val());
                                 $('#specificationForm_publication').attr('value', $("#selectPublications").select2("val"));         
                             });
@@ -106,7 +114,10 @@ $(document).ready(function() {
                                 formatSelection: format,
                                 escapeMarkup: function (m) { return m; }
                             }).on("change", function (e) {
+                                $("#selectSections").select2('data', null);
+                                $("#selectArticles").select2('data', null);
                                 $("#selectSections").select2("enable", true);
+                                $('#selectArticles').select2("enable", false);
                                 $('#specificationForm_issue').attr('value', $("#selectIssues").select2("val"));           
                             });
                         }
@@ -139,6 +150,7 @@ $(document).ready(function() {
                                 formatSelection: format,
                                 escapeMarkup: function (m) { return m; }
                             }).on("change", function (e) {
+                                $("#selectArticles").select2('data', null);
                                 $("#selectArticles").select2("enable", true);
                                 $('#specificationForm_section').attr('value', $("#selectSections").select2("val"));          
                             }); 
@@ -191,31 +203,42 @@ $(document).ready(function() {
                     } else {
                         $('#next').prop("disabled", false);
                         var ul = $('<ul></ul>');
-                        ul.appendTo($('.errors'));
-                        $('.errors').css('color', '#FF2200');
+                        ul.appendTo($('.alert.error'));
                         $.each($.parseJSON(msg.errors), function (i, obj) {
                             ul.append('<li>'+obj+'</li>');
                         });
+                        $('.alert.error').show();
                     }
                 }
             });
 
         } else {
-            $('.errors').css('color', '#FF2200').append('<ul><li>'+translations['name.error']+'</li></ul>');
+            $('.alert.error').append('<ul><li>'+translations['name.error']+'</li></ul>');
+            $('.alert.error').show();
         }
 
+        $(this).prop('disabled', true);
         return false;      
     });
 
     $('#save').click(function(e) {
         if(!$("#selectIssues").select2("val") || !$("#selectSections").select2("val") || !$("#selectArticles").select2("val")) {
-            alert(translations['step2.error.selects.blank']);
+            $('.alert.error').empty();
+            $('.alert.error').append(translations['step2.error.selects.blank']);
+            $('.alert.error').show();
             return false;
         }
     });
 
     $('#skip').click(function() {
-        window.location.href = Routing.generate('newscoop_paywall_managesubscriptions_manage');
+        if(!$("#selectPublications").select2("val")) {
+            $('.alert.error').empty();
+            $('.alert.error').append(translations['step2.error.selects.required']);
+            $('.alert.error').show();
+            return false;
+        } else {
+            $('#step2Form').submit(); 
+        } 
     });
 
     var delay = (function(){
@@ -233,7 +256,9 @@ $(document).ready(function() {
             if (data.status) {
                 subscription_name.css('color', 'rgb(0, 128, 0)');
                 subscription_name.data('validName', true);
-                $('.errors').empty();
+                $('.alert.error').empty();
+                $('.alert.error').hide();
+                $("#next").prop('disabled', false);
             } else {
                 subscription_name.css('color', 'rgb(255, 0, 0)');
                 subscription_name.data('validName', false);

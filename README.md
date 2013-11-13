@@ -1,178 +1,92 @@
 NewscoopPaywallBundle
 =====================
 
-NewscoopPaywallBundle - add paywalls support for newscoop subscriptions.
+NewscoopPaywallBundle is a simple, powerful plugin that allows online publishers to sell access to their content of the publications, issues, sections, articles.
+
+Features:
+=====================
+###Define and add new subscriptions by:
+- type (`Publication`, `Issue`, `Section`, `Article`)
+- price
+- duration
+- currency
+
+###Add subscription specification by defined subscription type
+
+###Manage defined subscriptions
+ * delete subscriptions
+ * edit subscriptions
+- search defined subscriptions by:
+    - user
+    - subscription type (publication, issue, section, article)
+    - duration in days
+    - price
+    - currency
+
+###Management of existing user subscriptions
+ * assignee existing subscriptions to individual users
+ * activate/deactivate user subscriptions
+ * edit defined user subscription
+ * view subscription details while adding a user subscription
+- search user subscriptions by:
+    - username
+    - publication name
+    - to pay amount
+    - currency
+    - status (`Active`/`Deactivated`)
+    - payment type (`Paid`, `Paid now`, `Trial`)
+
+###Specification management of the user subscription
+- add Issues, Sections, Articles to each user-defined subscriptions by:
+    - Individual languages (show all `Issues`|`Sections`|`Articles` by publication language)
+    - Regardless of the languages (show all `Issues`|`Sections`|`Articles` diffrent than publication language)
+    - start date
+    - paid days
+    - days
+- edit all the specifications (`Issues`/`Sections`/`Articles`) of the user subscriptions by:
+    - start date
+    - paid days
+    - days
+- edit single specification
+- delete specifications
+
+###Paywall configuration
+- choose one of available payment service providers:
+    - Paypal is supported only at the moment (we will add more providers soon)
+
+Installing Newscoop Paywall Plugin Guide
+-------------
+Installation is a quick process:
 
 
-## Sample application/configs/subscriptions/subscriptions.yml configuration 
+1. Installing plugin through our Newscoop Plugin System
+2. That's all!
 
+### Step 1: Installing plugin through our Newscoop Plugin System
+Run the command:
+``` bash
+$ php application/console plugins:install "newscoop/newscoop-paywall-bundle" --env=prod
 ```
-subscriptions: # inform system about subscription definitions
-    specified_article: # name of your subscription definition
-        type: article # type of subscription (publication/issue/section/article)
-        range: 30 # how many days
-        price: 20 # price for subscription
-        currency: PLN # price currency
-        specify: # you can specify element for that definition - everything there is optional
-            publication: 2 # specify publication id
-            issue: 13 # specify issue id
-            section: 10 # specify section id
-            article: 101 # specify article id
-    articles_from_publication:
-        type: article
-        range: 30
-        price: 15
-        currency: PLN
-        specify:
-            publication: 1
-    article:
-        type: article
-        range: 30
-        price: 10
-        currency: PLN
-paypal_config: # inform system about paypal config
-    seller_email: mikolajczuk.private@gmail.com # your paypal account name
-    item_name_format: "Subscription on %publication_name%" # Define name of product: "Subscription on The New Custodian"
-    test_seller_email: mikolajczuk.private@gmail.com # your paypal test account name
+Plugin will be installed to your project's `newscoop/plugins/Newscoop` directory.
+
+
+### Step 2: That's all!
+Go to Newscoop Admin panel and then hit `Plugins` tab. Newscoop Paywall Plugin will show up there.
+
+
+Sample:
+-------
 ```
-
-## For good user experience you will need to modify and create few templates. In our examples we will based on "Quetzal" Newscoop theme.
-
-### article.tpl - change lines where you show article content
-
-```
-{{ $subscription = $gimme->user->subscriptions->has_article($gimme->article->number) }}
-{{ if !$subscription || !$subscription->is_active }}
-    {{ subscribe_form }}{{ /subscribe_form }}
-{{ else }}
-    {{ if $gimme->article->type_name == "debate" }}
-        {{ include file="_tpl/article-debate.tpl" }}
-    {{ else }}
-        {{ include file="_tpl/article-cont.tpl" }}
-    {{ /if }}
-{{ /if }}
-```                
-
-### newscoop_paywall_get.tpl
-
-```
-{{ include file="_tpl/_html-head.tpl" }}
-
-<body>
-<!--[if lt IE 7]>
-    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-<![endif]-->
-          
-{{ include file="_tpl/header.tpl" }}
-
-<section role="main" class="internal-page">
-    <div class="wrapper">
-        <div class="container">
-            <section id="content">
-                <div class="row">
-                {{ block content }}
-                    {{ paypal_payment_form subscriptionId=$subscriptionId test=true }} {{ /paypal_payment_form }}
-                {{ /block }}     
-                </div> <!--end div class="row"-->
-            </section> <!-- end section id=content -->
-        </div> <!-- end div class='container' -->
-    </div> <!-- end div class='wrapper' -->
-</section> <!-- end section role main -->
-
-{{ include file="_tpl/footer.tpl" }}
-
-{{ include file="_tpl/_html-foot.tpl" }}
+Resources/doc/
 ```
 
-###  newscoop_paywall_success.tpl - page with success message (payment was accepted - wait for confirmation from provider (or newspaper - not implemented yet))
+License
+-------
 
-```
-{{ include file="_tpl/_html-head.tpl" }}
+This bundle is under the GNU General Public License v3. See the complete license in the bundle:
 
-<body>
-<!--[if lt IE 7]>
-    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-<![endif]-->
-          
-{{ include file="_tpl/header.tpl" }}
+    LICENSE.txt
 
-<section role="main" class="internal-page">
-    <div class="wrapper">
-        <div class="container">
-            <section id="content">
-                <div class="row">
-                {{ block content }}
-                    <h3>success</h3>
-                {{ /block }}     
-                </div> <!--end div class="row"-->
-            </section> <!-- end section id=content -->
-        </div> <!-- end div class='container' -->
-    </div> <!-- end div class='wrapper' -->
-</section> <!-- end section role main -->
-
-{{ include file="_tpl/footer.tpl" }}
-
-{{ include file="_tpl/_html-foot.tpl" }}
-```
-
-###  newscoop_paywall_cancel.tpl - page with message about canceled payment (user/provider canceled payment)
-
-```
-{{ include file="_tpl/_html-head.tpl" }}
-
-<body>
-<!--[if lt IE 7]>
-    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-<![endif]-->
-          
-{{ include file="_tpl/header.tpl" }}
-
-<section role="main" class="internal-page">
-    <div class="wrapper">
-        <div class="container">
-            <section id="content">
-                <div class="row">
-                {{ block content }}
-                    <h3>cancel</h3>
-                {{ /block }}     
-                </div> <!--end div class="row"-->
-            </section> <!-- end section id=content -->
-        </div> <!-- end div class='container' -->
-    </div> <!-- end div class='wrapper' -->
-</section> <!-- end section role main -->
-
-{{ include file="_tpl/footer.tpl" }}
-
-{{ include file="_tpl/_html-foot.tpl" }}
-```
-
-###  newscoop_paywall_error.tpl - page with error message (something was broken)
-
-```
-{{ include file="_tpl/_html-head.tpl" }}
-
-<body>
-<!--[if lt IE 7]>
-    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-<![endif]-->
-          
-{{ include file="_tpl/header.tpl" }}
-
-<section role="main" class="internal-page">
-    <div class="wrapper">
-        <div class="container">
-            <section id="content">
-                <div class="row">
-                {{ block content }}
-                    <h3>error</h3>
-                {{ /block }}     
-                </div> <!--end div class="row"-->
-            </section> <!-- end section id=content -->
-        </div> <!-- end div class='container' -->
-    </div> <!-- end div class='wrapper' -->
-</section> <!-- end section role main -->
-
-{{ include file="_tpl/footer.tpl" }}
-
-{{ include file="_tpl/_html-foot.tpl" }}
-```
+About
+-------
+NewscoopPaywallBundle is a [Sourcefabric o.p.s](https://github.com/sourcefabric) initiative.

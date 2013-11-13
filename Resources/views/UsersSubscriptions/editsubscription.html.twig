@@ -1,0 +1,104 @@
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}{{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.toolbar.label.manageusers'|trans }} - {{ 'paywall.btn.edit'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#back').click(function() {
+        window.location.href = Routing.generate('newscoop_paywall_userssubscriptions_index');
+    });
+});
+</script>
+{% endblock %}
+
+{% block admin_content %}
+{% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
+<div id="edit-subscription" style="padding: 10px 10px 30px 10px;">
+    <form id="subscriptioneditForm" action="{{ path('newscoop_paywall_userssubscriptions_editsubscription', {'id': subscription.id}) }}" method="post" {{ form_enctype(form) }}>
+        <table border="0" cellspacing="1" cellpadding="0" class="box_table" style="width: 355px">
+            <tbody>
+               <tr>
+                    <td>
+                        <div class="errors">{{ form_errors(form) }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left">   
+                        <strong>{{ 'paywall.manage.label.username'|trans }}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        {{ subscription.user.username }}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left">   
+                        <strong>{{ 'paywall.manage.label.name'|trans }}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        {{ subscription.user.name }}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left">   
+                        <strong>{{ 'paywall.step1.form.select.type.publication'|trans }}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        {{ subscription.publication.name }}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left">
+                        <strong>{{ form_label(form.topay) }}</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{ form_widget(form.topay, {'attr' : {'class' : 'input_text'}}) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left">
+                        <strong>{{ form_label(form.currency) }}</strong> 
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        {{ form_widget(form.currency, {'attr' : {'class' : 'input_text'}}) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left">
+                        <strong>{{ form_label(form.type) }}</strong>    
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        {{ form_widget(form.type, {'attr' : {'class' : 'input_select'}}) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><hr></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="right" style="padding-top: 10px;">
+                        <input type="button" id="back" value="{{ 'paywall.btn.back'|trans }}" class="button">
+                        <input type="submit" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
+                    </td>
+                </tr>   
+            </tbody>
+        </table>
+    </form>
+</div>
+{% endblock %}

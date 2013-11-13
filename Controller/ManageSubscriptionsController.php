@@ -10,7 +10,6 @@ namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,51 +49,5 @@ class ManageSubscriptionsController extends Controller
 
             return new Response(json_encode(array('status' => true)));
         }
-    }
-
-    /**
-     * @Route("/admin/paywall_plugin/manage/edit")
-     * @Method("PATCH")
-     */
-    public function editAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-                       ->findOneBy(array('id' => $request->get('row_id')));
-        $form = $this->createForm('subscriptionconf', $subscription);
-        if ($request->isMethod('PATCH')) {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $em->flush();
-
-                if ($request->isXmlHttpRequest()) {
-                    return array('status' => true);
-                }
-            } else {
-                if ($request->isXmlHttpRequest()) {
-                    return array(
-                        'status' => false,
-                        'errors' => json_encode($this->getErrorMessages($form))
-                    );
-                }
-            }
-        }
-    }
-
-    private function getErrorMessages(\Symfony\Component\Form\Form $form) {      
-        $errors = array();
-        if (count($form) > 0) {
-            foreach ($form->all() as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrorMessages($child);
-                }
-            }
-        }
-
-        foreach ($form->getErrors() as $key => $error) {
-            $errors[] = $error->getMessage();   
-        }
-
-        return $errors;
     }
 }

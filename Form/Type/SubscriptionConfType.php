@@ -18,36 +18,36 @@ class SubscriptionConfType extends AbstractType
     {
         $builder
         ->add('name', null, array(
-            'label' => 'step1.form.label.name',
+            'label' => 'paywall.step1.form.label.name',
             'error_bubbling' => true,
-            'invalid_message' => 'step1.form.error.name'
+            'invalid_message' => 'paywall.step1.form.error.name'
         ))
         ->add('type', 'choice', array(
-            'label'  => 'step1.form.label.type',
+            'label'  => 'paywall.step1.form.label.type',
             'choices'   => array(
-                'publication'   => 'step1.form.select.type.publication',
-                'issue'   => 'step1.form.select.type.issue',
-                'section' => 'step1.form.select.type.section',
-                'article'   => 'step1.form.select.type.article',
+                'publication'   => 'paywall.step1.form.select.type.publication',
+                'issue'   => 'paywall.step1.form.select.type.issue',
+                'section' => 'paywall.step1.form.select.type.section',
+                'article'   => 'paywall.step1.form.select.type.article',
             )
         ))
         ->add('range', null, array(
-            'label' => 'step1.form.label.duration',
+            'label' => 'paywall.step1.form.label.duration',
             'attr' => array('min'=>'1'),
             'error_bubbling' => true,
-            'invalid_message' => 'step1.form.error.duration'
+            'invalid_message' => 'paywall.step1.form.error.duration'
         ))
         ->add('price', null, array(
-            'label' => 'step1.form.label.price',
+            'label' => 'paywall.step1.form.label.price',
             'error_bubbling' => true,
             'required' => true,
-            'invalid_message' => 'step1.form.error.price'
+            'invalid_message' => 'paywall.step1.form.error.price'
         ))
         ->add('currency', null, array(
-            'label' => 'step1.form.label.currency',
+            'label' => 'paywall.step1.form.label.currency',
             'error_bubbling' => true,
             'required' => true,
-            'invalid_message' => 'step1.form.error.price'
+            'invalid_message' => 'paywall.step1.form.error.price'
         ));
     }
 
