@@ -1,0 +1,76 @@
+#tabs {}
+#tabs ul {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding-left: 0px;
+}
+#tabs ul li {
+    display: inline-block;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+}
+#tabs ul li:after {content: none}
+#tabs ul li.last {border-right: none;}
+#tabs ul li.active {background-color: #007fb3;}
+#tabs ul li a {font-size: 14px;}
+#tabs ul li.active a {color: #FFF;}
+#details-header {
+    font-size: 16px; 
+    font-weight: bold;
+    background-color: #fff;
+}
+div.table {display: table;}
+div.tr {display: table-row;}
+div.td {
+    display: table-cell;
+    padding: 5px 0;
+}
+#typeDetails span, #durationDetails span, 
+#priceDetails span, #currencyDetails span {
+    float: right;
+    margin-right: 100px;
+}
+#active {
+    background-color: #dff0d8; 
+    border-top: 1px solid #fff; 
+    color: #468847;
+}
+#deactivated {
+    background-color: #f2dede; 
+    border-top: 1px solid #fff; 
+    color: #b94a48;
+}
+.alert.error {
+    color: #b94a48;
+    background-color: #f2dede;
+    border-color: #eed3d7;
+    padding: 8px 35px 8px 14px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    border: 1px solid #fbeed5;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+#configure-paywall {
+    padding: 10px 10px 30px 10px;
+    width: 400px;
+    font-size: 12px;
+}
+.plugin-container {
+    padding: 10px 10px 30px 10px;
+    border: 1px solid #ccc;
+    background-color: #FFF;
+    font-size: 12px;
+}
+.box_table {
+    border: none;
+    background-color: transparent;
+    float: none;
+    margin: 5px 5px 0 30px;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+#add-new-subscription {
+    width: auto;
+}
