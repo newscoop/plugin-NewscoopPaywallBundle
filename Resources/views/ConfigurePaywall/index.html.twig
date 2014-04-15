@@ -57,6 +57,7 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 {% block admin_content %}
+<div class="plugin-container">
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 4} %}
 <div id="configure-paywall" class="box_table">
 <div class="table">
@@ -81,6 +82,7 @@ $(document).ready(function(){
             <input type="button" id="save" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
         </div>
     </div>
+</div>
 </div>
 </div>
 {% endblock %}

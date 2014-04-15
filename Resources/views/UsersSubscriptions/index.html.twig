@@ -39,17 +39,17 @@ $(document).ready(function(){
     var oTable = $('#users-subscriptionsTable').dataTable( {
         'oLanguage': {
             'oPaginate': {
-                'sNext': '{{ getGS('Next') }}',
-                'sLast': '{{ getGS('Last') }}',
-                'sPrevious': '{{ getGS('Previous') }}',
-                'sFirst': '{{ getGS('First') }}'
+                'sFirst': '{{ 'paywall.datatable.label.first'|trans }}',
+                'sNext': '{{ 'paywall.datatable.label.next'|trans }}',
+                'sPrevious': '{{ 'paywall.datatable.label.previous'|trans }}',
+                'sLast': '{{ 'paywall.datatable.label.last'|trans }}',
             },
-            'sZeroRecords': '{{ getGS('No records found.') }}',
-            'sSearch': '{{ getGS('Search') }}:',
-            'sInfo': '{{ getGS('Showing _START_ to _END_ of _TOTAL_ entries') }}',
-            'sEmpty': '{{ getGS('No entries to show') }}',
-            'sInfoFiltered': '{{ getGS(' - filtering from _MAX_ records') }}',
-            'sLengthMenu': '{{ getGS('Display _MENU_ records') }}',
+            'sZeroRecords': '{{ 'paywall.datatable.label.norecords'|trans }}',
+            'sSearch': '',
+            'sInfo': '{{ 'paywall.datatable.table.info'|trans }}',
+            'sEmpty': '{{ 'paywall.datatable.table.noentries'|trans }}',
+            'sInfoFiltered': '{{ 'paywall.datatable.table.filtering'|trans }}',
+            'sLengthMenu': '{{ 'paywall.datatable.table.menu'|trans }}',
             'sInfoEmpty': '',
         },
         "bProcessing": true,
@@ -138,15 +138,17 @@ $(document).ready(function(){
     $('#subscriptionaddForm_type').select2();
     $('#subscriptionaddForm_status').css('width', '250px');
     $('#subscriptionaddForm_status').select2();
-    
+    $('.dataTables_filter label input').addClass('form-control input-sm');
+    $('.dataTables_filter label input').attr('placeholder', '{{ 'paywall.search'|trans }}');
 });
 </script>
 {% endblock %}
 {% block admin_content %}
+<div class="plugin-container">
 <div id="subscription">
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
     <fieldset class="actions" style="background-color: #fff;">
-        <input type="button" id="add-new-subscription" class="save-button" value="{{ 'paywall.manage.label.addnew'|trans }}">
+        <input type="button" id="add-new-subscription" class="form-control btn-sm btn-primary" value="{{ 'paywall.manage.label.addnew'|trans }}">
     </fieldset>
     <div id="edit-all-template" style="display: none">
         <form id="addForm" method="post" {{ form_enctype(form) }}>
@@ -252,18 +254,8 @@ $(document).ready(function(){
                     </tr>
                 {% endfor %}
             </tbody>
-            <tfoot>
-                <tr>
-                    <th>{{ 'paywall.manage.label.username'|trans }}</th>
-                    <th>{{ 'paywall.step1.form.select.type.publication'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.topay'|trans }}</th>
-                    <th>{{ 'paywall.step2.label.currency'|trans }}</th>
-                    <th>{{ 'paywall.step2.label.active'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.paymenttype'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
-                </tr>
-            </tfoot>
         </table>
     </div>
+</div>
 </div>
 {% endblock %}

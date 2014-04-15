@@ -14,6 +14,7 @@
 {% endblock %}
 
 {% block admin_content %}
+<div class="plugin-container">
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 1} %}
 <div id="add-subscription" style="padding: 10px 10px 30px 10px;">
 	<form id="confForm" action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(form) }} >
@@ -48,7 +49,7 @@
 				</tr>
 				<tr>
 					<td>
-						{{ form_widget(form.type, {'attr' : {'class' : 'input_select'}}) }}
+						{{ form_widget(form.type, {'attr' : {'class' : 'input_select', 'style' : 'width:150px'}}) }}
 					</td>
 				</tr>
 				<tr>
@@ -196,5 +197,6 @@
 			</tbody>
 		</table>
 	</form>
+</div>
 </div>
 {% endblock %}

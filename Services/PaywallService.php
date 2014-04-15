@@ -39,7 +39,7 @@ class PaywallService extends SubscriptionService
                 'type' => $subscription->getType(),
                 'active' => $subscription->isActive(),
             );
-        } 
+        }
 
         return $subscriptionsArray;
     }
@@ -300,7 +300,7 @@ class PaywallService extends SubscriptionService
      * @return entity object
      */
     public function getSubscriptionsConfig($subscriptionId) {
-        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription_specification')
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
             ->findOneBy(array(
                 'subscription' => $subscriptionId,
             ));

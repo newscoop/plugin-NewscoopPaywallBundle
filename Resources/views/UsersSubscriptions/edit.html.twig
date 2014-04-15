@@ -18,6 +18,7 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block admin_content %}
+<div class="plugin-container">
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
 <div id="details-subscription" style="padding: 10px 10px 30px 10px;">
     <form id="detailsForm" action="{{ path('newscoop_paywall_userssubscriptions_edit', {'type': type, 'id': subscription.id}) }}" method="post" {{ form_enctype(form) }}>
@@ -90,5 +91,6 @@ $(document).ready(function() {
             </tbody>
         </table>
     </form>
+</div>
 </div>
 {% endblock %}

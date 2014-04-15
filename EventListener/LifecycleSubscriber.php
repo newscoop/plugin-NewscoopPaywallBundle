@@ -10,6 +10,7 @@ namespace Newscoop\PaywallBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Newscoop\EventDispatcher\Events\GenericEvent;
+use Newscoop\PaywallBundle\Entity\Settings;
 
 /**
  * Event lifecycle management
@@ -18,7 +19,8 @@ class LifecycleSubscriber implements EventSubscriberInterface
 {
     private $em;
 
-    public function __construct($em) {
+    public function __construct($em)
+    {
         $this->em = $em;
     }
 
@@ -26,6 +28,12 @@ class LifecycleSubscriber implements EventSubscriberInterface
     {
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->updateSchema($this->getClasses(), true);
+
+        $adapter = new Settings();
+        $adapter->setName('Paypal');
+        $adapter->setValue('PaypalAdapter');
+        $this->em->persist($adapter);
+        $this->em->flush();
 
         // Generate proxies for entities
         $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__ . '/../../../../library/Proxy');
@@ -49,16 +57,17 @@ class LifecycleSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'plugin.install.newscoop_paywall_plugin' => array('install', 1),
-            'plugin.update.newscoop_paywall_plugin' => array('update', 1),
-            'plugin.remove.newscoop_paywall_plugin' => array('remove', 1),
+            'plugin.install.newscoop_paywall_bundle' => array('install', 1),
+            'plugin.update.newscoop_paywall_bundle' => array('update', 1),
+            'plugin.remove.newscoop_paywall_bundle' => array('remove', 1),
         );
     }
 
-    private function getClasses(){
+    private function getClasses()
+    {
         return array(
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Subscriptions'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Subscription_specification'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionSpecification'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Settings'),
         );
     }

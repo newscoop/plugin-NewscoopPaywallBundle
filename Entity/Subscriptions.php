@@ -8,7 +8,7 @@
 
 namespace Newscoop\PaywallBundle\Entity;
 
-use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Newscoop\PaywallBundle\Validator\Constraints as PaywallValidators;
@@ -19,7 +19,7 @@ use Newscoop\PaywallBundle\Validator\Constraints as PaywallValidators;
  * @ORM\Entity()
  * @ORM\Table(name="plugin_paywall_subscriptions")
  */
-class Subscriptions 
+class Subscriptions
 {
     /**
      * @ORM\Id()
@@ -36,7 +36,7 @@ class Subscriptions
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\Subscription_specification", mappedBy="subscription")
+     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\SubscriptionSpecification", mappedBy="subscription")
      * @var array
      */
     private $specification;
@@ -106,14 +106,14 @@ class Subscriptions
 
     /**
      * Set subscription name
-     * 
+     *
      * @param string $name
      * @return string
      */
     public function setName($name)
     {
         $this->name = $name;
-        
+
         return $name;
     }
 
@@ -146,7 +146,7 @@ class Subscriptions
     public function setType($type)
     {
         $this->type = $type;
-        
+
         return $this;
     }
 
@@ -169,7 +169,7 @@ class Subscriptions
     public function setRange($range)
     {
         $this->range = $range;
-        
+
         return $this;
     }
 
@@ -185,14 +185,14 @@ class Subscriptions
 
     /**
      * Set subscription price
-     *  
+     *
      * @param decimal $price
      * @return decimal
      */
     public function setPrice($price)
     {
         $this->price = $price;
-        
+
         return $this;
     }
 
@@ -215,7 +215,7 @@ class Subscriptions
     public function setCurrency($currency)
     {
         $this->currency = $currency;
-        
+
         return $this;
     }
 
@@ -238,7 +238,7 @@ class Subscriptions
     public function setIsActive($is_active)
     {
         $this->is_active = $is_active;
-        
+
         return $this;
     }
 
@@ -261,7 +261,7 @@ class Subscriptions
     public function setCreatedAt(\DateTime $created_at)
     {
         $this->created_at = $created_at;
-        
+
         return $this;
     }
 }

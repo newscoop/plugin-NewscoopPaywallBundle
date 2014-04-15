@@ -8,7 +8,7 @@
 
 namespace Newscoop\PaywallBundle\Entity;
 
-use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Entity()
  * @ORM\Table(name="plugin_paywall_settings")
  */
-class Settings 
+class Settings
 {
     /**
      * @ORM\Id()

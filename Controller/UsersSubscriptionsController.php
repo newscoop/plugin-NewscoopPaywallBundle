@@ -189,7 +189,7 @@ class UsersSubscriptionsController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $subscription = $this->findByType($em, $type, $id);
-            
+
         $form = $this->createForm('detailsForm', $subscription);
         if ($request->isMethod('POST')) {
             $form->bind($request);

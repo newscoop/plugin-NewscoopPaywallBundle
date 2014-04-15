@@ -52,7 +52,25 @@ div.td {
     border-radius: 4px;
 }
 #configure-paywall {
-    padding: 10px 10px 30px 10px; 
+    padding: 10px 10px 30px 10px;
     width: 400px;
     font-size: 12px;
+}
+.plugin-container {
+    padding: 10px 10px 30px 10px;
+    border: 1px solid #ccc;
+    background-color: #FFF;
+    font-size: 12px;
+}
+.box_table {
+    border: none;
+    background-color: transparent;
+    float: none;
+    margin: 5px 5px 0 30px;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+#add-new-subscription {
+    width: auto;
 }
