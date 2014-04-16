@@ -175,7 +175,7 @@ class UsersSubscriptionsController extends Controller
             $form->bind($request);     
             if ($form->isValid()) {
                 $data = $form->getData();
-                $subscriptionData = new \Newscoop\Subscription\SubscriptionData(array(
+                $subscriptionData = new \Newscoop\PaywallBundle\Subscription\SubscriptionData(array(
                     'startDate' => $data['startDate'],
                     'paidDays' => $data['paidDays'],
                     'days' => $data['days']
