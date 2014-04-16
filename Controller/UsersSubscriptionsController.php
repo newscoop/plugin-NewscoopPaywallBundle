@@ -156,16 +156,16 @@ class UsersSubscriptionsController extends Controller
     {
         $subscriptionService = $this->container->get('subscription.service');
         $subscription = $subscriptionService->create();
-    
         $form = $this->createForm('subscriptionaddForm');
         if ($request->isMethod('POST')) {
-            $form->bind($request);     
-            if ($form->isValid()) { 
+            $form->bind($request);
+            if ($form->isValid()) {
                 $data = $form->getData();
                 $subscriptionConfig = $subscriptionService->getSubscriptionsConfig($data['subscriptions']);
-                $subscriptionData = new \Newscoop\Subscription\SubscriptionData(array(
+
+                $subscriptionData = new \Newscoop\PaywallBundle\Subscription\SubscriptionData(array(
                     'userId' => $data['users'],
-                    'subscriptionId' => $data['subscriptions'],
+                    'subscriptionId' => $subscriptionConfig->getSubscription(),
                     'publicationId' => $subscriptionConfig->getPublication(),
                     'toPay' => $subscriptionConfig->getSubscription()->getPrice(),
                     'days' => $subscriptionConfig->getSubscription()->getRange(),
@@ -173,7 +173,9 @@ class UsersSubscriptionsController extends Controller
                     'type' => $data['type'],
                     'active' => $data['status'] === 'Y' ? true : false
                 ), $subscription);
+
                 $subscription = $subscriptionService->update($subscription, $subscriptionData);
+
                 $subscriptionService->save($subscription);
 
                 return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_index'));
@@ -265,6 +267,7 @@ class UsersSubscriptionsController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'user' => new \MetaUser($subscription->getUser()),
             'subscription' => $subscription,
         );
     }
@@ -277,6 +280,7 @@ class UsersSubscriptionsController extends Controller
     {
         $subscriptionService = $this->get('subscription.service');
         $form = $this->createForm('detailsForm');
+
         if ($subscriptionService->getOneById($id)->getSubscription()) {
             $type = $subscriptionService->getOneSubscriptionById($subscriptionService->getOneById($id)->getSubscription()->getId())->getType();
         } else {

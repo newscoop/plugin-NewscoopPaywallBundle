@@ -26,50 +26,50 @@ class SubscriptionSpecification
      * @ORM\Column(type="integer", name="id")
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscriptions", inversedBy="specification")
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id")
      * @var Newscoop\PaywallBundle\Entity\Subscriptions
      */
-    private $subscription;
+    protected $subscription;
 
     /**
      * @ORM\Column(type="integer", name="publication")
      * @var int
      */
-    private $publication;
+    protected $publication;
 
     /**
      * @ORM\Column(type="integer", name="issue", nullable=true)
      * @var int
      */
-    private $issue;
+    protected $issue;
 
     /**
      * @ORM\Column(type="integer", name="section", nullable=true)
      * @var int
      */
-    private $section;
+    protected $section;
 
     /**
      * @ORM\Column(type="integer", name="article", nullable=true)
      * @var int
      */
-    private $article;
+    protected $article;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
      * @var string
      */
-    private $created_at;
+    protected $created_at;
 
     /**
      * @ORM\Column(type="boolean", name="is_active")
      * @var boolean
      */
-    private $is_active;
+    protected $is_active;
 
     public function __construct() {
         $this->setCreatedAt(new \DateTime());

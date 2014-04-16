@@ -69,6 +69,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Subscriptions'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionSpecification'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Settings'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\UserSubscription'),
         );
     }
 }

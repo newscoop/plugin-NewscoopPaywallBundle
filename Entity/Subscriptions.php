@@ -27,56 +27,56 @@ class Subscriptions
      * @ORM\Column(type="integer", name="id")
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", name="name")
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\SubscriptionSpecification", mappedBy="subscription")
      * @var array
      */
-    private $specification;
+    protected $specification;
 
     /**
      * @ORM\Column(type="text", name="type")
      * @var string
      */
-    private $type;
+    protected $type;
 
     /**
      * @ORM\Column(type="integer", name="ranges")
      * @var int
      */
-    private $range;
+    protected $range;
 
     /**
      * @PaywallValidators\ContainsDecimal(entity="Newscoop\PaywallBundle\Entity\Subscriptions", property="price")
      * @ORM\Column(type="decimal", name="price")
      * @var decimal
      */
-    private $price;
+    protected $price;
 
     /**
      * @ORM\Column(type="string", name="currency")
      * @var string
      */
-    private $currency;
+    protected $currency;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
      * @var string
      */
-    private $created_at;
+    protected $created_at;
 
     /**
      * @ORM\Column(type="boolean", name="is_active")
      * @var boolean
      */
-    private $is_active;
+    protected $is_active;
 
     public function __construct() {
         $this->specification = new ArrayCollection();

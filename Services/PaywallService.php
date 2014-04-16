@@ -9,9 +9,9 @@
 namespace Newscoop\PaywallBundle\Services;
 
 use Doctrine\ORM\EntityManager;
-use Newscoop\Subscription\Subscription;
-use Newscoop\Subscription\SubscriptionData;
 use Newscoop\Services\SubscriptionService;
+use Newscoop\PaywallBundle\Subscription\SubscriptionData;
+use Newscoop\PaywallBundle\Entity\UserSubscription;
 
 /**
  * PaywallService manages user's subscriptions
@@ -23,8 +23,9 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getByAll() {
-        $subscriptions = $this->em->getRepository('Newscoop\Subscription\Subscription')
+    public function getByAll()
+    {
+        $subscriptions = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findAll();
 
         $subscriptionsArray = array();
@@ -51,7 +52,8 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getIssues($id) {
+    public function getIssues($id)
+    {
         $issues = $this->em->getRepository('Newscoop\Subscription\Issue')
             ->findBy(array(
                 'subscription' => $id,
@@ -79,7 +81,8 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getSections($id) {
+    public function getSections($id)
+    {
         $sections = $this->em->getRepository('Newscoop\Subscription\Section')
             ->findBy(array(
                 'subscription' => $id,
@@ -107,7 +110,8 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getArticles($id) {
+    public function getArticles($id)
+    {
         $articles = $this->em->getRepository('Newscoop\Subscription\Article')
             ->findBy(array(
                 'subscription' => $id,
@@ -124,19 +128,20 @@ class PaywallService extends SubscriptionService
                 'paid' => $article->getPaidDays(),
             );
         }
-        
+
         return $articlesArray;
     }
 
     /**
      * Gets currently added user's Sections by given language Id and subscription Id
      *
-     * @param integer $language        Language Id to search for
-     * @param integer $subscription_id Subscription Id to search for
+     * @param integer $language       Language Id to search for
+     * @param integer $subscriptionId Subscription Id to search for
      *
      * @return array
      */
-    public function getSectionsByLanguageAndId($language, $subscription_id) {
+    public function getSectionsByLanguageAndId($language, $subscriptionId)
+    {
 
         $sections = $this->em->getRepository('Newscoop\Subscription\Section')
             ->findBy(array(
@@ -154,8 +159,8 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getSectionsByLanguageId($language_id) {
-
+    public function getSectionsByLanguageId($languageId)
+    {
         $sections = $this->em->getRepository('Newscoop\Entity\Section')
             ->findBy(array(
                 'language' => $language_id,
@@ -279,13 +284,14 @@ class PaywallService extends SubscriptionService
      *
      * @return void
      */
-    public function activateById($id) {
-        
-        $subscription = $this->em->getRepository('Newscoop\Subscription\Subscription')
+    public function activateById($id)
+    {
+
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'id' => $id
             ));
-            
+
         if ($subscription) {
             $subscription->setActive(true);
             $this->em->flush();
@@ -299,7 +305,8 @@ class PaywallService extends SubscriptionService
      *
      * @return entity object
      */
-    public function getSubscriptionsConfig($subscriptionId) {
+    public function getSubscriptionsConfig($subscriptionId)
+    {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
             ->findOneBy(array(
                 'subscription' => $subscriptionId,
@@ -318,7 +325,7 @@ class PaywallService extends SubscriptionService
      */
     public function getOneByUserAndSubscription($userId, $subscriptionId)
     {
-        $subscription = $this->em->getRepository('Newscoop\Subscription\Subscription')
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'user' => $userId,
                 'subscription' => $subscriptionId
@@ -404,5 +411,164 @@ class PaywallService extends SubscriptionService
             ->getArrayResult();
 
         return $articles;
+    }
+
+    /**
+     * Update Subscription according to SubscritionData class
+     *
+     * @param  UserSubscription $subscription
+     * @param  SubscriptionData $data
+     *
+     * @return Subscription
+     */
+    public function update(UserSubscription $subscription, SubscriptionData $data)
+    {
+        $subscription = $this->apply($subscription, $data);
+
+        return $subscription;
+    }
+
+    private function apply(UserSubscription $subscription, SubscriptionData $data)
+    {
+        if ($data->userId) {
+            $user = $this->em->getRepository('Newscoop\Entity\User')->getOneActiveUser($data->userId, false)->getOneOrNullResult();
+            if ($user) {
+                $subscription->setUser($user);
+            }
+        }
+
+        if ($data->publicationId) {
+            $publication = $this->em->getRepository('Newscoop\Entity\Publication')->findOneBy(array('id' => $data->publicationId));
+            if ($publication) {
+                $subscription->setPublication($publication);
+            }
+        }
+
+        if ($data->toPay) {
+            $subscription->setToPay($data->toPay);
+        }
+
+        if ($data->subscriptionId) {
+            $subscription->setSubscription($data->subscriptionId);
+        }
+
+        if ($data->currency) {
+            $subscription->setCurrency($data->currency);
+        }
+
+        if ($data->active) {
+            $subscription->setActive($data->active);
+        }
+
+        if ($data->type) {
+            $subscription->setType($data->type);
+        }
+
+        if ($data->sections) {
+            $sectionsIds = array();
+            foreach ($data->sections as $key => $section) {
+                $subscription->addSection($section);
+                $sectionsIds[] = $section->getId();
+            }
+
+            //Clean conncted sections list
+            $subscription->setSections($sectionsIds);
+        }
+
+        if ($data->articles) {
+            $articlesIds = array();
+            foreach ($data->articles as $key => $article) {
+                $subscription->addArticle($article);
+                $articlesIds[] = $article->getId();
+            }
+
+            //Clean conncted sections list
+            $subscription->setArticles($articlesIds);
+        }
+
+        if ($data->issues) {
+            $issuesIds = array();
+            foreach ($data->issues as $key => $issue) {
+                $subscription->addIssue($issue);
+                $issuesIds[] = $issue->getId();
+            }
+
+            //Clean conncted sections list
+            $subscription->setIssues($issuesIds);
+        }
+
+        return $subscription;
+    }
+
+    public function save(UserSubscription $subscription)
+    {
+        $this->em->persist($subscription);
+        $this->em->flush();
+    }
+
+    /**
+     * Remove Subscription by Id
+     * @param  integer $id - user subscription id
+     * @return void
+     */
+    public function removeById($id)
+    {
+
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
+            ->findOneBy(array(
+                'id' => $id
+            ));
+
+        if ($subscription) {
+            $subscription->setActive(false);
+            $this->em->flush();
+        }
+    }
+
+    public function getOneById($id)
+    {
+
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
+            'id' => $id
+        ));
+
+        return $subscription;
+    }
+
+    public function getOneByUserAndPublication($userId, $publicationId)
+    {
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
+            'user' => $userId,
+            'publication' => $publicationId
+        ));
+
+        return $subscription;
+    }
+
+    public function create()
+    {
+        $subscription = new UserSubscription();
+
+        return $subscription;
+    }
+
+    public function getArticleRepository()
+    {
+        return $this->em->getRepository('Newscoop\Entity\Article');
+    }
+
+    public function getSectionRepository()
+    {
+        return $this->em->getRepository('Newscoop\Entity\Section');
+    }
+
+    public function getLanguageRepository()
+    {
+        return $this->em->getRepository('Newscoop\Entity\Language');
+    }
+
+    public function getIssueRepository()
+    {
+        return $this->em->getRepository('Newscoop\Entity\Issue');
     }
 }

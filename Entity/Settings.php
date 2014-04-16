@@ -26,33 +26,34 @@ class Settings
      * @ORM\Column(type="integer", name="id")
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", name="name")
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\Column(type="text", name="value")
      * @var string
      */
-    private $value;
+    protected $value;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
      * @var string
      */
-    private $created_at;
+    protected $created_at;
 
     /**
      * @ORM\Column(type="boolean", name="is_active")
      * @var boolean
      */
-    private $is_active;
+    protected $is_active;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->setCreatedAt(new \DateTime());
         $this->setIsActive(true);
     }

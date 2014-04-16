@@ -28,7 +28,6 @@ class AdminController extends Controller
     public function adminAction(Request $request, $id = null)
     {
         $em = $this->getDoctrine()->getManager();
-
         if ($id) {
             $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                 ->findOneBy(array(

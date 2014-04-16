@@ -275,16 +275,6 @@ $(document).ready(function() {
                 {% endfor %}
 
             </tbody>
-            <tfoot>
-                <tr>
-                    <th>{{ 'paywall.step1.form.select.type.issue'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
-                </tr>
-            </tfoot>
         </table>
     </div>
     {% elseif sections %}
@@ -319,16 +309,6 @@ $(document).ready(function() {
                 {% endfor %}
 
             </tbody>
-            <tfoot>
-                <tr>
-                    <th>{{ 'paywall.step1.form.select.type.section'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
-                </tr>
-            </tfoot>
         </table>
     </div>
     {% elseif articles %}
@@ -363,16 +343,6 @@ $(document).ready(function() {
                 {% endfor %}
 
             </tbody>
-            <tfoot>
-                <tr>
-                    <th>{{ 'paywall.step1.form.select.type.article'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
-                </tr>
-            </tfoot>
         </table>
     </div>
     {% else %}
