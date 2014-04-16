@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManager;
 use Newscoop\Services\SubscriptionService;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
+use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 
 /**
  * PaywallService manages user's subscriptions
@@ -19,30 +20,35 @@ use Newscoop\PaywallBundle\Entity\UserSubscription;
 class PaywallService extends SubscriptionService
 {
     /**
-     * Gets all user's subscriptions
+     * Gets all user's subscriptions by criteria
      *
      * @return array
      */
-    public function getByAll()
+    public function getListByCriteria(SubscriptionCriteria $criteria)
     {
-        $subscriptions = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
-            ->findAll();
+        return $this->getRepository()->getListByCriteria($criteria);
+    }
 
-        $subscriptionsArray = array();
-        foreach ($subscriptions as $subscription) {
-            $subscriptionsArray[] = array(
-                'id' => $subscription->getId(),
-                'userid' => $subscription->getUser()->getId(),
-                'username' => $subscription->getUser()->getUsername(),
-                'publication' => $subscription->getPublication()->getId(),
-                'topay' => $subscription->getToPay(),
-                'currency' => $subscription->getCurrency(),
-                'type' => $subscription->getType(),
-                'active' => $subscription->isActive(),
-            );
-        }
+    /**
+     * Count subscriptions by given criteria
+     *
+     * @param array $criteria
+     *
+     * @return int
+     */
+    public function countBy(array $criteria)
+    {
+        return $this->getRepository()->countBy($criteria);
+    }
 
-        return $subscriptionsArray;
+    /**
+     * Gets user's subscriptions repository
+     *
+     * @return EntityRepository
+     */
+    public function getRepository()
+    {
+        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription');
     }
 
     /**

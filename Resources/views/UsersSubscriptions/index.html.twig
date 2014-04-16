@@ -1,16 +1,18 @@
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
-{% block admin_title %}{{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
 {% block admin_page_title_content %}{{ 'paywall.toolbar.label.manageusers'|trans }}{% endblock %}
 
 {% block admin_stylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('/js/select2/select2.css') }}" />
+<link rel="stylesheet" href="{{ asset('/bundles/newscoopnewscoop/css/jquery.dynatable.css') }}">
 {% endblock %}
 
 {% block admin_scripts %}
 <script src="{{ asset('/js/select2/select2.js') }}"></script>
+<script src="{{ asset('/bundles/newscoopnewscoop/js/jquery.dynatable.js') }}"></script>
 <script type="text/javascript">
 function format(item) { return item.name; };
 function formatDiv(item) { return "<div class='select2-results'>" + item.name + "</div>"; }
@@ -36,6 +38,7 @@ $(document).ready(function(){
     var priceDetails = $('#priceDetails span');
     var currencyDetails = $('#currencyDetails span');
     $('#users-subscriptionsTable').css('font-size', '13px');
+
     var oTable = $('#users-subscriptionsTable').dataTable( {
         'oLanguage': {
             'oPaginate': {
@@ -58,39 +61,84 @@ $(document).ready(function(){
         "sDom": 'RCf<"clear">rtilp',
         "bJQueryUI": true,
         "sPaginationType": "full_numbers",
+        "bServerSide": true,
+        "sAjaxSource": Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'),
+        "aoColumnDefs": [
+            { 'bSortable': false, 'aTargets': [ 6 ] }
+        ],
+        "aoColumns" : [
+            { "mData": "username" },
+            { "mData": "publication" },
+            { "mData": "topay" },
+            { "mData": "currency" },
+            { "mData": "active", "sClass": "status"},
+            { "mData": "type" },
+            { "mData": null, "sWidth": "20%"},
+        ],
+        fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                $('td:eq(0)', nRow).parent().attr('id', aData['id']);
+                if (aData['active'] == "Y")
+                {
+                    $('td:eq(4)', nRow).attr('id','active');
+                    $('td:eq(4)', nRow).html("{{ 'paywall.manage.label.active'|trans }}");
+                } else {
+                    $('td:eq(4)', nRow).attr('id','deactivated');
+                    $('td:eq(4)', nRow).html("{{ 'paywall.manage.label.deactivated'|trans }}");
+                }
+
+                if (aData['type'] == "P") {
+                    $('td:eq(5)', nRow).html('{{ 'paywall.manage.label.paid'|trans }}');
+                } else if (aData['type'] == "PN") {
+                    $('td:eq(5)', nRow).html('{{'paywall.manage.label.paidnow'|trans }}');
+                } else if (aData['type'] == "T") {
+                    $('td:eq(5)', nRow).html('{{ 'paywall.manage.label.trial'|trans }}');
+                }
+
+                $('td:eq(6)', nRow).empty();
+                $('td:eq(6)', nRow).append("<a class='details-subscription btn btn-xs btn-default' href='"+Routing.generate('newscoop_paywall_userssubscriptions_editsubscription', {'id': aData['id']})+"'>{{ 'paywall.btn.edit'|trans }}</a>");
+                $('td:eq(6)', nRow).append(" <a class='details-subscription btn btn-xs btn-default' href="+Routing.generate('newscoop_paywall_userssubscriptions_details', {'id': aData['id']})+">{{ 'paywall.btn.details'|trans }}</a>");
+                if (aData['active'] == "Y") {
+                    $('td:eq(6)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': aData['id']})+">{{ 'paywall.btn.deactivate'|trans }}</a>");
+                } else {
+                    $('td:eq(6)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': aData['id']})+">{{ 'paywall.btn.activate'|trans }}</a>");
+                }
+        },
     });
+
+    function refreshTable(tableId, urlData)
+    {
+      $.getJSON(urlData, null, function( json )
+      {
+        table = $(tableId).dataTable();
+        oSettings = table.fnSettings();
+
+        table.fnClearTable(this);
+
+        for (var i=0; i<json.aaData.length; i++)
+        {
+          table.oApi._fnAddData(oSettings, json.aaData[i]);
+        }
+
+        oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+        table.fnDraw();
+      });
+    }
 
     $('#users-subscriptionsTable').on('click', '.change-status', function(event){
         var id = $(this).attr('id');
         var obj = $("#"+id);
         event.preventDefault();
-        $.post($(this).attr('href'), 
+        $.post($(this).attr('href'),
          function(data) {
             if (data.status) {
-                var rowIndex = oTable.fnGetPosition(obj[0]);
-                if (obj.find('td.status').attr('id') === 'deactivated') {
-                    obj.find('td#deactivated').removeAttr('id');
-                    obj.find('td.status').attr('id', 'active');
-                    obj.find('.change-status').empty();
-                    obj.find('.change-status').append(translations['btn.deactivate']);
-                    obj.find('.change-status').attr('href', Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': id}));
-                    oTable.fnUpdate(translations['label.active'], rowIndex, 4);
-                    flashMessage('{{ 'paywall.flash.message.subscription.activated'|trans }}');
-                } else {
-                    obj.find('td#active').removeAttr('id');
-                    obj.find('td.status').attr('id', 'deactivated');
-                    obj.find('.change-status').empty();
-                    obj.find('.change-status').append(translations['btn.activate']);
-                    obj.find('.change-status').attr('href', Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': id}));
-                    oTable.fnUpdate(translations['label.deactivated'], rowIndex, 4);
-                    flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
-                }
+                refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'));
             } else {
                 flashMessage('{{ 'paywall.flash.message.error.wrong'|trans }}', 'error');
             }
         });
     });
 
+    $('#users-subscriptionsTable_length label select').addClass('form-control');
     $('#add-new-subscription').click(function() {
         var edit_template = $('#edit-all-template');
         var addForm = $('#addForm');
@@ -218,41 +266,7 @@ $(document).ready(function(){
                 </tr>
             </thead>
             <tbody>
-                {% for subscription in subscriptions %}
-                    <tr id="{{ subscription.id }}">
-                        <td><a href="../user/edit/user/{{ subscription.userid }}">{{ subscription.username }}</a></td>
-                        <td>{{ subscription.publication }}</td>
-                        <td align="center">{{ subscription.topay }}</td>
-                        <td align="center">{{ subscription.currency }}</td>
-                        {% if (subscription.active == "Y") %}
-                            <td align="center" class="status" id="active">
-                                {{ 'paywall.manage.label.active'|trans }}
-                            </td>
-                        {% else %}
-                            <td align="center" class="status" id="deactivated">
-                                {{ 'paywall.manage.label.deactivated'|trans }}
-                            </td>
-                        {% endif %}
-                        <td align="center">
-                            {% if (subscription.type == "P") %}
-                                {{ 'paywall.manage.label.paid'|trans }}
-                            {% elseif (subscription.type == "PN") %}
-                                {{ 'paywall.manage.label.paidnow'|trans }}
-                            {% elseif (subscription.type == "T") %}
-                                {{ 'paywall.manage.label.trial'|trans }}
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_editsubscription', {'id': subscription.id}) }}">{{ 'paywall.btn.edit'|trans }}</a> |
-                            <a class="details-subscription" href="{{ path('newscoop_paywall_userssubscriptions_details', {'id': subscription.id}) }}">{{ 'paywall.btn.details'|trans }}</a> |
-                            {% if (subscription.active == "Y") %}
-                            <a class="change-status" id="{{ subscription.id }}" href="{{ path('newscoop_paywall_userssubscriptions_delete', {'id': subscription.id}) }}">{{ 'paywall.btn.deactivate'|trans }}</a>
-                            {% else %} 
-                            <a class="change-status" id="{{ subscription.id }}" href="{{ path('newscoop_paywall_userssubscriptions_activate', {'id': subscription.id}) }}">{{ 'paywall.btn.activate'|trans }}</a>
-                            {% endif %} 
-                        </td>
-                    </tr>
-                {% endfor %}
+                
             </tbody>
         </table>
     </div>

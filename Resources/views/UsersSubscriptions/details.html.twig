@@ -1,6 +1,6 @@
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
-{% block admin_title %}{{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
 {% block admin_page_title_content %}{{ 'paywall.toolbar.label.manageusers'|trans }}{% endblock %}
 
 {% block admin_stylesheets %}

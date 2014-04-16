@@ -94,3 +94,8 @@ div.td {
 #subscriptioneditForm fieldset {
     margin-left: 15%;
 }
+
+#users-subscriptionsTable_length label select {
+    display: inline;
+    width: 68px;
+}

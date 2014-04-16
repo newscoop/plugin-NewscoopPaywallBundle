@@ -19,7 +19,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Subscription entity
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\UserSubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_user_subscriptions")
  */
 class UserSubscription

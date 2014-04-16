@@ -13,6 +13,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 
 class UsersSubscriptionsController extends Controller
 {
@@ -21,13 +23,84 @@ class UsersSubscriptionsController extends Controller
      * @Template()
      */
     public function indexAction(Request $request)
-    {   
+    {
         $form = $this->createForm('subscriptionaddForm');
 
         return array(
             'form' => $form->createView(),
-            'subscriptions' => $this->get('subscription.service')->getByAll(),
         );
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/load-subscriptions", options={"expose"=true})
+     * @Template()
+     */
+    public function loadSubscriptionsAction(Request $request)
+    {
+        $cacheService = $this->get('newscoop.cache');
+        $subscriptionService = $this->get('subscription.service');
+        $criteria = $this->processRequest($request);
+        $active = $subscriptionService->countBy(array('active' => true));
+        $notActive = $subscriptionService->countBy(array('active' => false));
+        $cacheKey = array('subscriptions__'.md5(serialize($criteria)), $active, $notActive);
+
+        if ($cacheService->contains($cacheKey)) {
+            $responseArray =  $cacheService->fetch($cacheKey);
+        } else {
+            $userSubscriptions = $this->get('subscription.service')->getListByCriteria($criteria);
+
+            $pocessed = array();
+            foreach ($userSubscriptions as $subscription) {
+                $pocessed[] = $this->processSubscription($subscription);
+            }
+
+            $responseArray = array(
+                'iTotalRecords' => $userSubscriptions->count,
+                'iTotalDisplayRecords' => count($pocessed),
+                'sEcho' => (int) $request->get('sEcho'),
+                'aaData' => $pocessed,
+            );
+
+            $cacheService->save($cacheKey, $responseArray);
+        }
+
+        return new JsonResponse($responseArray);
+    }
+
+    private function processSubscription($userSubscription)
+    {
+        return array(
+            'id' => $userSubscription['id'],
+            'userid' => $userSubscription['user']['id'],
+            'username' => $userSubscription['user']['username'],
+            'publication' => $userSubscription['publication']['name'],
+            'topay' => $userSubscription['toPay'],
+            'currency' => $userSubscription['currency'],
+            'type' => $userSubscription['type'],
+            'active' => $userSubscription['active'],
+        );
+    }
+
+    private function processRequest($request)
+    {
+        $criteria = new SubscriptionCriteria();
+
+        if ($request->query->has('sorts')) {
+            foreach ($request->get('sorts') as $key => $value) {
+                $criteria->orderBy[$key] = $value == '-1' ? 'desc' : 'asc';
+            }
+        }
+
+        if ($request->query->has('sSearch')) {
+            $criteria->query = $request->query->get('sSearch');
+        }
+
+        $criteria->maxResults = $request->query->get('iDisplayLength', 10);
+        if ($request->query->has('iDisplayStart')) {
+            $criteria->firstResult = $request->query->get('iDisplayStart');
+        }
+
+        return $criteria;
     }
 
     /**
@@ -36,13 +109,13 @@ class UsersSubscriptionsController extends Controller
     public function deleteAction(Request $request, $id)
     {
         if ($request->isMethod('POST')) {
-            try 
+            try
             {
                 $this->get('subscription.service')->removeById($id);
 
                 return new Response(json_encode(array('status' => true)));
-            } 
-            catch (\Exception $exception) 
+            }
+            catch (\Exception $exception)
             {
                 return new Response(json_encode(array('status' => false)));
             }
@@ -247,7 +320,7 @@ class UsersSubscriptionsController extends Controller
     }
 
     /**
-     * @Route("/admin/paywall_plugin/users-subscriptions/edit/{id}")
+     * @Route("/admin/paywall_plugin/users-subscriptions/edit/{id}", options={"expose"=true})
      * @Template()
      */
     public function editsubscriptionAction(Request $request, $id)
