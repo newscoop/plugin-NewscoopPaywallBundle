@@ -85,10 +85,8 @@ class UsersSubscriptionsController extends Controller
     {
         $criteria = new SubscriptionCriteria();
 
-        if ($request->query->has('sorts')) {
-            foreach ($request->get('sorts') as $key => $value) {
-                $criteria->orderBy[$key] = $value == '-1' ? 'desc' : 'asc';
-            }
+        if ($request->query->has('sSortDir_0')) {
+            $criteria->orderBy[$request->query->get('iSortCol_0')] = $request->query->get('sSortDir_0');
         }
 
         if ($request->query->has('sSearch')) {

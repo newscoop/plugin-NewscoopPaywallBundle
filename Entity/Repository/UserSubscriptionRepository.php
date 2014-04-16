@@ -36,7 +36,26 @@ class UserSubscriptionRepository extends EntityRepository
             ->leftJoin('s.subscription', 'ss');
 
         foreach ($criteria->orderBy as $key => $value) {
-            $qb->orderBy($key, $value == '-1' ? 'desc' : 'asc');
+            switch ($key) {
+                case '0':
+                    $qb->orderBy('u.username', $value);
+                    break;
+                case '1':
+                    $qb->orderBy('p.name', $value);
+                    break;
+                case '2':
+                    $qb->orderBy('s.toPay', $value);
+                    break;
+                case '3':
+                    $qb->orderBy('s.currency', $value);
+                    break;
+                case '4':
+                    $qb->orderBy('s.active', $value);
+                    break;
+                case '5':
+                    $qb->orderBy('s.type', $value);
+                    break;
+            }
         }
 
         $countQb = clone $qb;

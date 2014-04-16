@@ -73,7 +73,7 @@ $(document).ready(function(){
             { "mData": "currency" },
             { "mData": "active", "sClass": "status"},
             { "mData": "type" },
-            { "mData": null, "sWidth": "20%"},
+            { "mData": null, "sWidth": "28%"},
         ],
         fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                 $('td:eq(0)', nRow).parent().attr('id', aData['id']);
@@ -95,12 +95,12 @@ $(document).ready(function(){
                 }
 
                 $('td:eq(6)', nRow).empty();
-                $('td:eq(6)', nRow).append("<a class='details-subscription btn btn-xs btn-default' href='"+Routing.generate('newscoop_paywall_userssubscriptions_editsubscription', {'id': aData['id']})+"'>{{ 'paywall.btn.edit'|trans }}</a>");
+                $('td:eq(6)', nRow).append("<a class='details-subscription btn btn-xs btn-default' href='"+Routing.generate('newscoop_paywall_userssubscriptions_editsubscription', {'id': aData['id']})+"'><span class=\"glyphicon glyphicon-edit\"></span> {{ 'paywall.btn.edit'|trans }}</a>");
                 $('td:eq(6)', nRow).append(" <a class='details-subscription btn btn-xs btn-default' href="+Routing.generate('newscoop_paywall_userssubscriptions_details', {'id': aData['id']})+">{{ 'paywall.btn.details'|trans }}</a>");
                 if (aData['active'] == "Y") {
-                    $('td:eq(6)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': aData['id']})+">{{ 'paywall.btn.deactivate'|trans }}</a>");
+                    $('td:eq(6)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-remove-circle\"></span> {{ 'paywall.btn.deactivate'|trans }}</a>");
                 } else {
-                    $('td:eq(6)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': aData['id']})+">{{ 'paywall.btn.activate'|trans }}</a>");
+                    $('td:eq(6)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-ok-circle\"></span> {{ 'paywall.btn.activate'|trans }}</a>");
                 }
         },
     });
@@ -131,7 +131,13 @@ $(document).ready(function(){
         $.post($(this).attr('href'),
          function(data) {
             if (data.status) {
-                refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'));
+                if (obj.find('td.status').attr('id') === 'deactivated') {
+                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'));
+                    flashMessage('{{ 'paywall.flash.message.subscription.activated'|trans }}');
+                } else {
+                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'));
+                    flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
+                }
             } else {
                 flashMessage('{{ 'paywall.flash.message.error.wrong'|trans }}', 'error');
             }
