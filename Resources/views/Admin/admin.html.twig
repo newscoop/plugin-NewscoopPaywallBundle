@@ -1,19 +1,20 @@
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
-{% block admin_title %}{{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
 {% block admin_page_title_content %}{{ 'paywall.toolbar.label.configuration'|trans }}{% endblock %}
 
 {% block admin_stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('/js/select2/select2.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
 {% endblock %}
 
 {% block admin_scripts %}
-<script src="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.js') }}"></script>
+<script src="{{ asset('/js/select2/select2.js') }}"></script>
 <script src="{{ asset('public/bundles/newscooppaywall/js/paywall.js') }}"></script>
 {% endblock %}
 
 {% block admin_content %}
+<div class="plugin-container">
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 1} %}
 <div id="add-subscription" style="padding: 10px 10px 30px 10px;">
 	<form id="confForm" action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(form) }} >
@@ -48,7 +49,7 @@
 				</tr>
 				<tr>
 					<td>
-						{{ form_widget(form.type, {'attr' : {'class' : 'input_select'}}) }}
+						{{ form_widget(form.type, {'attr' : {'class' : 'input_select', 'style' : 'width:150px'}}) }}
 					</td>
 				</tr>
 				<tr>
@@ -196,5 +197,6 @@
 			</tbody>
 		</table>
 	</form>
+</div>
 </div>
 {% endblock %}

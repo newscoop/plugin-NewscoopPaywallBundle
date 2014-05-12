@@ -1,32 +1,32 @@
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
-{% block admin_title %}{{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
 {% block admin_page_title_content %}{{ 'paywall.toolbar.label.manageusers'|trans }}{% endblock %}
 
 {% block admin_stylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('/js/select2/select2.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
 {% endblock %}
 
 {% block admin_scripts %}
-<script src="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.js') }}"></script>
+<script src="{{ asset('/js/select2/select2.js') }}"></script>
 <script type="text/javascript">
 function jsTable(element) {
     element.dataTable( {
         'oLanguage': {
             'oPaginate': {
-                'sNext': '{{ getGS('Next') }}',
-                'sLast': '{{ getGS('Last') }}',
-                'sPrevious': '{{ getGS('Previous') }}',
-                'sFirst': '{{ getGS('First') }}'
+                'sFirst': '{{ 'paywall.datatable.label.first'|trans }}',
+                'sNext': '{{ 'paywall.datatable.label.next'|trans }}',
+                'sPrevious': '{{ 'paywall.datatable.label.previous'|trans }}',
+                'sLast': '{{ 'paywall.datatable.label.last'|trans }}',
             },
-            'sZeroRecords': '{{ getGS('No records found.') }}',
-            'sSearch': '{{ getGS('Search') }}:',
-            'sInfo': '{{ getGS('Showing _START_ to _END_ of _TOTAL_ entries') }}',
-            'sEmpty': '{{ getGS('No entries to show') }}',
-            'sInfoFiltered': '{{ getGS(' - filtering from _MAX_ records') }}',
-            'sLengthMenu': '{{ getGS('Display _MENU_ records') }}',
+            'sZeroRecords': '{{ 'paywall.datatable.label.norecords'|trans }}',
+            'sSearch': '',
+            'sInfo': '{{ 'paywall.datatable.table.info'|trans }}',
+            'sEmpty': '{{ 'paywall.datatable.table.noentries'|trans }}',
+            'sInfoFiltered': '{{ 'paywall.datatable.table.filtering'|trans }}',
+            'sLengthMenu': '{{ 'paywall.datatable.table.menu'|trans }}',
             'sInfoEmpty': '',
         },
         "bProcessing": true,
@@ -167,6 +167,7 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block admin_content %}
+<div class="plugin-container">
 <div id="subscription">
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
     <fieldset class="actions" style="background-color: #fff;">
@@ -274,16 +275,6 @@ $(document).ready(function() {
                 {% endfor %}
 
             </tbody>
-            <tfoot>
-                <tr>
-                    <th>{{ 'paywall.step1.form.select.type.issue'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
-                </tr>
-            </tfoot>
         </table>
     </div>
     {% elseif sections %}
@@ -318,16 +309,6 @@ $(document).ready(function() {
                 {% endfor %}
 
             </tbody>
-            <tfoot>
-                <tr>
-                    <th>{{ 'paywall.step1.form.select.type.section'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
-                </tr>
-            </tfoot>
         </table>
     </div>
     {% elseif articles %}
@@ -362,16 +343,6 @@ $(document).ready(function() {
                 {% endfor %}
 
             </tbody>
-            <tfoot>
-                <tr>
-                    <th>{{ 'paywall.step1.form.select.type.article'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.language'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.startdate'|trans }}<br /><small>(yyyy-mm-dd)</small></th>
-                    <th>{{ 'paywall.manage.label.days'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.paiddays'|trans }}</th>
-                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
-                </tr>
-            </tfoot>
         </table>
     </div>
     {% else %}
@@ -379,5 +350,6 @@ $(document).ready(function() {
             {{ 'paywall.manage.label.nocontent'|trans }}
         </fieldset>
     {% endif %}
+</div>
 </div>
 {% endblock %}

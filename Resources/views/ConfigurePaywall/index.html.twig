@@ -1,15 +1,15 @@
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
-{% block admin_title %}{{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
 {% block admin_page_title_content %}{{ 'paywall.toolbar.label.configure'|trans }}{% endblock %}
 
 {% block admin_stylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
-<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('/js/select2/select2.css') }}" />
 {% endblock %}
 
 {% block admin_scripts %}
-<script src="{{ asset('public/bundles/newscooppaywall/scripts/select2-3.4.1/select2.js') }}"></script>
+<script src="{{ asset('/js/select2/select2.js') }}"></script>
 <script type="text/javascript">
 function format(item) { return item.text; };
 function formatDiv(item) { return "<div class='select2-results'>" + item.text + "</div>"; }
@@ -57,6 +57,7 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 {% block admin_content %}
+<div class="plugin-container">
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 4} %}
 <div id="configure-paywall" class="box_table">
 <div class="table">
@@ -81,6 +82,7 @@ $(document).ready(function(){
             <input type="button" id="save" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
         </div>
     </div>
+</div>
 </div>
 </div>
 {% endblock %}

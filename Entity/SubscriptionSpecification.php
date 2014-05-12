@@ -8,17 +8,17 @@
 
 namespace Newscoop\PaywallBundle\Entity;
 
-use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Subscription_specification entity
+ * Subscription Specification entity
  *
  * @ORM\Entity()
  * @ORM\Table(name="plugin_paywall_subscription_specification")
  */
-class Subscription_specification 
+class SubscriptionSpecification
 {
     /**
      * @ORM\Id()
@@ -26,50 +26,50 @@ class Subscription_specification
      * @ORM\Column(type="integer", name="id")
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscriptions", inversedBy="specification")
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id")
      * @var Newscoop\PaywallBundle\Entity\Subscriptions
      */
-    private $subscription;
+    protected $subscription;
 
     /**
      * @ORM\Column(type="integer", name="publication")
      * @var int
      */
-    private $publication;
+    protected $publication;
 
     /**
      * @ORM\Column(type="integer", name="issue", nullable=true)
      * @var int
      */
-    private $issue;
+    protected $issue;
 
     /**
      * @ORM\Column(type="integer", name="section", nullable=true)
      * @var int
      */
-    private $section;
+    protected $section;
 
     /**
      * @ORM\Column(type="integer", name="article", nullable=true)
      * @var int
      */
-    private $article;
+    protected $article;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
      * @var string
      */
-    private $created_at;
+    protected $created_at;
 
     /**
      * @ORM\Column(type="boolean", name="is_active")
      * @var boolean
      */
-    private $is_active;
+    protected $is_active;
 
     public function __construct() {
         $this->setCreatedAt(new \DateTime());

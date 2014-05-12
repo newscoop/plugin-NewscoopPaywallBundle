@@ -1,6 +1,7 @@
 Plugins: Plugins
 paywall:
-    title: "Newscoop Paywall Plugin"
+    title: "Paywall"
+    search: "Search..."
     toolbar:
       label:
         configuration: "Configuration"
@@ -37,7 +38,7 @@ paywall:
         price: "Price"
         currency: "Currency"
         active: "Status"
-    btn: 
+    btn:
       skip: "Skip"
       save: "Save"
       edit: "Edit"
@@ -114,3 +115,31 @@ paywall:
         managesubscriptions: "Manage Subscriptions"
         subscriptions.user: "Manage User Subscriptions"
         configure.paywall: "Configure Paywall"
+    datatable:
+        table:
+          info: "Showing _START_ to _END_ of _TOTAL_ entries"
+          noentries: "No entries to show"
+          filtering: " - filtering from _MAX_ records"
+          menu: "Display _MENU_ records"
+        label:
+          search: "Search"
+          filter: "Filter"
+          processing: "Processing..."
+          last: "Last"
+          next: "Next"
+          first: "First"
+          previous: "Previous"
+          norecords: "No records found."
+    table:
+        table_messages:
+            page: "Page"
+            perPageText: "Show: "
+            pageText: "Pages: "
+            recordCountPageBoundTemplate: "{pageLowerBound} to {pageUpperBound} of"
+            recordCountPageUnboundedTemplate: "{recordsShown} of"
+            recordCountTotalTemplate: "{recordsQueryCount} {collectionName}"
+            recordCountFilteredTemplate: " (filtered from {recordsTotal} total records)"
+            recordCountText: "Showing "
+            recordCountTextTemplate: "{text} {pageTemplate} {totalTemplate} {filteredTemplate}"
+            recordCountTemplate: "<span id='dynatable-record-count-{elementId}' class='dynatable-record-count'>{textTemplate}</span>"
+            processingText: "Processing..."

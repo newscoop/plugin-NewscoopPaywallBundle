@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Newscoop\PaywallBundle\Form\SubscriptionConfType;
 use Newscoop\PaywallBundle\Entity\Subscriptions;
-use Newscoop\PaywallBundle\Entity\Subscription_specification;
+use Newscoop\PaywallBundle\Entity\SubscriptionSpecification;
 use Doctrine\ORM\Query\Expr\Join;
 
 class AdminController extends Controller
@@ -39,13 +39,13 @@ class AdminController extends Controller
                 return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
             }
 
-            $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription_specification')
+            $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
                 ->findOneBy(array(
                     'subscription' => $subscription
                 ));
         } else {
             $subscription = new Subscriptions();
-            $specification = new Subscription_specification();
+            $specification = new SubscriptionSpecification();
         }
 
         $form = $this->createForm('subscriptionconf', $subscription);
@@ -62,7 +62,7 @@ class AdminController extends Controller
                 if ($request->isXmlHttpRequest()) {
                     return array('status' => true);
                 }
-                
+
                 return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
             } else {
                 if ($request->isXmlHttpRequest()) {
@@ -90,26 +90,26 @@ class AdminController extends Controller
         $em = $this->getDoctrine()->getManager();
         $create = false;
         if ($id) {
-            $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription_specification')
+            $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
                 ->findOneBy(array(
                     'subscription' => $id
                 ));
             if (!$specification) {
-                $specification = new Subscription_specification();
+                $specification = new SubscriptionSpecification();
                 $create = true;
             }
         } else {
-            $specification = new Subscription_specification();
+            $specification = new SubscriptionSpecification();
             $create = true;
         }
-        
+
         $formSpecification = $this->createForm('specificationForm', $specification);
         if ($request->isMethod('POST')) {
             $formSpecification->bind($request);
-            if($formSpecification->isValid()) {
+            if ($formSpecification->isValid()) {
                 $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                     ->findOneBy(array(
-                        'name' => strtolower($request->request->get('subscriptionTitle')), 
+                        'name' => strtolower($request->request->get('subscriptionTitle')),
                         'is_active' => true
                     ));
                 $specification->setSubscription($subscription);
@@ -117,11 +117,11 @@ class AdminController extends Controller
                     $em->persist($specification);
                 }
                 $em->flush();
-            
+
                 return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
             }
         }
-    } 
+    }
 
     /**
      * @Route("/admin/paywall_plugin/check", options={"expose"=true})
@@ -136,7 +136,7 @@ class AdminController extends Controller
                     'is_active' => true
                 ));
 
-            if(!$entity) {
+            if (!$entity) {
                 return new Response(json_encode(array('status' => true)));
             }
 
@@ -149,15 +149,15 @@ class AdminController extends Controller
      */
     public function getAllAction(Request $request)
     {
-        return new Response(json_encode($this->getAll($request, $this->getDoctrine()->getManager()))); 
+        return new Response(json_encode($this->getAll($request, $this->getDoctrine()->getManager())));
     }
 
     /**
      * @Route("/admin/paywall_plugin/getpublications", options={"expose"=true})
      */
     public function getPublicationsAction(Request $request)
-    {       
-        return new Response(json_encode($this->getPublication($this->getDoctrine()->getManager()))); 
+    {
+        return new Response(json_encode($this->getPublication($this->getDoctrine()->getManager())));
     }
 
     /**
@@ -165,7 +165,7 @@ class AdminController extends Controller
      */
     public function getIssuesAction(Request $request)
     {
-        return new Response(json_encode($this->getIssue($request, $this->getDoctrine()->getManager()))); 
+        return new Response(json_encode($this->getIssue($request, $this->getDoctrine()->getManager())));
     }
 
     /**
@@ -173,7 +173,7 @@ class AdminController extends Controller
      */
     public function getSectionsAction(Request $request)
     {
-        return new Response(json_encode($this->getSection($request, $this->getDoctrine()->getManager()))); 
+        return new Response(json_encode($this->getSection($request, $this->getDoctrine()->getManager())));
     }
 
     /**
@@ -181,7 +181,7 @@ class AdminController extends Controller
      */
     public function getArticlesAction(Request $request)
     {
-        return new Response(json_encode($this->getArticle($request, $this->getDoctrine()->getManager()))); 
+        return new Response(json_encode($this->getArticle($request, $this->getDoctrine()->getManager())));
     }
 
     /**
@@ -191,7 +191,8 @@ class AdminController extends Controller
      *
      * @return array
      */
-    private function getErrorMessages(\Symfony\Component\Form\Form $form) {      
+    private function getErrorMessages(\Symfony\Component\Form\Form $form)
+    {
         $errors = array();
         if (count($form) > 0) {
             foreach ($form->all() as $child) {
@@ -202,7 +203,7 @@ class AdminController extends Controller
         }
 
         foreach ($form->getErrors() as $key => $error) {
-            $errors[] = $error->getMessage();   
+            $errors[] = $error->getMessage();
         }
 
         return $errors;
@@ -215,7 +216,8 @@ class AdminController extends Controller
      *
      * @return array
      */
-    private function getPublication($em) {
+    private function getPublication($em)
+    {
 
         $publications = $em->getRepository('Newscoop\Entity\Publication')
             ->createQueryBuilder('p')
@@ -234,7 +236,8 @@ class AdminController extends Controller
      *
      * @return array
      */
-    private function getIssue($request, $em) {
+    private function getIssue($request, $em)
+    {
 
         $issues = $em->getRepository('Newscoop\Entity\Issue')
             ->createQueryBuilder('i')
@@ -255,8 +258,8 @@ class AdminController extends Controller
      *
      * @return array
      */
-    private function getSection($request, $em) {
-        
+    private function getSection($request, $em)
+    {
         $sections = $em->getRepository('Newscoop\Entity\Section')
             ->createQueryBuilder('s')
             ->select('s.id', 's.name')
@@ -278,15 +281,15 @@ class AdminController extends Controller
      *
      * @return array
      */
-    private function getArticle($request, $em) {
-        
+    private function getArticle($request, $em)
+    {
         $number = $em->getRepository('Newscoop\Entity\Section')
             ->createQueryBuilder('s')
             ->select('s.number')
             ->innerJoin('s.issue', 'i', 'WITH', 'i.number = :issueId')
             ->where('s.publication = :publicationId AND s.id = :sectionId')
             ->setParameters(array(
-                'publicationId' => $request->get('publicationId'), 
+                'publicationId' => $request->get('publicationId'),
                 'issueId' => $request->get('issueId'),
                 'sectionId' => $request->get('sectionId')
             ))
@@ -300,7 +303,7 @@ class AdminController extends Controller
         $articlesArray = array();
         foreach ($articles as $article) {
             $articlesArray[] = array(
-                'id' => $article->getNumber(), 
+                'id' => $article->getNumber(),
                 'text' => $article->getName()
             );
         }
@@ -316,12 +319,12 @@ class AdminController extends Controller
      *
      * @return array
      */
-    private function getAll($request, $em) {
-
+    private function getAll($request, $em)
+    {
         $resultArray = array(
-            'Publications' => $this->getPublication($em), 
-            'Issues' => $this->getIssue($request, $em), 
-            'Sections' => $this->getSection($request, $em), 
+            'Publications' => $this->getPublication($em),
+            'Issues' => $this->getIssue($request, $em),
+            'Sections' => $this->getSection($request, $em),
             'Articles' => $this->getArticle($request, $em)
         );
 

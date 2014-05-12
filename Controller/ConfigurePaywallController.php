@@ -52,11 +52,11 @@ class ConfigurePaywallController extends Controller
 
             return new Response(json_encode(array('status' => true)));
         }
-        
+
         $adapters = array();
         foreach ($inactive as $value) {
             $adapters[] = array(
-                'id' => $value->getId(), 
+                'id' => $value->getId(),
                 'text' => $value->getName()
             );
         }
