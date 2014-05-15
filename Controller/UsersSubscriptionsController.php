@@ -232,7 +232,7 @@ class UsersSubscriptionsController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $data = $form->getData();
-                $subscriptionConfig = $subscriptionService->getSubscriptionsConfig($data['subscriptions']);
+                $subscriptionConfig = $subscriptionService->getOneSubscriptionSpecification($data['subscriptions']);
 
                 $subscriptionData = new \Newscoop\PaywallBundle\Subscription\SubscriptionData(array(
                     'userId' => $data['users'],
@@ -383,7 +383,14 @@ class UsersSubscriptionsController extends Controller
      */
     public function existCheckAjaxAction(Request $request)
     {
-        return new Response(json_encode($this->get('subscription.service')->getOneByUserAndSubscription($request->get('userId'), $request->get('subscriptionId'))));
+        $subscription = $this->get('subscription.service')->getOneByUserAndSubscription($request->get('userId'), $request->get('subscriptionId'));
+
+        $status = false;
+        if ($subscription) {
+            $status = true;
+        }
+
+        return new Response(json_encode(array('status' => $status)));
     }
 
     /**

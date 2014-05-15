@@ -8,7 +8,7 @@
 
 namespace Newscoop\PaywallBundle\Adapter;
 
-use Newscoop\Services\SubscriptionService;
+use Newscoop\PaywallBundle\Services\PaywallService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,9 +16,9 @@ interface PaywallAdapterInterface
 {   
     /**
      * Apply injected services
-     * @param SubscriptionService $subscriptionService 
+     * @param PaywallService; $subscriptionService 
      */
-    public function __construct(SubscriptionService $subscriptionService);
+    public function __construct(PaywallService $subscriptionService);
 
     /**
      * Process callback request

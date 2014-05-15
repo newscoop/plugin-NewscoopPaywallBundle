@@ -78,6 +78,12 @@ class Subscriptions
      */
     protected $is_active;
 
+    /**
+     * @ORM\Column(type="boolean", name="is_default")
+     * @var boolean
+     */
+    protected $is_default;
+
     public function __construct() {
         $this->specification = new ArrayCollection();
         $this->setCreatedAt(new \DateTime());
@@ -261,6 +267,29 @@ class Subscriptions
     public function setCreatedAt(\DateTime $created_at)
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * Get default
+     *
+     * @return boolean
+     */
+    public function getIsDefault()
+    {
+        return $this->is_default;
+    }
+
+    /**
+     * Set is_default
+     *
+     * @param boolean $is_default
+     * @return boolean
+     */
+    public function setIsDefault($is_default)
+    {
+        $this->is_default = $is_default;
 
         return $this;
     }

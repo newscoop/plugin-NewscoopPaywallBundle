@@ -244,7 +244,7 @@ class SubscriptionSpecification
     public function setCreatedAt(\DateTime $created_at)
     {
         $this->created_at = $created_at;
-        
+
         return $this;
     }
 }

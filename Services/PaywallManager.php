@@ -9,7 +9,7 @@
 namespace Newscoop\PaywallBundle\Services;
 
 use Doctrine\ORM\EntityManager;
-use Newscoop\Services\SubscriptionService;
+use Newscoop\PaywallBundle\Services\PaywallService;
 
 /**
  * PaywallManager class manages paywall adapters
@@ -19,16 +19,16 @@ class PaywallManager
     /** @var Doctrine\ORM\EntityManager */
     private $em;
 
-    /** @var Newscoop\Services\SubscriptionService */
+    /** @var Newscoop\PaywallBundle\Services\PaywallService */
     private $subscriptionService;
  
     /**
      * Apply entity manager and injected services
      *
      * @param EntityManager       $em
-     * @param SubscriptionService $subscriptionService
+     * @param PaywallService $subscriptionService
      */
-    public function __construct(EntityManager $em, SubscriptionService $subscriptionService)
+    public function __construct(EntityManager $em, PaywallService $subscriptionService)
     {
         $this->em = $em;
         $this->subscriptionService = $subscriptionService;
