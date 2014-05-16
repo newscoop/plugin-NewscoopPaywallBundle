@@ -1,0 +1,145 @@
+Plugins: Plugins
+paywall:
+    title: Paywall
+    search: Search...
+    toolbar:
+        label:
+            configuration: Configuration
+            manage: 'Manage Subscriptions'
+            manageusers: 'Manage User Subscriptions'
+            configure: 'Configure Paywall'
+    step1:
+        header: 'Please specify the name and value for your new subscription. You can set up various different types of subscriptions, but just one after the other.'
+        form:
+            label:
+                name: 'Name of subscription:'
+                type: 'Type of subscription:'
+                duration: 'Duration of subscription in days:'
+                price: 'Price:'
+                currency: 'Currency:'
+            select:
+                type:
+                    publication: Publication
+                    issue: Issue
+                    section: Section
+                    article: Article
+            error:
+                name: 'Subscription name can not be empty.'
+                duration: 'Duration field is invalid.'
+                price: 'Price field is invalid.'
+                currency: 'Type currency.'
+    step2:
+        header: 'Please specify which exact articles should be visible for subscribers only.'
+        label:
+            article: Articles
+            publication: Publications
+            type: Type
+            durationbox: Duration
+            price: Price
+            currency: Currency
+            active: Status
+    btn:
+        skip: Skip
+        save: Save
+        edit: Edit
+        delete: Delete
+        next: Next
+        button1: 'Specify type and price'
+        button2: 'Specify articles'
+        details: Details
+        back: Back
+        add: Add
+        deactivate: Deactivate
+        activate: Activate
+    flash:
+        message:
+            error: 'Something went wrong.'
+            provider:
+                changed: 'Provider successfully changed.'
+            subscription:
+                deleted: 'Subscription has been deleted.'
+                updated: 'Subscription has been updated.'
+                activated: 'Subscription has been activated.'
+                deactivated: 'Subscription has been deactivated.'
+    manage:
+        error:
+            currency: 'Currency is in invalid format.'
+            topay: 'To pay field value is in the wrong format.'
+            exists:
+                subscription: 'Chosen subscription already exists for this user.'
+            select:
+                empty: 'Select box can not be empty!'
+                choose: 'Please choose provider!'
+        label:
+            name: Name
+            duration: 'Duration in days'
+            options: Options
+            username: Username
+            topay: 'To pay'
+            active: Active
+            deactivated: Deactivated
+            users: Users
+            subscriptions: Subscriptions
+            paymenttype: 'Payment type'
+            paid: Paid
+            paidnow: 'Paid now'
+            trial: Trial
+            yes: Yes
+            no: No
+            addnew: 'Add user subscription'
+            subscriptiondetails: 'Subscription details'
+            addissue: 'Add issue'
+            addsection: 'Add section'
+            addarticle: 'Add article'
+            editallissues: 'Edit all issues'
+            editallsections: 'Edit all sections'
+            editallarticles: 'Edit all articles'
+            language: Language
+            individuallanguage: 'Individual languages'
+            reglanguage: 'Regardless of the language'
+            days: Days
+            startdate: 'Start date'
+            paiddays: 'Paid days'
+            issues: Issues
+            sections: Sections
+            articles: Articles
+            nocontent: 'There is no content added yet.'
+            content: Content
+            choose: Choose...
+            adapters: 'Available providers:'
+            current: 'Current provider:'
+            goback: 'Go back to users subscriptions'
+    menu:
+        label:
+            addsubscription: 'Add new subscription'
+            managesubscriptions: 'Manage Subscriptions'
+            subscriptions.user: 'Manage User Subscriptions'
+            configure.paywall: 'Configure Paywall'
+    datatable:
+        table:
+            info: 'Showing _START_ to _END_ of _TOTAL_ entries'
+            noentries: 'No entries to show'
+            filtering: '- filtering from _MAX_ records'
+            menu: 'Display _MENU_ records'
+        label:
+            search: Search
+            filter: Filter
+            processing: Processing...
+            last: Last
+            next: Next
+            first: First
+            previous: Previous
+            norecords: 'No records found.'
+    table:
+        table_messages:
+            page: Page
+            perPageText: 'Show: '
+            pageText: 'Pages: '
+            recordCountPageBoundTemplate: '{pageLowerBound} to {pageUpperBound} of'
+            recordCountPageUnboundedTemplate: '{recordsShown} of'
+            recordCountTotalTemplate: '{recordsQueryCount} {collectionName}'
+            recordCountFilteredTemplate: ' (filtered from {recordsTotal} total records)'
+            recordCountText: 'Showing '
+            recordCountTextTemplate: '{text} {pageTemplate} {totalTemplate} {filteredTemplate}'
+            recordCountTemplate: '<span id=''dynatable-record-count-{elementId}'' class=''dynatable-record-count''>{textTemplate}</span>'
+            processingText: Processing...
