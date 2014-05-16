@@ -1,118 +1,145 @@
 Plugins: Wtyczki
 paywall:
-    btn:
-      activate: Aktywuj
-      add: Dodaj
-      back: Cofnij
-      button1: Określ typ i cenę
-      button2: Określ artykuły
-      deactivate: Dezaktywuj
-      delete: Usuń
-      details: Szczegóły
-      edit: Edycja
-      next: Dalej
-      save: Zapisz
-      skip: Pomiń
-    flash:
-      error: "Niepowodzenie."
-      message:
-        provider:
-          changed: Dostawca płatności zmieniony pomyślnie.
-        subscription:
-          activated: Subskrypcja została aktywowana.
-          deactivated: Subskrypcja została wyłączona.
-          deleted: Subskrypcja została usunięta.
-          updated: Subskrypcja została zaktualizowana.
-    manage:
-      error:
-        currency: Waluta jest w nieprawidłowym formacie.
-        exists:
-          subscription: Wybrana subskrypcja już istnieje dla tego użytkownika.
-        select:
-          choose: Proszę wybrać dostawcę!
-          empty: Pole wyboru nie może być puste!
-        topay: Wartość pola "Do zapłaty" jest w złym formacie.
-      label:
-        active: Aktywa
-        adapters: 'Dostępni dostawcy płatności:'
-        addarticle: Dodaj artykuł
-        addissue: Dodaj wydanie
-        addnew: Dodaj subskrypcję użytkownika
-        addsection: Dodaj sekcje
-        articles: Artykuły
-        choose: Wybierz...
-        content: Zawartość
-        current: 'Obecny dostawca płatności:'
-        days: Dni
-        deactivated: Dezaktywowana
-        duration: Czas trwania w dniach
-        editallarticles: Edycja wszystkich artykułów
-        editallissues: Edycja wszystkich wydań
-        editallsections: Edycja wszystkich sekcji
-        no: Nie
-        individuallanguage: Poszczególne języki
-        issues: Wydania
-        language: Język
-        name: Nazwa
-        nocontent: Brak jeszcze dodanej zawartośći.
-        options: Opcje
-        paid: Płatne
-        paiddays: Opłacone dni
-        paidnow: Płatne teraz
-        paymenttype: Typ
-        reglanguage: Niezależnie od języka
-        sections: Sekcje
-        startdate: Data rozpoczęcia
-        subscriptiondetails: Szczegóły subskrypcji
-        subscriptions: Subskrypcje
-        topay: Do zapłaty
-        trial: Próbne
-        yes: Tak
-        username: Nazwa użytkownika
-        users: Użytkownicy
-        goback: Wróć do subskrypcji użytkowników
-    menu:
-      label:
-        addsubscription: Dodaj nową subskrypcję
-        configure:
-          paywall: Skonfiguruj Paywall
-        managesubscriptions: Zarządzanie subskrypcjami
-        subscriptions:
-          user: Zarządzanie subskrypcjami użytkowników
-    step1:
-      form:
-        error:
-          currency: Wpisz walutę.
-          duration: Pole "Czas trwania" jest nieprawidłowe.
-          name: Nazwa subskrypcji nie może być pusta.
-          price: Pole "Cena" jest nieprawidłowe.
-        label:
-          currency: 'Waluta:'
-          duration: 'Czas trwania subskrypcji w dniach:'
-          name: 'Nazwa subskrypcji:'
-          price: 'Cena:'
-          type: 'Rodzaj subskrypcji:'
-        select:
-          type:
-            article: Artykuł
-            issue: Wydanie
-            publication: Publikacja
-            section: Sekcja
-      header: Proszę podać nazwę i wartość dla nowej subskrypcji. Można skonfigurować różne rozróżnianie rodzaje subskrypcji, ale tylko jeden po drugim.
-    step2:
-      header: "Proszę określić, które artykuły dokładnie powinny być widoczne dla subskrybentów."
-      label:
-        active: Status
-        article: Artykuły
-        currency: Waluta
-        durationbox: Czas trwania
-        price: Cena
-        publication: Publikacje
-        type: Typ
-    title: Newscoop Paywall Plugin
+    title: null
+    search: null
     toolbar:
-      label:
-        configuration: Konfiguracja
-        configure: Skonfiguruj Paywall
-        manage: Zarządzaj subskrypcjami
-        manageusers: Zarządzanie subskrypcjami użytkowników
+        label:
+            configuration: Konfiguracja
+            manage: 'Zarządzaj subskrypcjami'
+            manageusers: 'Zarządzanie subskrypcjami użytkowników'
+            configure: 'Skonfiguruj Paywall'
+    step1:
+        header: 'Proszę podać nazwę i wartość dla nowej subskrypcji. Można skonfigurować różne rozróżnianie rodzaje subskrypcji, ale tylko jeden po drugim.'
+        form:
+            label:
+                name: 'Nazwa subskrypcji:'
+                type: 'Rodzaj subskrypcji:'
+                duration: 'Czas trwania subskrypcji w dniach:'
+                price: 'Cena:'
+                currency: 'Waluta:'
+            select:
+                type:
+                    publication: Publikacja
+                    issue: Wydanie
+                    section: Sekcja
+                    article: Artykuł
+            error:
+                name: 'Nazwa subskrypcji nie może być pusta.'
+                duration: 'Pole "Czas trwania" jest nieprawidłowe.'
+                price: 'Pole "Cena" jest nieprawidłowe.'
+                currency: 'Wpisz walutę.'
+    step2:
+        header: 'Proszę określić, które artykuły dokładnie powinny być widoczne dla subskrybentów.'
+        label:
+            article: Artykuły
+            publication: Publikacje
+            type: Typ
+            durationbox: 'Czas trwania'
+            price: Cena
+            currency: Waluta
+            active: Status
+    btn:
+        skip: Pomiń
+        save: Zapisz
+        edit: Edycja
+        delete: Usuń
+        next: Dalej
+        button1: 'Określ typ i cenę'
+        button2: 'Określ artykuły'
+        details: Szczegóły
+        back: Cofnij
+        add: Dodaj
+        deactivate: Dezaktywuj
+        activate: Aktywuj
+    flash:
+        message:
+            error: null
+            provider:
+                changed: 'Dostawca płatności zmieniony pomyślnie.'
+            subscription:
+                deleted: 'Subskrypcja została usunięta.'
+                updated: 'Subskrypcja została zaktualizowana.'
+                activated: 'Subskrypcja została aktywowana.'
+                deactivated: 'Subskrypcja została wyłączona.'
+    manage:
+        error:
+            currency: 'Waluta jest w nieprawidłowym formacie.'
+            topay: 'Wartość pola "Do zapłaty" jest w złym formacie.'
+            exists:
+                subscription: 'Wybrana subskrypcja już istnieje dla tego użytkownika.'
+            select:
+                empty: 'Pole wyboru nie może być puste!'
+                choose: 'Proszę wybrać dostawcę!'
+        label:
+            name: Nazwa
+            duration: 'Czas trwania w dniach'
+            options: Opcje
+            username: 'Nazwa użytkownika'
+            topay: 'Do zapłaty'
+            active: Aktywa
+            deactivated: Dezaktywowana
+            users: Użytkownicy
+            subscriptions: Subskrypcje
+            paymenttype: Typ
+            paid: Płatne
+            paidnow: 'Płatne teraz'
+            trial: Próbne
+            yes: Tak
+            no: Nie
+            addnew: 'Dodaj subskrypcję użytkownika'
+            subscriptiondetails: 'Szczegóły subskrypcji'
+            addissue: 'Dodaj wydanie'
+            addsection: 'Dodaj sekcje'
+            addarticle: 'Dodaj artykuł'
+            editallissues: 'Edycja wszystkich wydań'
+            editallsections: 'Edycja wszystkich sekcji'
+            editallarticles: 'Edycja wszystkich artykułów'
+            language: Język
+            individuallanguage: 'Poszczególne języki'
+            reglanguage: 'Niezależnie od języka'
+            days: Dni
+            startdate: 'Data rozpoczęcia'
+            paiddays: 'Opłacone dni'
+            issues: Wydania
+            sections: Sekcje
+            articles: Artykuły
+            nocontent: 'Brak jeszcze dodanej zawartośći.'
+            content: Zawartość
+            choose: Wybierz...
+            adapters: 'Dostępni dostawcy płatności:'
+            current: 'Obecny dostawca płatności:'
+            goback: 'Wróć do subskrypcji użytkowników'
+    menu:
+        label:
+            addsubscription: 'Dodaj nową subskrypcję'
+            managesubscriptions: 'Zarządzanie subskrypcjami'
+            subscriptions.user: null
+            configure.paywall: null
+    datatable:
+        table:
+            info: null
+            noentries: null
+            filtering: null
+            menu: null
+        label:
+            search: null
+            filter: null
+            processing: null
+            last: null
+            next: null
+            first: null
+            previous: null
+            norecords: null
+    table:
+        table_messages:
+            page: null
+            perPageText: null
+            pageText: null
+            recordCountPageBoundTemplate: null
+            recordCountPageUnboundedTemplate: null
+            recordCountTotalTemplate: null
+            recordCountFilteredTemplate: null
+            recordCountText: null
+            recordCountTextTemplate: null
+            recordCountTemplate: null
+            processingText: null
