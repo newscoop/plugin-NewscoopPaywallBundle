@@ -7,12 +7,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Newscoop\PaywallBundle\Adapter\PaywallAdapterInterface;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
+use SimpleXmlElement;
 
 class MembershipAdapter implements PaywallAdapterInterface
 {   
     private $subscriptionService;
 
     private $request;
+
+    /**
+     * @var array
+     */
+    private $activeStatusCodes = array(1, 2, 3);
 
     public function setRequest(Request $request) {
         $this->request = $request;
@@ -50,18 +56,31 @@ class MembershipAdapter implements PaywallAdapterInterface
                     $isValid = false;
                 }
 
-                if ($dmpro->isCustomer($customerId) && $isValid) {
-                    if (!$user->getAttribute('customer_id')) {
-                        $user->addAttribute('customer_id', $customerId);
-                        $subscription = $this->subscriptionService->getOneByUser($user);
-                        $subscriptionData = new SubscriptionData(array(
-                            'active' => 'Y',
-                            'type' => 'P'
-                        ), $subscription);
-                        $subscription = $this->subscriptionService->update($subscription, $subscriptionData);
-                        $em->flush();
+                $subscription = $this->subscriptionService->getOneByUser($user);
 
-                        $this->subscriptionService->deactivateTrial($user);
+                if ($dmpro->isCustomer($customerId) && $isValid) {
+                    if ($subscription->getSubscription()->getName() === $this->getSubscriptionName($customer)) {
+                        if (!$user->getAttribute('customer_id')) {
+                            $user->addAttribute('customer_id', $customerId);
+                            $subscriptionData = new SubscriptionData(array(
+                                'active' => true,
+                                'type' => 'P'
+                            ), $subscription);
+                            $subscription = $this->subscriptionService->update($subscription, $subscriptionData);
+                            $em->flush();
+
+                            $this->subscriptionService->deactivateTrial($user);
+
+                            return array('status' => true, 'validCode' => true, 'thanks' => true);
+                        }
+                    } else {
+                        //aktivate new
+                        $toActivate = $this->subscriptionService->getSubscriptionToActivate($user);
+                        // get lastest inactive subscription
+                        $toActivate->setActive(true);
+                        // deactivate current one
+                        $subscription->setActive(false);
+                        $em->flush();
 
                         return array('status' => true, 'validCode' => true, 'thanks' => true);
                     }
@@ -77,6 +96,44 @@ class MembershipAdapter implements PaywallAdapterInterface
             }
 
             return array('status' => false, 'validCode' => false);
+        }
+    }
+
+    /**
+     * Find subscription name
+     *
+     * @param SimpleXmlElement $subscriber
+     * @return string
+     */
+    public function getSubscriptionName(SimpleXmlElement $subscriber)
+    {
+        $subscriptions = $subscriber->subscriptions->xpath('subscription');
+
+        $statusCodes = $this->activeStatusCodes;
+        $activeSubscriptions = array_filter($subscriptions, function ($subscription) use ($statusCodes) {
+            return in_array((int) $subscription->statusCode, $statusCodes);
+        });
+
+        $dates = array_map(function ($subscription) {
+            $paidUntil = $subscription->xpath('expectedPaidUntil');
+            $description = $subscription->xpath('description');
+
+            if (empty($paidUntil)) {
+                $paidUntil = $subscription->paidUntil;
+                $description = $subscription->description;
+            } else {
+                $paidUntil = array_pop($paidUntil);
+                $description = array_pop($description);
+            }
+
+            return array(\DateTime::createFromFormat('Ymd', $paidUntil)->format('Y-m-d'), (string) $description);
+        }, $activeSubscriptions);
+
+        if (!empty($dates)) {
+            $maxDate = max($dates);
+            unset($maxDate[0]);
+
+            return $maxDate[1];
         }
     }
 }

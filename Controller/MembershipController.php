@@ -31,7 +31,6 @@ class MembershipController extends Controller
         $upgrade = false;
         $selected = null;
         $userSubscription = $subscriptionService->getOneByUser($user);
-
         $defaultSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
         ->findOneBy(array(
             'is_default' => true
@@ -47,7 +46,6 @@ class MembershipController extends Controller
             'membershipType' => !$userSubscription ? null : $userSubscription->getSubscription()->getId()
         ), array('subs' => $subs));
 
-        $thanks = false;
         $adapter = $this->get('newscoop.paywall.adapter');
         $adapter->setRequest($request);
         $adapterResult = $adapter->proccess();
@@ -71,12 +69,12 @@ class MembershipController extends Controller
                     'currency' => $defaultSubscription->getCurrency(),
                     'type' => 'T', // set trial period by default for all users
                             //if user paid fetch xml and check if its valid, if it is, change status to P
-                    'active' => 'N'
+                    'active' => false
                     ), $userSubscription);
                 $subscriptionService->update($userSubscription, $subscriptionData);
                 $em->flush();
 
-                $errors[] = 'Your trial period expired! Provide valid customer number to activate memberships!';
+                $errors[] = 'Membership expired! Provide valid customer number to activate memberships!';
             //}
         }
 
@@ -93,11 +91,6 @@ class MembershipController extends Controller
                     $isSubscribed = true;
                 }
 
-                if (array_key_exists('thanks', $adapterResult)) {
-                    if ($adapterResult['thanks']) {
-                        $thanks = true;
-                    }
-                }
                     //if user has subscription, check which and upgrade/downgrade, leave the same trial time
                 if ($userSubscription && !$isSubscribed) {
                     if (!$subscriptionService->userHadTrial($user)) {
@@ -109,7 +102,7 @@ class MembershipController extends Controller
                             'days' => $subscriptionSpec->getSubscription()->getRange(),
                             'currency' => $subscriptionSpec->getSubscription()->getCurrency(),
                             'type' => 'T', // set trial period by default for all users
-                            'active' => 'Y'
+                            'active' => true
                         ), $userSubscription);
                         $subscriptionService->update($userSubscription, $subscriptionData);
                         $em->flush();
@@ -127,6 +120,9 @@ class MembershipController extends Controller
                                 $em->persist($trial);
                                 $em->flush();
 
+                                $userSubscription->setTrial($trial);
+                                $em->flush();
+
                                 $messages[] = $translator->trans('paywall.success.addedtrial', array('%trial%' => $subscriptionSpec->getSubscription()->getRange()));
                             //send email here
                         }
@@ -139,7 +135,7 @@ class MembershipController extends Controller
                             'days' => $subscriptionSpec->getSubscription()->getRange(),
                             'currency' => $subscriptionSpec->getSubscription()->getCurrency(),
                             'type' => 'T', // set trial period by default for all users
-                            'active' => 'Y'
+                            'active' => true
                         ), $userSubscription);
                         $subscriptionService->update($userSubscription, $subscriptionData);
                         $em->flush();
@@ -160,8 +156,10 @@ class MembershipController extends Controller
                 }
 
                 if ($isSubscribed && $adapterResult['validCode'] || ($isSubscribed && !$adapterResult['status'])) {
-                    if ($thanks) {
-                        $messages[] = $translator->trans('Number accepted. Thank you for subscribing!');
+                    if (array_key_exists('thanks', $adapterResult)) {
+                        if ($adapterResult['thanks']) {
+                            $messages[] = $translator->trans('Number accepted. Thank you for subscribing!');
+                        }
                     } else {
                         $errors[] = $translator->trans('paywall.error.alreadymember');
                     }
@@ -177,9 +175,7 @@ class MembershipController extends Controller
             }
         }
 
-       $userSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
-            ->findOneBy(array('user' => $user));
-
+        $userSubscription = $subscriptionService->getOneByUser($user);
 
         if (!$selected) {
             $selected = !$userSubscription ? null : $userSubscription->getSubscription()->getId();
@@ -193,7 +189,6 @@ class MembershipController extends Controller
         $smarty->assign('code', $user->getAttribute('customer_id') ?: null);
         $smarty->assign('active', $selected);
         $smarty->assign('subscriptions', $subscriptionService->getSubscriptionsConfig());
-        $smarty->assign('hasMembership', $this->hasMembership());
         $smarty->assign('upgrade', $upgrade);
         $smarty->assign('hadTrial', ($subscriptionService->userHadTrial($user) && !$subscriptionService->isTrialActive($user)));
         $response->setContent($templatesService->fetchTemplate("_views/dashboard_membership.tpl"));
@@ -235,8 +230,33 @@ class MembershipController extends Controller
         $em = $this->container->get('em');
         $user = $userService->getCurrentUser();
         $subscriptionService = $this->container->get('subscription.service');
-
+        //upgrade
+        // dodaj nowa subscrypcje dla usera, ustaw status na nieaktywna
+        // poprzednia subskrybscje deaktywuj jesli nowa jest just aktywana (w backendzie)
+        // wyslij maila
+        try {
         if ($subscriptionService->userHadTrial($user) && !$subscriptionService->isTrialActive($user) && $adapterResult['validCode']) {
+            $subscription = $subscriptionService->create();
+            $subscriptionConfig = $subscriptionService->getOneSubscriptionSpecification($request->request->get('newMembershipType'));
+            $subscriptionData = new SubscriptionData(array(
+                'userId' => $user,
+                'subscriptionId' => $subscriptionConfig->getSubscription(),
+                'publicationId' => $subscriptionConfig->getPublication(),
+                'toPay' => $subscriptionConfig->getSubscription()->getPrice(),
+                'days' => $subscriptionConfig->getSubscription()->getRange(),
+                'currency' => $subscriptionConfig->getSubscription()->getCurrency(),
+                'type' => 'P',
+                'active' => false
+            ), $subscription);
+
+            $subscription = $subscriptionService->update($subscription, $subscriptionData);
+
+            $subscriptionService->save($subscription);
+
+            return new Response('You need to wait for activating you new subscription');
+        }
+    } catch (\Exception $e) {ladybug_dump($e->getMessage());die;}
+        /*if ($subscriptionService->userHadTrial($user) && !$subscriptionService->isTrialActive($user) && $adapterResult['validCode']) {
             $newSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                 ->findOneBy(array(
                     'id' => $request->request->get('newMembershipType')
@@ -259,7 +279,7 @@ class MembershipController extends Controller
             // charge more only when upgrading!
 
             return new Response('Successfully upgraded/downgraded membership');
-        }
+        }*/
 
         return new Response('Cant change membership!');
     }

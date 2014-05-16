@@ -450,7 +450,8 @@ class PaywallService extends SubscriptionService
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'user' => $userId,
-                'subscription' => $subscriptionId
+                'subscription' => $subscriptionId,
+                'active' => 'Y'
             ));
 
         if ($subscription) {
@@ -472,6 +473,7 @@ class PaywallService extends SubscriptionService
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'user' => $user,
+                'active' => 'Y'
             ));
 
         if ($subscription) {
@@ -479,6 +481,24 @@ class PaywallService extends SubscriptionService
         }
 
         return null;
+    }
+
+    public function getSubscriptionToActivate($user)
+    {
+        $subscriptionToActivate = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
+            ->createQueryBuilder('s')
+            ->where('s.user = :user')
+            ->andWhere('s.active = :status')
+            ->setParameters(array(
+                'user' => $user,
+                'status' => 'N'
+            ))
+            ->setMaxResults(1)
+            ->orderBy('s.created_at', 'desc')
+            ->getQuery()
+            ->getSingleResult();
+
+        return $subscriptionToActivate;
     }
 
     /**

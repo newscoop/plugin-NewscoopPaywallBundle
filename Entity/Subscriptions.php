@@ -79,7 +79,7 @@ class Subscriptions
     protected $is_active;
 
     /**
-     * @ORM\Column(type="boolean", name="is_default")
+     * @ORM\Column(type="boolean", name="is_default", nullable=true)
      * @var boolean
      */
     protected $is_default;
