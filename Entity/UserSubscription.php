@@ -109,9 +109,15 @@ class UserSubscription
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
-     * @var string
+     * @var DateTime
      */
     protected $created_at;
+
+    /**
+     * @ORM\Column(type="datetime", name="expire_at", nullable=true)
+     * @var DateTime
+     */
+    protected $expire_at;
 
     /**
      * To hide from users totaly
@@ -557,6 +563,29 @@ class UserSubscription
     public function setCreatedAt(\DateTime $created_at)
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * Get expire date
+     *
+     * @return datetime
+     */
+    public function getExpireAt()
+    {
+        return $this->expire_at;
+    }
+
+    /**
+     * Set expire date
+     *
+     * @param datetime $expire_at
+     * @return datetime
+     */
+    public function setExpireAt(\DateTime $expire_at)
+    {
+        $this->expire_at = $expire_at;
 
         return $this;
     }

@@ -26,9 +26,11 @@ class MembershipController extends Controller
         $em = $this->container->get('em');
         $user = $userService->getCurrentUser();
         $subscriptionService = $this->container->get('subscription.service');
+        $membershipService = $this->container->get('newscoop_paywall.membership');
         $errors = array();
         $messages = array();
         $upgrade = false;
+        $buyOnly = false;
         $selected = null;
         $userSubscription = $subscriptionService->getOneByUser($user);
         $defaultSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
@@ -50,32 +52,33 @@ class MembershipController extends Controller
         $adapter->setRequest($request);
         $adapterResult = $adapter->proccess();
 
-        $subscriptionService->isValidTrial($user);
+        $buyOnly = $subscriptionService->isValidTrial($user);
         if ($subscriptionService->userHadTrial($user) && !$subscriptionService->isTrialActive($user) && !$adapterResult['status']) {
                 //trzeba okreslic defaultowa subscrybcje do jakiej bedzie downgrade jesli nie ma triala
                 // (dodac tylko UI do tego, reszta jest)
                 //
-                $publication = 0;
-                foreach ($defaultSubscription->getSpecification() as $key => $value) {
-                    $publication = $value->getPublication();
-                }
 
-                $subscriptionData = new SubscriptionData(array(
-                    'userId' => $user,
-                    'subscriptionId' => $defaultSubscription,
-                    'publicationId' => $publication,
-                    'toPay' => $defaultSubscription->getPrice(),
-                    'days' => $defaultSubscription->getRange(),
-                    'currency' => $defaultSubscription->getCurrency(),
-                    'type' => 'T', // set trial period by default for all users
-                            //if user paid fetch xml and check if its valid, if it is, change status to P
-                    'active' => false
-                    ), $userSubscription);
-                $subscriptionService->update($userSubscription, $subscriptionData);
-                $em->flush();
+            $publication = 0;
+            foreach ($defaultSubscription->getSpecification() as $key => $value) {
+               $publication = $value->getPublication();
+            }
 
-                $errors[] = 'Membership expired! Provide valid customer number to activate memberships!';
-            //}
+            $subscriptionData = new SubscriptionData(array(
+                'userId' => $user,
+                'subscriptionId' => $defaultSubscription,
+                'publicationId' => $publication,
+                'toPay' => $defaultSubscription->getPrice(),
+                'days' => $defaultSubscription->getRange(),
+                'currency' => $defaultSubscription->getCurrency(),
+                'type' => 'T', // set trial period by default for all users
+                        //if user paid fetch xml and check if its valid, if it is, change status to P
+                'active' => false
+                ), $userSubscription);
+            $subscriptionService->update($userSubscription, $subscriptionData);
+            $em->flush();
+
+            $buyOnly = true;
+            $errors[] = $translator->trans('paywall.msg.membershipexpired');
         }
 
         if ($request->isMethod('POST')) {
@@ -107,7 +110,7 @@ class MembershipController extends Controller
                         $subscriptionService->update($userSubscription, $subscriptionData);
                         $em->flush();
 
-                        $messages[] = $translator->trans('Successfully changed membership type!');
+                        $messages[] = $translator->trans('paywall.msg.successchange');
 
                                 //adding trial info to all memberships higher than basic (default one)
                         if ($userSubscription->getSubscription() != $defaultSubscription) {
@@ -124,7 +127,8 @@ class MembershipController extends Controller
                                 $em->flush();
 
                                 $messages[] = $translator->trans('paywall.success.addedtrial', array('%trial%' => $subscriptionSpec->getSubscription()->getRange()));
-                            //send email here
+
+                                $buyOnly = true;
                         }
                     } elseif (($userSubscription->getSubscription() == $defaultSubscription) && $subscriptionService->isTrialActive($user)) {
                         $subscriptionData = new SubscriptionData(array(
@@ -140,10 +144,14 @@ class MembershipController extends Controller
                         $subscriptionService->update($userSubscription, $subscriptionData);
                         $em->flush();
 
-                        $messages[] = $translator->trans('Siccessfully changed membership type!');
+                        $messages[] = $translator->trans('paywall.msg.successchange');
                     } else {
                         if (!$adapterResult['status']) {
-                            $errors[] = $translator->trans('You have/had already a trial, cant change to other membership!');
+                            $errors[] = $translator->trans('paywall.msg.hadtrial');
+                        }
+
+                        if (!$adapterResult['validCode']) {
+                            $errors[] = $translator->trans('paywall.msg.providevalid');
                         }
                     }
 
@@ -151,47 +159,172 @@ class MembershipController extends Controller
                         // if upgrade/downgrade
                         $upgrade = true;
                         $selected = $data['membershipType'];
-                        $messages[] = $translator->trans('Are you sure you want to change membership to selected one?');
+                        $messages[] = $translator->trans('paywall.msg.surechange');
                     }
                 }
 
                 if ($isSubscribed && $adapterResult['validCode'] || ($isSubscribed && !$adapterResult['status'])) {
                     if (array_key_exists('thanks', $adapterResult)) {
                         if ($adapterResult['thanks']) {
-                            $messages[] = $translator->trans('Number accepted. Thank you for subscribing!');
+                            $messages[] = $translator->trans('paywall.msg.numberaccepted');
+                            $buyOnly = false;
+                        } else {
+                            $errors[] = $translator->trans('paywall.error.alreadymember');
                         }
                     } else {
-                        $errors[] = $translator->trans('paywall.error.alreadymember');
+                        $errors[] = $translator->trans('paywall.msg.alreadyorwrong');
                     }
                 }
 
                 if ($isSubscribed && $adapterResult['status'] && !$adapterResult['validCode'] ||
                     !$isSubscribed && $adapterResult['status'] && !$adapterResult['validCode']) {
-                    $errors[] = $translator->trans('Invalid customer number!');
+                    $errors[] = $translator->trans('paywall.msg.invalidcustomerid');
                 }
 
             } else {
-                $errors[] = $this->getErrorMessages($form) ?: $translator->trans('paywall.error.fatal');//$this->getErrorMessages($form);
+                //$errors[] = $this->getErrorMessages($form) ?: $translator->trans('paywall.error.fatal');//$this->getErrorMessages($form);
+                $errors[] = $translator->trans('paywall.msg.buyone');
+                $buyOnly = true;
             }
         }
 
+        if (!$membershipService->isUserAddressFilledIn($user)) {
+            return $this->setDataTemplateVariables($user);
+        }
+
+        return $this->setTemplateVariables($user, $errors, $messages, $selected, $upgrade, $buyOnly, $adapterResult['validCode']);
+    }
+
+    /**
+     * Submit user details
+     *
+     * @Route("/paywall/membership/details/submit")
+     */
+    public function submitDataAction(Request $request)
+    {
+        $userService = $this->container->get('user');
+        $user = $userService->getCurrentUser();
+        $em = $this->container->get('em');
+        $translator = $this->container->get('translator');
+        $form = $this->container->get('form.factory')->create(new MembershipDataFormType(), array(), array(
+            'translator' => $translator
+        ));
+
+        $errors = array();
+        $messages = array();
+        $dataTpl = array();
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $user->setFirstName($data['name']);
+                $user->setLastName($data['surname']);
+                $user->setPostal($data['postal']);
+                $user->setCity($data['city']);
+                $user->setStreet($data['street']);
+                $user->setState($data['state']);
+                $em->flush();
+
+                if (array_key_exists('fancybox', $data)) {
+                    $messages[] = $translator->trans('paywall.msg.datasavedfancy');
+
+                    return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                }
+
+                return $this->redirect($this->generateUrl('newscoop_paywall_membership_getsubscriptions'));
+            } else {
+                $data = $form->getData();
+                $dataTpl = array(
+                    'messages' => array(),
+                    'firstName' => $data['name'] ?: $user->getFirstName(),
+                    'lastName' => $data['surname'],
+                    'street' => $data['street'],
+                    'postal' => $data['postal'],
+                    'city' => $data['city'],
+                    'state' => $data['state'],
+                    'formPath' => $this->generateUrl('newscoop_paywall_membership_submitdata'),
+                );
+
+                $errors[] = $this->getErrorMessages($form);
+                $dataTpl['errors'] = $errors;
+
+                if (array_key_exists('fancybox', $data)) {
+                    return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                }
+            }
+        }
+
+        return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl);
+    }
+
+    /**
+     * Get personal details template
+     *
+     * @Route("/paywall/membership/details/get")
+     */
+    public function getPersonalDetailsAction()
+    {
+        $userService = $this->container->get('user');
+        $user = $userService->getCurrentUser();
+
+        return $this->setDataTemplateVariables($user, array(), array(), array(), "_views/dashboard_membership_fancybox.tpl");
+    }
+
+    private function setTemplateVariables($user, $errors = array(), $messages = array(), $selected = null, $upgrade = false, $buyOnly = false, $validCode = false)
+    {
+        $response = new Response();
+        $templatesService = $this->get('newscoop.templates.service');
+        $subscriptionService = $this->container->get('subscription.service');
         $userSubscription = $subscriptionService->getOneByUser($user);
+        $toActivate = $subscriptionService->getSubscriptionToActivate($user, $userSubscription);
 
         if (!$selected) {
             $selected = !$userSubscription ? null : $userSubscription->getSubscription()->getId();
         }
 
-        $response = new Response();
-        $templatesService = $this->get('newscoop.templates.service');
         $smarty = $templatesService->getSmarty();
         $smarty->assign('errors', $errors);
         $smarty->assign('messages', $messages);
         $smarty->assign('code', $user->getAttribute('customer_id') ?: null);
+        $smarty->assign('validCode', $validCode);
         $smarty->assign('active', $selected);
         $smarty->assign('subscriptions', $subscriptionService->getSubscriptionsConfig());
         $smarty->assign('upgrade', $upgrade);
+        $smarty->assign('buyOnly', $buyOnly);
+        $smarty->assign('membershipExpireDate', $userSubscription && $validCode ? $userSubscription->getExpireAt()->format('d-m-Y') : null);
+        $smarty->assign('toActivate', $toActivate ? $toActivate->getSubscription()->getId() : null);
+        $smarty->assign('isActiveTrial', $subscriptionService->isTrialActive($user));
+        $smarty->assign('trialFinishDate', $subscriptionService->isTrialActive($user) ? $userSubscription->getTrial()->getFinishTrial()->format('d-m-Y') : null);
         $smarty->assign('hadTrial', ($subscriptionService->userHadTrial($user) && !$subscriptionService->isTrialActive($user)));
         $response->setContent($templatesService->fetchTemplate("_views/dashboard_membership.tpl"));
+        $response->headers->set('Content-Type', 'text/html');
+        $response->setCharset('utf-8');
+
+        return $response;
+    }
+
+    /**
+     * Set user data template vars
+     */
+    private function setDataTemplateVariables($user, $errors = array(), $messages = array(), $data = array(), $templatePath = null)
+    {
+        $templatesService = $this->get('newscoop.templates.service');
+
+        $dataNotSubmitted = array(
+            'errors' => $errors,
+            'messages' => $messages,
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'street' => $user->getStreet(),
+            'postal' => $user->getPostal(),
+            'city' => $user->getCity(),
+            'state' => $user->getState(),
+            'formPath' => $this->generateUrl('newscoop_paywall_membership_submitdata'),
+        );
+
+        $response = new Response();
+        $response->setContent($templatesService->fetchTemplate($templatePath ?: "_views/dashboard_membership_data.tpl", empty($data) ? $dataNotSubmitted : $data));
+
         $response->headers->set('Content-Type', 'text/html');
         $response->setCharset('utf-8');
 
@@ -227,14 +360,13 @@ class MembershipController extends Controller
         $adapter->setRequest($request);
         $adapterResult = $adapter->proccess();
         $userService = $this->container->get('user');
-        $em = $this->container->get('em');
+        $translator = $this->container->get('translator');
+        $membershipService = $this->container->get('newscoop_paywall.membership');
         $user = $userService->getCurrentUser();
         $subscriptionService = $this->container->get('subscription.service');
-        //upgrade
-        // dodaj nowa subscrypcje dla usera, ustaw status na nieaktywna
-        // poprzednia subskrybscje deaktywuj jesli nowa jest just aktywana (w backendzie)
-        // wyslij maila
-        try {
+        $errors = array();
+        $messages = array();
+
         if ($subscriptionService->userHadTrial($user) && !$subscriptionService->isTrialActive($user) && $adapterResult['validCode']) {
             $subscription = $subscriptionService->create();
             $subscriptionConfig = $subscriptionService->getOneSubscriptionSpecification($request->request->get('newMembershipType'));
@@ -250,37 +382,88 @@ class MembershipController extends Controller
             ), $subscription);
 
             $subscription = $subscriptionService->update($subscription, $subscriptionData);
-
             $subscriptionService->save($subscription);
 
-            return new Response('You need to wait for activating you new subscription');
-        }
-    } catch (\Exception $e) {ladybug_dump($e->getMessage());die;}
-        /*if ($subscriptionService->userHadTrial($user) && !$subscriptionService->isTrialActive($user) && $adapterResult['validCode']) {
-            $newSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-                ->findOneBy(array(
-                    'id' => $request->request->get('newMembershipType')
-                ));
+            $currentSubscription = $subscriptionService->getOneByUser($user);
+            $toPay = $membershipService->calculatePriceDiff($currentSubscription, $subscription);
+            $totalToPay = $toPay . ' ' . $subscription->getCurrency();
+            $status = $translator->trans('paywall.msg.upgrade');
+            if ($toPay === 0) {
+                $status = $translator->trans('paywall.msg.downgrade');
+            }
 
-            $userSubscription = $subscriptionService->getOneByUser($user);
+            //send notification to user and admin
+            $membershipService->sendEmail($request, $subscription->getSubscription()->getName(), $currentSubscription->getSubscription()->getName(), $totalToPay, $status, true);
+
+            $messages[] = $translator->trans('paywall.msg.process');
+
+            return $this->setTemplateVariables($user, $errors, $messages, null, false, false, true);
+        }
+
+        $errors[] = $translator->trans('paywall.msg.cantchange');
+
+        return $this->setTemplateVariables($user, $errors, $messages);
+    }
+
+    /**
+     * Buy memebrship action
+     *
+     * @Route("/paywall/membership/buy")
+     */
+    public function buyAction(Request $request)
+    {
+        $adapter = $this->get('newscoop.paywall.adapter');
+        $adapter->setRequest($request);
+        $adapterResult = $adapter->proccess();
+        $userService = $this->container->get('user');
+        $translator = $this->container->get('translator');
+        $membershipService = $this->container->get('newscoop_paywall.membership');
+        $user = $userService->getCurrentUser();
+        $subscriptionService = $this->container->get('subscription.service');
+        $errors = array();
+        $messages = array();
+
+        if ($membershipService->isSpam()) {
+            $errors[] = $translator->trans('paywall.msg.spammsg');
+
+            return $this->setTemplateVariables($user, $errors, $messages, null, false, true);
+        }
+
+        if ($subscriptionService->userHadTrial($user)) {
+            $currentSubscription = $subscriptionService->getOneByUser($user);
+            $subscription = $subscriptionService->create();
+            $subscriptionConfig = $subscriptionService->getOneSubscriptionSpecification($request->request->get('newMembershipType'));
             $subscriptionData = new SubscriptionData(array(
                 'userId' => $user,
-                'subscriptionId' => $newSubscription,
-                'toPay' => $newSubscription->getPrice(),
-                'days' => $newSubscription->getRange(),
-                'currency' => $newSubscription->getCurrency(),
+                'subscriptionId' => $subscriptionConfig->getSubscription(),
+                'publicationId' => $subscriptionConfig->getPublication(),
+                'toPay' => $subscriptionConfig->getSubscription()->getPrice(),
+                'days' => $subscriptionConfig->getSubscription()->getRange(),
+                'currency' => $subscriptionConfig->getSubscription()->getCurrency(),
                 'type' => 'P',
-                'active' => 'Y'
-                ), $userSubscription);
-            $subscriptionService->update($userSubscription, $subscriptionData);
-            $em->flush();
+                'active' => false,
+            ), $subscription);
 
-            //calculate diffrences between current membership and plan that is going to be switched
-            // charge more only when upgrading!
+            $subscription = $subscriptionService->update($subscription, $subscriptionData);
+            $subscription->setTrial($currentSubscription->getTrial());
+            $subscriptionService->save($subscription);
 
-            return new Response('Successfully upgraded/downgraded membership');
-        }*/
+            $totalToPay = $subscription->getToPay() . ' ' . $subscription->getCurrency();
+            $status = $translator->trans('paywall.msg.purchasetrialexpired');
+            if ($subscriptionService->isTrialActive($user)) {
+                $status = $translator->trans('paywall.msg.purchasetrialon');
+            }
 
-        return new Response('Cant change membership!');
+            // calculates how many days left for trial
+            // these result will be added to subscription period
+            // left trial days + subscription period
+            $leftTrialDays = $membershipService->calculateTrialDiff($currentSubscription->getTrial()->getFinishTrial());
+            //send notification to user and admin
+            $membershipService->sendEmail($request, $subscription->getSubscription()->getName(), $currentSubscription->getSubscription()->getName(), $totalToPay, $status, true, $leftTrialDays);
+
+            $messages[] = $translator->trans('paywall.msg.process');
+
+            return $this->setTemplateVariables($user, $errors, $messages, null, false, true);
+        }
     }
 }

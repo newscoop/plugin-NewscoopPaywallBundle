@@ -55,3 +55,7 @@ services:
         class: Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimalValidator
         tags:
             - { name: validator.constraint_validator, alias: decimal_validator }
+
+    newscoop_paywall.membership:
+        class:      Newscoop\PaywallBundle\Services\MembershipService
+        arguments:  ["@em", "@subscription.service", "@user", "@email", "@newscoop.templates.service", "@newscoop.placeholders.service", "@zend_router", "@system_preferences_service"]

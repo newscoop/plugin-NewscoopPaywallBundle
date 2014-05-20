@@ -31,7 +31,6 @@ class MembershipFormType extends AbstractType
         ->add('customer_id', 'text', array(
             'required'  => false,
             'error_bubbling' => true,
-            //'constraints' => new NotBlank(),
         ));
     }
 
