@@ -84,6 +84,17 @@ class MembershipService
         $this->emailService->send($this->placeholdersService->get('subject'), $message, array($this->preferencesService->PaywallMembershipNotifyEmail));
     }
 
+    public function expiringSubscriptionNotifyEmail($userSubscription)
+    {
+        $smarty = $this->templatesService->getSmarty();
+        $smarty->assign('user', new \MetaUser($userSubscription->getUser()));
+        $smarty->assign('customerId', $userSubscription->getUser()->getAttribute('customer_id'));
+        $smarty->assign('subscription', $userSubscription);
+
+        $message = $this->templatesService->fetchTemplate("email_membership_expire.tpl");
+        $this->emailService->send($this->placeholdersService->get('subject'), $message, array($userSubscription->getUser()));
+    }
+
     /**
      * Calculates diffrence between subscriptions prices when upgrading/downgrading
      *

@@ -22,6 +22,11 @@ class SubscriptionConfType extends AbstractType
             'error_bubbling' => true,
             'invalid_message' => 'paywall.step1.form.error.name'
         ))
+        ->add('description', 'textarea', array(
+            'label' => 'paywall.step1.form.label.description',
+            'required' => false,
+            'error_bubbling' => true,
+        ))
         ->add('type', 'choice', array(
             'label'  => 'paywall.step1.form.label.type',
             'choices'   => array(

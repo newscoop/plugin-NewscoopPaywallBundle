@@ -348,7 +348,6 @@ class MembershipController extends Controller
         return $errors;
     }
 
-
     /**
      * Get callback response from paywall/payment provider and proccess it.
      *

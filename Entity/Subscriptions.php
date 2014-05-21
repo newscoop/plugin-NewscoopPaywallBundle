@@ -67,6 +67,12 @@ class Subscriptions
     protected $currency;
 
     /**
+     * @ORM\Column(type="text", name="description", nullable=true)
+     * @var text
+     */
+    protected $description;
+
+    /**
      * @ORM\Column(type="datetime", name="created_at")
      * @var string
      */
@@ -221,6 +227,29 @@ class Subscriptions
     public function setCurrency($currency)
     {
         $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get subscription description
+     *
+     * @return text
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set subscription description
+     *
+     * @param text $description
+     * @return text
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
 
         return $this;
     }

@@ -17,6 +17,9 @@ paywall:
           duration: "Duration of subscription in days:"
           price: "Price:"
           currency: "Currency:"
+          description: "Description:"
+          optional: "optional"
+          subscription: "Subscription"
         select:
           type:
             publication: "Publication"
@@ -28,6 +31,7 @@ paywall:
           duration: "Duration field is invalid."
           price: "Price field is invalid."
           currency: "Type currency."
+          description: "Type description."
     step2:
       header: "Please specify which articles exactly should be visible for subscribers only."
       label:

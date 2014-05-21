@@ -40,29 +40,19 @@ class UsersSubscriptionsController extends Controller
         $cacheService = $this->get('newscoop.cache');
         $subscriptionService = $this->get('subscription.service');
         $criteria = $this->processRequest($request);
-        $active = $subscriptionService->countBy(array('active' => true));
-        $notActive = $subscriptionService->countBy(array('active' => false));
-        $cacheKey = array('subscriptions__'.md5(serialize($criteria)), $active, $notActive);
+        $userSubscriptions = $this->get('subscription.service')->getListByCriteria($criteria);
 
-        if ($cacheService->contains($cacheKey)) {
-            $responseArray =  $cacheService->fetch($cacheKey);
-        } else {
-            $userSubscriptions = $this->get('subscription.service')->getListByCriteria($criteria);
-
-            $pocessed = array();
-            foreach ($userSubscriptions as $subscription) {
-                $pocessed[] = $this->processSubscription($subscription);
-            }
-
-            $responseArray = array(
-                'iTotalRecords' => $userSubscriptions->count,
-                'iTotalDisplayRecords' => count($pocessed),
-                'sEcho' => (int) $request->get('sEcho'),
-                'aaData' => $pocessed,
-            );
-
-            $cacheService->save($cacheKey, $responseArray);
+        $pocessed = array();
+        foreach ($userSubscriptions as $subscription) {
+            $pocessed[] = $this->processSubscription($subscription);
         }
+
+        $responseArray = array(
+            'iTotalRecords' => $userSubscriptions->count,
+            'iTotalDisplayRecords' => $request->get('sSearch') ? count($pocessed) : $userSubscriptions->count,
+            'sEcho' => (int) $request->get('sEcho'),
+            'aaData' => $pocessed,
+        );
 
         return new JsonResponse($responseArray);
     }
@@ -74,6 +64,7 @@ class UsersSubscriptionsController extends Controller
             'userid' => $userSubscription['user']['id'],
             'username' => $userSubscription['user']['username'],
             'publication' => $userSubscription['publication']['name'],
+            'subscription' => $userSubscription['subscription']['name'],
             'topay' => $userSubscription['toPay'],
             'currency' => $userSubscription['currency'],
             'type' => $userSubscription['type'],
