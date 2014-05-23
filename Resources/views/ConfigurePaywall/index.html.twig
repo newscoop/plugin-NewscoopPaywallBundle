@@ -6,6 +6,11 @@
 {% block admin_stylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
 <link rel="stylesheet" type="text/css" href="{{ asset('/js/select2/select2.css') }}" />
+<style>
+#paywall-settingsTable {float: left; margin-top: 0px; margin-right: 25px; width: 400px;}
+.paywall-configure-bg {background-color: #ECECEC;}
+.alert-align {text-align: center;}
+</style>
 {% endblock %}
 
 {% block admin_scripts %}
@@ -15,7 +20,7 @@ function format(item) { return item.text; };
 function formatDiv(item) { return "<div class='select2-results'>" + item.text + "</div>"; }
 $(document).ready(function(){
     $('.td.alert.error').hide();
-    $("#selectProviders").select2({
+    $("#settingsForm_adapter").select2({
         placeholder: "Choose...",
         ajax: {
             url: Routing.generate('newscoop_paywall_configurepaywall_index'),
@@ -32,27 +37,7 @@ $(document).ready(function(){
         formatSelection: format,
         escapeMarkup: function (m) { return m; }
 
-    }).on('change', function(){
-        $('.td.alert.error').hide();
     });
-
-    $('#save').click(function(){
-        if ($('#selectProviders').select2('val')) {
-            $('.td.alert.error').hide();
-            $.post(Routing.generate('newscoop_paywall_getconfiguration', {id: $('#selectProviders').select2('data').id}), { 
-            }, function (data) {
-                if (data.status) {
-                    $('#current').empty();
-                    $('#current').append($('#selectProviders').select2('data').text);
-                    $('#selectProviders').select2('data', null);
-                    flashMessage('{{ 'paywall.flash.message.provider.changed'|trans }}');
-                }
-            }, 'json');
-        } else {
-            $('.td.alert.error').show();
-        }
-    });
-
 });
 </script>
 {% endblock %}
@@ -60,29 +45,69 @@ $(document).ready(function(){
 <div class="plugin-container">
 {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 4} %}
 <div id="configure-paywall" class="box_table">
-<div class="table">
-    <div class="tr">
-        <div class="td alert error">{{ 'paywall.manage.error.select.choose'|trans }}</div>
+{% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alerts alert-align alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{ flashMessage }}
     </div>
-    <div class="tr">
-        <div class="td"><strong>{{ 'paywall.manage.label.current'|trans }}</strong></div>
+{% endfor %}
+{% for flashMessage in app.session.flashbag.get('success') %}
+    <div class="alerts alert-align alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        {{ flashMessage }}
     </div>
-    <div class="tr">
-        <div class="td" id="current">{{ current }}</div>
-    </div>
-    <div class="tr">
-        <div class="td"><strong>{{ 'paywall.manage.label.adapters'|trans }}</strong></div>
-    </div>
-    <div class="tr">
-        <div class="td"><div id="selectProviders" style="width:350px" class="populate placeholder"></div></div>
-    </div>
-    <hr>
-    <div class="tr">
-        <div class="td">
-            <input type="button" id="save" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
-        </div>
-    </div>
+{% endfor %}
+<center>
+<div class="table" style="width: inherit;">
+<form action="{{ path('newscoop_paywall_configurepaywall_index') }}" method="post" {{ form_enctype(form) }} >
+    <table id="paywall-settingsTable" border="0" cellspacing="0" cellpadding="0" class="box_table">
+        <tbody>
+            <tr class="paywall-configure-bg">
+                <td align="left" class="paywall-configure-size paywall-configure-border">
+                    <strong>{{ 'paywall.manage.label.current'|trans }}</strong>
+                </td>
+            </tr>
+            <tr>
+                <td class="paywall-configure-border" id="current">
+                    {{ current }}
+                </td>
+            </tr>
+            <tr class="paywall-configure-bg">
+                <td align="left" class="paywall-configure-size paywall-configure-border">
+                    <b>{{ 'paywall.msg.providername'|trans }}</b> <br>
+                    <small>{{ 'paywall.msg.providersmall'|trans }}</small>
+                </td>
+            </tr>
+            <tr>
+                <td class="paywall-configure-border">
+                    {{ form_widget(form.adapter, {'attr' : {'style' : 'width: 383px;'}}) }}
+                </td>
+            </tr>
+            <tr class="paywall-configure-bg">
+                <td align="left" class="paywall-configure-size paywall-configure-border">
+                    <b>{{ 'paywall.msg.membershipemaillabel'|trans }}</b> <br>
+                    <small>{{ 'paywall.msg.membershipemail'|trans }}</small>
+                </td>
+            </tr>
+            <tr>
+                <td class="paywall-configure-border">
+                    {{ form_widget(form.notificationEmail, {'attr' : {'class' : 'form-control'}}) }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="right" style="padding-top: 10px;">
+                    <button type="submit" class="btn btn-primary">{{ 'plugin.feedback.btn.save'|trans }}</button>
+                </td>
+            </tr>
+            {{ form_rest(form) }}
+        </tbody>
+    </table>
+</form>
 </div>
+</center>
 </div>
 </div>
 {% endblock %}

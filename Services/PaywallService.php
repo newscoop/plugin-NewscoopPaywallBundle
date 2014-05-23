@@ -159,6 +159,109 @@ class PaywallService extends SubscriptionService
     }
 
     /**
+     * Checks if user had trial
+     *
+     * @param Newscoop\Entity\User $user User
+     *
+     * @return bool
+     */
+    public function userHadTrial($user)
+    {
+
+        $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
+            ->findOneBy(array(
+                'user' => $user,
+        ));
+
+        if ($trial) {
+            return $trial->getHadTrial();
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if trial is valid
+     *
+     * @param Newscoop\Entity\User $user User
+     *
+     * @return bool
+     */
+    public function isValidTrial($user)
+    {
+
+        $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
+            ->findOneBy(array(
+                'user' => $user,
+                'is_active' => true
+        ));
+
+        if ($trial) {
+            $datetime = new \DateTime('now');
+            //if trial expired
+            if ($trial->getFinishTrial() >= $datetime) {
+                return true;
+            }
+
+            // deactivate trial
+            $trial->setIsActive(false);
+            $this->em->flush();
+
+            return false;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if trial is active
+     *
+     * @param Newscoop\Entity\User $user User
+     *
+     * @return bool
+     */
+    public function isTrialActive($user)
+    {
+
+        $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
+            ->findOneBy(array(
+                'user' => $user,
+        ));
+
+        if ($trial) {
+            return $trial->getIsActive();
+        }
+
+        return false;
+    }
+
+    /**
+     * Deactivates trial
+     *
+     * @param Newscoop\Entity\User $user User
+     *
+     * @return bool
+     */
+    public function deactivateTrial($user)
+    {
+
+        $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
+            ->findOneBy(array(
+                'user' => $user,
+                'is_active' => true
+        ));
+
+        if ($trial) {
+            $trial->setIsActive(false);
+            $this->em->flush();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Gets all available sections by given language Id
      *
      * @param integer $language Language Id to search for
@@ -311,14 +414,27 @@ class PaywallService extends SubscriptionService
      *
      * @return entity object
      */
-    public function getSubscriptionsConfig($subscriptionId)
+    public function getOneSubscriptionSpecification($subscriptionId)
     {
-        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
+        $subscriptionSpec = $this->em->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
             ->findOneBy(array(
                 'subscription' => $subscriptionId,
             ));
 
-        return $subscription;
+        return $subscriptionSpec;
+    }
+
+    /**
+     * Gets active Subscriptions
+     *
+     * @return array
+     */
+    public function getSubscriptionsConfig()
+    {
+        $subscriptions = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            ->findBy(array('is_active' => true));
+
+        return $subscriptions;
     }
 
     /**
@@ -334,15 +450,81 @@ class PaywallService extends SubscriptionService
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'user' => $userId,
-                'subscription' => $subscriptionId
+                'subscription' => $subscriptionId,
+                'active' => 'Y'
             ));
 
         if ($subscription) {
-            return array('status' => true);
+            return $subscription;
         }
 
-        return array('status' => false);
+        return null;
     }
+
+    /**
+     * Get one user subscription by user
+     *
+     * @param Newscoop\Entity\User|int $user User or user id
+     *
+     * @return UserSubscription|null
+     */
+    public function getOneByUser($user)
+    {
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
+            ->findOneBy(array(
+                'user' => $user,
+                'active' => 'Y'
+            ));
+
+        if ($subscription) {
+            return $subscription;
+        }
+
+        return null;
+    }
+
+    public function getSubscriptionToActivate($user, $currentSubscription)
+    {
+        $subscriptionToActivate = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
+            ->createQueryBuilder('s')
+            ->where('s.user = :user')
+            ->andWhere('s.active = :status')
+            ->setParameters(array(
+                'user' => $user,
+                'status' => 'N'
+            ))
+            ->setMaxResults(1)
+            ->orderBy('s.created_at', 'desc')
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($subscriptionToActivate && $currentSubscription) {
+            if ($currentSubscription->getCreatedAt() < $subscriptionToActivate->getCreatedAt()) {
+                return $subscriptionToActivate;
+            }
+        }
+
+        return null;
+    }
+
+    /*public function getSubscriptionLastNotActive($user)
+    {
+        $subscriptionToActivate = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
+            ->createQueryBuilder('s')
+            ->where('s.user = :user')
+            ->andWhere('s.active = :status')
+            ->setParameters(array(
+                'user' => $user,
+                'status' => 'N'
+            ))
+            ->setMaxResults(1)
+            ->orderBy('s.created_at', 'desc')
+            ->getQuery()
+            ->getSingleResult();
+
+
+        return $subscriptionToActivate;
+    }*/
 
     /**
      * Gets all sections diffrent from already added user's sections by given language
@@ -536,6 +718,16 @@ class PaywallService extends SubscriptionService
 
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
             'id' => $id
+        ));
+
+        return $subscription;
+    }
+
+    public function getUserSubscriptionBySubscriptionId($id)
+    {
+
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
+            'subscription' => $id
         ));
 
         return $subscription;

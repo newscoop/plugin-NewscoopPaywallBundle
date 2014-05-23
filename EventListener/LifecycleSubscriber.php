@@ -57,9 +57,9 @@ class LifecycleSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            'plugin.install.newscoop_paywall_bundle' => array('install', 1),
-            'plugin.update.newscoop_paywall_bundle' => array('update', 1),
-            'plugin.remove.newscoop_paywall_bundle' => array('remove', 1),
+            'plugin.install.newscoop_newscoop_paywall_bundle' => array('install', 1),
+            'plugin.update.newscoop_newscoop_paywall_bundle' => array('update', 1),
+            'plugin.remove.newscoop_ dnewscoop_paywall_bundle' => array('remove', 1),
         );
     }
 
@@ -70,6 +70,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionSpecification'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Settings'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\UserSubscription'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Trial'),
         );
     }
 }

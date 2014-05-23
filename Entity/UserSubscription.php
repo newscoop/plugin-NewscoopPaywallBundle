@@ -94,10 +94,37 @@ class UserSubscription
     public $issues;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Trial")
+     * @ORM\JoinColumn(name="trial_id", referencedColumnName="id")
+     * @var Newscoop\PaywallBundle\Entity\Trial
+     */
+    protected $trial;
+
+    /**
+     * Subscription status visible for admin
      * @ORM\Column(name="Active")
      * @var string
      */
     protected $active;
+
+    /**
+     * @ORM\Column(type="datetime", name="created_at")
+     * @var DateTime
+     */
+    protected $created_at;
+
+    /**
+     * @ORM\Column(type="datetime", name="expire_at", nullable=true)
+     * @var DateTime
+     */
+    protected $expire_at;
+
+    /**
+     * To hide from users totaly
+     * @ORM\Column(type="boolean", name="is_active")
+     * @var boolean
+     */
+    protected $is_active = true;
 
     public function __construct()
     {
@@ -105,7 +132,9 @@ class UserSubscription
         $this->articles = new ArrayCollection();
         $this->issues = new ArrayCollection();
         $this->currency = '';
-        $this->active = false;
+        $this->active = 'N';
+        $this->created_at = new \DateTime();
+        $this->is_active = true;
         $this->type = self::TYPE_PAID;
     }
 
@@ -267,7 +296,8 @@ class UserSubscription
      */
     public function setActive($active)
     {
-        $this->active = (bool) $active ? 'Y' : 'N';
+
+        $this->active = ((bool) $active) ? 'Y' : 'N';
         return $this;
     }
 
@@ -490,6 +520,95 @@ class UserSubscription
     public function setCurrency($currency)
     {
         $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get trial
+     * @return Trial
+     */
+    public function getTrial()
+    {
+        return $this->trial;
+    }
+
+    /**
+     * Set trial
+     * @return Trial
+     */
+    public function setTrial($trial)
+    {
+        $this->trial = $trial;
+
+        return $this;
+    }
+
+    /**
+     * Get create date
+     *
+     * @return datetime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set create date
+     *
+     * @param datetime $created_at
+     * @return datetime
+     */
+    public function setCreatedAt(\DateTime $created_at)
+    {
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * Get expire date
+     *
+     * @return datetime
+     */
+    public function getExpireAt()
+    {
+        return $this->expire_at;
+    }
+
+    /**
+     * Set expire date
+     *
+     * @param datetime $expire_at
+     * @return datetime
+     */
+    public function setExpireAt(\DateTime $expire_at)
+    {
+        $this->expire_at = $expire_at;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->is_active;
+    }
+
+    /**
+     * Set status
+     *
+     * @param boolean $is_active
+     * @return boolean
+     */
+    public function setIsActive($is_active)
+    {
+        $this->is_active = $is_active;
 
         return $this;
     }

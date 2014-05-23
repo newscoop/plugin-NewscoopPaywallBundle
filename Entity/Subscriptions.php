@@ -67,6 +67,12 @@ class Subscriptions
     protected $currency;
 
     /**
+     * @ORM\Column(type="text", name="description", nullable=true)
+     * @var text
+     */
+    protected $description;
+
+    /**
      * @ORM\Column(type="datetime", name="created_at")
      * @var string
      */
@@ -77,6 +83,12 @@ class Subscriptions
      * @var boolean
      */
     protected $is_active;
+
+    /**
+     * @ORM\Column(type="boolean", name="is_default", nullable=true)
+     * @var boolean
+     */
+    protected $is_default;
 
     public function __construct() {
         $this->specification = new ArrayCollection();
@@ -220,6 +232,29 @@ class Subscriptions
     }
 
     /**
+     * Get subscription description
+     *
+     * @return text
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set subscription description
+     *
+     * @param text $description
+     * @return text
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
      * Get subscription status
      *
      * @return boolean
@@ -261,6 +296,29 @@ class Subscriptions
     public function setCreatedAt(\DateTime $created_at)
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * Get default
+     *
+     * @return boolean
+     */
+    public function getIsDefault()
+    {
+        return $this->is_default;
+    }
+
+    /**
+     * Set is_default
+     *
+     * @param boolean $is_default
+     * @return boolean
+     */
+    public function setIsDefault($is_default)
+    {
+        $this->is_default = $is_default;
 
         return $this;
     }

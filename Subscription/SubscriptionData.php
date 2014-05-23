@@ -97,6 +97,12 @@ class SubscriptionData
     public $active;
 
     /**
+     * Status to hide it globally
+     * @var boolean
+     */
+    public $is_active;
+
+    /**
      * Subscription type.
      * 'T' for Trial subscription, 'P' for paid subscription or 'PN' for paid now subscriptions.
      *

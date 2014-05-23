@@ -33,7 +33,8 @@ class UserSubscriptionRepository extends EntityRepository
         $qb->select('s', 'p', 'u', 'ss')
             ->leftJoin('s.publication', 'p')
             ->leftJoin('s.user', 'u')
-            ->leftJoin('s.subscription', 'ss');
+            ->leftJoin('s.subscription', 'ss')
+            ->where('s.is_active = true');
 
         foreach ($criteria->orderBy as $key => $value) {
             switch ($key) {
@@ -62,7 +63,7 @@ class UserSubscriptionRepository extends EntityRepository
         $list->count = (int) $countQb->select('COUNT(DISTINCT u)')->getQuery()->getSingleScalarResult();
 
         if (!empty($criteria->query)) {
-            $qb->where($qb->expr()->orX("(u.username LIKE :query)", "(p.name LIKE :query)"));
+            $qb->andWhere($qb->expr()->orX("(u.username LIKE :query)", "(p.name LIKE :query)"));
             $qb->setParameter('query', '%' . trim($criteria->query, '%') . '%');
         }
 
