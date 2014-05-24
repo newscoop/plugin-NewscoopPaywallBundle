@@ -17,6 +17,9 @@ paywall:
                 duration: null
                 price: null
                 currency: null
+                description: null
+                optional: null
+                subscription: null
             select:
                 type:
                     publication: Publikation
@@ -28,6 +31,7 @@ paywall:
                 duration: null
                 price: null
                 currency: null
+                description: null
     step2:
         header: null
         label:
@@ -130,16 +134,33 @@ paywall:
             first: null
             previous: null
             norecords: null
-    table:
-        table_messages:
-            page: null
-            perPageText: null
-            pageText: null
-            recordCountPageBoundTemplate: null
-            recordCountPageUnboundedTemplate: null
-            recordCountTotalTemplate: null
-            recordCountFilteredTemplate: null
-            recordCountText: null
-            recordCountTextTemplate: null
-            recordCountTemplate: null
-            processingText: null
+    error:
+        alreadymember: null
+        fatal: null
+        settingserror: null
+    success:
+        addedtrial: null
+        added: null
+        settingssaved: null
+    msg:
+        membershipemail: null
+        membershipemaillabel: null
+        providersmall: null
+        providername: null
+        datasavedfancy: null
+        buyone: null
+        invalidcustomerid: null
+        alreadyorwrong: null
+        numberaccepted: null
+        surechange: null
+        providevalid: null
+        hadtrial: null
+        successchange: null
+        membershipexpired: null
+        upgrade: null
+        downgrade: null
+        process: null
+        cantchange: null
+        spammsg: null
+        purchasetrialexpired: null
+        purchasetrialon: null

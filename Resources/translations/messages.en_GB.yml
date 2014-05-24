@@ -17,6 +17,9 @@ paywall:
                 duration: 'Duration of subscription in days:'
                 price: 'Price:'
                 currency: 'Currency:'
+                description: null
+                optional: null
+                subscription: null
             select:
                 type:
                     publication: Publication
@@ -28,6 +31,7 @@ paywall:
                 duration: 'Duration field is invalid.'
                 price: 'Price field is invalid.'
                 currency: 'Type currency.'
+                description: null
     step2:
         header: 'Please specify which exact articles should be visible for subscribers only.'
         label:
@@ -130,16 +134,33 @@ paywall:
             first: First
             previous: Previous
             norecords: 'No records found.'
-    table:
-        table_messages:
-            page: Page
-            perPageText: 'Show: '
-            pageText: 'Pages: '
-            recordCountPageBoundTemplate: '{pageLowerBound} to {pageUpperBound} of'
-            recordCountPageUnboundedTemplate: '{recordsShown} of'
-            recordCountTotalTemplate: '{recordsQueryCount} {collectionName}'
-            recordCountFilteredTemplate: ' (filtered from {recordsTotal} total records)'
-            recordCountText: 'Showing '
-            recordCountTextTemplate: '{text} {pageTemplate} {totalTemplate} {filteredTemplate}'
-            recordCountTemplate: '<span id=''dynatable-record-count-{elementId}'' class=''dynatable-record-count''>{textTemplate}</span>'
-            processingText: Processing...
+    error:
+        alreadymember: null
+        fatal: null
+        settingserror: null
+    success:
+        addedtrial: null
+        added: null
+        settingssaved: null
+    msg:
+        membershipemail: null
+        membershipemaillabel: null
+        providersmall: null
+        providername: null
+        datasavedfancy: null
+        buyone: null
+        invalidcustomerid: null
+        alreadyorwrong: null
+        numberaccepted: null
+        surechange: null
+        providevalid: null
+        hadtrial: null
+        successchange: null
+        membershipexpired: null
+        upgrade: null
+        downgrade: null
+        process: null
+        cantchange: null
+        spammsg: null
+        purchasetrialexpired: null
+        purchasetrialon: null
