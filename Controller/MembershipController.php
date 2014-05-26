@@ -270,6 +270,19 @@ class MembershipController extends Controller
         return $this->setDataTemplateVariables($user, array(), array(), array(), "_views/dashboard_membership_fancybox.tpl");
     }
 
+    /**
+     * Set templates variables
+     *
+     * @param Newscoop\Entity\User $user
+     * @param array                $errors       Errors
+     * @param array                $messages     Success messages
+     * @param boolean|null         $selected     Selected membership
+     * @param boolean              $upgrade      If upgrade/downgrade is
+     * @param boolean              $buyOnly      Buy only option
+     * @param boolean              $validCode    Valid code
+     *
+     * @return Response
+     */
     private function setTemplateVariables($user, $errors = array(), $messages = array(), $selected = null, $upgrade = false, $buyOnly = false, $validCode = false)
     {
         $response = new Response();
@@ -305,6 +318,14 @@ class MembershipController extends Controller
 
     /**
      * Set user data template vars
+     *
+     * @param Newscoop\Entity\User $user         User
+     * @param array                $errors       Errors
+     * @param array                $messages     Success messages
+     * @param array                $data         Template vars
+     * @param string|null          $templatePath Template path
+     *
+     * @return Response
      */
     private function setDataTemplateVariables($user, $errors = array(), $messages = array(), $data = array(), $templatePath = null)
     {

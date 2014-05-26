@@ -15,13 +15,13 @@ use Newscoop\PaywallBundle\Services\PaywallService;
  * PaywallManager class manages paywall adapters
  */
 class PaywallManager
-{   
+{
     /** @var Doctrine\ORM\EntityManager */
     private $em;
 
     /** @var Newscoop\PaywallBundle\Services\PaywallService */
     private $subscriptionService;
- 
+
     /**
      * Apply entity manager and injected services
      *

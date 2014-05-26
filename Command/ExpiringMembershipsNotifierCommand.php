@@ -18,8 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
  */
 class ExpiringMembershipsNotifierCommand extends ContainerAwareCommand
 {
-    const SUBSCRIBER_URL = 'https://abo.tageswoche.ch/dmpro/ws/subscriber/NMBA/{subscriber}{?userkey}';
-
     /**
      */
     protected function configure()

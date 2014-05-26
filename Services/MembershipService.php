@@ -19,32 +19,56 @@ use Doctrine\ORM\EntityManager;
  */
 class MembershipService
 {
-    /** @var Doctrine\ORM\EntityManager */
+    /**
+     * @var EntityManager
+     */
     protected $em;
 
+    /**
+     * @var PaywallService
+     */
     protected $subscriptionService;
 
+    /**
+     * @var UserService
+     */
     protected $userService;
 
+    /**
+     * @var EmailService
+     */
     protected $emailService;
 
+    /**
+     * @var Newscoop\Services\TemplatesService
+     */
     protected $templatesService;
 
-    /** @var Newscoop\Services\PlaceholdersService */
+    /**
+     * @var Newscoop\Services\PlaceholdersService
+     */
     protected $placeholdersService;
 
+    /**
+     * @var Zend_Auth
+     */
     protected $zendRouter;
 
+    /**
+     * @var NewscoopBundle\Services\SystemPreferencesService
+     */
     protected $preferencesService;
 
     /**
      * Construct
-     *
-     * @param EntityManager  $em                  Entity Manager
-     * @param PaywallService $subscriptionService Paywall service
-     * @param UserService    $userService         User service
-     * @param Zend_Router    $zendRouter          Zend router
-     *
+     * @param EntityManager                                    $em
+     * @param PaywallService                                   $subscriptionService
+     * @param UserService                                      $userService
+     * @param EmailService                                     $emailService
+     * @param Newscoop\Services\TemplatesService               $templatesService
+     * @param Newscoop\Services\PlaceholdersService            $placeholdersService
+     * @param Zend_Auth                                        $zendRouter
+     * @param NewscoopBundle\Services\SystemPreferencesService $preferencesService
      */
     public function __construct(EntityManager $em, PaywallService $subscriptionService, UserService $userService,
         EmailService $emailService, $templatesService, $placeholdersService, $zendRouter, $preferencesService)
@@ -59,6 +83,19 @@ class MembershipService
         $this->preferencesService = $preferencesService;
     }
 
+    /**
+     * Send membership notification email
+     *
+     * @param  Request $request                 Request object
+     * @param  string  $newSubscriptionName     New membership name
+     * @param  string  $currentSubscriptionName Current membership name
+     * @param  float   $toPay                   To pay
+     * @param  boolean $status                  Number status
+     * @param  boolean $toUser                  Send email to user also
+     * @param  integer $leftTrialDays           Left days of trial
+     *
+     * @return void
+     */
     public function sendEmail(Request $request, $newSubscriptionName, $currentSubscriptionName, $toPay, $status, $toUser = false, $leftTrialDays = null)
     {
         $user = $this->userService->getCurrentUser();
@@ -84,6 +121,13 @@ class MembershipService
         $this->emailService->send($this->placeholdersService->get('subject'), $message, array($this->preferencesService->PaywallMembershipNotifyEmail));
     }
 
+    /**
+     * Send notification with expiring memberships to users
+     *
+     * @param  UserSubscription $userSubscription [description]
+     *
+     * @return void
+     */
     public function expiringSubscriptionNotifyEmail($userSubscription)
     {
         $smarty = $this->templatesService->getSmarty();
@@ -98,7 +142,10 @@ class MembershipService
     /**
      * Calculates diffrence between subscriptions prices when upgrading/downgrading
      *
-     * @return string
+     * @param  UserSubscription $currentSubscription Current subscription
+     * @param  UserSubscription $newSubscription     New subscription
+     *
+     * @return string                      [description]
      */
     public function calculatePriceDiff($currentSubscription, $newSubscription)
     {
@@ -116,6 +163,9 @@ class MembershipService
     /**
      * Calculates days left to trial expiration when trial is still active
      *
+     * @param  DateTime $trialExpireDate Trial expiration date
+     *
+     * @return string
      */
     public function calculateTrialDiff($trialExpireDate)
     {
@@ -128,6 +178,7 @@ class MembershipService
     /**
      * Checks if user submitted more than 3 membership requests in a row on the same day (spam protection)
      *
+     * @return boolean
      */
     public function isSpam()
     {
@@ -160,6 +211,9 @@ class MembershipService
     /**
      * Checks if user details (Address) is filled in
      *
+     * @param  Newscoop\Entity\User $user User object
+     *
+     * @return boolean
      */
     public function isUserAddressFilledIn($user)
     {
