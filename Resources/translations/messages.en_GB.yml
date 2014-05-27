@@ -17,9 +17,9 @@ paywall:
                 duration: 'Duration of subscription in days:'
                 price: 'Price:'
                 currency: 'Currency:'
-                description: null
-                optional: null
-                subscription: null
+                description: 'Description:'
+                optional: optional
+                subscription: Subscription
             select:
                 type:
                     publication: Publication
@@ -31,7 +31,7 @@ paywall:
                 duration: 'Duration field is invalid.'
                 price: 'Price field is invalid.'
                 currency: 'Type currency.'
-                description: null
+                description: 'Type description.'
     step2:
         header: 'Please specify which exact articles should be visible for subscribers only.'
         label:
@@ -135,9 +135,9 @@ paywall:
             previous: Previous
             norecords: 'No records found.'
     error:
-        alreadymember: null
-        fatal: null
-        settingserror: null
+        alreadymember: 'You are already a member of the selected type!'
+        fatal: 'An unexpected error occurred!'
+        settingserror: 'An error occurred. Cannot save these settings.'
     success:
         addedtrial: null
         added: null
