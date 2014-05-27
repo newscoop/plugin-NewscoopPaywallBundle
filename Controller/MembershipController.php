@@ -182,7 +182,6 @@ class MembershipController extends Controller
                 }
 
             } else {
-                //$errors[] = $this->getErrorMessages($form) ?: $translator->trans('paywall.error.fatal');//$this->getErrorMessages($form);
                 $errors[] = $translator->trans('paywall.msg.buyone');
                 $buyOnly = true;
             }
@@ -226,11 +225,14 @@ class MembershipController extends Controller
                 $em->flush();
 
                 if (array_key_exists('fancybox', $data)) {
-                    $messages[] = $translator->trans('paywall.msg.datasavedfancy');
+                    if ($data['fancybox'] != null) {
+                        $messages[] = $translator->trans('paywall.msg.datasavedfancy');
 
-                    return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                        return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                    }
                 }
 
+                //return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl);
                 return $this->redirect($this->generateUrl('newscoop_paywall_membership_getsubscriptions'));
             } else {
                 $data = $form->getData();
@@ -249,7 +251,9 @@ class MembershipController extends Controller
                 $dataTpl['errors'] = $errors;
 
                 if (array_key_exists('fancybox', $data)) {
-                    return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                    if ($data['fancybox'] != null) {
+                        return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                    }
                 }
             }
         }
@@ -270,6 +274,19 @@ class MembershipController extends Controller
         return $this->setDataTemplateVariables($user, array(), array(), array(), "_views/dashboard_membership_fancybox.tpl");
     }
 
+    /**
+     * Set templates variables
+     *
+     * @param Newscoop\Entity\User $user
+     * @param array                $errors       Errors
+     * @param array                $messages     Success messages
+     * @param boolean|null         $selected     Selected membership
+     * @param boolean              $upgrade      If upgrade/downgrade is
+     * @param boolean              $buyOnly      Buy only option
+     * @param boolean              $validCode    Valid code
+     *
+     * @return Response
+     */
     private function setTemplateVariables($user, $errors = array(), $messages = array(), $selected = null, $upgrade = false, $buyOnly = false, $validCode = false)
     {
         $response = new Response();
@@ -305,6 +322,14 @@ class MembershipController extends Controller
 
     /**
      * Set user data template vars
+     *
+     * @param Newscoop\Entity\User $user         User
+     * @param array                $errors       Errors
+     * @param array                $messages     Success messages
+     * @param array                $data         Template vars
+     * @param string|null          $templatePath Template path
+     *
+     * @return Response
      */
     private function setDataTemplateVariables($user, $errors = array(), $messages = array(), $data = array(), $templatePath = null)
     {

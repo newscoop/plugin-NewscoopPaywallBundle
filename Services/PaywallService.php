@@ -507,25 +507,6 @@ class PaywallService extends SubscriptionService
         return null;
     }
 
-    /*public function getSubscriptionLastNotActive($user)
-    {
-        $subscriptionToActivate = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
-            ->createQueryBuilder('s')
-            ->where('s.user = :user')
-            ->andWhere('s.active = :status')
-            ->setParameters(array(
-                'user' => $user,
-                'status' => 'N'
-            ))
-            ->setMaxResults(1)
-            ->orderBy('s.created_at', 'desc')
-            ->getQuery()
-            ->getSingleResult();
-
-
-        return $subscriptionToActivate;
-    }*/
-
     /**
      * Gets all sections diffrent from already added user's sections by given language
      * and publication
