@@ -182,7 +182,6 @@ class MembershipController extends Controller
                 }
 
             } else {
-                //$errors[] = $this->getErrorMessages($form) ?: $translator->trans('paywall.error.fatal');//$this->getErrorMessages($form);
                 $errors[] = $translator->trans('paywall.msg.buyone');
                 $buyOnly = true;
             }
@@ -226,11 +225,14 @@ class MembershipController extends Controller
                 $em->flush();
 
                 if (array_key_exists('fancybox', $data)) {
-                    $messages[] = $translator->trans('paywall.msg.datasavedfancy');
+                    if ($data['fancybox'] != null) {
+                        $messages[] = $translator->trans('paywall.msg.datasavedfancy');
 
-                    return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                        return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                    }
                 }
 
+                //return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl);
                 return $this->redirect($this->generateUrl('newscoop_paywall_membership_getsubscriptions'));
             } else {
                 $data = $form->getData();
@@ -249,7 +251,9 @@ class MembershipController extends Controller
                 $dataTpl['errors'] = $errors;
 
                 if (array_key_exists('fancybox', $data)) {
-                    return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                    if ($data['fancybox'] != null) {
+                        return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl, "_views/dashboard_membership_fancybox.tpl");
+                    }
                 }
             }
         }

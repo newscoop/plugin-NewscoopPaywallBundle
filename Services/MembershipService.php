@@ -124,7 +124,7 @@ class MembershipService
     /**
      * Send notification with expiring memberships to users
      *
-     * @param  UserSubscription $userSubscription [description]
+     * @param  UserSubscription $userSubscription User subscription object
      *
      * @return void
      */
@@ -145,7 +145,7 @@ class MembershipService
      * @param  UserSubscription $currentSubscription Current subscription
      * @param  UserSubscription $newSubscription     New subscription
      *
-     * @return string                      [description]
+     * @return string
      */
     public function calculatePriceDiff($currentSubscription, $newSubscription)
     {
