@@ -114,7 +114,7 @@ class MembershipService
         $smarty->assign('userLink', $request->getUriForPath($this->zendRouter->assemble(array('controller' => 'user', 'action' => 'profile')) . '/' . $user->getUsername()));
         if ($toUser) {
             $message = $this->templatesService->fetchTemplate("email_membership_user.tpl");
-            $this->emailService->send($this->placeholdersService->get('subject'), $message, array($user->getEmail()));
+            $this->emailService->send($this->placeholdersService->get('subject'), $message, array($user->getEmail()), array($this->preferencesService->PaywallMembershipNotifyEmail));
         }
 
         $message = $this->templatesService->fetchTemplate("email_membership_staff.tpl");
