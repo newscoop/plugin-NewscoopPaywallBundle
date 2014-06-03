@@ -1,10 +1,10 @@
-Plugins: null
+Plugins: Plug-iny
 paywall:
-    title: null
+    title: Paywall
     search: null
     toolbar:
         label:
-            configuration: null
+            configuration: Konfigurace
             manage: null
             manageusers: null
             configure: null
