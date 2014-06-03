@@ -1,166 +1,166 @@
 Plugins: Plug-iny
 paywall:
     title: Paywall
-    search: null
+    search: Hledání...
     toolbar:
         label:
             configuration: Konfigurace
-            manage: null
-            manageusers: null
-            configure: null
+            manage: 'Spravovat předplatné'
+            manageusers: 'Řídit uživatelů předplatného'
+            configure: 'Konfigurovat Paywall'
     step1:
-        header: null
+        header: 'Prosím specifikujte název a hodnotu vašeho nového předplatného. Můžete nastavit různé typy předplatného, ale pouze jednotlivě.'
         form:
             label:
-                name: null
-                type: null
-                duration: null
-                price: null
-                currency: null
-                description: null
-                optional: null
-                subscription: null
+                name: 'Název předplatného:'
+                type: 'Typ předplatného:'
+                duration: 'Délka předplatného ve dnech:'
+                price: 'Cena:'
+                currency: 'Měna:'
+                description: 'Popis:'
+                optional: volitelný
+                subscription: Předplatné
             select:
                 type:
-                    publication: null
-                    issue: null
-                    section: null
-                    article: null
+                    publication: Publikace
+                    issue: Vydání
+                    section: Oddíl
+                    article: Článek
             error:
-                name: null
-                duration: null
-                price: null
-                currency: null
-                description: null
+                name: 'Název předplatného nemůže zůstat prázdné.'
+                duration: 'Pole s délkou trvání je neplatné.'
+                price: 'Políčko s cenou je neplatné.'
+                currency: 'Typ měny.'
+                description: 'Napiš popis.'
     step2:
-        header: null
+        header: 'Prosíme specifikujte, které články mají být viditelné pouze pro předplatitele.'
         label:
-            article: null
-            publication: null
-            type: null
-            durationbox: null
-            price: null
-            currency: null
-            active: null
+            article: Články
+            publication: Publikace
+            type: Typ
+            durationbox: 'Doba trvání'
+            price: Cena
+            currency: Měna
+            active: Status
     btn:
-        skip: null
-        save: null
-        edit: null
-        delete: null
-        next: null
-        button1: null
-        button2: null
-        details: null
-        back: null
-        add: null
-        deactivate: null
-        activate: null
+        skip: Přeskočit
+        save: Uložit
+        edit: Upravit
+        delete: Smazat
+        next: Další
+        button1: 'Specifikujte typ a cenu'
+        button2: 'Specifikujte články'
+        details: Podrobnosti
+        back: Zpět
+        add: Přidat
+        deactivate: Vypnout
+        activate: Aktivovat
     flash:
         message:
-            error: null
+            error: 'Něco se nezdařilo.'
             provider:
-                changed: null
+                changed: 'Poskytovatel byl úspěšně změněn.'
             subscription:
-                deleted: null
-                updated: null
-                activated: null
-                deactivated: null
+                deleted: 'Předplatné bylo smazáno.'
+                updated: 'Předplatné bylo aktualizováno.'
+                activated: 'Předplatné bylo aktivováno.'
+                deactivated: 'Předplatné bylo deaktivováno.'
     manage:
         error:
-            currency: null
-            topay: null
+            currency: 'Neplatný formát měny.'
+            topay: 'Políčko s cenou je ve špatném formátu.'
             exists:
-                subscription: null
+                subscription: 'Zvolené předplatné pro tohoto uživatele již existuje.'
             select:
-                empty: null
-                choose: null
+                empty: 'Pole výběru nemůže zůstat prázdné!'
+                choose: 'Prosím vyberte provozovatele!'
         label:
-            name: null
-            duration: null
-            options: null
-            username: null
-            topay: null
-            active: null
-            deactivated: null
-            users: null
-            subscriptions: null
-            paymenttype: null
-            paid: null
-            paidnow: null
-            trial: null
-            yes: null
-            no: null
-            addnew: null
-            subscriptiondetails: null
-            addissue: null
-            addsection: null
-            addarticle: null
-            editallissues: null
-            editallsections: null
-            editallarticles: null
-            language: null
-            individuallanguage: null
-            reglanguage: null
-            days: null
-            startdate: null
-            paiddays: null
-            issues: null
-            sections: null
-            articles: null
-            nocontent: null
-            content: null
-            choose: null
-            adapters: null
-            current: null
-            goback: null
+            name: Název
+            duration: 'Délka ve dnech'
+            options: Možnosti
+            username: 'Uživatelské jméno'
+            topay: Zaplatit
+            active: Aktivovat
+            deactivated: Deaktivovat
+            users: Uživatelé
+            subscriptions: Předplatné
+            paymenttype: 'Způsob platby'
+            paid: Zaplaceno
+            paidnow: Zaplaceno
+            trial: Zkušební
+            yes: Ano
+            no: Ne
+            addnew: 'Přidat předplatné uživateli'
+            subscriptiondetails: 'Detaily předplatného'
+            addissue: 'Přidat vydání'
+            addsection: 'Přidat sekci'
+            addarticle: 'Přidat článek'
+            editallissues: 'Upravit všechna vydání'
+            editallsections: 'Upravit všechny sekce'
+            editallarticles: 'Upravit všechny články'
+            language: Jazyk
+            individuallanguage: 'Jednotlivé jazyky'
+            reglanguage: 'Bez ohledu na jazyk'
+            days: Dny
+            startdate: 'Datum začátku'
+            paiddays: 'Placené dny'
+            issues: Vydání
+            sections: Rubriky
+            articles: Články
+            nocontent: 'Zde ještě nebyl přidán obsah.'
+            content: Obsah
+            choose: Vybrat...
+            adapters: 'Dostupní provozovatelé:'
+            current: 'Aktuální provozovatel:'
+            goback: 'Zpět k předplatným uživatelů'
     menu:
         label:
-            addsubscription: null
-            managesubscriptions: null
-            subscriptions.user: null
-            configure.paywall: null
+            addsubscription: 'Přidat nové předplatné'
+            managesubscriptions: 'Spravovat předplatné'
+            subscriptions.user: 'Spravovat uživatelké předplatné'
+            configure.paywall: 'Konfigurovat Paywall'
     datatable:
         table:
-            info: null
-            noentries: null
-            filtering: null
-            menu: null
+            info: 'Ukázat _START_ až do _END_ z _TOTAL_ záznamů'
+            noentries: 'Nejsou zde žádné příspěvky k zobrazení'
+            filtering: '- filtrováno z _MAX_ záznamů'
+            menu: 'Zobrazit _MENU_ záznamy'
         label:
-            search: null
-            filter: null
-            processing: null
-            last: null
-            next: null
-            first: null
-            previous: null
-            norecords: null
+            search: Hledat
+            filter: Filtrovat
+            processing: 'Zpracovává se...'
+            last: Poslední
+            next: Další
+            first: První
+            previous: Předchozí
+            norecords: 'Nebyly nalezeny žádné záznamy.'
     error:
-        alreadymember: null
-        fatal: null
-        settingserror: null
+        alreadymember: 'Již jste členem vybraného typu!'
+        fatal: 'Vyskytla se neočekávaná chyba!'
+        settingserror: 'Objevila se chyba. Nelze uložit nastavení.'
     success:
-        addedtrial: null
-        added: null
-        settingssaved: null
+        addedtrial: 'Máte %trial% dní zkušební verzi zdarma.'
+        added: 'Členství úspěšně uděleno!'
+        settingssaved: 'Nastavení bylo úspěšně uloženo.'
     msg:
-        membershipemail: null
-        membershipemaillabel: null
-        providersmall: null
-        providername: null
-        datasavedfancy: null
-        buyone: null
-        invalidcustomerid: null
-        alreadyorwrong: null
-        numberaccepted: null
-        surechange: null
-        providevalid: null
-        hadtrial: null
-        successchange: null
-        membershipexpired: null
-        upgrade: null
-        downgrade: null
-        process: null
-        cantchange: null
-        spammsg: null
-        purchasetrialexpired: null
-        purchasetrialon: null
+        membershipemail: 'Poskytněte e-mail pro potvrzení o členství'
+        membershipemaillabel: 'Oznamovací e-mail ohledně členství'
+        providersmall: 'Vyberte Paywall dodavatele'
+        providername: Dodavatel
+        datasavedfancy: 'Osobní informace uloženy! Zavřete okno.'
+        buyone: 'Musíte zakoupit jedno z členství!'
+        invalidcustomerid: 'Neplatné zákaznické číslo!'
+        alreadyorwrong: 'Již jste členem vybraného typu nebo vložené zákaznické číslo je neplatné!'
+        numberaccepted: 'Číslo přijato. Děkujeme za přihlášení!'
+        surechange: 'Jste si jisti, že chcete změnit členství jak vybráno?'
+        providevalid: 'Vyplňte platné zákaznické číslo pro aktivaci Vašeho členství!'
+        hadtrial: 'Zkušební verzi jste již využil. Není možné provést změnu členství!'
+        successchange: 'Úspěšně změněn typ členství!'
+        membershipexpired: 'Členství vypršelo! Předplaťte si nové členství nebo uveďte platné zákaznické číslo pro aktivaci!'
+        upgrade: 'Rozšíření členství'
+        downgrade: 'Snížení členství'
+        process: 'Váš nový požadavek na členství se zpracovává. Podrobnosti byly zaslány na váš email.'
+        cantchange: 'Není možné změnit členství!'
+        spammsg: 'Podali jste více než 3 žádosti o členství za sebou. Žádné další žádosti dnes již přijaty nebudou.'
+        purchasetrialexpired: 'Nákup členství po vypršení zkušební verze'
+        purchasetrialon: 'Nákup členství v průběhu zkušební verze'
