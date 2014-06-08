@@ -1,13 +1,13 @@
-Plugins: null
+Plugins: 'وحدات قابسة'
 paywall:
-    title: null
+    title: 'صفحة الدفع.'
     search: null
     toolbar:
         label:
             configuration: null
             manage: null
             manageusers: null
-            configure: null
+            configure: 'إعداد صفحة الدفع.'
     step1:
         header: null
         form:
@@ -43,7 +43,7 @@ paywall:
             currency: null
             active: null
     btn:
-        skip: null
+        skip: تخطي.
         save: null
         edit: null
         delete: null
@@ -161,6 +161,6 @@ paywall:
         downgrade: null
         process: null
         cantchange: null
-        spammsg: null
-        purchasetrialexpired: null
-        purchasetrialon: null
+        spammsg: 'لقد سلّمت أكثر من ٣ طلبات عضوية في صف واحد. لن تقبل طلبات أخرى اليوم.'
+        purchasetrialexpired: 'شراء عضوية عند إنتهاء فترة التجربة.'
+        purchasetrialon: 'شراء عضوية أثناء فترة التجربة.'
