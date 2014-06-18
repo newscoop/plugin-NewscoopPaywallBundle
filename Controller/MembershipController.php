@@ -232,7 +232,6 @@ class MembershipController extends Controller
                     }
                 }
 
-                //return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl);
                 return $this->redirect($this->generateUrl('newscoop_paywall_membership_getsubscriptions'));
             } else {
                 $data = $form->getData();

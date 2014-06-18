@@ -37,7 +37,6 @@ class UsersSubscriptionsController extends Controller
      */
     public function loadSubscriptionsAction(Request $request)
     {
-        $cacheService = $this->get('newscoop.cache');
         $subscriptionService = $this->get('subscription.service');
         $criteria = $this->processRequest($request);
         $userSubscriptions = $this->get('subscription.service')->getListByCriteria($criteria);
