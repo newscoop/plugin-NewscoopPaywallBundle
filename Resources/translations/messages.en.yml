@@ -9,7 +9,7 @@ paywall:
         manageusers: "Manage User Subscriptions"
         configure: "Configure Paywall"
     step1:
-      header: "Please specify the name and value for your new subscription. You can set up various diffrent types of subscriptions, but just one after the other."
+      header: "Please specify the name and value for your new subscription. You can set up various different types of subscriptions, but just one after the other."
       form:
         label:
           name: "Name of subscription:"
@@ -70,7 +70,7 @@ paywall:
         currency: "Currency is in invalid format."
         topay: "To pay field value is in wrong format."
         exists:
-          subscription: "Choosen subscription already exists for this user."
+          subscription: "The subscription chosen already exists for this user."
         select:
           empty: "Select box can not be empty!"
           choose: "Please choose provider!"
@@ -136,8 +136,8 @@ paywall:
           norecords: "No records found."
     error:
       alreadymember: "You are already a member of selected type!"
-      fatal: "Unexpected error occured!"
-      settingserror: "Error occured. Can not save settings."
+      fatal: "An unexpected error occurred!"
+      settingserror: "An error occurred. Newscoop cannot save these settings."
     success:
       addedtrial: "You have %trial% day(s) of free trial."
       added: "Membership successfully granted!"
