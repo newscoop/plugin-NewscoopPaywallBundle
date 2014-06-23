@@ -1,0 +1,166 @@
+Plugins: Plugins
+paywall:
+    title: Betalingsmur
+    search: Søg...
+    toolbar:
+        label:
+            configuration: Indstillinger
+            manage: 'Administrer abonnementer'
+            manageusers: 'Administrer bruger abonnementer'
+            configure: 'Indstil betalingsmur'
+    step1:
+        header: null
+        form:
+            label:
+                name: 'Navn på abonnement:'
+                type: 'Abonnements type:'
+                duration: 'Abonnements periode i dage:'
+                price: 'Pris:'
+                currency: 'Valuta:'
+                description: 'Beskrivelse:'
+                optional: valgfri
+                subscription: Abonnement
+            select:
+                type:
+                    publication: Publikation
+                    issue: Udgivelse
+                    section: Sektion
+                    article: Artikel
+            error:
+                name: 'Abonnementets navn skal udfyldes.'
+                duration: 'Ugyldig periode.'
+                price: 'Ugyldig pris.'
+                currency: 'Indtast valuta.'
+                description: 'Type beskrivelse.'
+    step2:
+        header: null
+        label:
+            article: Artikler
+            publication: Publikationer
+            type: Type
+            durationbox: Periode
+            price: Pris
+            currency: Valuta
+            active: Status
+    btn:
+        skip: 'Spring over'
+        save: Gem
+        edit: Rediger
+        delete: Slet
+        next: Næste
+        button1: 'Angiv type og pris'
+        button2: 'Angiv artikler'
+        details: Detaljer
+        back: Tilbage
+        add: Tilføj
+        deactivate: Deaktiver
+        activate: Aktiver
+    flash:
+        message:
+            error: 'Der gik noget galt.'
+            provider:
+                changed: 'Udbyder blev ændret.'
+            subscription:
+                deleted: 'Abonnementet blev slettet.'
+                updated: 'Abonnementet blev opdateret.'
+                activated: 'Abonnementet blev aktiveret.'
+                deactivated: 'Abonnementet blev deaktiveret.'
+    manage:
+        error:
+            currency: 'Valutaformatet er ugyldigt.'
+            topay: 'At betale værdien er ugyldig.'
+            exists:
+                subscription: 'Brugeren har allerede det valgte abonnement.'
+            select:
+                empty: null
+                choose: 'Vælg udbyder!'
+        label:
+            name: Navn
+            duration: 'Periode i dage'
+            options: Indstillinger
+            username: Brugernavn
+            topay: 'At betale'
+            active: Aktive
+            deactivated: Deaktiveret
+            users: Brugere
+            subscriptions: Abonnementer
+            paymenttype: 'Betalings type'
+            paid: Betalt
+            paidnow: 'Betal nu'
+            trial: Prøve
+            yes: Ja
+            no: Nej
+            addnew: 'Tilføj bruger abonnement'
+            subscriptiondetails: 'Abonnements detaljer'
+            addissue: 'Tilføj udgivelse'
+            addsection: 'Tilføj sektion'
+            addarticle: 'Tilføj artikel'
+            editallissues: 'Rediger alle udgivelser'
+            editallsections: 'Rediger alle sektioner'
+            editallarticles: 'Rediger alle artikler'
+            language: Sprog
+            individuallanguage: 'Individuelle sprog'
+            reglanguage: 'Uanset sproget'
+            days: Dage
+            startdate: 'Start dato'
+            paiddays: 'Betalte dage'
+            issues: Udgivelser
+            sections: Sektioner
+            articles: Artikler
+            nocontent: 'Der er ikke tilføjet noget indhold.'
+            content: Indhold
+            choose: Vælg...
+            adapters: 'Tilgængelige udbydere:'
+            current: 'Nuværende udbyder:'
+            goback: 'Tilbage til brugerens abonnementer'
+    menu:
+        label:
+            addsubscription: 'Tilføj nyt abonnement'
+            managesubscriptions: 'Administrer abonnementer'
+            subscriptions.user: 'Administrer bruger abonnementer'
+            configure.paywall: 'Indstil betalingsmur'
+    datatable:
+        table:
+            info: 'Viser _START_ til _END_ af _TOTAL_'
+            noentries: 'Intet at vise'
+            filtering: '- filtreret fra _MAX_ opslag'
+            menu: 'Vis _MENU_ opslag'
+        label:
+            search: Søg
+            filter: Filtrér
+            processing: Arbejder...
+            last: Sidste
+            next: Næste
+            first: Første
+            previous: Forrige
+            norecords: 'Ingen opslag.'
+    error:
+        alreadymember: 'Du er allerede medlem af den valgte type!'
+        fatal: 'Uventet fejl!'
+        settingserror: 'Der skete en fejl. Indstillingerne kan ikke gemmes.'
+    success:
+        addedtrial: 'Du har %trial% dag(e) tilbage af din gratis prøvetid.'
+        added: null
+        settingssaved: 'Indstillingerne blev gemt.'
+    msg:
+        membershipemail: null
+        membershipemaillabel: null
+        providersmall: 'Vælg udbyder til betalingsmur'
+        providername: Udbyder
+        datasavedfancy: null
+        buyone: null
+        invalidcustomerid: 'Ugyldigt kundenummer!'
+        alreadyorwrong: null
+        numberaccepted: null
+        surechange: null
+        providevalid: null
+        hadtrial: null
+        successchange: null
+        membershipexpired: null
+        upgrade: 'Opgrader medlemskab'
+        downgrade: 'Nedgrader medlemskab'
+        process: null
+        cantchange: 'Medlemskabet kan ikke ændres!'
+        spammsg: null
+        purchasetrialexpired: null
+        purchasetrialon: null

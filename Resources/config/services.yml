@@ -5,7 +5,7 @@ parameters:
 services:
     newscoop.paywall.adapter.manager:
       class: Newscoop\PaywallBundle\Services\PaywallManager
-      arguments: ["@em", "@subscription.service"]
+      arguments: ["@em", "@subscription.service", "@dispatcher"]
 
     newscoop.paywall.adapter:
       class: Newscoop\PaywallBundle\Adapter\PaywallAdapterInterface
@@ -16,6 +16,7 @@ services:
         class: Newscoop\PaywallBundle\EventListener\LifecycleSubscriber
         arguments:
             - @em
+            - @dispatcher
         tags:
             - { name: kernel.event_subscriber}
 
@@ -59,3 +60,9 @@ services:
     newscoop_paywall.membership:
         class:      Newscoop\PaywallBundle\Services\MembershipService
         arguments:  ["@em", "@subscription.service", "@user", "@email", "@newscoop.templates.service", "@newscoop.placeholders.service", "@zend_router", "@system_preferences_service"]
+
+    newscoop_paywall.adapters.listener:
+        class: Newscoop\PaywallBundle\EventListener\AdaptersListener
+        arguments: ["@em"]
+        tags:
+          - { name: kernel.event_listener, event: newscoop_paywall.adapters.register, method: registerExternalAdapters }

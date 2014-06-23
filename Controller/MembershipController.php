@@ -21,6 +21,7 @@ class MembershipController extends Controller
      */
     public function getSubscriptionsAction(Request $request)
     {
+        try {
         $userService = $this->container->get('user');
         $translator = $this->container->get('translator');
         $em = $this->container->get('em');
@@ -190,7 +191,7 @@ class MembershipController extends Controller
         if (!$membershipService->isUserAddressFilledIn($user)) {
             return $this->setDataTemplateVariables($user);
         }
-
+} catch (\Exception $e) {ladybug_dump($e->getMessage());die;}
         return $this->setTemplateVariables($user, $errors, $messages, $selected, $upgrade, $buyOnly, $adapterResult['validCode']);
     }
 
@@ -232,6 +233,7 @@ class MembershipController extends Controller
                     }
                 }
 
+                //return $this->setDataTemplateVariables($user, $errors, $messages, $dataTpl);
                 return $this->redirect($this->generateUrl('newscoop_paywall_membership_getsubscriptions'));
             } else {
                 $data = $form->getData();
