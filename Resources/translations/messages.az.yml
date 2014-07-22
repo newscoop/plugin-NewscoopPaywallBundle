@@ -1,4 +1,4 @@
-Plugins: null
+Plugins: Plaqinlər
 paywall:
     title: null
     search: null
@@ -17,12 +17,12 @@ paywall:
                 duration: null
                 price: null
                 currency: null
-                description: null
+                description: 'İzah:'
                 optional: null
                 subscription: null
             select:
                 type:
-                    publication: null
+                    publication: Nəşr
                     issue: null
                     section: null
                     article: null
@@ -35,24 +35,24 @@ paywall:
     step2:
         header: null
         label:
-            article: null
+            article: Məqalələr
             publication: null
             type: null
             durationbox: null
             price: null
-            currency: null
-            active: null
+            currency: Valyuta
+            active: Status
     btn:
         skip: null
-        save: null
-        edit: null
+        save: Saxla
+        edit: 'Redaktə et'
         delete: null
         next: null
         button1: null
         button2: null
         details: null
-        back: null
-        add: null
+        back: Geri
+        add: 'Əlavə et'
         deactivate: null
         activate: null
     flash:
@@ -78,37 +78,37 @@ paywall:
             name: null
             duration: null
             options: null
-            username: null
+            username: 'İstifadəçi adı'
             topay: null
-            active: null
+            active: Aktiv
             deactivated: null
             users: null
             subscriptions: null
             paymenttype: null
-            paid: null
+            paid: Ödənmiş
             paidnow: null
             trial: null
-            yes: null
-            no: null
+            yes: Bəli
+            no: Xeyr
             addnew: null
             subscriptiondetails: null
             addissue: null
-            addsection: null
+            addsection: 'Bölmə əlavə et'
             addarticle: null
             editallissues: null
-            editallsections: null
+            editallsections: 'Bütün bölmələri dəyiş'
             editallarticles: null
-            language: null
-            individuallanguage: null
-            reglanguage: null
+            language: Dil
+            individuallanguage: 'Şəxsi dillər'
+            reglanguage: 'Dildən asılı olmayaraq'
             days: null
             startdate: null
-            paiddays: null
-            issues: null
-            sections: null
-            articles: null
+            paiddays: 'Ödənmiş günlər'
+            issues: Say
+            sections: Bölmə
+            articles: Məqalələr
             nocontent: null
-            content: null
+            content: Tərkib
             choose: null
             adapters: null
             current: null
@@ -121,19 +121,19 @@ paywall:
             configure.paywall: null
     datatable:
         table:
-            info: null
-            noentries: null
-            filtering: null
-            menu: null
+            info: BÜTÜN_girişlərin_BAŞDAN_SONA_kimi_nümayişi
+            noentries: 'Nümayiş üçün firiş yoxdur'
+            filtering: '- _MAX_ yazılarından filterləmə'
+            menu: '_MENYU_ yazılarını göstər'
         label:
             search: null
             filter: null
-            processing: null
-            last: null
+            processing: İcradadır...
+            last: Son
             next: null
-            first: null
+            first: İlk
             previous: null
-            norecords: null
+            norecords: 'Yazı tapılmadı.'
     error:
         alreadymember: null
         fatal: null
