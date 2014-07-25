@@ -1,12 +1,12 @@
 Plugins: 'وحدات قابسة'
 paywall:
     title: 'صفحة الدفع.'
-    search: null
+    search: البحث...
     toolbar:
         label:
-            configuration: null
-            manage: null
-            manageusers: null
+            configuration: الإعدادات.
+            manage: 'إدارة الإشتراكات'
+            manageusers: 'إدارة إشتراكات المستخدمين'
             configure: 'إعداد صفحة الدفع.'
     step1:
         header: null
