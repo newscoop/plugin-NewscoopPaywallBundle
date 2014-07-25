@@ -90,77 +90,77 @@ paywall:
             trial: تجريبي
             yes: نعم
             no: لا
-            addnew: null
-            subscriptiondetails: null
-            addissue: null
-            addsection: null
-            addarticle: null
-            editallissues: null
-            editallsections: null
-            editallarticles: null
-            language: null
-            individuallanguage: null
-            reglanguage: null
-            days: null
-            startdate: null
-            paiddays: null
-            issues: null
-            sections: null
-            articles: null
-            nocontent: null
-            content: null
-            choose: null
-            adapters: null
-            current: null
-            goback: null
+            addnew: 'أضف إشتراك مستخدم'
+            subscriptiondetails: 'تفاصيل الإشتراك'
+            addissue: 'أضف إصدار.'
+            addsection: 'أضف قسم'
+            addarticle: 'أضف مقال'
+            editallissues: 'قم بتحرير جميع الإصدارات.'
+            editallsections: 'حرر جميع الأقسام'
+            editallarticles: 'تحرير جميع المقالات'
+            language: اللغة
+            individuallanguage: 'لغات فردية'
+            reglanguage: 'بغض النظر عن اللغة.'
+            days: الأيام
+            startdate: 'تاريخ البدء'
+            paiddays: 'تواريخ الدفع'
+            issues: الإصدارات
+            sections: الأقسام
+            articles: المقالات
+            nocontent: 'لم يتم إضافه أي محتوى بعد.'
+            content: المحتوى
+            choose: إختر...
+            adapters: 'مزودون متوفرون:'
+            current: 'المزود الحالي:'
+            goback: 'الرجوع إلى إشتراكات المستخدمين'
     menu:
         label:
-            addsubscription: null
-            managesubscriptions: null
-            subscriptions.user: null
-            configure.paywall: null
+            addsubscription: 'إضافة إشتراك جديد.'
+            managesubscriptions: 'إدارة الإشتراكات'
+            subscriptions.user: 'إدارة إشتراكات المستخدمين'
+            configure.paywall: 'قم بإعداد صفحة الدفع.'
     datatable:
         table:
-            info: null
-            noentries: null
-            filtering: null
-            menu: null
+            info: 'عرض _START_ ل_END_ من _TOTAL_ إدخالات'
+            noentries: 'لا توجد إدخالات للظهور.'
+            filtering: '- تصفية من السجلات _MAX_'
+            menu: 'عرض سجلات من _MENU_'
         label:
-            search: null
-            filter: null
-            processing: null
-            last: null
-            next: null
-            first: null
-            previous: null
-            norecords: null
+            search: بحث
+            filter: التصفية
+            processing: 'في عملية المعالجة...'
+            last: الأخير
+            next: التالي
+            first: الأول
+            previous: السابق
+            norecords: 'لم يتم العثور على سجلات.'
     error:
-        alreadymember: null
-        fatal: null
-        settingserror: null
+        alreadymember: 'أنت بالفعل عضو لنوعٍ مختار!'
+        fatal: 'حدث خطأ غير متوقع!'
+        settingserror: 'حدث خطأ. لا يمكن حفظ الإعدادات.'
     success:
-        addedtrial: null
-        added: null
-        settingssaved: null
+        addedtrial: 'لك %trial% أيام من التجربة المجانية.'
+        added: 'تم منح العضوية بنجاح!'
+        settingssaved: 'تم حفظ الإعدادات بنجاح.'
     msg:
-        membershipemail: null
-        membershipemaillabel: null
-        providersmall: null
-        providername: null
-        datasavedfancy: null
-        buyone: null
-        invalidcustomerid: null
-        alreadyorwrong: null
-        numberaccepted: null
-        surechange: null
+        membershipemail: 'قم بكتابة الإيميل حتى تصلك إشعارات العضوية'
+        membershipemaillabel: 'إيميل إشعارات العضوية.'
+        providersmall: 'إختر مزود صفحة الدفع.'
+        providername: المزوّد
+        datasavedfancy: 'تم حفظ المعلومات الشخصية! أغلق النافذة.'
+        buyone: 'يجب أن تقوم بشراء عضوية!'
+        invalidcustomerid: 'رقم العميل غير صالح!'
+        alreadyorwrong: 'أنت بالفعل عضو لنوع مختار من قبل أو رقم مستخدم المزود غير صالح!'
+        numberaccepted: 'تم قبول الرقم. شكراً على الإشتراك!'
+        surechange: 'هل أنت متأكد أنك تريد أن تغير العضوية لعضوية مختارة؟'
         providevalid: null
         hadtrial: null
         successchange: null
         membershipexpired: null
-        upgrade: null
-        downgrade: null
-        process: null
-        cantchange: null
+        upgrade: 'ترقية العضوية'
+        downgrade: 'تخفيض تصنيف العضوية'
+        process: 'طلب العضوية الجديد في مرحلة المعالجة. تم إرسال تفاصيل أكثر إلى صندوق بريدك الوارد.'
+        cantchange: 'لا يمكن تغيير الغضوية!'
         spammsg: 'لقد سلّمت أكثر من ٣ طلبات عضوية في صف واحد. لن تقبل طلبات أخرى اليوم.'
         purchasetrialexpired: 'شراء عضوية عند إنتهاء فترة التجربة.'
         purchasetrialon: 'شراء عضوية أثناء فترة التجربة.'
