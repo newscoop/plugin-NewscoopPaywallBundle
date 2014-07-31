@@ -34,7 +34,7 @@ class AdaptersEvent extends SymfonyGenericEvent
     }
 
     /**
-     * Get all list objects registrations data
+     * Get all adapters
      *
      * @return array
      */

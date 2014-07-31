@@ -22,9 +22,10 @@ interface PaywallAdapterInterface
 
     /**
      * Process callback request
+     * @param array $params Parameters
      * @return Response 
      */
-    public function proccess();
+    public function proccess($params = array());
 
     /**
      * Set request to process

@@ -13,10 +13,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Newscoop\PaywallBundle\Form\SubscriptionConfType;
 use Newscoop\PaywallBundle\Entity\Subscriptions;
 use Newscoop\PaywallBundle\Entity\SubscriptionSpecification;
-use Doctrine\ORM\Query\Expr\Join;
 
 class AdminController extends Controller
 {

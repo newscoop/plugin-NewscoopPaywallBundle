@@ -12,19 +12,3 @@ paywall:
           blank: "Currency field can not be empty."
         name:
           blank: "Name field can not be empty."
-  membership:
-    error:
-      firstnamelength: "First name field cannot be longer than {{ limit }} characters length"
-      lastnamelength: "Last name field cannot be longer than {{ limit }} characters length"
-      streetlength: "Street field field cannot be longer than {{ limit }} characters length"
-      postallength: "Postal code field cannot be longer than {{ limit }} characters length"
-      citylength: "City field field cannot be longer than {{ limit }} characters length"
-      phonelength: "State field cannot be longer than {{ limit }} characters length"
-      firstnamelength: "First name field cannot be longer than {{ limit }} characters length"
-      empty: "field cannot be empty"
-      firstname: "First name field cannot be empty"
-      lastname: "Last name field cannot be empty"
-      street: "Street field cannot be empty"
-      postal: "Postal code field cannot be empty"
-      city: "City field cannot be empty"
-      state: "State field cannot be empty"
