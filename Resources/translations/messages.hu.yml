@@ -17,7 +17,7 @@ paywall:
                 duration: null
                 price: null
                 currency: null
-                description: null
+                description: 'Leírás:'
                 optional: null
                 subscription: null
             select:
