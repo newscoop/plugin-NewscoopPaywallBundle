@@ -5,7 +5,7 @@ paywall:
     toolbar:
         label:
             configuration: null
-            manage: null
+            manage: 'Előfizetések kezelése'
             manageusers: null
             configure: null
     step1:
