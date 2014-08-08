@@ -9,7 +9,7 @@ paywall:
             manageusers: 'Administrer bruger abonnementer'
             configure: 'Indstil betalingsmur'
     step1:
-        header: null
+        header: 'Angiv navn og værdi for dit abonnement. Du kan oprette flere abonnementer, men kun et ad gangen.'
         form:
             label:
                 name: 'Navn på abonnement:'
@@ -72,7 +72,7 @@ paywall:
             exists:
                 subscription: 'Brugeren har allerede det valgte abonnement.'
             select:
-                empty: null
+                empty: 'Feltet kan ikke være tomt!'
                 choose: 'Vælg udbyder!'
         label:
             name: Navn
@@ -147,7 +147,7 @@ paywall:
         membershipemaillabel: null
         providersmall: 'Vælg udbyder til betalingsmur'
         providername: Udbyder
-        datasavedfancy: null
+        datasavedfancy: 'Personlige informationer blev gemt! Luk vinduet.'
         buyone: null
         invalidcustomerid: 'Ugyldigt kundenummer!'
         alreadyorwrong: null
