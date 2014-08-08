@@ -33,7 +33,7 @@ paywall:
                 currency: 'Indtast valuta.'
                 description: 'Type beskrivelse.'
     step2:
-        header: null
+        header: 'Angiv hvilke artikler der kun skal være synlige for abonnenter.'
         label:
             article: Artikler
             publication: Publikationer
@@ -152,7 +152,7 @@ paywall:
         invalidcustomerid: 'Ugyldigt kundenummer!'
         alreadyorwrong: null
         numberaccepted: null
-        surechange: null
+        surechange: 'Vil du ændre medlemskab til det valgte?'
         providevalid: null
         hadtrial: null
         successchange: null
