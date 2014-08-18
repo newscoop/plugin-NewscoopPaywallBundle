@@ -140,23 +140,23 @@ paywall:
         settingserror: 'Der skete en fejl. Indstillingerne kan ikke gemmes.'
     success:
         addedtrial: 'Du har %trial% dag(e) tilbage af din gratis prøvetid.'
-        added: null
+        added: 'Medlemskab tildelt! '
         settingssaved: 'Indstillingerne blev gemt.'
     msg:
-        membershipemail: null
-        membershipemaillabel: null
+        membershipemail: 'Angiv email til medlemsbeskeder'
+        membershipemaillabel: 'Email til medlemsbeskeder'
         providersmall: 'Vælg udbyder til betalingsmur'
         providername: Udbyder
         datasavedfancy: 'Personlige informationer blev gemt! Luk vinduet.'
-        buyone: null
+        buyone: 'Du skal købe et af abonnementerne!'
         invalidcustomerid: 'Ugyldigt kundenummer!'
         alreadyorwrong: null
-        numberaccepted: null
+        numberaccepted: 'Nummer accepteret. Tak for dit medlemskab!'
         surechange: 'Vil du ændre medlemskab til det valgte?'
-        providevalid: null
-        hadtrial: null
-        successchange: null
-        membershipexpired: null
+        providevalid: 'Angiv gyldigt kundenummer for at aktivere dit medlemskab!'
+        hadtrial: 'Du har/har haft et prøvemedlemskab. Du kan ikke skifte til et andet abonnement!'
+        successchange: 'Medlemskab blev skiftet!'
+        membershipexpired: 'Medlemskab udløbet! Køb et nyt medlemskab eller angiv et gyldigt kundenummer for at aktivere det!'
         upgrade: 'Opgrader medlemskab'
         downgrade: 'Nedgrader medlemskab'
         process: null
