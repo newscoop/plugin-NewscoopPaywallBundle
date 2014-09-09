@@ -139,6 +139,12 @@ class UserSubscription
      */
     protected $is_active;
 
+    /**
+     * @ORM\Column(type="datetime", name="updated_at", nullable=true)
+     * @var DateTime
+     */
+    protected $updated;
+
     public function __construct()
     {
         $this->sections = new ArrayCollection();
@@ -679,6 +685,30 @@ class UserSubscription
     public function setCustomOther($customOther)
     {
         $this->customOther = $customOther;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of updated.
+     *
+     * @return DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Sets the value of updated.
+     *
+     * @param DateTime $updated the updated
+     *
+     * @return self
+     */
+    public function setUpdated(\DateTime $updated)
+    {
+        $this->updated = $updated;
 
         return $this;
     }

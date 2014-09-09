@@ -1,166 +1,166 @@
 Plugins: 'وحدات قابسة'
 paywall:
     title: 'صفحة الدفع.'
-    search: البحث...
+    search: null
     toolbar:
         label:
-            configuration: الإعدادات.
-            manage: 'إدارة الإشتراكات'
-            manageusers: 'إدارة إشتراكات المستخدمين'
+            configuration: null
+            manage: null
+            manageusers: null
             configure: 'إعداد صفحة الدفع.'
     step1:
-        header: 'من فضلك عيّن اسم وقيمه لإشتراكك الجديد. يمكن تعيين أنواع مختلفة متعددة من إشتراكات، واحداً تلو الآخر.'
+        header: null
         form:
             label:
-                name: 'اسم الإشتراك:'
-                type: 'نوع الإشتراك:'
-                duration: 'مدة الإشتراك بالأيام:'
-                price: 'السعر:'
-                currency: 'العملة:'
-                description: 'الوصف:'
-                optional: إختياري
-                subscription: الإشتراك
+                name: null
+                type: null
+                duration: null
+                price: null
+                currency: null
+                description: null
+                optional: null
+                subscription: null
             select:
                 type:
-                    publication: المنشور
-                    issue: الإصدار
-                    section: القسم
-                    article: المقال
+                    publication: null
+                    issue: null
+                    section: null
+                    article: null
             error:
-                name: 'اسم الإشتراك لا يمكن أن يكون فارغا.'
-                duration: 'حقل المدة غير صالح.'
-                price: 'حقل السعر غير صالح.'
-                currency: 'نوع العملة.'
-                description: 'أكتب الوصف.'
+                name: null
+                duration: null
+                price: null
+                currency: null
+                description: null
     step2:
-        header: 'من فضلك قم بتعيّن المقالات التي يجب أن تكون مرئية للمشتركين فقط.'
+        header: null
         label:
-            article: المقالات
-            publication: المنشورات
-            type: النوع
-            durationbox: المدة
-            price: السعر
-            currency: العملة
-            active: الحالة
+            article: null
+            publication: null
+            type: null
+            durationbox: null
+            price: null
+            currency: null
+            active: null
     btn:
         skip: تخطي.
-        save: حفظ
-        edit: تعديل
-        delete: حذف
-        next: التالي
-        button1: 'عيّن النوع والسعر'
-        button2: 'عيّن المقالات'
-        details: التفاصيل
-        back: الرجوع.
-        add: إضافة
-        deactivate: تعطيل
-        activate: تمكين
+        save: null
+        edit: null
+        delete: null
+        next: null
+        button1: null
+        button2: null
+        details: null
+        back: null
+        add: null
+        deactivate: null
+        activate: null
     flash:
         message:
-            error: 'حدث خطأ ما.'
+            error: null
             provider:
-                changed: 'تم تغيير المزود بجماح.'
+                changed: null
             subscription:
-                deleted: 'تم حذف الإشتراك.'
-                updated: 'تم تحديث الإشتراك.'
-                activated: 'تم تمكين الإشتراك'
-                deactivated: 'تم تعطيل الإشتراك.'
+                deleted: null
+                updated: null
+                activated: null
+                deactivated: null
     manage:
         error:
-            currency: 'العملة في تنسيق غير صالح.'
-            topay: 'قيمة الحقل في تنسيق خاطئ للدفع.'
+            currency: null
+            topay: null
             exists:
-                subscription: 'الإشتراك المختار موجود سابقاّ.'
+                subscription: null
             select:
-                empty: 'مربع الإختيار لا يمكن أن يكون فارغاّ!'
-                choose: 'من فضلك، إختر المزود!'
+                empty: null
+                choose: null
         label:
-            name: اسم
-            duration: 'المدة بالأيام.'
-            options: إختيارات
-            username: 'اسم المستخدم'
-            topay: للدفع
-            active: 'قيد الاستخدام'
-            deactivated: معطل
-            users: المستخدمون
-            subscriptions: الإشتراكات
-            paymenttype: 'نوع الدفع'
-            paid: 'تم الدفع'
-            paidnow: 'مدفوع الآن'
-            trial: تجريبي
-            yes: نعم
-            no: لا
-            addnew: 'أضف إشتراك مستخدم'
-            subscriptiondetails: 'تفاصيل الإشتراك'
-            addissue: 'أضف إصدار.'
-            addsection: 'أضف قسم'
-            addarticle: 'أضف مقال'
-            editallissues: 'قم بتحرير جميع الإصدارات.'
-            editallsections: 'حرر جميع الأقسام'
-            editallarticles: 'تحرير جميع المقالات'
-            language: اللغة
-            individuallanguage: 'لغات فردية'
-            reglanguage: 'بغض النظر عن اللغة.'
-            days: الأيام
-            startdate: 'تاريخ البدء'
-            paiddays: 'تواريخ الدفع'
-            issues: الإصدارات
-            sections: الأقسام
-            articles: المقالات
-            nocontent: 'لم يتم إضافه أي محتوى بعد.'
-            content: المحتوى
-            choose: إختر...
-            adapters: 'مزودون متوفرون:'
-            current: 'المزود الحالي:'
-            goback: 'الرجوع إلى إشتراكات المستخدمين'
+            name: null
+            duration: null
+            options: null
+            username: null
+            topay: null
+            active: null
+            deactivated: null
+            users: null
+            subscriptions: null
+            paymenttype: null
+            paid: null
+            paidnow: null
+            trial: null
+            yes: null
+            no: null
+            addnew: null
+            subscriptiondetails: null
+            addissue: null
+            addsection: null
+            addarticle: null
+            editallissues: null
+            editallsections: null
+            editallarticles: null
+            language: null
+            individuallanguage: null
+            reglanguage: null
+            days: null
+            startdate: null
+            paiddays: null
+            issues: null
+            sections: null
+            articles: null
+            nocontent: null
+            content: null
+            choose: null
+            adapters: null
+            current: null
+            goback: null
     menu:
         label:
-            addsubscription: 'إضافة إشتراك جديد.'
-            managesubscriptions: 'إدارة الإشتراكات'
-            subscriptions.user: 'إدارة إشتراكات المستخدمين'
-            configure.paywall: 'قم بإعداد صفحة الدفع.'
+            addsubscription: null
+            managesubscriptions: null
+            subscriptions.user: null
+            configure.paywall: null
     datatable:
         table:
-            info: 'عرض _START_ ل_END_ من _TOTAL_ إدخالات'
-            noentries: 'لا توجد إدخالات للظهور.'
-            filtering: '- تصفية من السجلات _MAX_'
-            menu: 'عرض سجلات من _MENU_'
+            info: null
+            noentries: null
+            filtering: null
+            menu: null
         label:
-            search: بحث
-            filter: التصفية
-            processing: 'في عملية المعالجة...'
-            last: الأخير
-            next: التالي
-            first: الأول
-            previous: السابق
-            norecords: 'لم يتم العثور على سجلات.'
+            search: null
+            filter: null
+            processing: null
+            last: null
+            next: null
+            first: null
+            previous: null
+            norecords: null
     error:
-        alreadymember: 'أنت بالفعل عضو لنوعٍ مختار!'
-        fatal: 'حدث خطأ غير متوقع!'
-        settingserror: 'حدث خطأ. لا يمكن حفظ الإعدادات.'
+        alreadymember: null
+        fatal: null
+        settingserror: null
     success:
-        addedtrial: 'لك %trial% أيام من التجربة المجانية.'
-        added: 'تم منح العضوية بنجاح!'
-        settingssaved: 'تم حفظ الإعدادات بنجاح.'
+        addedtrial: null
+        added: null
+        settingssaved: null
     msg:
-        membershipemail: 'قم بكتابة الإيميل حتى تصلك إشعارات العضوية'
-        membershipemaillabel: 'إيميل إشعارات العضوية.'
-        providersmall: 'إختر مزود صفحة الدفع.'
-        providername: المزوّد
-        datasavedfancy: 'تم حفظ المعلومات الشخصية! أغلق النافذة.'
-        buyone: 'يجب أن تقوم بشراء عضوية!'
-        invalidcustomerid: 'رقم العميل غير صالح!'
-        alreadyorwrong: 'أنت بالفعل عضو لنوع مختار من قبل أو رقم مستخدم المزود غير صالح!'
-        numberaccepted: 'تم قبول الرقم. شكراً على الإشتراك!'
-        surechange: 'هل أنت متأكد أنك تريد أن تغير العضوية لعضوية مختارة؟'
-        providevalid: 'زوّد رقم المستخدم الصالح حتى تعمّل عضويتك!'
-        hadtrial: 'لك تجربة مجانية أو كان لك من قبل. لا يمكن أن  تحوّل لعضوية أخرى!'
-        successchange: 'تم تغييرنوع العضوية بنجاح!'
+        membershipemail: null
+        membershipemaillabel: null
+        providersmall: null
+        providername: null
+        datasavedfancy: null
+        buyone: null
+        invalidcustomerid: null
+        alreadyorwrong: null
+        numberaccepted: null
+        surechange: null
+        providevalid: null
+        hadtrial: null
+        successchange: null
         membershipexpired: null
-        upgrade: 'ترقية العضوية'
-        downgrade: 'تخفيض تصنيف العضوية'
-        process: 'طلب العضوية الجديد في مرحلة المعالجة. تم إرسال تفاصيل أكثر إلى صندوق بريدك الوارد.'
-        cantchange: 'لا يمكن تغيير الغضوية!'
+        upgrade: null
+        downgrade: null
+        process: null
+        cantchange: null
         spammsg: 'لقد سلّمت أكثر من ٣ طلبات عضوية في صف واحد. لن تقبل طلبات أخرى اليوم.'
         purchasetrialexpired: 'شراء عضوية عند إنتهاء فترة التجربة.'
         purchasetrialon: 'شراء عضوية أثناء فترة التجربة.'

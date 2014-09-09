@@ -1,166 +1,166 @@
-Plugins: Bővítmények
+Plugins: null
 paywall:
-    title: 'Fizetési fal'
-    search: Keresés...
+    title: null
+    search: null
     toolbar:
         label:
-            configuration: Konfiguráció
-            manage: 'Előfizetések kezelése'
-            manageusers: 'Felhasználói előfizetések kezelése'
-            configure: 'A fizetési fal beállítása'
+            configuration: null
+            manage: null
+            manageusers: null
+            configure: null
     step1:
-        header: 'Add meg az új előfizetés nevét és értékét. Különféle típusú előfizetéseket állíthatsz be, de csak egymás után.'
+        header: null
         form:
             label:
-                name: 'Előfizetés neve:'
-                type: 'Előfizetés típusa:'
-                duration: 'Az előfizetés időtartama napokban:'
-                price: 'Ár:'
-                currency: 'Pénznem:'
-                description: 'Leírás:'
-                optional: elhagyható
-                subscription: Előfizetés
+                name: null
+                type: null
+                duration: null
+                price: null
+                currency: null
+                description: null
+                optional: null
+                subscription: null
             select:
                 type:
-                    publication: Kiadvány
-                    issue: Szám
-                    section: Rovat
-                    article: Cikk
+                    publication: null
+                    issue: null
+                    section: null
+                    article: null
             error:
-                name: 'Az előfizetés neve nem lehet üres.'
-                duration: 'Az Időtartam mező érvénytelen.'
-                price: 'Az Ár mező érvénytelen.'
-                currency: 'Add meg a pénznemet.'
-                description: 'Add meg a leírást.'
+                name: null
+                duration: null
+                price: null
+                currency: null
+                description: null
     step2:
-        header: 'Add meg, hogy pontosan mely cikkeknek kell csak az előfizetők számára láthatóknak lenniük.'
+        header: null
         label:
-            article: Cikkek
-            publication: Kiadványok
-            type: Típus
-            durationbox: Időtartam
-            price: Ár
-            currency: Pénznem
-            active: Állapot
+            article: null
+            publication: null
+            type: null
+            durationbox: null
+            price: null
+            currency: null
+            active: null
     btn:
-        skip: Kihagyás
-        save: Mentés
-        edit: Szerkesztés
-        delete: Törlés
-        next: Következő
-        button1: 'Típus és ár megadása'
-        button2: 'Cikkek megadása'
-        details: Részletek
-        back: Vissza
-        add: Hozzáadás
-        deactivate: Inaktiválás
-        activate: Aktiválás
+        skip: null
+        save: null
+        edit: null
+        delete: null
+        next: null
+        button1: null
+        button2: null
+        details: null
+        back: null
+        add: null
+        deactivate: null
+        activate: null
     flash:
         message:
-            error: 'Valami elromlott.'
+            error: null
             provider:
-                changed: 'A szolgáltató módosítása sikerült.'
+                changed: null
             subscription:
-                deleted: 'Az előfizetés törlése megtörtént.'
-                updated: 'Az előfizetés frissítése megtörtént.'
-                activated: 'Az előfizetés aktiválása megtörtént.'
-                deactivated: 'Az előfizetés inaktiválása megtörtént.'
+                deleted: null
+                updated: null
+                activated: null
+                deactivated: null
     manage:
         error:
-            currency: 'A pénznem érvénytelen formátumú.'
-            topay: 'A Fizetendő mező értékének rossz a formátuma.'
+            currency: null
+            topay: null
             exists:
-                subscription: 'A kiválasztott előfizetés már létezik ezen felhasználó számára.'
+                subscription: null
             select:
-                empty: 'Nem lehet üres a mező!'
-                choose: 'Válassz szolgáltatót!'
+                empty: null
+                choose: null
         label:
-            name: Név
-            duration: 'Időtartam napokban'
-            options: Beállítások
-            username: Felhasználónév
-            topay: Fizetendő
-            active: Aktív
-            deactivated: Inaktiválva
-            users: Felhasználók
-            subscriptions: Előfizetések
-            paymenttype: 'Fizetés típusa'
-            paid: Fizetett
-            paidnow: 'Fizetve most'
-            trial: Próbaolvasás
-            yes: Igen
-            no: Nem
-            addnew: 'Felhasználói előfizetés hozzáadása'
-            subscriptiondetails: 'Előfizetés adatai'
-            addissue: 'Szám hozzáadása'
-            addsection: 'Rovat hozzáadása'
-            addarticle: 'Cikk hozzáadása'
-            editallissues: 'Az összes szám szerkesztése'
-            editallsections: 'Az összes rovat szerkesztése'
-            editallarticles: 'Az összes cikk szerkesztése'
-            language: Nyelv
-            individuallanguage: Nyelvek
-            reglanguage: 'A nyelvtől függetlenül'
-            days: Napok
-            startdate: 'Kezdő dátum'
-            paiddays: 'Fizetett napok'
-            issues: Számok
-            sections: Rovatok
-            articles: Cikkek
-            nocontent: 'Még nincs hozzáadott tartalom.'
-            content: Tartalom
-            choose: Válassz...
-            adapters: 'Létező szolgáltatók:'
-            current: 'Jelenlegi szolgáltató:'
-            goback: 'Vissza a felhasználói előfizetésekhez'
+            name: null
+            duration: null
+            options: null
+            username: null
+            topay: null
+            active: null
+            deactivated: null
+            users: null
+            subscriptions: null
+            paymenttype: null
+            paid: null
+            paidnow: null
+            trial: null
+            yes: null
+            no: null
+            addnew: null
+            subscriptiondetails: null
+            addissue: null
+            addsection: null
+            addarticle: null
+            editallissues: null
+            editallsections: null
+            editallarticles: null
+            language: null
+            individuallanguage: null
+            reglanguage: null
+            days: null
+            startdate: null
+            paiddays: null
+            issues: null
+            sections: null
+            articles: null
+            nocontent: null
+            content: null
+            choose: null
+            adapters: null
+            current: null
+            goback: null
     menu:
         label:
-            addsubscription: 'Új előfizetés hozzáadása'
-            managesubscriptions: 'Előfizetések kezelése'
-            subscriptions.user: 'Felhasználói előfizetések kezelése'
-            configure.paywall: 'A fizetési fal beállítása'
+            addsubscription: null
+            managesubscriptions: null
+            subscriptions.user: null
+            configure.paywall: null
     datatable:
         table:
-            info: '_START_ a _VÉGE_ a _TELJES_ bejegyzések megjelenítése'
-            noentries: 'Nincs megjelenítendő bejegyzés'
-            filtering: '- szűrés a _MAX_ rekordokból'
-            menu: '_MENU_ rekordok kijelzése'
+            info: null
+            noentries: null
+            filtering: null
+            menu: null
         label:
-            search: Keresés
-            filter: Szűrő
-            processing: Feldolgozás...
-            last: Utolsó
-            next: Következő
-            first: Első
-            previous: Előző
-            norecords: 'Nem találhatók bejegyzések.'
+            search: null
+            filter: null
+            processing: null
+            last: null
+            next: null
+            first: null
+            previous: null
+            norecords: null
     error:
-        alreadymember: 'Te már a választott típus tagja vagy!'
-        fatal: 'Váratlan hiba történt!'
-        settingserror: 'Hiba történt. Nem menthetők a beállítások.'
+        alreadymember: null
+        fatal: null
+        settingserror: null
     success:
-        addedtrial: '%trial% napod van a próbaolvasásból.'
-        added: 'A tagság átadása sikerült!'
-        settingssaved: 'A beállítások mentése sikerült.'
+        addedtrial: null
+        added: null
+        settingssaved: null
     msg:
-        membershipemail: 'Add meg az e-mail címedet a tagsági előfizetésekhez'
-        membershipemaillabel: 'Tagsági értesítő email'
-        providersmall: 'Válassz fizetési fal szolgáltatót'
-        providername: Szolgáltató
-        datasavedfancy: 'Megtörtént a személyes adatok mentése! Zárd be az ablakot.'
-        buyone: 'Meg kell vásárolnod az egyik tagságot!'
-        invalidcustomerid: 'Érvénytelen vevőszám!'
-        alreadyorwrong: 'Már tagja vagy a kiválasztott típusnak vagy a megadott vevőszám érvénytelen!'
-        numberaccepted: 'A szám elfogadásra került. Köszönet az előfizetésért!'
-        surechange: 'Biztosan módosítani kívánod a tagságodat a kiválasztottra?'
-        providevalid: 'Adj meg érvényes vevőszámot a tagságod aktiválásához!'
-        hadtrial: 'Már van/volt próbaolvasásod. Nem lehet átváltani másik tagságra!'
-        successchange: 'A tagság típusának módosítása sikerült!'
-        membershipexpired: 'Lejárt a tagság! Vásárolj új tagságot, vagy adj meg egy érvényes vevőszámot az aktiválásához!'
-        upgrade: 'Tagság frissítése'
-        downgrade: 'Tagság visszaminősítése'
-        process: 'Az új tagági kérelmed folyamatban van. A további részletek elküldésre kerültek az e-mail címedre.'
-        cantchange: 'Nem módosítható a tagság!'
-        spammsg: 'Egymás után háromnál több tagsági kérelmet nyújtottál be. Ma több kérés nem kerül elfogadásra.'
-        purchasetrialexpired: 'Tagság vásárlása a próbaolvasás lejártakor.'
-        purchasetrialon: 'Tagság vásárlása, mikor a próbaolvasás még aktív.'
+        membershipemail: null
+        membershipemaillabel: null
+        providersmall: null
+        providername: null
+        datasavedfancy: null
+        buyone: null
+        invalidcustomerid: null
+        alreadyorwrong: null
+        numberaccepted: null
+        surechange: null
+        providevalid: null
+        hadtrial: null
+        successchange: null
+        membershipexpired: null
+        upgrade: null
+        downgrade: null
+        process: null
+        cantchange: null
+        spammsg: null
+        purchasetrialexpired: null
+        purchasetrialon: null

@@ -67,7 +67,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
         return array(
             'plugin.install.newscoop_newscoop_paywall_bundle' => array('install', 1),
             'plugin.update.newscoop_newscoop_paywall_bundle' => array('update', 1),
-            'plugin.remove.newscoop_ dnewscoop_paywall_bundle' => array('remove', 1),
+            'plugin.remove.newscoop_newscoop_paywall_bundle' => array('remove', 1),
         );
     }
 
