@@ -14,7 +14,6 @@ use Newscoop\Entity\Section;
 use Newscoop\Entity\Issue;
 use Newscoop\Entity\Article;
 use Doctrine\ORM\Mapping as ORM;
-use Newscoop\PaywallBundle\Entity\Subscriptions;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -120,11 +119,31 @@ class UserSubscription
     protected $expire_at;
 
     /**
-     * To hide from users totaly
+     * Custom field
+     * @ORM\Column(type="boolean", name="custom")
+     * @var boolean
+     */
+    protected $custom;
+
+    /**
+     * Second custom field
+     * @ORM\Column(type="boolean", name="custom_2")
+     * @var boolean
+     */
+    protected $customOther;
+
+    /**
+     * To hide from users totally
      * @ORM\Column(type="boolean", name="is_active")
      * @var boolean
      */
-    protected $is_active = true;
+    protected $is_active;
+
+    /**
+     * @ORM\Column(type="datetime", name="updated_at", nullable=true)
+     * @var DateTime
+     */
+    protected $updated;
 
     public function __construct()
     {
@@ -134,7 +153,9 @@ class UserSubscription
         $this->currency = '';
         $this->active = 'N';
         $this->created_at = new \DateTime();
-        $this->is_active = true;
+        $this->is_active = false;
+        $this->custom = false;
+        $this->customOther = false;
         $this->type = self::TYPE_PAID;
     }
 
@@ -151,12 +172,13 @@ class UserSubscription
     /**
      * Set subscription
      *
-     * @param Newscoop\PaywallBundle\Entity\Subscriptions $subscription
+     * @param  Newscoop\PaywallBundle\Entity\Subscriptions $subscription
      * @return void
      */
     public function setSubscription(Subscriptions $subscription)
     {
         $this->subscription = $subscription;
+
         return $this;
     }
 
@@ -173,12 +195,13 @@ class UserSubscription
     /**
      * Set user
      *
-     * @param Newscoop\Entity\User $user
+     * @param  Newscoop\Entity\User $user
      * @return void
      */
     public function setUser(User $user)
     {
         $this->user = $user;
+
         return $this;
     }
 
@@ -195,12 +218,13 @@ class UserSubscription
     /**
      * Set publication
      *
-     * @param Newscoop\Entity\Publication $publication
+     * @param  Newscoop\Entity\Publication  $publication
      * @return Newscoop\Entity\Subscription
      */
     public function setPublication(Publication $publication)
     {
         $this->publication = $publication;
+
         return $this;
     }
 
@@ -237,12 +261,13 @@ class UserSubscription
     /**
      * Set to pay
      *
-     * @param float $toPay
+     * @param  float                        $toPay
      * @return Newscoop\Entity\Subscription
      */
     public function setToPay($toPay)
     {
         $this->toPay = (float) $toPay;
+
         return $this;
     }
 
@@ -259,12 +284,13 @@ class UserSubscription
     /**
      * Set type
      *
-     * @param string $type
+     * @param  string                       $type
      * @return Newscoop\Entity\Subscription
      */
     public function setType($type)
     {
         $this->type = strtoupper($type) === self::TYPE_TRIAL ? self::TYPE_TRIAL : self::TYPE_PAID;
+
         return $this;
     }
 
@@ -291,13 +317,14 @@ class UserSubscription
     /**
      * Set active
      *
-     * @param bool $active
+     * @param  bool                         $active
      * @return Newscoop\Entity\Subscription
      */
     public function setActive($active)
     {
 
         $this->active = ((bool) $active) ? 'Y' : 'N';
+
         return $this;
     }
 
@@ -314,8 +341,8 @@ class UserSubscription
     /**
      * Add sections
      *
-     * @param array $values
-     * @param Newscoop\Entity\Publication $publication
+     * @param  array                       $values
+     * @param  Newscoop\Entity\Publication $publication
      * @return void
      */
     public function addSections(array $values, Publication $publication)
@@ -356,7 +383,7 @@ class UserSubscription
     /**
      * Set sections
      *
-     * @param array $values
+     * @param  array $values
      * @return void
      */
     public function setSections(array $values)
@@ -375,7 +402,7 @@ class UserSubscription
     /**
      * Add section
      *
-     * @param Newscoop\Subscription\Section $section
+     * @param  Newscoop\Subscription\Section $section
      * @return void
      */
     public function addSection(Section $section)
@@ -388,7 +415,7 @@ class UserSubscription
     /**
      * Set articles
      *
-     * @param array $values
+     * @param  array $values
      * @return void
      */
     public function setArticles(array $values)
@@ -407,7 +434,7 @@ class UserSubscription
     /**
      * Add article
      *
-     * @param Newscoop\Subscription\Article $article
+     * @param  Newscoop\Subscription\Article $article
      * @return void
      */
     public function addArticle(Article $article)
@@ -420,7 +447,7 @@ class UserSubscription
     /**
      * Set issues
      *
-     * @param array $values
+     * @param  array $values
      * @return void
      */
     public function setIssues(array $values)
@@ -439,7 +466,7 @@ class UserSubscription
     /**
      * Add issue
      *
-     * @param Newscoop\Subscription\Issue $issue
+     * @param  Newscoop\Subscription\Issue $issue
      * @return void
      */
     public function addIssue(Issue $issue)
@@ -452,8 +479,8 @@ class UserSubscription
     /**
      * Test if has given section
      *
-     * @param Newscoop\Subscription\Section $section
-     * @param array $languages
+     * @param  Newscoop\Subscription\Section $section
+     * @param  array                         $languages
      * @return bool
      */
     protected function hasSection(Section $section, array $languages)
@@ -462,10 +489,11 @@ class UserSubscription
             if ($s->getSectionNumber() == $section->getNumber()) {
                 if (!$s->hasLanguage()) {
                     return true;
-                } else if (empty($languages)) {
+                } elseif (empty($languages)) {
                     $s->setLanguage(null);
+
                     return true;
-                } else if ($s->getLanguage() == $section->getLanguage()) {
+                } elseif ($s->getLanguage() == $section->getLanguage()) {
                     return true;
                 }
             }
@@ -557,7 +585,7 @@ class UserSubscription
     /**
      * Set create date
      *
-     * @param datetime $created_at
+     * @param  datetime $created_at
      * @return datetime
      */
     public function setCreatedAt(\DateTime $created_at)
@@ -580,10 +608,10 @@ class UserSubscription
     /**
      * Set expire date
      *
-     * @param datetime $expire_at
+     * @param  datetime $expire_at
      * @return datetime
      */
-    public function setExpireAt(\DateTime $expire_at)
+    public function setExpireAt(\DateTime $expire_at = null)
     {
         $this->expire_at = $expire_at;
 
@@ -603,12 +631,84 @@ class UserSubscription
     /**
      * Set status
      *
-     * @param boolean $is_active
+     * @param  boolean $is_active
      * @return boolean
      */
     public function setIsActive($is_active)
     {
         $this->is_active = $is_active;
+
+        return $this;
+    }
+
+    /**
+     * Gets the Custom field.
+     *
+     * @return boolean
+     */
+    public function getCustom()
+    {
+        return $this->custom;
+    }
+
+    /**
+     * Sets the Custom field.
+     *
+     * @param boolean $custom the custom
+     *
+     * @return self
+     */
+    public function setCustom($custom)
+    {
+        $this->custom = $custom;
+
+        return $this;
+    }
+
+    /**
+     * Gets the Second custom field.
+     *
+     * @return boolean
+     */
+    public function getCustomOther()
+    {
+        return $this->customOther;
+    }
+
+    /**
+     * Sets the Second custom field.
+     *
+     * @param boolean $customOther the custom other
+     *
+     * @return self
+     */
+    public function setCustomOther($customOther)
+    {
+        $this->customOther = $customOther;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of updated.
+     *
+     * @return DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Sets the value of updated.
+     *
+     * @param DateTime $updated the updated
+     *
+     * @return self
+     */
+    public function setUpdated(\DateTime $updated)
+    {
+        $this->updated = $updated;
 
         return $this;
     }

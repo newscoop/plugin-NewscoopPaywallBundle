@@ -1,166 +1,146 @@
 Plugins: Plugins
 paywall:
-    title: null
-    search: null
-    toolbar:
-        label:
-            configuration: null
-            manage: null
-            manageusers: null
-            configure: null
-    step1:
-        header: null
-        form:
-            label:
-                name: null
-                type: null
-                duration: null
-                price: null
-                currency: null
-                description: null
-                optional: null
-                subscription: null
-            select:
-                type:
-                    publication: Publikation
-                    issue: Ausgabe
-                    section: Rubrik
-                    article: Artikel
-            error:
-                name: null
-                duration: null
-                price: null
-                currency: null
-                description: null
-    step2:
-        header: null
-        label:
-            article: Artikel
-            publication: Publikationen
-            type: Typ
-            durationbox: null
-            price: null
-            currency: Währung
-            active: Status
-    btn:
-        skip: null
-        save: Speichern
-        edit: Bearbeiten
-        delete: Löschen
-        next: Nächste(r)
-        button1: null
-        button2: null
-        details: null
-        back: Zurück
-        add: Hinzu
-        deactivate: null
-        activate: null
-    flash:
-        message:
-            error: null
-            provider:
-                changed: null
-            subscription:
-                deleted: null
-                updated: null
-                activated: null
-                deactivated: null
-    manage:
-        error:
-            currency: null
-            topay: null
-            exists:
-                subscription: null
-            select:
-                empty: null
-                choose: null
-        label:
-            name: Name
-            duration: null
-            options: Optionen
-            username: Benutzername
-            topay: null
-            active: Aktiv
-            deactivated: null
-            users: Nutzer
-            subscriptions: Abonnements
-            paymenttype: null
-            paid: Bezahlt
-            paidnow: null
-            trial: Probe
-            yes: Ja
-            no: Nein
-            addnew: null
-            subscriptiondetails: null
-            addissue: null
-            addsection: 'Rubrik hinzufügen'
-            addarticle: null
-            editallissues: null
-            editallsections: 'Alle Rubriken bearbeiten '
-            editallarticles: null
-            language: Sprache
-            individuallanguage: 'Individuelle Sprachen'
-            reglanguage: 'Unabhängig von der Sprache'
-            days: Tage
-            startdate: null
-            paiddays: 'Bezahlte Tage'
-            issues: Ausgaben
-            sections: Rubriken
-            articles: Artikel
-            nocontent: null
-            content: Inhalt
-            choose: Auswählen...
-            adapters: null
-            current: null
-            goback: null
-    menu:
-        label:
-            addsubscription: 'Neues Abonnement hinzufügen'
-            managesubscriptions: null
-            subscriptions.user: null
-            configure.paywall: null
-    datatable:
-        table:
-            info: null
-            noentries: null
-            filtering: null
-            menu: null
-        label:
-            search: null
-            filter: null
-            processing: null
-            last: null
-            next: null
-            first: null
-            previous: null
-            norecords: null
+  title: "Paywall"
+  search: "Suche"
+  toolbar:
+    label:
+      configuration: "Konfiguration"
+      manage: "Abos verwalten"
+      manageusers: "Nutzeraccounts verwalten"
+      configure: "Paywall konfigurieren"
+  step1:
+    header: "Bitte spezifizieren Sie den Namen und den Wert für das neue Abonnement. Sie können verschiedene Abotypen definieren, aber nur Schritt für Schritt Eines nach dem Anderen."
+    form:
+      label:
+        name: "Aboname:"
+        type: "Abotyp:"
+        duration: "Dauer des Abos in Tagen:"
+        price: "Preis:"
+        currency: "Währung:"
+        description: "Beschreibung:"
+        optional: "Optional"
+        subscription: "Abonnement"
+      select:
+        type:
+          publication: "Publikation"
+          issue: "Ausgabe"
+          section: "Rubrik"
+          article: "Artikel"
+      error:
+        name: "Der Aboname muss ausgefüllt werden."
+        duration: "Die Angabe zur Dauer ist ungültig."
+        price: "Die Preisangabe ist ungültig."
+        currency: "Währung"
+        description: "Beschreibung des Abotyps"
+  step2:
+    header: "Please specify which articles exactly should be visible for subscribers only."
+    label:
+      article: "Artikel"
+      publication: "Publikationen"
+      type: "Abotyp"
+      durationbox: "Dauer des Abos in Tagen"
+      price: "Preis"
+      currency: "Währung"
+      active: "Status"
+  btn:
+    skip: "Überspringen"
+    save: "Speichern"
+    edit: "Bearbeiten"
+    delete: "Löschen"
+    next: "Weiter"
+    button1: "Spezifizieren Sie Typ und Preis"
+    button2: "Spezifizieren Sie Artikel"
+    details: "Details"
+    back: "Zurück"
+    add: "Hinzufügen"
+    deactivate: "Deaktivieren"
+    activate: "Aktivieren"
+  flash:
+    message:
+      error: "Ein Fehler ist aufgetreten"
+      provider:
+        changed: "Anbieter erfolgreich gewechselt."
+      subscription:
+      deleted: "Abo wurde gelöscht."
+      updated: "Abo wurde aktualisiert."
+      activated: "Abo wurde aktiviert."
+      deactivated: "Abo wurde deaktiviert."
+  manage:
     error:
-        alreadymember: null
-        fatal: null
-        settingserror: null
+      currency: "Die Währungsangabe erfolgte im falschen Format."
+      topay: "Die Angabe im Zu Bezahlen Feld erfolgte im falschen Format."
+      exists:
+        subscription: "Der Nutzer hat bereits das gewählte Abonnement."
+      select:
+          empty: "Sie müssen einen Wert auswählen."
+          choose: "Bitte wählen Sie den Anbieter"
+    label:
+      name: "Name"
+      duration: "Dauer in Tagen"
+      options: "Optionen"
+      username: "Nutzername"
+      topay: "Zu bezahlen"
+      active: "Aktiv"
+      deactivated: "Inaktiv"
+      users: "Nutzer"
+      subscriptions: "Abonnements"
+      paymenttype: "Zahlweise"
+      paid: "Bezahlt"
+      paidnow: "Jetzt bezahlt"
+      trial: "Probeabo"
+      yes: "Ja"
+      no: "Nein"
+      addnew: "Nutzeraccount hinzufügen"
+      subscriptiondetails: "Abodetails"
+      addissue: "Ausgabe hinzufügen"
+      addsection: "Rubrik hinzufügen"
+      addarticle: "Artikel hinzufügen"
+      editallissues: "Alle Ausgaben bearbeiten"
+      editallsections: "Alle Rubriken bearbeiten"
+      editallarticles: "Alle Artikel bearbeiten"
+      language: "Sprache"
+      individuallanguage: "Individuelle Sprachen"
+      reglanguage: "Unabhängig von der Sprache"
+      days: "´Tage"
+      startdate: "Start-Datum"
+      paiddays: "Bezahlte Tage"
+      issues: "Ausgaben"
+      sections: "Rubriken"
+      articles: "Artikel"
+      nocontent: "Es wurden noch keine Inhalte hinzugefügt."
+      content: "Inhalt"
+      choose: "Bitte wählen..."
+      adapters: "Verfügbare Anbieter:"
+      current: "Aktuelle Anbieter:"
+      goback: "Zurück zum Nutzeraccount"
+  menu:
+    label:
+      addsubscription: "Neues Abo hinzufügen"
+      managesubscriptions: "Abo verwalten"
+      subscriptions.user: "Nutzeraccounts verwalten"
+      configure.paywall: "Paywall konfigurieren"
+  datatable:
+    table:
+      info: "Showing _START_ to _END_ of _TOTAL_ entries"
+      noentries: "No entries to show"
+      filtering: " - filtering from _MAX_ records"
+      menu: "Display _MENU_ records"
+    label:
+      search: "Suche"
+      filter: "Filter"
+      processing: "Bearbeite..."
+      last: "Letzter"
+      next: "Nächster"
+      first: "Erster"
+      previous: "Vorheriger"
+      norecords: "Ihre Suche ergab keine Treffer."
+    error:
+      fatal: "Ein unerwarteter Fehler ist aufgetreten!"
+      settingserror: "Ein Fehler ist aufgetreten. Ihre Einstellungen konnten nicht gespeichert werden."
     success:
-        addedtrial: null
-        added: null
-        settingssaved: null
-    msg:
-        membershipemail: null
-        membershipemaillabel: null
-        providersmall: null
-        providername: null
-        datasavedfancy: null
-        buyone: null
-        invalidcustomerid: null
-        alreadyorwrong: null
-        numberaccepted: null
-        surechange: null
-        providevalid: null
-        hadtrial: null
-        successchange: null
-        membershipexpired: null
-        upgrade: null
-        downgrade: null
-        process: null
-        cantchange: null
-        spammsg: null
-        purchasetrialexpired: null
-        purchasetrialon: null
+      settingssaved: "Ihre Einstellungen wurden erfolgreich gespeichert."
+  msg:
+    membershipemail: "Bitte tragen Sie hier Ihre E-Mail zum Empfang von Benachrichtigungen ein."
+    membershipemaillabel: "E-Mail für Benachrichtigungen"
+    providersmall: "Bitte wählen Sie einen Paywall Anbieter aus"
+    providername: "Anbieter"

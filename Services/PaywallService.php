@@ -8,7 +8,6 @@
 
 namespace Newscoop\PaywallBundle\Services;
 
-use Doctrine\ORM\EntityManager;
 use Newscoop\Services\SubscriptionService;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
@@ -167,17 +166,17 @@ class PaywallService extends SubscriptionService
      */
     public function userHadTrial($user)
     {
+        $qb = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
+            ->createQueryBuilder('u');
 
-        $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
-            ->findOneBy(array(
-                'user' => $user,
-        ));
+        $qb->select('count(u.id)')
+            ->where('u.user = :user')
+            ->andWhere($qb->expr()->isNotNull('u.trial'))
+            ->setParameter('user', $user);
 
-        if ($trial) {
-            return $trial->getHadTrial();
-        }
+        $userTrials = (int) $qb->getQuery()->getSingleScalarResult();
 
-        return false;
+        return $userTrials > 1 ? true : false;
     }
 
     /**
@@ -187,9 +186,8 @@ class PaywallService extends SubscriptionService
      *
      * @return bool
      */
-    public function isValidTrial($user)
+    public function validateTrial($user)
     {
-
         $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
             ->findOneBy(array(
                 'user' => $user,
@@ -199,6 +197,7 @@ class PaywallService extends SubscriptionService
         if ($trial) {
             $datetime = new \DateTime('now');
             //if trial expired
+
             if ($trial->getFinishTrial() >= $datetime) {
                 return true;
             }
@@ -286,8 +285,8 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getIssuesByLanguageAndId($language, $subscription_id) {
-
+    public function getIssuesByLanguageAndId($language, $subscription_id)
+    {
         $issues = $this->em->getRepository('Newscoop\Subscription\Issue')
             ->findBy(array(
                 'language' => $language,
@@ -304,8 +303,8 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getIssuesByLanguageId($language_id) {
-
+    public function getIssuesByLanguageId($language_id)
+    {
         $issues = $this->em->getRepository('Newscoop\Entity\Issue')
             ->findBy(array(
                 'language' => $language_id,
@@ -322,8 +321,8 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getArticlesByLanguageAndId($language, $subscription_id) {
-
+    public function getArticlesByLanguageAndId($language, $subscription_id)
+    {
         $articles = $this->em->getRepository('Newscoop\Subscription\Article')
             ->findBy(array(
                 'language' => $language,
@@ -340,8 +339,8 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getArticlesByLanguageId($language_id) {
-
+    public function getArticlesByLanguageId($language_id)
+    {
         $articles = $this->em->getRepository('Newscoop\Entity\Article')
             ->findBy(array(
                 'language' => $language_id,
@@ -357,7 +356,8 @@ class PaywallService extends SubscriptionService
      *
      * @return array
      */
-    public function getSubscriptionDetails($subscriptionId) {
+    public function getSubscriptionDetails($subscriptionId)
+    {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
             ->createQueryBuilder('s')
             ->select('s.type', 's.range', 's.price', 's.currency', 'i.publication')
@@ -377,7 +377,8 @@ class PaywallService extends SubscriptionService
      *
      * @return entity object
      */
-    public function getOneSubscriptionById($subscriptionId) {
+    public function getOneSubscriptionById($subscriptionId)
+    {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
             ->findOneBy(array(
                 'id' => $subscriptionId,
@@ -389,7 +390,7 @@ class PaywallService extends SubscriptionService
     /**
      * Activates Subscription by Id
      *
-     * @param  integer $id User subscription id
+     * @param integer $id User subscription id
      *
      * @return void
      */
@@ -410,7 +411,7 @@ class PaywallService extends SubscriptionService
     /**
      * Gets Subscription configuration(details) by given Subscription Id
      *
-     * @param  integer $subscriptionId Subscription id
+     * @param integer $subscriptionId Subscription id
      *
      * @return entity object
      */
@@ -440,8 +441,8 @@ class PaywallService extends SubscriptionService
     /**
      * Checks if Subscription by given User Id and Subscription Id exists
      *
-     * @param  integer $userId         User id
-     * @param  integer $subscriptionId Subscription id
+     * @param integer $userId         User id
+     * @param integer $subscriptionId Subscription id
      *
      * @return array
      */
@@ -483,36 +484,12 @@ class PaywallService extends SubscriptionService
         return null;
     }
 
-    public function getSubscriptionToActivate($user, $currentSubscription)
-    {
-        $subscriptionToActivate = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
-            ->createQueryBuilder('s')
-            ->where('s.user = :user')
-            ->andWhere('s.active = :status')
-            ->setParameters(array(
-                'user' => $user,
-                'status' => 'N'
-            ))
-            ->setMaxResults(1)
-            ->orderBy('s.created_at', 'desc')
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        if ($subscriptionToActivate && $currentSubscription) {
-            if ($currentSubscription->getCreatedAt() < $subscriptionToActivate->getCreatedAt()) {
-                return $subscriptionToActivate;
-            }
-        }
-
-        return null;
-    }
-
     /**
      * Gets all sections diffrent from already added user's sections by given language
      * and publication
      *
-     * @param  integer $languageId    Language Id
-     * @param  integer $publicationId Publication Id
+     * @param integer $languageId    Language Id
+     * @param integer $publicationId Publication Id
      *
      * @return array
      */
@@ -536,8 +513,8 @@ class PaywallService extends SubscriptionService
      * Gets all issues diffrent from already added user's issues by given language
      * and publication
      *
-     * @param  integer $languageId    Language Id
-     * @param  integer $publicationId Publication Id
+     * @param integer $languageId    Language Id
+     * @param integer $publicationId Publication Id
      *
      * @return array
      */
@@ -561,8 +538,8 @@ class PaywallService extends SubscriptionService
      * Gets all articles diffrent from already added user's articles by given language
      * and publication
      *
-     * @param  integer $languageId    Language Id
-     * @param  integer $publicationId Publication Id
+     * @param integer $languageId    Language Id
+     * @param integer $publicationId Publication Id
      *
      * @return array
      */
@@ -585,8 +562,8 @@ class PaywallService extends SubscriptionService
     /**
      * Update Subscription according to SubscritionData class
      *
-     * @param  UserSubscription $subscription
-     * @param  SubscriptionData $data
+     * @param UserSubscription $subscription
+     * @param SubscriptionData $data
      *
      * @return Subscription
      */

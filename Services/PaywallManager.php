@@ -10,17 +10,22 @@ namespace Newscoop\PaywallBundle\Services;
 
 use Doctrine\ORM\EntityManager;
 use Newscoop\PaywallBundle\Services\PaywallService;
+use Newscoop\PaywallBundle\Events\AdaptersEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * PaywallManager class manages paywall adapters
  */
 class PaywallManager
 {
-    /** @var Doctrine\ORM\EntityManager */
+    /** @var EntityManager */
     private $em;
 
-    /** @var Newscoop\PaywallBundle\Services\PaywallService */
+    /** @var PaywallService */
     private $subscriptionService;
+
+    /** @var EventDispatcher */
+    private $dispatcher;
 
     /**
      * Apply entity manager and injected services
@@ -28,25 +33,29 @@ class PaywallManager
      * @param EntityManager       $em
      * @param PaywallService $subscriptionService
      */
-    public function __construct(EntityManager $em, PaywallService $subscriptionService)
+    public function __construct(EntityManager $em, PaywallService $subscriptionService, EventDispatcher $dispatcher)
     {
         $this->em = $em;
         $this->subscriptionService = $subscriptionService;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
-     * Gets adapter, if adapter doesn't exist, use default one
+     * Get adapters, if adapter doesn't exist, use default one
      *
      * @return PaypalAdapter|object
      */
-    public function getAdapter() {
+    public function getAdapter()
+    {
+        $adaptersEvent = $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
+        $settings = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Settings')->findOneBy(array(
+            'is_active' =>true,
+        ));
 
-        $settings = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
-            ->findOneBy(array(
-                'is_active' =>true,
-            ));
-
-        $adapter = '\Newscoop\PaywallBundle\Adapter\\'.$settings->getValue();
+        $adapter = null;
+        if (array_key_exists($settings->getValue(), $adaptersEvent->adapters)) {
+            $adapter = $adaptersEvent->adapters[$settings->getValue()]['class'];
+        }
 
         if (!class_exists($adapter)) {
 

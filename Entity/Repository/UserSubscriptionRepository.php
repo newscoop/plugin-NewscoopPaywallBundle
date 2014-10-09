@@ -33,8 +33,7 @@ class UserSubscriptionRepository extends EntityRepository
         $qb->select('s', 'p', 'u', 'ss')
             ->leftJoin('s.publication', 'p')
             ->leftJoin('s.user', 'u')
-            ->leftJoin('s.subscription', 'ss')
-            ->where('s.is_active = true');
+            ->leftJoin('s.subscription', 'ss');
 
         foreach ($criteria->orderBy as $key => $value) {
             switch ($key) {
