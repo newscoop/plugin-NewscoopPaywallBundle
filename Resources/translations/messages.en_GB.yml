@@ -135,32 +135,12 @@ paywall:
             previous: Previous
             norecords: 'No records found.'
     error:
-        alreadymember: 'You are already a member of the selected type!'
         fatal: 'An unexpected error occurred!'
         settingserror: 'An error occurred. Cannot save these settings.'
     success:
-        addedtrial: 'You have %trial% day(s) of free trial remaining.'
-        added: 'Membership granted successfully!'
         settingssaved: 'Settings saved successfully.'
     msg:
-        membershipemail: 'Provide email for membership notifications'
-        membershipemaillabel: 'Membership notifications email'
+        membershipemail: null
+        membershipemaillabel: null
         providersmall: 'Select Paywall provider'
         providername: Provider
-        datasavedfancy: 'Personal information saved! You can close the window now.'
-        buyone: 'You have to buy one of the memberships!'
-        invalidcustomerid: 'Invalid customer number!'
-        alreadyorwrong: 'You are already a member of the selected type, or the customer number provided is invalid!'
-        numberaccepted: 'Number accepted. Thank you for subscribing!'
-        surechange: 'Are you sure you want to change membership to the one selected?'
-        providevalid: 'Provide a valid customer number to activate your membership!'
-        hadtrial: 'You have had a trial already. Can''t change to other membership!'
-        successchange: 'Successfully changed membership type!'
-        membershipexpired: 'Membership expired! Buy a new membership, or provide a valid customer number to activate it!'
-        upgrade: 'Membership upgrade'
-        downgrade: 'Membership downgrade'
-        process: 'Your new membership request is being processed. More details have been sent to your email.'
-        cantchange: 'Can''t change membership!'
-        spammsg: 'You have submitted more than three membership request in a row. No more requests will be accepted today.'
-        purchasetrialexpired: 'Membership purchase when trial expired'
-        purchasetrialon: 'Membership purchase when trial is still active'

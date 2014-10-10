@@ -135,32 +135,12 @@ paywall:
             previous: Předchozí
             norecords: 'Nebyly nalezeny žádné záznamy.'
     error:
-        alreadymember: 'Již jste členem vybraného typu!'
         fatal: 'Vyskytla se neočekávaná chyba!'
         settingserror: 'Objevila se chyba. Nelze uložit nastavení.'
     success:
-        addedtrial: 'Máte %trial% dní zkušební verzi zdarma.'
-        added: 'Členství úspěšně uděleno!'
         settingssaved: 'Nastavení bylo úspěšně uloženo.'
     msg:
-        membershipemail: 'Poskytněte e-mail pro potvrzení o členství'
-        membershipemaillabel: 'Oznamovací e-mail ohledně členství'
+        membershipemail: null
+        membershipemaillabel: null
         providersmall: 'Vyberte Paywall dodavatele'
         providername: Dodavatel
-        datasavedfancy: 'Osobní informace uloženy! Zavřete okno.'
-        buyone: 'Musíte zakoupit jedno z členství!'
-        invalidcustomerid: 'Neplatné zákaznické číslo!'
-        alreadyorwrong: 'Již jste členem vybraného typu nebo vložené zákaznické číslo je neplatné!'
-        numberaccepted: 'Číslo přijato. Děkujeme za přihlášení!'
-        surechange: 'Jste si jisti, že chcete změnit členství jak vybráno?'
-        providevalid: 'Vyplňte platné zákaznické číslo pro aktivaci Vašeho členství!'
-        hadtrial: 'Zkušební verzi jste již využil. Není možné provést změnu členství!'
-        successchange: 'Úspěšně změněn typ členství!'
-        membershipexpired: 'Členství vypršelo! Předplaťte si nové členství nebo uveďte platné zákaznické číslo pro aktivaci!'
-        upgrade: 'Rozšíření členství'
-        downgrade: 'Snížení členství'
-        process: 'Váš nový požadavek na členství se zpracovává. Podrobnosti byly zaslány na váš email.'
-        cantchange: 'Není možné změnit členství!'
-        spammsg: 'Podali jste více než 3 žádosti o členství za sebou. Žádné další žádosti dnes již přijaty nebudou.'
-        purchasetrialexpired: 'Nákup členství po vypršení zkušební verze'
-        purchasetrialon: 'Nákup členství v průběhu zkušební verze'
