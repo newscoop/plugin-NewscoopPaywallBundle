@@ -80,8 +80,6 @@ class AdaptersListener
             }
 
             $this->em->flush();
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
+        } catch (\Exception $e) {}
     }
 }
