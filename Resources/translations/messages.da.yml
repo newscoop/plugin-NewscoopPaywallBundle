@@ -140,7 +140,7 @@ paywall:
     success:
         settingssaved: 'Indstillingerne blev gemt.'
     msg:
-        membershipemail: null
-        membershipemaillabel: null
+        membershipemail: 'Angiv email til medlemsbeskeder'
+        membershipemaillabel: 'Email til medlemsbeskeder'
         providersmall: 'Vælg udbyder til betalingsmur'
         providername: Udbyder
