@@ -140,7 +140,7 @@ paywall:
     success:
         settingssaved: 'Settings saved successfully.'
     msg:
-        membershipemail: null
-        membershipemaillabel: null
+        membershipemail: 'Provide email for notifications'
+        membershipemaillabel: 'Notifications email'
         providersmall: 'Select Paywall provider'
         providername: Provider
