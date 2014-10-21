@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Newscoop Paywall Plugin : Newscoop Paywall Plugin - add paywals support for newscoop subscriptions.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Newscoop Paywall Plugin</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/newscoop/plugin-NewscoopPaywallBundle">View on GitHub</a>
+
+          <h1 id="project_title">Newscoop Paywall Plugin</h1>
+          <h2 id="project_tagline">Newscoop Paywall Plugin - add paywals support for newscoop subscriptions.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/newscoop/plugin-NewscoopPaywallBundle/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/newscoop/plugin-NewscoopPaywallBundle/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="newscooppaywallbundle" class="anchor" href="#newscooppaywallbundle"><span class="octicon octicon-link"></span></a>NewscoopPaywallBundle</h1>
+
+<p>NewscoopPaywallBundle is a simple, powerful plugin that allows online publishers to sell access to their content of the publications, issues, sections, articles.</p>
+
+<h1>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features:</h1>
+
+<h3>
+<a name="define-and-add-new-subscriptions-by" class="anchor" href="#define-and-add-new-subscriptions-by"><span class="octicon octicon-link"></span></a>Define and add new subscriptions by:</h3>
+
+<ul>
+<li>type (<code>Publication</code>, <code>Issue</code>, <code>Section</code>, <code>Article</code>)</li>
+<li>price</li>
+<li>duration</li>
+<li>currency</li>
+</ul>
+
+<h3>
+<a name="add-subscription-specification-by-defined-subscription-type" class="anchor" href="#add-subscription-specification-by-defined-subscription-type"><span class="octicon octicon-link"></span></a>Add subscription specification by defined subscription type</h3>
+
+<h3>
+<a name="manage-defined-subscriptions" class="anchor" href="#manage-defined-subscriptions"><span class="octicon octicon-link"></span></a>Manage defined subscriptions</h3>
+
+<ul>
+<li>delete subscriptions</li>
+<li>edit subscriptions
+
+<ul>
+<li>search defined subscriptions by:</li>
+<li>user</li>
+<li>subscription type (publication, issue, section, article)</li>
+<li>duration in days</li>
+<li>price</li>
+<li>currency</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a name="management-of-existing-user-subscriptions" class="anchor" href="#management-of-existing-user-subscriptions"><span class="octicon octicon-link"></span></a>Management of existing user subscriptions</h3>
+
+<ul>
+<li>assignee existing subscriptions to individual users</li>
+<li>activate/deactivate user subscriptions</li>
+<li>edit defined user subscription</li>
+<li>view subscription details while adding a user subscription
+
+<ul>
+<li>search user subscriptions by:</li>
+<li>username</li>
+<li>publication name</li>
+<li>to pay amount</li>
+<li>currency</li>
+<li>status (<code>Active</code>/<code>Deactivated</code>)</li>
+<li>payment type (<code>Paid</code>, <code>Paid now</code>, <code>Trial</code>)</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a name="specification-management-of-the-user-subscription" class="anchor" href="#specification-management-of-the-user-subscription"><span class="octicon octicon-link"></span></a>Specification management of the user subscription</h3>
+
+<ul>
+<li>add Issues, Sections, Articles to each user-defined subscriptions by:
+
+<ul>
+<li>Individual languages (show all <code>Issues</code>|<code>Sections</code>|<code>Articles</code> by publication language)</li>
+<li>Regardless of the languages (show all <code>Issues</code>|<code>Sections</code>|<code>Articles</code> diffrent than publication language)</li>
+<li>start date</li>
+<li>paid days</li>
+<li>days</li>
+</ul>
+</li>
+<li>edit all the specifications (<code>Issues</code>/<code>Sections</code>/<code>Articles</code>) of the user subscriptions by:
+
+<ul>
+<li>start date</li>
+<li>paid days</li>
+<li>days</li>
+</ul>
+</li>
+<li>edit single specification</li>
+<li>delete specifications</li>
+</ul>
+
+<h3>
+<a name="paywall-configuration" class="anchor" href="#paywall-configuration"><span class="octicon octicon-link"></span></a>Paywall configuration</h3>
+
+<ul>
+<li>choose one of available payment service providers:
+
+<ul>
+<li>Paypal is supported only at the moment (we will add more providers soon)</li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a name="installing-newscoop-paywall-plugin-guide" class="anchor" href="#installing-newscoop-paywall-plugin-guide"><span class="octicon octicon-link"></span></a>Installing Newscoop Paywall Plugin Guide</h2>
+
+<p>Installation is a quick process:</p>
+
+<ol>
+<li>Installing plugin through our Newscoop Plugin System</li>
+<li>That's all!</li>
+</ol>
+
+<h3>
+<a name="step-1-installing-plugin-through-our-newscoop-plugin-system" class="anchor" href="#step-1-installing-plugin-through-our-newscoop-plugin-system"><span class="octicon octicon-link"></span></a>Step 1: Installing plugin through our Newscoop Plugin System</h3>
+
+<p>Run the command:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>php application/console plugins:install <span class="s2">"newscoop/newscoop-paywall-bundle"</span> --env<span class="o">=</span>prod
+</pre></div>
+
+<p>Plugin will be installed to your project's <code>newscoop/plugins/Newscoop</code> directory.</p>
+
+<h3>
+<a name="step-2-thats-all" class="anchor" href="#step-2-thats-all"><span class="octicon octicon-link"></span></a>Step 2: That's all!</h3>
+
+<p>Go to Newscoop Admin panel and then hit <code>Plugins</code> tab. Newscoop Paywall Plugin will show up there.</p>
+
+<h2>
+<a name="sample" class="anchor" href="#sample"><span class="octicon octicon-link"></span></a>Sample:</h2>
+
+<pre><code>Resources/doc/
+</code></pre>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>This bundle is under the GNU General Public License v3. See the complete license in the bundle:</p>
+
+<pre><code>LICENSE.txt
+</code></pre>
+
+<h2>
+<a name="about" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>About</h2>
+
+<p>NewscoopPaywallBundle is a <a href="https://github.com/sourcefabric">Sourcefabric o.p.s</a> initiative.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Newscoop Paywall Plugin maintained by <a href="https://github.com/newscoop">newscoop</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
