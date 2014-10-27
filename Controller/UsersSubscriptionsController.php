@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
+use Newscoop\Entity\User;
 
 class UsersSubscriptionsController extends Controller
 {
@@ -98,14 +99,11 @@ class UsersSubscriptionsController extends Controller
     public function deleteAction(Request $request, $id)
     {
         if ($request->isMethod('POST')) {
-            try
-            {
+            try {
                 $this->get('subscription.service')->removeById($id);
 
                 return new Response(json_encode(array('status' => true)));
-            }
-            catch (\Exception $exception)
-            {
+            } catch (\Exception $exception) {
                 return new Response(json_encode(array('status' => false)));
             }
         }
@@ -117,14 +115,11 @@ class UsersSubscriptionsController extends Controller
     public function activateAction(Request $request, $id)
     {
         if ($request->isMethod('POST')) {
-            try 
-            {
+            try {
                 $this->get('subscription.service')->activateById($id);
 
                 return new Response(json_encode(array('status' => true)));
-            } 
-            catch (\Exception $exception) 
-            {
+            } catch (\Exception $exception) {
                 return new Response(json_encode(array('status' => false)));
             }
         }
@@ -136,17 +131,14 @@ class UsersSubscriptionsController extends Controller
     public function removeAction(Request $request, $type, $id)
     {
         if ($request->isMethod('POST')) {
-            try 
-            {
+            try {
                 $em = $this->getDoctrine()->getManager();
                 $subscription = $this->findByType($em, $type, $id);
                 $em->remove($subscription);
                 $em->flush();
 
                 return new Response(json_encode(array('status' => true)));
-            } 
-            catch (\Exception $exception) 
-            {
+            } catch (\Exception $exception) {
                 return new Response(json_encode(array('status' => false)));
             }
         }
@@ -160,10 +152,10 @@ class UsersSubscriptionsController extends Controller
         $em = $this->getDoctrine()->getManager();
         $subscriptionService = $this->container->get('subscription.service');
         $subscription = $subscriptionService->getOneById($request->get('subscriptionId'));
-        
+
         $form = $this->createForm('detailsForm');
         if ($request->isMethod('POST')) {
-            $form->bind($request);     
+            $form->bind($request);
             if ($form->isValid()) {
                 $data = $form->getData();
                 $subscriptionData = new \Newscoop\PaywallBundle\Subscription\SubscriptionData(array(
@@ -196,16 +188,16 @@ class UsersSubscriptionsController extends Controller
                 $subscription = $subscriptionService->update($subscription, $subscriptionData);
                 $subscriptionService->save($subscription);
 
-                return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details', 
+                return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details',
                     array(
-                        'id' => $subscription->getId(), 
+                        'id' => $subscription->getId(),
                     )
                 ));
             }
 
-            return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details', 
+            return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details',
                 array(
-                    'id' => $subscription->getId(), 
+                    'id' => $subscription->getId(),
                 )
             ));
         }
@@ -243,6 +235,24 @@ class UsersSubscriptionsController extends Controller
                 return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_index'));
             }
         }
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/users-subscriptions/getusers", options={"expose"=true})
+     */
+    public function getUsersAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $qb = $em->getRepository('Newscoop\Entity\User')->createQueryBuilder('u');
+        $qb->select('u.id', 'u.username');
+        $qb->andWhere('u.status = :status')
+            ->setParameter('status', User::STATUS_ACTIVE);
+        $qb->andWhere("(u.username LIKE :query)");
+        $qb->setParameter('query', '%' . trim($request->get('term'), '%') . '%');
+        $qb->setMaxResults(25);
+        $qb->orderBy('u.username', 'asc');
+
+        return $qb->getQuery()->getArrayResult();
     }
 
     /**
@@ -286,21 +296,21 @@ class UsersSubscriptionsController extends Controller
                 $em->flush();
 
                 if ($type === 'issue' || $type === 'section' || $type === 'article') {
-                    return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details', 
+                    return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details',
                         array(
-                            'id' => $subscription->getSubscription()->getId(), 
+                            'id' => $subscription->getSubscription()->getId(),
                         )
                     ));
                 }
 
-                return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details', 
+                return $this->redirect($this->generateUrl('newscoop_paywall_userssubscriptions_details',
                     array(
-                        'id' => $id, 
+                        'id' => $id,
                     )
                 ));
             }
         }
-        
+
         return array(
             'form' => $form->createView(),
             'subscription' => $subscription,
@@ -387,7 +397,7 @@ class UsersSubscriptionsController extends Controller
     /**
      * @Route("/admin/paywall_plugin/users-subscriptions/getdata/{type}", options={"expose"=true})
      */
-    public function getData(Request $request, $type) 
+    public function getData(Request $request, $type)
     {
         $subscriptionService = $this->get('subscription.service');
         $resultEntity = array();
@@ -395,12 +405,12 @@ class UsersSubscriptionsController extends Controller
         $resultArray = array();
         $languageId = $request->get('languageId');
         $publicationId = $request->get('publicationId');
-        
+
         switch ($type) {
             case 'issue':
                 $subscriptionEntity = $subscriptionService
                     ->getIssuesByLanguageAndId($languageId, $request->get('subscriptionId'));
-        
+
                 if ($languageId === 'all') {
                     $sections = $subscriptionService->getDiffrentIssuesByLanguage($request->get('currentLanguageId'), $publicationId);
                 } else {
@@ -417,7 +427,7 @@ class UsersSubscriptionsController extends Controller
             case 'section':
                 $sectionsEntity = $subscriptionService
                     ->getSectionsByLanguageAndId($languageId, $request->get('subscriptionId'));
-                
+
                 if ($languageId === 'all') {
                     $sections = $subscriptionService->getDiffrentSectionsByLanguage($request->get('currentLanguageId'), $publicationId);
                 } else {
@@ -440,7 +450,7 @@ class UsersSubscriptionsController extends Controller
                 } else {
                     $articles = $subscriptionService->getArticlesByLanguageId($languageId);
                 }
-                
+
                 foreach ($articles as $article) {
                     $resultEntity[$article->getNumber()] = $article->getName();
                 }
@@ -449,15 +459,15 @@ class UsersSubscriptionsController extends Controller
                 }
                 break;
         }
-        
+
         $array = array_unique(array_diff($resultEntity, $resultSubscription));
         foreach ($array as $key => $value) {
             $resultArray[] = array(
-                'id' => $key, 
+                'id' => $key,
                 'name' => $value
             );
         }
-        
+
         return new Response(json_encode($resultArray));
     }
 
@@ -470,7 +480,7 @@ class UsersSubscriptionsController extends Controller
      *
      * @return Entity object|Array Collection
      */
-    private function findByType($em, $type, $id) 
+    private function findByType($em, $type, $id)
     {
 
         if ($type === 'section') {

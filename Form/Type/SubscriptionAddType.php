@@ -17,10 +17,9 @@ class SubscriptionAddType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('users', 'entity', array(
+        ->add('users', 'hidden', array(
             'label' => 'paywall.manage.label.users',
-            'class' => 'Newscoop\Entity\User',
-            'property' => 'username',
+            'required' => true
         ))
         ->add('subscriptions', 'entity', array(
             'label' => 'paywall.manage.label.subscriptions',
