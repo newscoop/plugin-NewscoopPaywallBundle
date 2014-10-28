@@ -211,6 +211,8 @@ $(document).ready(function(){
             },
             formatResult: function(user) { return user.username; },
             formatSelection: function(user) { return user.username; },
+    }).on("change", function () {
+       $('#exists-error').hide();
     });
 });
 </script>
