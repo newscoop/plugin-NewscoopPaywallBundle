@@ -26,6 +26,7 @@ function getDetails(typeDetails, durationDetails, priceDetails, currencyDetails 
             currencyDetails.append(data[0].currency);
         }, 'json');
 };
+
 $(document).ready(function(){
     var translations = {'btn.deactivate': 'Deactivate', 
         'label.active': 'Active',
@@ -157,11 +158,6 @@ $(document).ready(function(){
     });
 
     $('#subscriptionaddForm_users').css('width', '250px');
-    $('#subscriptionaddForm_users').select2({
-        minimumInputLength: 1
-    }).on("change", function () {
-        $('#exists-error').hide();
-    });
     $('#subscriptionaddForm_subscriptions').css('width', '250px');
     $('#subscriptionaddForm_subscriptions').select2({
         minimumInputLength: 1
@@ -195,6 +191,29 @@ $(document).ready(function(){
     $('#subscriptionaddForm_status').select2();
     $('.dataTables_filter label input').addClass('form-control input-sm');
     $('.dataTables_filter label input').attr('placeholder', '{{ 'paywall.search'|trans }}');
+
+    $("#subscriptionaddForm_users").select2({
+        minimumInputLength: 3,
+        placeholder: '{{ 'paywall.manage.label.choose'|trans }}',
+        id: function(user) { return user.id; },
+        ajax: {
+            url: Routing.generate('newscoop_paywall_userssubscriptions_getusers'),
+            dataType: 'json',
+                data: function (term, page) {
+                    return {
+                        term: term, // search term
+                        limit: page,
+                    };
+                },
+                results: function (data, page) {
+                    return { results: data };
+                }
+            },
+            formatResult: function(user) { return user.username; },
+            formatSelection: function(user) { return user.username; },
+    }).on("change", function () {
+       $('#exists-error').hide();
+    });;
 });
 </script>
 {% endblock %}
