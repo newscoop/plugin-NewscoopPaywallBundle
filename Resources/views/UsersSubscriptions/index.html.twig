@@ -194,7 +194,7 @@ $(document).ready(function(){
 
     $("#subscriptionaddForm_users").select2({
         minimumInputLength: 3,
-        placeholder: '{{ 'paywall.step1.manage.label.choose'|trans }}',
+        placeholder: '{{ 'paywall.manage.label.choose'|trans }}',
         id: function(user) { return user.id; },
         ajax: {
             url: Routing.generate('newscoop_paywall_userssubscriptions_getusers'),
@@ -213,7 +213,7 @@ $(document).ready(function(){
             formatSelection: function(user) { return user.username; },
     }).on("change", function () {
        $('#exists-error').hide();
-    });
+    });;
 });
 </script>
 {% endblock %}

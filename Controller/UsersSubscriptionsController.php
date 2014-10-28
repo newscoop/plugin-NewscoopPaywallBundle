@@ -252,7 +252,7 @@ class UsersSubscriptionsController extends Controller
         $qb->setMaxResults(25);
         $qb->orderBy('u.username', 'asc');
 
-        return $qb->getQuery()->getArrayResult();
+        return new JsonResponse($qb->getQuery()->getArrayResult());
     }
 
     /**
