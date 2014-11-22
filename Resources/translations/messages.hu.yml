@@ -140,7 +140,7 @@ paywall:
     success:
         settingssaved: 'A beállítások mentése sikerült.'
     msg:
-        membershipemail: null
+        membershipemail: 'Add meg az értesítési e-mail címedet.'
         membershipemaillabel: null
         providersmall: 'Válassz fizetési fal szolgáltatót'
         providername: Szolgáltató
