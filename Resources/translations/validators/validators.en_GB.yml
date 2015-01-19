@@ -3,12 +3,12 @@ paywall:
         form:
             error:
                 price:
-                    decimal: null
-                    custom: null
-                    blank: null
+                    decimal: 'Price field must be greater than or equal to 1.'
+                    custom: 'The price field contains an illegal character: it can only contain numbers.'
+                    blank: 'Price field can not be empty.'
                 range:
-                    blank: null
+                    blank: 'Range field can not be empty.'
                 currency:
-                    blank: null
+                    blank: 'Currency field can not be empty.'
                 name:
-                    blank: null
+                    blank: 'Name field can not be empty.'
