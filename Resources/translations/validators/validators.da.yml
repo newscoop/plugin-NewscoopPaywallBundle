@@ -3,12 +3,12 @@ paywall:
         form:
             error:
                 price:
-                    decimal: null
-                    custom: null
-                    blank: null
+                    decimal: 'Prisen skal være mindst 1.'
+                    custom: 'Prisfeltet må kun indeholde tal.'
+                    blank: 'Prisfeltet må ikke være tomt.'
                 range:
                     blank: null
                 currency:
-                    blank: null
+                    blank: 'Valutafeltet må ikke være tomt.'
                 name:
-                    blank: null
+                    blank: 'Navnefeltet må ikke være tomt.'
