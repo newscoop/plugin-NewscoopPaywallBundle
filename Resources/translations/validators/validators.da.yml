@@ -7,7 +7,7 @@ paywall:
                     custom: 'Prisfeltet må kun indeholde tal.'
                     blank: 'Prisfeltet må ikke være tomt.'
                 range:
-                    blank: null
+                    blank: 'Periodefeltet må ikke være tomt.'
                 currency:
                     blank: 'Valutafeltet må ikke være tomt.'
                 name:
