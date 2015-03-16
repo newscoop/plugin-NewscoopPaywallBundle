@@ -11,7 +11,7 @@ class DefaultController extends Controller
 {
     /**
      * Show succes page or redirect to one
-     * 
+     *
      * @Route("/paywall/return/success")
      */
     public function statusSuccessAction()
@@ -21,7 +21,7 @@ class DefaultController extends Controller
 
     /**
      * Show error page or redirect to one
-     * 
+     *
      * @Route("/paywall/return/error")
      */
     public function statusErrorAction()
@@ -31,7 +31,7 @@ class DefaultController extends Controller
 
     /**
      * Show cancel page or redirect to one
-     * 
+     *
      * @Route("/paywall/return/cancel")
      */
     public function statusCancelAction()
@@ -41,23 +41,22 @@ class DefaultController extends Controller
 
     /**
      * Get callback response from paywall/payment provider and proccess it.
-     * 
+     *
      * @Route("/paywall/subscriptions/add/{item}/{number}")
      */
     public function createSubscriptionAction(Request $request, $item, $number)
     {
         $adapter = $this->container->getService('newscoop.paywall.adapter');
-
     }
 
     /**
      * Get callback response from paywall/payment provider and proccess it.
-     * 
+     *
      * @Route("/paywall/subscriptions/get")
      */
     public function getSubscriptionAction(Request $request)
     {
-        $subscriptionService = $this->container->get('subscription.service');
+        $subscriptionService = $this->container->get('paywall.subscription.service');
         $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
         $auth = \Zend_Auth::getInstance();
         $userId = $auth->getIdentity();
@@ -74,7 +73,7 @@ class DefaultController extends Controller
             'publicationId' => $request->get('publication_id'),
             'toPay' => $choosenSubscription['price'],
             'days' => $choosenSubscription['range'],
-            'currency' => $choosenSubscription['currency']
+            'currency' => $choosenSubscription['currency'],
         ), $subscription);
 
         $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('language_id'));
@@ -83,7 +82,7 @@ class DefaultController extends Controller
                 $article = $subscriptionService->getArticleRepository()->findOneByNumber($request->get('article_id'));
                 $subscriptionData->addArticle($article, $language);
                 break;
-            
+
             case 'section':
                 $section = $subscriptionService->getSectionRepository()->findOneByNumber($request->get('section_id'));
                 $subscriptionData->addSection($section, $language);
@@ -102,13 +101,13 @@ class DefaultController extends Controller
         $subscriptionService->save($subscription);
 
         return $this->render('NewscoopPaywallBundle:Default:getSubscription.html.smarty', array(
-            'subscriptionId' => $subscription->getId()
+            'subscriptionId' => $subscription->getId(),
         ));
     }
 
     /**
      * Get callback response from paywall/payment provider and proccess it.
-     * 
+     *
      * @Route("/paywall/return/callback")
      */
     public function callbackAction(Request $request)

@@ -6,7 +6,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-
 /**
  * Newscoop paypal_payment_form block plugin
  *
@@ -33,7 +32,7 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
     $smarty->smarty->loadPlugin('smarty_shared_escape_special_chars');
     $context = $smarty->getTemplateVars('gimme');
     $container = \Zend_Registry::get('container');
-    $subscriptionService = $container->getService('subscription.service');
+    $subscriptionService = $container->getService('paywall.subscription.service');
     $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
     $url = $context->url;
 
@@ -50,7 +49,7 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
         'subscription_amount' => $choosenSubscription->getToPay(),
         'subscription_currency' => $choosenSubscription->getCurrency(),
         'subscription_item_name' => str_replace('%publication_name%', $context->publication->name, $subscriptionsConfig['paypal_config']['item_name_format']),
-        'language_code' => $context->language->code
+        'language_code' => $context->language->code,
     );
 
     if (isset($params['test'])) {
@@ -69,11 +68,10 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
         $params['button_html_code'] = '';
     }
 
-
     $html = '<form name="subscribe_content" action="'.$formData['paypal_url'].'" method="post" '.$params['html_code'].'>'."\n";
 
     if (isset($template)) {
-        $html .= "<input type=\"hidden\" name=\"tpl\" value=\"" . $template->identifier . "\" />\n";
+        $html .= "<input type=\"hidden\" name=\"tpl\" value=\"".$template->identifier."\" />\n";
     }
 
     $html .= '<input type="hidden" name="cmd" value="_xclick">'."\n";
@@ -99,10 +97,9 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
         .'" value="'.htmlentities($param['value'])."\" />\n";
     }
 
-
     $html .= $content;
 
-    $html .= "<input type=\"submit\" name=\"submit_form\" id=\"paypal_form_submit\" value=\"".smarty_function_escape_special_chars($params['submit_button'])."\" " . $params['button_html_code'] . " />\n";
+    $html .= "<input type=\"submit\" name=\"submit_form\" id=\"paypal_form_submit\" value=\"".smarty_function_escape_special_chars($params['submit_button'])."\" ".$params['button_html_code']." />\n";
 
     $html .= "</form>\n";
 

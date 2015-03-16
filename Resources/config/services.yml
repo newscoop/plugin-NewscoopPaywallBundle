@@ -3,9 +3,12 @@ parameters:
     subscriptions.service.class: "Newscoop\\PaywallBundle\\Services\\PaywallService"
 
 services:
+    paywall.subscription.service:
+        class:      %subscriptions.service.class%
+        arguments:  ["@em"]
     newscoop.paywall.adapter.manager:
       class: Newscoop\PaywallBundle\Services\PaywallManager
-      arguments: ["@em", "@subscription.service", "@dispatcher"]
+      arguments: ["@em", "@paywall.subscription.service", "@dispatcher"]
 
     newscoop.paywall.adapter:
       class: Newscoop\PaywallBundle\Adapter\PaywallAdapterInterface
