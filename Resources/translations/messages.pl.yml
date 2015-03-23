@@ -1,6 +1,6 @@
 Plugins: Wtyczki
 paywall:
-    title: null
+    title: 'Newscoop Paywall Plugin'
     search: null
     toolbar:
         label:
@@ -17,9 +17,9 @@ paywall:
                 duration: 'Czas trwania subskrypcji w dniach:'
                 price: 'Cena:'
                 currency: 'Waluta:'
-                description: null
+                description: 'Opis:'
                 optional: null
-                subscription: null
+                subscription: Subskrypcja
             select:
                 type:
                     publication: Publikacja
@@ -117,23 +117,23 @@ paywall:
         label:
             addsubscription: 'Dodaj nową subskrypcję'
             managesubscriptions: 'Zarządzanie subskrypcjami'
-            subscriptions.user: null
-            configure.paywall: null
+            subscriptions.user: 'Zarządzanie subskrypcjami użytkowników'
+            configure.paywall: 'Skonfiguruj Paywall'
     datatable:
         table:
-            info: null
-            noentries: null
-            filtering: null
-            menu: null
+            info: 'Widoczne _START_ do _END_ z _TOTAL_ rekordów'
+            noentries: 'Nie ma żadnych rekordów'
+            filtering: ' - filtrowanie z _MAX_ rekordów'
+            menu: 'Pokazuje _MENU_ rekordów'
         label:
-            search: null
-            filter: null
-            processing: null
-            last: null
-            next: null
-            first: null
-            previous: null
-            norecords: null
+            search: Szukaj
+            filter: Filtrowanie
+            processing: Przetważanie...
+            last: Ostatni
+            next: Dalej
+            first: Pierwszy
+            previous: Poprzedni
+            norecords: 'Nie znaleziono żadnych rekordów.'
     error:
         fatal: null
         settingserror: null
