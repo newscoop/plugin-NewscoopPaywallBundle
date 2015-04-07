@@ -5,19 +5,29 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Services;
 
-use Newscoop\Services\SubscriptionService;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
+use Doctrine\ORM\EntityManager;
 
 /**
  * PaywallService manages user's subscriptions
  */
-class PaywallService extends SubscriptionService
+class PaywallService
 {
+    /** @var EntityManager */
+    protected $em;
+
+    /**
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * Gets all user's subscriptions by criteria
      *
@@ -149,7 +159,6 @@ class PaywallService extends SubscriptionService
      */
     public function getSectionsByLanguageAndId($language, $subscriptionId)
     {
-
         $sections = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Section')
             ->findBy(array(
                 'language' => $language,
@@ -193,7 +202,7 @@ class PaywallService extends SubscriptionService
         $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
             ->findOneBy(array(
                 'user' => $user,
-                'is_active' => true
+                'is_active' => true,
         ));
 
         if ($trial) {
@@ -223,7 +232,6 @@ class PaywallService extends SubscriptionService
      */
     public function isTrialActive($user)
     {
-
         $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
             ->findOneBy(array(
                 'user' => $user,
@@ -245,11 +253,10 @@ class PaywallService extends SubscriptionService
      */
     public function deactivateTrial($user)
     {
-
         $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
             ->findOneBy(array(
                 'user' => $user,
-                'is_active' => true
+                'is_active' => true,
         ));
 
         if ($trial) {
@@ -398,10 +405,9 @@ class PaywallService extends SubscriptionService
      */
     public function activateById($id)
     {
-
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
-                'id' => $id
+                'id' => $id,
             ));
 
         if ($subscription) {
@@ -454,14 +460,14 @@ class PaywallService extends SubscriptionService
             ->findOneBy(array(
                 'user' => $userId,
                 'subscription' => $subscriptionId,
-                'active' => 'Y'
+                'active' => 'Y',
             ));
 
         if ($subscription) {
             return $subscription;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -476,14 +482,14 @@ class PaywallService extends SubscriptionService
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'user' => $user,
-                'active' => 'Y'
+                'active' => 'Y',
             ));
 
         if ($subscription) {
             return $subscription;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -503,7 +509,7 @@ class PaywallService extends SubscriptionService
             ->where('s.language != :id AND s.publication = :publicationId')
             ->setParameters(array(
                 'id' => $languageId,
-                'publicationId' => $publicationId
+                'publicationId' => $publicationId,
             ))
             ->getQuery()
             ->getArrayResult();
@@ -528,7 +534,7 @@ class PaywallService extends SubscriptionService
             ->where('i.language != :id AND i.publication = :publicationId')
             ->setParameters(array(
                 'id' => $languageId,
-                'publicationId' => $publicationId
+                'publicationId' => $publicationId,
             ))
             ->getQuery()
             ->getArrayResult();
@@ -553,7 +559,7 @@ class PaywallService extends SubscriptionService
             ->where('i.language != :id AND i.publication = :publicationId')
             ->setParameters(array(
                 'id' => $languageId,
-                'publicationId' => $publicationId
+                'publicationId' => $publicationId,
             ))
             ->getQuery()
             ->getArrayResult();
@@ -661,10 +667,9 @@ class PaywallService extends SubscriptionService
      */
     public function removeById($id)
     {
-
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
-                'id' => $id
+                'id' => $id,
             ));
 
         if ($subscription) {
@@ -675,9 +680,8 @@ class PaywallService extends SubscriptionService
 
     public function getOneById($id)
     {
-
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
-            'id' => $id
+            'id' => $id,
         ));
 
         return $subscription;
@@ -685,9 +689,8 @@ class PaywallService extends SubscriptionService
 
     public function getUserSubscriptionBySubscriptionId($id)
     {
-
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
-            'subscription' => $id
+            'subscription' => $id,
         ));
 
         return $subscription;
@@ -697,7 +700,7 @@ class PaywallService extends SubscriptionService
     {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
             'user' => $userId,
-            'publication' => $publicationId
+            'publication' => $publicationId,
         ));
 
         return $subscription;

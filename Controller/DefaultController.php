@@ -48,7 +48,6 @@ class DefaultController extends Controller
     public function createSubscriptionAction(Request $request, $item, $number)
     {
         $adapter = $this->container->getService('newscoop.paywall.adapter');
-
     }
 
     /**
@@ -58,7 +57,7 @@ class DefaultController extends Controller
      */
     public function getSubscriptionAction(Request $request)
     {
-        $subscriptionService = $this->container->get('subscription.service');
+        $subscriptionService = $this->container->get('paywall.subscription.service');
         $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
         $userService = $this->get('user');
         $user = $userService->getCurrentUser();
