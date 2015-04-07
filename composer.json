@@ -2,7 +2,7 @@
     "name": "newscoop/newscoop-paywall-bundle",
     "description": "Paywall/Payment providers support in Newscoop",
     "keywords": ["newscoop", "pawyall", "cms", "integration"],
-    "version": "0.2",
+    "version": "0.4",
     "type": "newscoop-plugin",
     "license": "GPL-3.0",
     "authors": [
