@@ -5,6 +5,7 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -38,9 +39,9 @@ class UsersSubscriptionsController extends Controller
     public function loadSubscriptionsAction(Request $request)
     {
         $cacheService = $this->get('newscoop.cache');
-        $subscriptionService = $this->get('paywall.subscription.service');
+        $subscriptionService = $this->get('subscription.service');
         $criteria = $this->processRequest($request);
-        $userSubscriptions = $this->get('paywall.subscription.service')->getListByCriteria($criteria);
+        $userSubscriptions = $this->get('subscription.service')->getListByCriteria($criteria);
 
         $pocessed = array();
         foreach ($userSubscriptions as $subscription) {
@@ -99,7 +100,7 @@ class UsersSubscriptionsController extends Controller
     {
         if ($request->isMethod('POST')) {
             try {
-                $this->get('paywall.subscription.service')->removeById($id);
+                $this->get('subscription.service')->removeById($id);
 
                 return new Response(json_encode(array('status' => true)));
             } catch (\Exception $exception) {
@@ -115,7 +116,7 @@ class UsersSubscriptionsController extends Controller
     {
         if ($request->isMethod('POST')) {
             try {
-                $this->get('paywall.subscription.service')->activateById($id);
+                $this->get('subscription.service')->activateById($id);
 
                 return new Response(json_encode(array('status' => true)));
             } catch (\Exception $exception) {
@@ -149,7 +150,7 @@ class UsersSubscriptionsController extends Controller
     public function addAction(Request $request, $type)
     {
         $em = $this->getDoctrine()->getManager();
-        $subscriptionService = $this->container->get('paywall.subscription.service');
+        $subscriptionService = $this->container->get('subscription.service');
         $subscription = $subscriptionService->getOneById($request->get('subscriptionId'));
 
         $form = $this->createForm('detailsForm');
@@ -160,7 +161,7 @@ class UsersSubscriptionsController extends Controller
                 $subscriptionData = new \Newscoop\PaywallBundle\Subscription\SubscriptionData(array(
                     'startDate' => $data['startDate'],
                     'paidDays' => $data['paidDays'],
-                    'days' => $data['days'],
+                    'days' => $data['days']
                 ), $subscription);
 
                 $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('languageId'));
@@ -207,7 +208,7 @@ class UsersSubscriptionsController extends Controller
      */
     public function addSubscriptionAction(Request $request)
     {
-        $subscriptionService = $this->container->get('paywall.subscription.service');
+        $subscriptionService = $this->container->get('subscription.service');
         $subscription = $subscriptionService->create();
         $form = $this->createForm('subscriptionaddForm');
         if ($request->isMethod('POST')) {
@@ -224,7 +225,7 @@ class UsersSubscriptionsController extends Controller
                     'days' => $subscriptionConfig->getSubscription()->getRange(),
                     'currency' => $subscriptionConfig->getSubscription()->getCurrency(),
                     'type' => $data['type'],
-                    'active' => $data['status'] === 'Y' ? true : false,
+                    'active' => $data['status'] === 'Y' ? true : false
                 ), $subscription);
 
                 $subscription = $subscriptionService->update($subscription, $subscriptionData);
@@ -247,7 +248,7 @@ class UsersSubscriptionsController extends Controller
         $qb->andWhere('u.status = :status')
             ->setParameter('status', User::STATUS_ACTIVE);
         $qb->andWhere("(u.username LIKE :query)");
-        $qb->setParameter('query', '%'.trim($request->get('term'), '%').'%');
+        $qb->setParameter('query', '%' . trim($request->get('term'), '%') . '%');
         $qb->setMaxResults(25);
         $qb->orderBy('u.username', 'asc');
 
@@ -324,7 +325,7 @@ class UsersSubscriptionsController extends Controller
     public function editsubscriptionAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        $subscription = $this->get('paywall.subscription.service')->getOneById($id);
+        $subscription = $this->get('subscription.service')->getOneById($id);
 
         $form = $this->createForm('subscriptioneditForm', $subscription);
         if ($request->isMethod('POST')) {
@@ -349,7 +350,7 @@ class UsersSubscriptionsController extends Controller
      */
     public function detailsAction(Request $request, $id)
     {
-        $subscriptionService = $this->get('paywall.subscription.service');
+        $subscriptionService = $this->get('subscription.service');
         $form = $this->createForm('detailsForm');
 
         if ($subscriptionService->getOneById($id)->getSubscription()) {
@@ -375,7 +376,7 @@ class UsersSubscriptionsController extends Controller
      */
     public function getSubscriptionDetailsAjaxAction(Request $request)
     {
-        return new Response(json_encode($this->get('paywall.subscription.service')->getSubscriptionDetails($request->get('subscriptionId'))));
+        return new Response(json_encode($this->get('subscription.service')->getSubscriptionDetails($request->get('subscriptionId'))));
     }
 
     /**
@@ -383,7 +384,7 @@ class UsersSubscriptionsController extends Controller
      */
     public function existCheckAjaxAction(Request $request)
     {
-        $subscription = $this->get('paywall.subscription.service')->getOneByUserAndSubscription($request->get('userId'), $request->get('subscriptionId'));
+        $subscription = $this->get('subscription.service')->getOneByUserAndSubscription($request->get('userId'), $request->get('subscriptionId'));
 
         $status = false;
         if ($subscription) {
@@ -398,7 +399,7 @@ class UsersSubscriptionsController extends Controller
      */
     public function getData(Request $request, $type)
     {
-        $subscriptionService = $this->get('paywall.subscription.service');
+        $subscriptionService = $this->get('subscription.service');
         $resultEntity = array();
         $resultSubscription = array();
         $resultArray = array();
@@ -463,7 +464,7 @@ class UsersSubscriptionsController extends Controller
         foreach ($array as $key => $value) {
             $resultArray[] = array(
                 'id' => $key,
-                'name' => $value,
+                'name' => $value
             );
         }
 
@@ -481,43 +482,44 @@ class UsersSubscriptionsController extends Controller
      */
     private function findByType($em, $type, $id)
     {
+
         if ($type === 'section') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Section')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Section')
                 ->findOneBy(array(
                     'id' => $id,
                 ));
         }
 
         if ($type === 'issue') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Issue')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
                 ->findOneBy(array(
                     'id' => $id,
                 ));
         }
 
         if ($type === 'article') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Article')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Article')
                 ->findOneBy(array(
                     'id' => $id,
                 ));
         }
 
         if ($type === 'edit-all-issues') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Issue')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
                 ->findBy(array(
                     'subscription' => $id,
                 ));
         }
 
         if ($type === 'edit-all-sections') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Section')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Section')
                 ->findBy(array(
                     'subscription' => $id,
                 ));
         }
 
         if ($type === 'edit-all-articles') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Article')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Article')
                 ->findBy(array(
                     'subscription' => $id,
                 ));

@@ -5,29 +5,19 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Services;
 
+use Newscoop\Services\SubscriptionService;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
-use Doctrine\ORM\EntityManager;
 
 /**
  * PaywallService manages user's subscriptions
  */
-class PaywallService
+class PaywallService extends SubscriptionService
 {
-    /** @var EntityManager */
-    protected $em;
-
-    /**
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
     /**
      * Gets all user's subscriptions by criteria
      *
@@ -69,16 +59,18 @@ class PaywallService
      */
     public function getIssues($id)
     {
-        $issues = $this->em->getRepository('Newscoop\Subscription\Issue')
+        $issues = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
             ->findBy(array(
                 'subscription' => $id,
             ));
 
         $issuesArray = array();
         foreach ($issues as $issue) {
+            $issueName = $this->em->getRepository('Newscoop\Entity\Issue')->findOneByNumber($issue->getIssueNumber())->getName();
+
             $issuesArray[] = array(
                 'id' => $issue->getId(),
-                'name' => $issue->getIssue()->getName(),
+                'name' => $issueName,
                 'language' => $issue->getLanguage()->getName(),
                 'date' => $issue->getStartDate(),
                 'days' => $issue->getDays(),
@@ -98,7 +90,7 @@ class PaywallService
      */
     public function getSections($id)
     {
-        $sections = $this->em->getRepository('Newscoop\Subscription\Section')
+        $sections = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Section')
             ->findBy(array(
                 'subscription' => $id,
             ));
@@ -127,7 +119,7 @@ class PaywallService
      */
     public function getArticles($id)
     {
-        $articles = $this->em->getRepository('Newscoop\Subscription\Article')
+        $articles = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Article')
             ->findBy(array(
                 'subscription' => $id,
             ));
@@ -157,7 +149,8 @@ class PaywallService
      */
     public function getSectionsByLanguageAndId($language, $subscriptionId)
     {
-        $sections = $this->em->getRepository('Newscoop\Subscription\Section')
+
+        $sections = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Section')
             ->findBy(array(
                 'language' => $language,
                 'subscription' => $subscription_id,
@@ -200,7 +193,7 @@ class PaywallService
         $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
             ->findOneBy(array(
                 'user' => $user,
-                'is_active' => true,
+                'is_active' => true
         ));
 
         if ($trial) {
@@ -230,6 +223,7 @@ class PaywallService
      */
     public function isTrialActive($user)
     {
+
         $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
             ->findOneBy(array(
                 'user' => $user,
@@ -251,10 +245,11 @@ class PaywallService
      */
     public function deactivateTrial($user)
     {
+
         $trial = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Trial')
             ->findOneBy(array(
                 'user' => $user,
-                'is_active' => true,
+                'is_active' => true
         ));
 
         if ($trial) {
@@ -294,7 +289,7 @@ class PaywallService
      */
     public function getIssuesByLanguageAndId($language, $subscription_id)
     {
-        $issues = $this->em->getRepository('Newscoop\Subscription\Issue')
+        $issues = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
             ->findBy(array(
                 'language' => $language,
                 'subscription' => $subscription_id,
@@ -330,7 +325,7 @@ class PaywallService
      */
     public function getArticlesByLanguageAndId($language, $subscription_id)
     {
-        $articles = $this->em->getRepository('Newscoop\Subscription\Article')
+        $articles = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Article')
             ->findBy(array(
                 'language' => $language,
                 'subscription' => $subscription_id,
@@ -403,9 +398,10 @@ class PaywallService
      */
     public function activateById($id)
     {
+
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
-                'id' => $id,
+                'id' => $id
             ));
 
         if ($subscription) {
@@ -458,14 +454,14 @@ class PaywallService
             ->findOneBy(array(
                 'user' => $userId,
                 'subscription' => $subscriptionId,
-                'active' => 'Y',
+                'active' => 'Y'
             ));
 
         if ($subscription) {
             return $subscription;
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -480,14 +476,14 @@ class PaywallService
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'user' => $user,
-                'active' => 'Y',
+                'active' => 'Y'
             ));
 
         if ($subscription) {
             return $subscription;
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -507,7 +503,7 @@ class PaywallService
             ->where('s.language != :id AND s.publication = :publicationId')
             ->setParameters(array(
                 'id' => $languageId,
-                'publicationId' => $publicationId,
+                'publicationId' => $publicationId
             ))
             ->getQuery()
             ->getArrayResult();
@@ -532,7 +528,7 @@ class PaywallService
             ->where('i.language != :id AND i.publication = :publicationId')
             ->setParameters(array(
                 'id' => $languageId,
-                'publicationId' => $publicationId,
+                'publicationId' => $publicationId
             ))
             ->getQuery()
             ->getArrayResult();
@@ -557,7 +553,7 @@ class PaywallService
             ->where('i.language != :id AND i.publication = :publicationId')
             ->setParameters(array(
                 'id' => $languageId,
-                'publicationId' => $publicationId,
+                'publicationId' => $publicationId
             ))
             ->getQuery()
             ->getArrayResult();
@@ -600,8 +596,8 @@ class PaywallService
             $subscription->setToPay($data->toPay);
         }
 
-        if ($data->subscriptionId) {
-            $subscription->setSubscription($data->subscriptionId);
+        if ($data->mainSubscriptionId) {
+            $subscription->setSubscription($data->mainSubscriptionId);
         }
 
         if ($data->currency) {
@@ -665,9 +661,10 @@ class PaywallService
      */
     public function removeById($id)
     {
+
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
-                'id' => $id,
+                'id' => $id
             ));
 
         if ($subscription) {
@@ -678,8 +675,9 @@ class PaywallService
 
     public function getOneById($id)
     {
+
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
-            'id' => $id,
+            'id' => $id
         ));
 
         return $subscription;
@@ -687,8 +685,9 @@ class PaywallService
 
     public function getUserSubscriptionBySubscriptionId($id)
     {
+
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
-            'subscription' => $id,
+            'subscription' => $id
         ));
 
         return $subscription;
@@ -698,7 +697,7 @@ class PaywallService
     {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')->findOneBy(array(
             'user' => $userId,
-            'publication' => $publicationId,
+            'publication' => $publicationId
         ));
 
         return $subscription;

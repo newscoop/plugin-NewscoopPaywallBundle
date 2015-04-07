@@ -10,9 +10,6 @@ namespace Newscoop\PaywallBundle\Entity;
 
 use Newscoop\Entity\Publication;
 use Newscoop\Entity\User;
-use Newscoop\Entity\Section;
-use Newscoop\Entity\Issue;
-use Newscoop\Entity\Article;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -75,19 +72,19 @@ class UserSubscription
     protected $currency;
 
     /**
-     * @ORM\OneToMany(targetEntity="Newscoop\Subscription\Section", mappedBy="subscription", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\Section", mappedBy="subscription", cascade={"persist", "remove"})
      * @var array
      */
     protected $sections;
 
     /**
-     * @ORM\OneToMany(targetEntity="Newscoop\Subscription\Article", mappedBy="subscription", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\Article", mappedBy="subscription", cascade={"persist", "remove"})
      * @var array
      */
     protected $articles;
 
     /**
-     * @ORM\OneToMany(targetEntity="Newscoop\Subscription\Issue", mappedBy="subscription", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\Issue", mappedBy="subscription", cascade={"persist", "remove"})
      * @var array
      */
     public $issues;
@@ -175,7 +172,7 @@ class UserSubscription
      * @param  Newscoop\PaywallBundle\Entity\Subscriptions $subscription
      * @return void
      */
-    public function setSubscription(Subscriptions $subscription)
+    public function setSubscription($subscription)
     {
         $this->subscription = $subscription;
 

@@ -3,12 +3,9 @@ parameters:
     subscriptions.service.class: "Newscoop\\PaywallBundle\\Services\\PaywallService"
 
 services:
-    paywall.subscription.service:
-        class:      %subscriptions.service.class%
-        arguments:  ["@em"]
     newscoop.paywall.adapter.manager:
       class: Newscoop\PaywallBundle\Services\PaywallManager
-      arguments: ["@em", "@paywall.subscription.service", "@dispatcher"]
+      arguments: ["@em", "@subscription.service", "@dispatcher"]
 
     newscoop.paywall.adapter:
       class: Newscoop\PaywallBundle\Adapter\PaywallAdapterInterface
@@ -65,3 +62,8 @@ services:
         arguments: ["@em"]
         tags:
           - { name: kernel.event_listener, event: newscoop_paywall.adapters.register, method: registerExternalAdapters }
+
+    newscoop.template_lists.list_objects.listener:
+        class: Newscoop\PaywallBundle\EventListener\ListObjectsListener
+        tags:
+          - { name: kernel.event_listener, event: newscoop.listobjects.register, method: registerObjects }

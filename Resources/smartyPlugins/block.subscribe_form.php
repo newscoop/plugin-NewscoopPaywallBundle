@@ -31,7 +31,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
 
     $smarty->smarty->loadPlugin('smarty_shared_escape_special_chars');
     $context = $smarty->getTemplateVars('gimme');
-    $subscriptionService = \Zend_Registry::get('container')->getService('paywall.subscription.service');
+    $subscriptionService = \Zend_Registry::get('container')->getService('subscription.service');
     $url = $context->url;
 
     if (!isset($p_params['submit_button'])) {
@@ -64,18 +64,29 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     }
 
     $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
+
     $matched = array();
     $types = array(
         'publication'   => 4,
         'issue'         => 3,
         'section'       => 2,
-        'article'       => 1,
+        'article'       => 1
     );
     asort($types);
 
+    $availableSubscriptions = array();
+    foreach ($subscriptionsConfig as $subscription) {
+        $availableSubscriptions[$subscription->getName()] = array(
+            'type' => $subscription->getType(),
+            'range' => $subscription->getRange(),
+            'currency' => $subscription->getCurrency(),
+            'price' => $subscription->getPrice()
+        );
+    }
+
     // find specific type
     $specificType = false;
-    foreach ($subscriptionsConfig['subscriptions'] as $name => $definition) {
+    foreach ($availableSubscriptions as $name => $definition) {
         $specificElement = false;
         if (array_key_exists('specify', $definition)) {
             $parts = true;
@@ -96,6 +107,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
                 $specificElement === true ||
                 (!array_key_exists('specify', $definition) && !$specificType)
             ) {
+
                 $matched[$name] = $definition + array('definition_name' => $name);
                 if ($specificElement) {
                     $specificType = $definition['type'];
@@ -107,7 +119,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/subscriptions/get'.$anchor.'" method="post" '.$p_params['html_code'].'>'."\n";
 
     if (isset($template)) {
-        $html .= "<input type=\"hidden\" name=\"tpl\" value=\"".$template->identifier."\" />\n";
+        $html .= "<input type=\"hidden\" name=\"tpl\" value=\"" . $template->identifier . "\" />\n";
     }
 
     foreach ($context->url->form_parameters as $param) {
@@ -122,7 +134,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     if (array_key_exists('option_text', $p_params)) {
         $optionText = smarty_function_escape_special_chars($p_params['option_text']);
     } else {
-        $optionText = 'This %type% - %range% for %price% %currency%';
+        $optionText = 'This %type% - %price% %currency% for %range% days';
     }
 
     foreach ($meta as $type => $value) {
@@ -133,7 +145,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
 
     if (array_key_exists('type', $p_params) && $p_params['type'] == 'radio') {
         foreach ($matched as $type => $definition) {
-            $html .= '<p><input type="radio" name="subscription_name" value="'.$definition['definition_name'].'">'.str_replace('%currency%', $definition['currency'],
+            $html .= '<p><input type="radio" name="subscription_name" value="'.$definition['definition_name'].'">' .str_replace('%currency%', $definition['currency'],
                     str_replace('%price%', $definition['price'],
                         str_replace('%range%', $definition['range'],
                             str_replace('%type%', $definition['type'], $optionText)
@@ -155,7 +167,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     $html .= "<input type=\"submit\" name=\"submit_comment\" "
     ."id=\"subscribe_content_submit\" value=\""
     .smarty_function_escape_special_chars($p_params['submit_button'])
-    ."\" ".$p_params['button_html_code']." />\n";
+    ."\" " . $p_params['button_html_code'] . " />\n";
     $html .= "</form>\n";
 
     return $html;

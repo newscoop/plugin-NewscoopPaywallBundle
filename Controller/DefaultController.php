@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 
 class DefaultController extends Controller
 {
@@ -47,6 +48,7 @@ class DefaultController extends Controller
     public function createSubscriptionAction(Request $request, $item, $number)
     {
         $adapter = $this->container->getService('newscoop.paywall.adapter');
+
     }
 
     /**
@@ -56,28 +58,41 @@ class DefaultController extends Controller
      */
     public function getSubscriptionAction(Request $request)
     {
-        $subscriptionService = $this->container->get('paywall.subscription.service');
+        $subscriptionService = $this->container->get('subscription.service');
         $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
-        $auth = \Zend_Auth::getInstance();
-        $userId = $auth->getIdentity();
+        $userService = $this->get('user');
+        $user = $userService->getCurrentUser();
+        $em = $this->get('em');
 
-        if (array_key_exists($request->get('subscription_name'), $subscriptionsConfig['subscriptions'])) {
-            $choosenSubscription = $subscriptionsConfig['subscriptions'][$request->get('subscription_name')];
-        } else {
-            die('brak subskrypcji');
+        if (!$user) {
+            die('not logged in');
+        }
+
+        $mainSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            ->findOneByName($request->get('subscription_name'));
+
+        $choosenSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            ->findOneByName($request->get('subscription_name'));
+
+        if (!$choosenSubscription) {
+            die('subscription doesnt exist');
         }
 
         $subscription = $subscriptionService->create();
-        $subscriptionData = new \Newscoop\Subscription\SubscriptionData(array(
-            'userId' => $userId,
+        $subscriptionData = new SubscriptionData(array(
+            'userId' => $user,
+            //'subscriptionId' => $choosenSubscription->getId(),
+            'mainSubscriptionId' => $mainSubscription,
             'publicationId' => $request->get('publication_id'),
-            'toPay' => $choosenSubscription['price'],
-            'days' => $choosenSubscription['range'],
-            'currency' => $choosenSubscription['currency'],
+            'toPay' => $choosenSubscription->getPrice(),
+            'days' => $choosenSubscription->getRange(),
+            'currency' => $choosenSubscription->getCurrency(),
+            'type' => 'T',
+            'active' => false,
         ), $subscription);
 
         $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('language_id'));
-        switch ($choosenSubscription['type']) {
+        switch ($choosenSubscription->getType()) {
             case 'article':
                 $article = $subscriptionService->getArticleRepository()->findOneByNumber($request->get('article_id'));
                 $subscriptionData->addArticle($article, $language);
@@ -100,9 +115,13 @@ class DefaultController extends Controller
         $subscription = $subscriptionService->update($subscription, $subscriptionData);
         $subscriptionService->save($subscription);
 
-        return $this->render('NewscoopPaywallBundle:Default:getSubscription.html.smarty', array(
-            'subscriptionId' => $subscription->getId(),
-        ));
+        $response = new Response();
+        $templatesService = $this->get('newscoop.templates.service');
+        $response->setContent($templatesService->fetchTemplate("_paywall/success.tpl", array('sibscription' => $subscription)));
+        $response->headers->set('Content-Type', 'text/html');
+        $response->setCharset('utf-8');
+
+        return $response;
     }
 
     /**
