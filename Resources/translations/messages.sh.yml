@@ -1,0 +1,146 @@
+Plugins: Pluginovi
+paywall:
+    title: null
+    search: null
+    toolbar:
+        label:
+            configuration: null
+            manage: null
+            manageusers: null
+            configure: null
+    step1:
+        header: null
+        form:
+            label:
+                name: null
+                type: null
+                duration: null
+                price: null
+                currency: null
+                description: 'Opis:'
+                optional: null
+                subscription: Pretplata
+            select:
+                type:
+                    publication: Publikacija
+                    issue: Izdanje
+                    section: Rubrika
+                    article: Tekst
+            error:
+                name: null
+                duration: null
+                price: null
+                currency: null
+                description: null
+    step2:
+        header: null
+        label:
+            article: Tekstovi
+            publication: Publikacije
+            type: Tip
+            durationbox: null
+            price: null
+            currency: Valuta
+            active: Status
+    btn:
+        skip: null
+        save: Snimi
+        edit: Uredi
+        delete: Obriši
+        next: Sledeći
+        button1: null
+        button2: null
+        details: null
+        back: Nazad
+        add: Dodaj
+        deactivate: null
+        activate: null
+    flash:
+        message:
+            error: null
+            provider:
+                changed: null
+            subscription:
+                deleted: null
+                updated: null
+                activated: null
+                deactivated: null
+    manage:
+        error:
+            currency: null
+            topay: null
+            exists:
+                subscription: null
+            select:
+                empty: null
+                choose: null
+        label:
+            name: Naslov
+            duration: null
+            options: Opcije
+            username: 'Korisničko ime'
+            topay: null
+            active: Aktivna
+            deactivated: null
+            users: Korisnici
+            subscriptions: Pretplate
+            paymenttype: null
+            paid: null
+            paidnow: null
+            trial: Probna
+            yes: Da
+            no: Ne
+            addnew: null
+            subscriptiondetails: null
+            addissue: null
+            addsection: 'Dodaj rubriku'
+            addarticle: null
+            editallissues: null
+            editallsections: 'Uredi sve rubrike'
+            editallarticles: null
+            language: Jezik
+            individuallanguage: 'Pojedinačni jezici'
+            reglanguage: 'Nezavisno od jezika'
+            days: Dana
+            startdate: null
+            paiddays: null
+            issues: Izdanja
+            sections: Rubrike
+            articles: Tekstovi
+            nocontent: null
+            content: Sadržaji
+            choose: Izaberi...
+            adapters: null
+            current: null
+            goback: null
+    menu:
+        label:
+            addsubscription: 'Dodaj novu pretplatu'
+            managesubscriptions: null
+            subscriptions.user: null
+            configure.paywall: null
+    datatable:
+        table:
+            info: 'Prikazano _START_ do _END_ od _TOTAL_ unosa'
+            noentries: 'Nema unosa za prikaz'
+            filtering: '- filtriranje među _MAX_ zapisa'
+            menu: 'Prikaži _MENU_ zapise'
+        label:
+            search: Traži
+            filter: Filter
+            processing: Obrađujem...
+            last: Poslednji
+            next: Sledeći
+            first: Prvi
+            previous: Prethodni
+            norecords: 'Nema zapisa'
+    error:
+        fatal: null
+        settingserror: null
+    success:
+        settingssaved: null
+    msg:
+        membershipemail: null
+        membershipemaillabel: null
+        providersmall: null
+        providername: null
