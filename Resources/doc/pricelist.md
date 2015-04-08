@@ -20,4 +20,4 @@ This smarty function displays all available subscriptions to create price list.
 - name (e.g. `{{ list_pricetable constraints="name is Test" }}`)
 
 ##List order:
-- orderBy (e.g. `{{ list_pricetable order="created_at asc" }}`)
+- order (e.g. `{{ list_pricetable order="created_at asc" }}`)
