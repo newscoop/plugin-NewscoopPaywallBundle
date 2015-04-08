@@ -51,7 +51,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
         $meta['publication'] = $context->publication->identifier;
     }
 
-    if ($context->issue->number) {
+    /*if ($context->issue->number) {
         $meta['issue'] = $context->issue->number;
     }
 
@@ -61,7 +61,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
 
     if ($context->article->number) {
         $meta['article'] = $context->article->number;
-    }
+    }*/
 
     $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
 

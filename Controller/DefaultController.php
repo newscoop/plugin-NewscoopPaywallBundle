@@ -53,57 +53,75 @@ class DefaultController extends Controller
     /**
      * Get callback response from paywall/payment provider and proccess it.
      *
-     * @Route("/paywall/subscriptions/get")
+     * @Route("/paywall/subscriptions/get", name="paywall_subscribe", options={"expose"=true})
      */
     public function getSubscriptionAction(Request $request)
     {
         $subscriptionService = $this->container->get('paywall.subscription.service');
-        $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
         $userService = $this->get('user');
+        $translator = $this->get('translator');
         $user = $userService->getCurrentUser();
         $em = $this->get('em');
+        $response = new Response();
+        $response->headers->set('Content-Type', 'text/html');
+        $response->setCharset('utf-8');
+        $templatesService = $this->get('newscoop.templates.service');
 
-        if (!$user) {
-            die('not logged in');
+        $chosenSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            ->findOneByName($request->get('subscription_name'));
+
+        if (!$chosenSubscription) {
+            $response->setContent($templatesService->fetchTemplate("_paywall/error.tpl", array(
+                'msg' => $translator->trans('paywall.alert.notexists'),
+            )));
+
+            return $response;
         }
 
-        $mainSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-            ->findOneByName($request->get('subscription_name'));
+        $userSubscription = $subscriptionService->getOneByUserAndSubscription($user->getId(), $chosenSubscription->getId());
+        if ($userSubscription) {
+            $response->setContent($templatesService->fetchTemplate("_paywall/error.tpl", array(
+                'msg' => $translator->trans('paywall.manage.error.exists.subscription'),
+            )));
 
-        $choosenSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-            ->findOneByName($request->get('subscription_name'));
+            return $response;
+        }
 
-        if (!$choosenSubscription) {
-            die('subscription doesnt exist');
+        $specificationArray = $chosenSubscription->getSpecification()->toArray();
+        $specification = $specificationArray[0];
+
+        $publication = $em->getReference('Newscoop\Entity\Publication', $specification->getPublication());
+        $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('language_id'));
+        if (!$language && $publication) {
+            $language = $publication->getLanguage();
         }
 
         $subscription = $subscriptionService->create();
         $subscriptionData = new SubscriptionData(array(
             'userId' => $user,
-            //'subscriptionId' => $choosenSubscription->getId(),
-            'mainSubscriptionId' => $mainSubscription,
-            'publicationId' => $request->get('publication_id'),
-            'toPay' => $choosenSubscription->getPrice(),
-            'days' => $choosenSubscription->getRange(),
-            'currency' => $choosenSubscription->getCurrency(),
+            //'subscriptionId' => $chosenSubscription->getId(),
+            'mainSubscriptionId' => $chosenSubscription,
+            'publicationId' => $request->get('publication_id') ?: $publication->getId(),
+            'toPay' => $chosenSubscription->getPrice(),
+            'days' => $chosenSubscription->getRange(),
+            'currency' => $chosenSubscription->getCurrency(),
             'type' => 'T',
             'active' => false,
         ), $subscription);
 
-        $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('language_id'));
-        switch ($choosenSubscription->getType()) {
+        switch ($chosenSubscription->getType()) {
             case 'article':
-                $article = $subscriptionService->getArticleRepository()->findOneByNumber($request->get('article_id'));
+                $article = $subscriptionService->getArticleRepository()->findOneByNumber($request->get('article_id') ?: $specification->getArticle());
                 $subscriptionData->addArticle($article, $language);
                 break;
 
             case 'section':
-                $section = $subscriptionService->getSectionRepository()->findOneByNumber($request->get('section_id'));
+                $section = $subscriptionService->getSectionRepository()->findOneByNumber($request->get('section_id') ?: $specification->getSection());
                 $subscriptionData->addSection($section, $language);
                 break;
 
             case 'issue':
-                $issue = $subscriptionService->getIssueRepository()->findOneByNumber($request->get('issue_id'));
+                $issue = $subscriptionService->getIssueRepository()->findOneByNumber($request->get('issue_id') ?: $specification->getIssue());
                 $subscriptionData->addIssue($issue, $language);
                 break;
             default:
@@ -113,12 +131,7 @@ class DefaultController extends Controller
 
         $subscription = $subscriptionService->update($subscription, $subscriptionData);
         $subscriptionService->save($subscription);
-
-        $response = new Response();
-        $templatesService = $this->get('newscoop.templates.service');
-        $response->setContent($templatesService->fetchTemplate("_paywall/success.tpl", array('sibscription' => $subscription)));
-        $response->headers->set('Content-Type', 'text/html');
-        $response->setCharset('utf-8');
+        $response->setContent($templatesService->fetchTemplate("_paywall/success.tpl", array('subscription' => $subscription)));
 
         return $response;
     }

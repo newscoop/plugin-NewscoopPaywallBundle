@@ -12,6 +12,7 @@ namespace Newscoop\PaywallBundle\Meta;
  */
 class MetaMainSubscription
 {
+    public $identifier;
     public $name;
     public $price;
     public $range;
@@ -26,6 +27,7 @@ class MetaMainSubscription
      */
     public function __construct(array $subscription)
     {
+        $this->identifier = $subscription['id'];
         $this->name = $subscription['name'];
         $this->price = $subscription['price'];
         $this->range = $subscription['range'];
