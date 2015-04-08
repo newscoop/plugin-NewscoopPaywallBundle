@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -15,7 +14,7 @@ use Newscoop\PaywallBundle\Validator\Constraints as PaywallValidators;
 /**
  * Subscriptions entity
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\SubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_subscriptions")
  */
 class Subscriptions

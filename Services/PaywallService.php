@@ -39,6 +39,16 @@ class PaywallService
     }
 
     /**
+     * Gets all available subscriptions by criteria
+     *
+     * @return array
+     */
+    public function getSubscriptionsByCriteria(SubscriptionCriteria $criteria)
+    {
+        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')->getListByCriteria($criteria);
+    }
+
+    /**
      * Count subscriptions by given criteria
      *
      * @param array $criteria
