@@ -35,3 +35,5 @@ This smarty function displays all available subscriptions to create price list.
 <button type="submit">Submit</button>
 </form>
 ```
+
+Copy [`_paywall`](https://github.com/newscoop/plugin-NewscoopPaywallBundle/tree/master/Resources/_paywall) folder to your themes main directory and customize its templates for your needs.
