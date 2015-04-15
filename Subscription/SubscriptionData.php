@@ -5,7 +5,6 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Subscription;
 
 use Newscoop\PaywallBundle\Entity\UserSubscription;
@@ -102,6 +101,8 @@ class SubscriptionData
      */
     public $is_active;
 
+    public $mainSubscriptionId;
+
     /**
      * Subscription type.
      * 'T' for Trial subscription, 'P' for paid subscription or 'PN' for paid now subscriptions.
@@ -132,5 +133,37 @@ class SubscriptionData
         }
 
         return $this;
+    }
+
+    public function addSection(SectionEntity $section, $language)
+    {
+        $section = new \Newscoop\PaywallBundle\Entity\Section($this->subscription, $section->getNumber());
+        $section->setStartDate($this->startDate);
+        $section->setDays($this->days);
+        $section->setPaidDays($this->paidDays);
+        $section->setLanguage($language);
+
+        $this->sections[$section->getId()] = $section;
+    }
+
+    public function addArticle(ArticleEntity $article, $language)
+    {
+        $article = new \Newscoop\PaywallBundle\Entity\Article($this->subscription, $article);
+        $article->setStartDate($this->startDate);
+        $article->setDays($this->days);
+        $article->setPaidDays($this->paidDays);
+        $article->setLanguage($language);
+
+        $this->articles[$article->getArticleNumber()] = $article;
+    }
+
+    public function addIssue(IssueEntity $issue, $language)
+    {
+        $issue = new \Newscoop\PaywallBundle\Entity\Issue($this->subscription, $issue);
+        $issue->setStartDate($this->startDate);
+        $issue->setDays($this->days);
+        $issue->setPaidDays($this->paidDays);
+        $issue->setLanguage($language);
+        $this->issues[$issue->getIssueNumber()] = $issue;
     }
 }

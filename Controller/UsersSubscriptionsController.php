@@ -482,42 +482,42 @@ class UsersSubscriptionsController extends Controller
     private function findByType($em, $type, $id)
     {
         if ($type === 'section') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Section')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Section')
                 ->findOneBy(array(
                     'id' => $id,
                 ));
         }
 
         if ($type === 'issue') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Issue')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
                 ->findOneBy(array(
                     'id' => $id,
                 ));
         }
 
         if ($type === 'article') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Article')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Article')
                 ->findOneBy(array(
                     'id' => $id,
                 ));
         }
 
         if ($type === 'edit-all-issues') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Issue')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
                 ->findBy(array(
                     'subscription' => $id,
                 ));
         }
 
         if ($type === 'edit-all-sections') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Section')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Section')
                 ->findBy(array(
                     'subscription' => $id,
                 ));
         }
 
         if ($type === 'edit-all-articles') {
-            $subscription = $em->getRepository('Newscoop\Subscription\Article')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Article')
                 ->findBy(array(
                     'subscription' => $id,
                 ));

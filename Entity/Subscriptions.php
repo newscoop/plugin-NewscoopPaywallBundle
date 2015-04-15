@@ -5,18 +5,16 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Newscoop\PaywallBundle\Validator\Constraints as PaywallValidators;
 
 /**
  * Subscriptions entity
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\SubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_subscriptions")
  */
 class Subscriptions
@@ -90,7 +88,8 @@ class Subscriptions
      */
     protected $is_default;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->specification = new ArrayCollection();
         $this->setCreatedAt(new \DateTime());
         $this->setIsActive(true);
@@ -119,7 +118,7 @@ class Subscriptions
     /**
      * Set subscription name
      *
-     * @param string $name
+     * @param  string $name
      * @return string
      */
     public function setName($name)
@@ -152,7 +151,7 @@ class Subscriptions
     /**
      * Set subscription type
      *
-     * @param integer $type
+     * @param  integer $type
      * @return integer
      */
     public function setType($type)
@@ -175,7 +174,7 @@ class Subscriptions
     /**
      * Set subscription range
      *
-     * @param integer $range
+     * @param  integer $range
      * @return integer
      */
     public function setRange($range)
@@ -198,7 +197,7 @@ class Subscriptions
     /**
      * Set subscription price
      *
-     * @param decimal $price
+     * @param  decimal $price
      * @return decimal
      */
     public function setPrice($price)
@@ -221,7 +220,7 @@ class Subscriptions
     /**
      * Set subscription currency
      *
-     * @param string $currency
+     * @param  string $currency
      * @return string
      */
     public function setCurrency($currency)
@@ -244,7 +243,7 @@ class Subscriptions
     /**
      * Set subscription description
      *
-     * @param text $description
+     * @param  text $description
      * @return text
      */
     public function setDescription($description)
@@ -267,7 +266,7 @@ class Subscriptions
     /**
      * Set subscription status
      *
-     * @param boolean $is_active
+     * @param  boolean $is_active
      * @return boolean
      */
     public function setIsActive($is_active)
@@ -290,7 +289,7 @@ class Subscriptions
     /**
      * Set subscription create date
      *
-     * @param datetime $created_at
+     * @param  datetime $created_at
      * @return datetime
      */
     public function setCreatedAt(\DateTime $created_at)
@@ -313,7 +312,7 @@ class Subscriptions
     /**
      * Set is_default
      *
-     * @param boolean $is_default
+     * @param  boolean $is_default
      * @return boolean
      */
     public function setIsDefault($is_default)

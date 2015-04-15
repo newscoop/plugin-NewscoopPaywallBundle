@@ -5,7 +5,6 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Criteria;
 
 use Newscoop\Criteria;
@@ -34,4 +33,9 @@ class SubscriptionCriteria extends Criteria
      * @var string
      */
     public $query;
+
+    /**
+     * @var array
+     */
+    public $created_at = array('created_at' => 'asc');
 }

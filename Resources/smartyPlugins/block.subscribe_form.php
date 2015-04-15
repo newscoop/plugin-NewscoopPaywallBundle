@@ -64,6 +64,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     }
 
     $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
+
     $matched = array();
     $types = array(
         'publication'   => 4,
@@ -73,9 +74,19 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     );
     asort($types);
 
+    $availableSubscriptions = array();
+    foreach ($subscriptionsConfig as $subscription) {
+        $availableSubscriptions[$subscription->getName()] = array(
+            'type' => $subscription->getType(),
+            'range' => $subscription->getRange(),
+            'currency' => $subscription->getCurrency(),
+            'price' => $subscription->getPrice(),
+        );
+    }
+
     // find specific type
     $specificType = false;
-    foreach ($subscriptionsConfig['subscriptions'] as $name => $definition) {
+    foreach ($availableSubscriptions as $name => $definition) {
         $specificElement = false;
         if (array_key_exists('specify', $definition)) {
             $parts = true;
@@ -122,7 +133,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     if (array_key_exists('option_text', $p_params)) {
         $optionText = smarty_function_escape_special_chars($p_params['option_text']);
     } else {
-        $optionText = 'This %type% - %range% for %price% %currency%';
+        $optionText = 'This %type% - %price% %currency% for %range% days';
     }
 
     foreach ($meta as $type => $value) {

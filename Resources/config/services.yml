@@ -65,3 +65,17 @@ services:
         arguments: ["@em"]
         tags:
           - { name: kernel.event_listener, event: newscoop_paywall.adapters.register, method: registerExternalAdapters }
+
+    newscoop.template_lists.list_objects.listener:
+        class: Newscoop\PaywallBundle\EventListener\ListObjectsListener
+        tags:
+          - { name: kernel.event_listener, event: newscoop.listobjects.register, method: registerObjects }
+
+    newscoop_paywall.criteria.subscriptions_criteria:
+        class: Newscoop\PaywallBundle\Criteria\SubscriptionCriteria
+
+    newscoop.template_lists.pricelist:
+        class:      Newscoop\PaywallBundle\TemplateList\PriceList
+        arguments:  ["@newscoop_paywall.criteria.subscriptions_criteria"]
+        tags:
+            -  { name: newscoop.template_lists }
