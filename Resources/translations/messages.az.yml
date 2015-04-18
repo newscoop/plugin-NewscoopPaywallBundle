@@ -1,5 +1,7 @@
 Plugins: Plaqinlər
 paywall:
+    alert:
+        notexists: null
     title: null
     search: null
     toolbar:

@@ -1,5 +1,7 @@
 Plugins: 'وحدات قابسة'
 paywall:
+    alert:
+        notexists: null
     title: 'صفحة الدفع.'
     search: البحث...
     toolbar:
@@ -70,7 +72,7 @@ paywall:
             currency: 'العملة في تنسيق غير صالح.'
             topay: 'قيمة الحقل في تنسيق خاطئ للدفع.'
             exists:
-                subscription: 'الإشتراك المختار موجود سابقاّ.'
+                subscription: null
             select:
                 empty: 'مربع الإختيار لا يمكن أن يكون فارغاّ!'
                 choose: 'من فضلك، إختر المزود!'

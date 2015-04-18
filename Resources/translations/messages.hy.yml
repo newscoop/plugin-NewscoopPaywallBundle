@@ -1,5 +1,7 @@
 Plugins: null
 paywall:
+    alert:
+        notexists: 'Selected subscription does not exist.'
     title: null
     search: null
     toolbar:

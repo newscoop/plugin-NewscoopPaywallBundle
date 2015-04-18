@@ -1,5 +1,7 @@
 Plugins: Bővítmények
 paywall:
+    alert:
+        notexists: null
     title: 'Fizetési fal'
     search: Keresés...
     toolbar:
@@ -70,7 +72,7 @@ paywall:
             currency: 'A pénznem érvénytelen formátumú.'
             topay: 'A Fizetendő mező értékének rossz a formátuma.'
             exists:
-                subscription: 'A kiválasztott előfizetés már létezik ezen felhasználó számára.'
+                subscription: null
             select:
                 empty: 'Nem lehet üres a mező!'
                 choose: 'Válassz szolgáltatót!'

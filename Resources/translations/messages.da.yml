@@ -1,5 +1,7 @@
 Plugins: Plugins
 paywall:
+    alert:
+        notexists: null
     title: Betalingsmur
     search: Søg...
     toolbar:
@@ -70,7 +72,7 @@ paywall:
             currency: 'Valutaformatet er ugyldigt.'
             topay: 'At betale værdien er ugyldig.'
             exists:
-                subscription: 'Brugeren har allerede det valgte abonnement.'
+                subscription: null
             select:
                 empty: 'Feltet kan ikke være tomt!'
                 choose: 'Vælg udbyder!'

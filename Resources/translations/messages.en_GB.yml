@@ -1,5 +1,7 @@
 Plugins: Plugins
 paywall:
+    alert:
+        notexists: null
     title: Paywall
     search: Search...
     toolbar:
@@ -70,7 +72,7 @@ paywall:
             currency: 'Currency is in invalid format.'
             topay: 'To pay field value is in the wrong format.'
             exists:
-                subscription: 'Chosen subscription already exists for this user.'
+                subscription: null
             select:
                 empty: 'Select box can not be empty!'
                 choose: 'Please choose provider!'

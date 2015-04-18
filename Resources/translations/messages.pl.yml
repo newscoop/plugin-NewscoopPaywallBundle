@@ -1,5 +1,7 @@
 Plugins: Wtyczki
 paywall:
+    alert:
+        notexists: null
     title: 'Newscoop Paywall Plugin'
     search: null
     toolbar:
@@ -70,7 +72,7 @@ paywall:
             currency: 'Waluta jest w nieprawidłowym formacie.'
             topay: 'Wartość pola "Do zapłaty" jest w złym formacie.'
             exists:
-                subscription: 'Wybrana subskrypcja już istnieje dla tego użytkownika.'
+                subscription: null
             select:
                 empty: 'Pole wyboru nie może być puste!'
                 choose: 'Proszę wybrać dostawcę!'

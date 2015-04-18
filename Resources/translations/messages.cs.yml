@@ -1,5 +1,7 @@
 Plugins: Plug-iny
 paywall:
+    alert:
+        notexists: null
     title: Paywall
     search: Hledání...
     toolbar:
@@ -70,7 +72,7 @@ paywall:
             currency: 'Neplatný formát měny.'
             topay: 'Políčko s cenou je ve špatném formátu.'
             exists:
-                subscription: 'Zvolené předplatné pro tohoto uživatele již existuje.'
+                subscription: null
             select:
                 empty: 'Pole výběru nemůže zůstat prázdné!'
                 choose: 'Prosím vyberte provozovatele!'

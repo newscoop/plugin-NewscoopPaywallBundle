@@ -1,5 +1,7 @@
 Plugins: Plugins
 paywall:
+    alert:
+        notexists: null
     title: null
     search: null
     toolbar:
