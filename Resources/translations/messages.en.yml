@@ -146,3 +146,5 @@ paywall:
       membershipemaillabel: "Notifications email"
       providersmall: "Select Paywall provider"
       providername: "Provider"
+      enableNotify: "Enable email notifications"
+      enableNotifydesc: "Enables/disables email notifications"

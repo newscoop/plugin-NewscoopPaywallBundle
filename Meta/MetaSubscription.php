@@ -6,7 +6,6 @@
  * @copyright 2014 Sourcefabric o.p.s.p
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Meta;
 
 use Newscoop\PaywallBundle\Entity\UserSubscription;
@@ -18,6 +17,8 @@ class MetaSubscription
 {
     public $identifier;
     public $currency;
+    public $price;
+    public $name;
     public $type;
     public $start_date;
     public $expiration_date;
@@ -25,27 +26,36 @@ class MetaSubscription
     public $is_valid;
     public $publication;
     public $defined;
+    public $expire_in_days;
+    private $subscription;
 
-    public function __construct($subscriptionId = null)
+    public function __construct($subscription = null)
     {
-        $em = \Zend_Registry::get('container')->getService('em');
+        if (!$subscription instanceof UserSubscription) {
+            $em = \Zend_Registry::get('container')->getService('em');
+            $this->subscription = $em->getReference('Newscoop\PaywallBundle\Entity\UserSubscription', $subscription);
 
-        $this->subscription = $em->getReference('Newscoop\PaywallBundle\Entity\UserSubscription', $subscriptionId);
-
-        if (!$this->subscription) {
-            $this->subscription = new UserSubscription();
+            if (!$this->subscription) {
+                $this->subscription = new UserSubscription();
+            }
+        } else {
+            $this->subscription = $subscription;
         }
 
         $this->identifier = $this->subscription->getId();
         $this->currency = $this->subscription->getCurrency();
-
+        $this->price = $this->subscription->getToPay();
+        $this->name = $this->subscription->getSubscription()->getName();
         $this->type = $this->getType();
-        $this->start_date = $this->getStartDate();
-        $this->expiration_date = $this->getExpirationDate();
+        $this->start_date = $this->subscription->getCreatedAt();
+        $this->expiration_date = $this->subscription->getExpireAt();
         $this->is_active = $this->isActive();
         $this->is_valid = $this->isValid();
         $this->publication = $this->getPublication();
-        $this->defined = 'defined';
+        if ($this->subscription->getExpireAt()) {
+            $this->expire_in_days = $this->subscription->getExpireAt()
+                ->diff($this->subscription->getCreatedAt())->format('%a');
+        }
     }
 
     protected function getType()
@@ -63,7 +73,7 @@ class MetaSubscription
             ->createQueryBuilder('s')
             ->where('s.subscription = :subscriptionId')
             ->setParameters(array(
-                'subscriptionId' => $this->subscription->getId()
+                'subscriptionId' => $this->subscription->getId(),
             ))
             ->getQuery()
             ->getResult();
@@ -87,7 +97,7 @@ class MetaSubscription
             ->createQueryBuilder('s')
             ->where('s.subscription = :subscriptionId')
             ->setParameters(array(
-                'subscriptionId' => $this->subscription->getId()
+                'subscriptionId' => $this->subscription->getId(),
             ))
             ->getQuery()
             ->getResult();
@@ -117,7 +127,7 @@ class MetaSubscription
 
     protected function getPublication()
     {
-        return new \MetaPublication($this->subscription->getPublicationId());
+        return $this->subscription->getPublicationName();
     }
 
     public function has_section($sectionNumber)
@@ -126,7 +136,7 @@ class MetaSubscription
         $em = \Zend_Registry::get('container')->getService('em');
         $section = $em->getRepository("Newscoop\PaywallBundle\Entity\Section")->findOneBy(array(
             'subscription' => $this->subscription->getId(),
-            'sectionNumber' => $sectionNumber
+            'sectionNumber' => $sectionNumber,
         ));
 
         if ($section && $section->getExpirationDate() >= $today->getDate()) {
@@ -137,7 +147,7 @@ class MetaSubscription
         $section = $em->getRepository("Newscoop\PaywallBundle\Entity\Section")->findOneBy(array(
             'subscription' => $this->subscription->getId(),
             'sectionNumber' => $sectionNumber,
-            'language' => $currentLanguageNumber
+            'language' => $currentLanguageNumber,
         ));
 
         return (int) ($section && $section->getExpirationDate() >= $today->getDate());
@@ -155,7 +165,7 @@ class MetaSubscription
             ->findOneBy(array(
                 'subscription' => $subscriptionId,
                 'articleNumber' => $articleNumber,
-                'language' => $currentLanguageNumber
+                'language' => $currentLanguageNumber,
             ));
 
         if ($subscriptionArticle) {
@@ -179,7 +189,7 @@ class MetaSubscription
             ->findOneBy(array(
                 'subscription' => $subscriptionId,
                 'issueNumber' => $issueNumber,
-                'language' => $currentLanguageNumber
+                'language' => $currentLanguageNumber,
             ));
 
         if ($subscriptionIssue) {

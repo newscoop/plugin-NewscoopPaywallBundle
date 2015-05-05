@@ -407,11 +407,11 @@ class PaywallService
     }
 
     /**
-     * Activates Subscription by Id
+     * Activates Subscription by Id and returns its instance
      *
      * @param integer $id User subscription id
      *
-     * @return void
+     * @return UserSubscription
      */
     public function activateById($id)
     {
@@ -422,8 +422,36 @@ class PaywallService
 
         if ($subscription) {
             $subscription->setActive(true);
+            if (!$subscription->getExpireAt()) {
+                $subscription->setExpireAt($this->getExpirationDate($subscription));
+            }
+
             $this->em->flush();
         }
+
+        return $subscription;
+    }
+
+    /**
+     * Gets user subscription expiration date
+     *
+     * @param UserSubscription $userSubscription User subscription
+     *
+     * @return DateTime
+     */
+    public function getExpirationDate(UserSubscription $userSubscription)
+    {
+        $now = new \DateTime('now');
+        $createdAt = $userSubscription->getCreatedAt();
+        // diffrence in days between subscription create date
+        // and actual activation date
+        $daysDiffrence = (int) $now->diff($createdAt)->format("%a");
+        $startDate = $createdAt ?: $now;
+        $days = $userSubscription->getSubscription()->getRange();
+        $days = $days + $daysDiffrence + 1;
+        $timeSpan = new \DateInterval('P'.$days.'D');
+
+        return $startDate->add($timeSpan);
     }
 
     /**
@@ -461,16 +489,17 @@ class PaywallService
      *
      * @param integer $userId         User id
      * @param integer $subscriptionId Subscription id
+     * @param string  $active         Active on inactive subscription
      *
      * @return array
      */
-    public function getOneByUserAndSubscription($userId, $subscriptionId)
+    public function getOneByUserAndSubscription($userId, $subscriptionId, $active = 'Y')
     {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'user' => $userId,
                 'subscription' => $subscriptionId,
-                'active' => 'Y',
+                'active' => $active,
             ));
 
         if ($subscription) {
@@ -635,7 +664,7 @@ class PaywallService
                 $sectionsIds[] = $section->getId();
             }
 
-            //Clean conncted sections list
+            //Clean connected sections list
             $subscription->setSections($sectionsIds);
         }
 
@@ -646,7 +675,7 @@ class PaywallService
                 $articlesIds[] = $article->getId();
             }
 
-            //Clean conncted sections list
+            //Clean connected articles list
             $subscription->setArticles($articlesIds);
         }
 
@@ -657,7 +686,7 @@ class PaywallService
                 $issuesIds[] = $issue->getId();
             }
 
-            //Clean conncted sections list
+            //Clean connected issues list
             $subscription->setIssues($issuesIds);
         }
 
@@ -671,11 +700,11 @@ class PaywallService
     }
 
     /**
-     * Remove Subscription by Id
-     * @param  integer $id - user subscription id
-     * @return void
+     * Deactivates Subscription by Id and returns its instance
+     * @param  integer          $id - user subscription id
+     * @return UserSubscription
      */
-    public function removeById($id)
+    public function deactivateById($id)
     {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
@@ -686,6 +715,8 @@ class PaywallService
             $subscription->setActive(false);
             $this->em->flush();
         }
+
+        return $subscription;
     }
 
     public function getOneById($id)

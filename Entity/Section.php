@@ -4,10 +4,9 @@
  * @copyright 2011 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
-use Doctrine\ORM\Mapping AS ORM;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Subscription Section relation entity
@@ -268,8 +267,9 @@ class Section
      */
     public function getExpirationDate()
     {
+        $startDate = null;
         $startDate = isset($this->startDate) ? $this->startDate : new \DateTime('now');
-        $timeSpan = new \DateInterval('P' . $this->days . 'D');
+        $timeSpan = new \DateInterval('P'.$this->days.'D');
 
         return $startDate->add($timeSpan);
     }

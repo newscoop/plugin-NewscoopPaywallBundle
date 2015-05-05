@@ -7,7 +7,6 @@
  */
 namespace Newscoop\PaywallBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,8 +14,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Newscoop\Entity\User;
+use Newscoop\PaywallBundle\Events\PaywallEvents;
 
-class UsersSubscriptionsController extends Controller
+class UsersSubscriptionsController extends BaseController
 {
     /**
      * @Route("/admin/paywall_plugin/users-subscriptions", options={"expose"=true})
@@ -94,12 +94,14 @@ class UsersSubscriptionsController extends Controller
 
     /**
      * @Route("/admin/paywall_plugin/users-subscriptions/delete/{id}", options={"expose"=true})
+     * @Route("/admin/paywall_plugin/users-subscriptions/deactivate/{id}", options={"expose"=true})
      */
     public function deleteAction(Request $request, $id)
     {
         if ($request->isMethod('POST')) {
             try {
-                $this->get('paywall.subscription.service')->removeById($id);
+                $subscription = $this->get('paywall.subscription.service')->deactivateById($id);
+                $this->dispatchNotificationEvent(PaywallEvents::SUBSCRIPTION_STATUS_CHANGE, $subscription);
 
                 return new Response(json_encode(array('status' => true)));
             } catch (\Exception $exception) {
@@ -115,11 +117,15 @@ class UsersSubscriptionsController extends Controller
     {
         if ($request->isMethod('POST')) {
             try {
-                $this->get('paywall.subscription.service')->activateById($id);
+                $subscription = $this->get('paywall.subscription.service')->activateById($id);
+                $this->dispatchNotificationEvent(PaywallEvents::SUBSCRIPTION_STATUS_CHANGE, $subscription);
 
                 return new Response(json_encode(array('status' => true)));
             } catch (\Exception $exception) {
-                return new Response(json_encode(array('status' => false)));
+                return new Response(json_encode(array(
+                    'status' => false,
+                    'message' => $exception->getMessage(),
+                )));
             }
         }
     }
@@ -132,7 +138,7 @@ class UsersSubscriptionsController extends Controller
         if ($request->isMethod('POST')) {
             try {
                 $em = $this->getDoctrine()->getManager();
-                $subscription = $this->findByType($em, $type, $id);
+                $subscription = $this->findByType($type, $id);
                 $em->remove($subscription);
                 $em->flush();
 
@@ -261,7 +267,7 @@ class UsersSubscriptionsController extends Controller
     public function editAction(Request $request, $type, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        $subscription = $this->findByType($em, $type, $id);
+        $subscription = $this->findByType($type, $id);
 
         $form = $this->createForm('detailsForm', $subscription);
         if ($request->isMethod('POST')) {
@@ -351,6 +357,9 @@ class UsersSubscriptionsController extends Controller
     {
         $subscriptionService = $this->get('paywall.subscription.service');
         $form = $this->createForm('detailsForm');
+        if (!$subscriptionService->getOneById($id)) {
+            throw new \Exception('Subscription doesn\'t exist!');
+        }
 
         if ($subscriptionService->getOneById($id)->getSubscription()) {
             $type = $subscriptionService->getOneSubscriptionById($subscriptionService->getOneById($id)->getSubscription()->getId())->getType();
@@ -473,54 +482,58 @@ class UsersSubscriptionsController extends Controller
     /**
      * Finds proper Entity object|Array Collection by given Type
      *
-     * @param Doctrine\ORM\EntityManager $em
-     * @param string                     $type Subscription type
-     * @param string                     $id   Subscription id
+     * @param string $type Subscription type
+     * @param string $id   Subscription id
      *
      * @return Entity object|Array Collection
      */
-    private function findByType($em, $type, $id)
+    private function findByType($type, $id)
     {
-        if ($type === 'section') {
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Section')
-                ->findOneBy(array(
-                    'id' => $id,
-                ));
-        }
+        $em = $this->get('em');
+        $subscription = null;
+        switch ($type) {
+            case 'section':
+                $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Section')
+                    ->findOneBy(array(
+                        'id' => $id,
+                    ));
 
-        if ($type === 'issue') {
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
-                ->findOneBy(array(
-                    'id' => $id,
-                ));
-        }
+                break;
+            case 'issue':
+                $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
+                    ->findOneBy(array(
+                        'id' => $id,
+                    ));
 
-        if ($type === 'article') {
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Article')
-                ->findOneBy(array(
-                    'id' => $id,
-                ));
-        }
+                break;
+            case 'article':
+                $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Article')
+                    ->findOneBy(array(
+                        'id' => $id,
+                    ));
 
-        if ($type === 'edit-all-issues') {
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
-                ->findBy(array(
-                    'subscription' => $id,
-                ));
-        }
+                break;
+            case 'edit-all-issues':
+                $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Issue')
+                    ->findBy(array(
+                        'subscription' => $id,
+                    ));
 
-        if ($type === 'edit-all-sections') {
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Section')
-                ->findBy(array(
-                    'subscription' => $id,
-                ));
-        }
+                break;
+            case 'edit-all-sections':
+                $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Section')
+                    ->findBy(array(
+                        'subscription' => $id,
+                    ));
 
-        if ($type === 'edit-all-articles') {
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Article')
-                ->findBy(array(
-                    'subscription' => $id,
-                ));
+                break;
+            case 'edit-all-articles':
+                $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Article')
+                    ->findBy(array(
+                        'subscription' => $id,
+                    ));
+
+                break;
         }
 
         return $subscription;

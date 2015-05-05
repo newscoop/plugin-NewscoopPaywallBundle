@@ -5,7 +5,6 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -18,11 +17,15 @@ class SettingsFormType extends AbstractType
         $builder
         ->add('notificationEmail', 'email', array(
             'required' => true,
-            'error_bubbling' => true
+            'error_bubbling' => true,
         ))
         ->add('adapter', 'hidden', array(
             'required' => true,
             'error_bubbling' => true,
+        ))
+        ->add('enableNotify', 'checkbox', array(
+            'error_bubbling' => true,
+            'required' => false,
         ));
     }
 

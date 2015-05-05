@@ -3,12 +3,12 @@
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
+use Newscoop\PaywallBundle\Events\PaywallEvents;
 
-class DefaultController extends Controller
+class DefaultController extends BaseController
 {
     /**
      * Show succes page or redirect to one
@@ -78,8 +78,9 @@ class DefaultController extends Controller
             return $response;
         }
 
+        $userSubscriptionInactive = $subscriptionService->getOneByUserAndSubscription($user->getId(), $chosenSubscription->getId(), 'N');
         $userSubscription = $subscriptionService->getOneByUserAndSubscription($user->getId(), $chosenSubscription->getId());
-        if ($userSubscription) {
+        if ($userSubscription || $userSubscriptionInactive) {
             $response->setContent($templatesService->fetchTemplate("_paywall/error.tpl", array(
                 'msg' => $translator->trans('paywall.manage.error.exists.subscription'),
             )));
@@ -131,7 +132,12 @@ class DefaultController extends Controller
 
         $subscription = $subscriptionService->update($subscription, $subscriptionData);
         $subscriptionService->save($subscription);
-        $response->setContent($templatesService->fetchTemplate("_paywall/success.tpl", array('subscription' => $subscription)));
+
+        $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $subscription);
+
+        $response->setContent($templatesService->fetchTemplate("_paywall/success.tpl", array(
+            'subscription' => $subscription,
+        )));
 
         return $response;
     }

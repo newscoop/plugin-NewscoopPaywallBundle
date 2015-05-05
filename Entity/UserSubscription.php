@@ -5,7 +5,6 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Newscoop\Entity\Publication;
@@ -137,6 +136,12 @@ class UserSubscription
     protected $is_active;
 
     /**
+     * @ORM\Column(type="boolean", name="notify_sent")
+     * @var boolean
+     */
+    protected $notifySent;
+
+    /**
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
      * @var DateTime
      */
@@ -154,6 +159,7 @@ class UserSubscription
         $this->custom = false;
         $this->customOther = false;
         $this->type = self::TYPE_PAID;
+        $this->notifySent = false;
     }
 
     /**
@@ -319,7 +325,6 @@ class UserSubscription
      */
     public function setActive($active)
     {
-
         $this->active = ((bool) $active) ? 'Y' : 'N';
 
         return $this;
@@ -706,6 +711,30 @@ class UserSubscription
     public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of notifySent.
+     *
+     * @return boolean
+     */
+    public function getNotifySent()
+    {
+        return $this->notifySent;
+    }
+
+    /**
+     * Sets the value of notifySent.
+     *
+     * @param boolean $notifySent the notify sent
+     *
+     * @return self
+     */
+    public function setNotifySent($notifySent)
+    {
+        $this->notifySent = $notifySent;
 
         return $this;
     }

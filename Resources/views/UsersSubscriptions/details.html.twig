@@ -111,7 +111,7 @@ function buttonClick(id, text, url) {
         $("#select").select2("data", {id: "1", text: ""});
         }
 
-        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_'+url, {'type': attr, 'id': {{ id }} }));
+        editForm.attr('action', Routing.generate('newscoop_paywall_userssubscriptions_'+url, {'type': attr, 'id': {{ subscription_id }} }));
         $('#ui-dialog-title-edit-all-template').text(text);
         edit_template.attr('title', text);
         edit_template.dialog();

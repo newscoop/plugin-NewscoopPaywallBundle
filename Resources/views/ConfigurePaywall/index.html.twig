@@ -85,6 +85,17 @@ $(document).ready(function(){
             </tr>
             <tr class="paywall-configure-bg">
                 <td align="left" class="paywall-configure-size paywall-configure-border">
+                    <b>{{ 'paywall.msg.enableNotify'|trans }}</b> <br>
+                    <small>{{ 'paywall.msg.enableNotifydesc'|trans }}</small>
+                </td>
+            </tr>
+            <tr>
+                <td class="paywall-configure-border">
+                    {{ form_widget(form.enableNotify) }}
+                </td>
+            </tr>
+            <tr class="paywall-configure-bg">
+                <td align="left" class="paywall-configure-size paywall-configure-border">
                     <b>{{ 'paywall.msg.membershipemaillabel'|trans }}</b> <br>
                     <small>{{ 'paywall.msg.membershipemail'|trans }}</small>
                 </td>
@@ -99,7 +110,7 @@ $(document).ready(function(){
             </tr>
             <tr>
                 <td colspan="2" align="right" style="padding-top: 10px;">
-                    <button type="submit" class="btn btn-primary">{{ 'plugin.feedback.btn.save'|trans }}</button>
+                    <button type="submit" class="btn btn-primary">{{ 'paywall.btn.save'|trans }}</button>
                 </td>
             </tr>
             {{ form_rest(form) }}
