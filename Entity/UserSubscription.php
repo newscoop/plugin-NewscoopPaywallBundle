@@ -136,14 +136,20 @@ class UserSubscription
     protected $is_active;
 
     /**
-     * @ORM\Column(type="boolean", name="notify_sent")
-     * @var boolean
+     * @ORM\Column(type="datetime", name="notify_sent_first", nullable=true)
+     * @var \DateTime
      */
-    protected $notifySent;
+    protected $notifySentLevelOne;
+
+    /**
+     * @ORM\Column(type="datetime", name="notify_sent_second", nullable=true)
+     * @var \DateTime
+     */
+    protected $notifySentLevelTwo;
 
     /**
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
-     * @var DateTime
+     * @var \DateTime
      */
     protected $updated;
 
@@ -159,7 +165,8 @@ class UserSubscription
         $this->custom = false;
         $this->customOther = false;
         $this->type = self::TYPE_PAID;
-        $this->notifySent = false;
+        $this->notifySentLevelOne = null;
+        $this->notifySentLevelTwo = null;
     }
 
     /**
@@ -716,25 +723,49 @@ class UserSubscription
     }
 
     /**
-     * Gets the value of notifySent.
+     * Gets the value of notifySentLevelOne.
      *
-     * @return boolean
+     * @return \DateTime
      */
-    public function getNotifySent()
+    public function getNotifySentLevelOne()
     {
-        return $this->notifySent;
+        return $this->notifySentLevelOne;
     }
 
     /**
-     * Sets the value of notifySent.
+     * Sets the value of notifySentLevelOne.
      *
-     * @param boolean $notifySent the notify sent
+     * @param \DateTime $notifySentLevelOne the notify sent level one
      *
      * @return self
      */
-    public function setNotifySent($notifySent)
+    public function setNotifySentLevelOne(\DateTime $notifySentLevelOne)
     {
-        $this->notifySent = $notifySent;
+        $this->notifySentLevelOne = $notifySentLevelOne;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of notifySentLevelTwo.
+     *
+     * @return \DateTime
+     */
+    public function getNotifySentLevelTwo()
+    {
+        return $this->notifySentLevelTwo;
+    }
+
+    /**
+     * Sets the value of notifySentLevelTwo.
+     *
+     * @param \DateTime $notifySentLevelTwo the notify sent level two
+     *
+     * @return self
+     */
+    public function setNotifySentLevelTwo(\DateTime $notifySentLevelTwo)
+    {
+        $this->notifySentLevelTwo = $notifySentLevelTwo;
 
         return $this;
     }

@@ -422,6 +422,7 @@ class PaywallService
 
         if ($subscription) {
             $subscription->setActive(true);
+            $subscription->setType('P');
             if (!$subscription->getExpireAt()) {
                 $subscription->setExpireAt($this->getExpirationDate($subscription));
             }
@@ -713,6 +714,7 @@ class PaywallService
 
         if ($subscription) {
             $subscription->setActive(false);
+            $subscription->setType('T');
             $this->em->flush();
         }
 

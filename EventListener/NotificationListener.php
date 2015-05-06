@@ -92,7 +92,11 @@ class NotificationListener
     {
         $subscription = $event->getSubject();
         $this->sendValidatedNotification(Emails::SUBSCRIPTION_EXPIRATION, $subscription);
-        $this->notificationsService->setNotifySentFlag($subscription);
+        if (!$subscription->getNotifySentLevelOne()) {
+            $this->notificationsService->setSentDateTimeOnLevelOne($subscription);
+        } else {
+            $this->notificationsService->setSentDateTimeOnLevelTwo($subscription);
+        }
     }
 
     private function sendValidatedNotification($code, $subscription)

@@ -26,6 +26,10 @@ class SettingsFormType extends AbstractType
         ->add('enableNotify', 'checkbox', array(
             'error_bubbling' => true,
             'required' => false,
+        ))
+        ->add('notificationFromEmail', 'email', array(
+            'required' => true,
+            'error_bubbling' => true,
         ));
     }
 

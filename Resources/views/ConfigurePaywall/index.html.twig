@@ -105,6 +105,17 @@ $(document).ready(function(){
                     {{ form_widget(form.notificationEmail, {'attr' : {'class' : 'form-control'}}) }}
                 </td>
             </tr>
+            <tr class="paywall-configure-bg">
+                <td align="left" class="paywall-configure-size paywall-configure-border">
+                    <b>{{ 'paywall.msg.fromemaillabel'|trans }}</b> <br>
+                    <small>{{ 'paywall.msg.fromemail'|trans }}</small>
+                </td>
+            </tr>
+            <tr>
+                <td class="paywall-configure-border">
+                    {{ form_widget(form.notificationFromEmail, {'attr' : {'class' : 'form-control'}}) }}
+                </td>
+            </tr>
             <tr>
                 <td colspan="2"><hr></td>
             </tr>

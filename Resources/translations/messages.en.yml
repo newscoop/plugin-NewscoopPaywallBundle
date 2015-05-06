@@ -148,3 +148,5 @@ paywall:
       providername: "Provider"
       enableNotify: "Enable email notifications"
       enableNotifydesc: "Enables/disables email notifications"
+      fromemaillabel: "Sender email"
+      fromemail: "All notifications will be sent from this email."

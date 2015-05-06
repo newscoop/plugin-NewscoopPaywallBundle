@@ -11,8 +11,7 @@ namespace Newscoop\PaywallBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Newscoop\PaywallBundle\Events\PaywallEvents;
-use Newscoop\EventDispatcher\Events\GenericEvent;
+use Newscoop\PaywallBundle\Notifications\Emails;
 
 /**
  * Console command responsible for sending email
@@ -20,9 +19,6 @@ use Newscoop\EventDispatcher\Events\GenericEvent;
  */
 class NotifierCommand extends ContainerAwareCommand
 {
-    private $em;
-    private $dispatcher;
-
     protected function configure()
     {
         $this
@@ -35,81 +31,57 @@ class NotifierCommand extends ContainerAwareCommand
     {
         // TODO spool email notifications
         try {
-            $this->em = $this->getContainer()->getService('em');
+            $notificationService = $this->getContainer()->getService('newscoop_paywall.notifications_service');
             $now = new \DateTime();
-            $subscriptionsCount = $this->getExpiringSubscriptionsCount($now);
+            $subscriptionsCount = $notificationService->getExpiringSubscriptionsCount(
+                $now,
+                Emails::NOTIFY_LEVEL_ONE,
+                7
+            );
 
-            if ($subscriptionsCount == 0) {
-                $output->writeln('<info>There are no expiring subscriptions.<info>');
+            if ($subscriptionsCount !== 0) {
+                $notificationService->processExpiringSubscriptions(
+                    $now,
+                    Emails::NOTIFY_LEVEL_ONE,
+                    $subscriptionsCount,
+                    7
+                );
 
-                return;
+                if ($input->getOption('verbose')) {
+                    $output->writeln('<info>'.$subscriptionsCount.' notifications sent...(which expire in 7 days)</info>');
+                }
+            } else {
+                if ($input->getOption('verbose')) {
+                    $output->writeln('<info>There are no subscriptions expiring within 7 day(s).<info>');
+                }
             }
-            $this->dispatcher = $this->getContainer()->getService('event_dispatcher');
-            $this->processExpiringSubscriptions($subscriptionsCount, $now);
 
-            if ($input->getOption('verbose')) {
-                $output->writeln('<info>Finished... '.$subscriptionsCount.' notifications sent...</info>');
+            $subscriptionsCount = $notificationService->getExpiringSubscriptionsCount(
+                $now,
+                Emails::NOTIFY_LEVEL_TWO,
+                3
+            );
+
+            if ($subscriptionsCount !== 0) {
+                $notificationService->processExpiringSubscriptions(
+                    $now,
+                    Emails::NOTIFY_LEVEL_TWO,
+                    $subscriptionsCount,
+                    3
+                );
+
+                if ($input->getOption('verbose')) {
+                    $output->writeln('<info>'.$subscriptionsCount.' notifications sent... (which expire in 3 days)</info>');
+                }
+            } else {
+                if ($input->getOption('verbose')) {
+                    $output->writeln('<info>There are no subscriptions expiring within 3 day(s).<info>');
+                }
             }
         } catch (\Exception $e) {
-            if ($input->getOption('verbose')) {
-                $output->writeln('<error>Error occured: '.$e->getMessage().'</error>');
-            }
+            $output->writeln('<error>Error occured: '.$e->getMessage().'</error>');
 
             return false;
-        }
-    }
-
-    private function getExpiringSubscriptionsCount($now)
-    {
-        $qb = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
-                ->createQueryBuilder('s');
-        $qb
-                ->select('count(s)')
-                ->where("DATE_SUB(s.expire_at, 7, 'DAY') < :now")
-                ->orWhere("DATE_SUB(s.expire_at, 3, 'DAY') < :now")
-                ->andWhere('s.active = :status')
-                ->andWhere('s.notifySent = :notifySent')
-                ->setParameters(array(
-                    'status' => 'Y',
-                    'now' => $now,
-                    'notifySent' => false,
-                ))
-                ->orderBy('s.created_at', 'desc');
-
-        return (int) $qb->getQuery()->getSingleScalarResult();
-    }
-
-    private function processExpiringSubscriptions($subscriptionsCount, $now)
-    {
-        $qb = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
-                ->createQueryBuilder('s');
-
-        $batch = 100;
-        $steps = ($subscriptionsCount > $batch) ? ceil($subscriptionsCount / $batch) : 1;
-        for ($i = 0; $i < $steps; $i++) {
-            $offset = $i * $batch;
-
-            $qb
-                ->where("DATE_SUB(s.expire_at, 7, 'DAY') < :now")
-                ->orWhere("DATE_SUB(s.expire_at, 3, 'DAY') < :now")
-                ->andWhere('s.active = :status')
-                ->andWhere('s.notifySent = :notifySent')
-                ->setParameters(array(
-                    'status' => 'Y',
-                     'now' => $now,
-                     'notifySent' => false,
-                ))
-                ->orderBy('s.created_at', 'desc')
-                ->setFirstResult($offset)
-                ->setMaxResults($batch);
-
-            $expiringSubscriptions = $qb->getQuery()->getResult();
-            foreach ($expiringSubscriptions as $key => $subscription) {
-                $this->dispatcher->dispatch(
-                    PaywallEvents::SUBSCRIPTION_EXPIRATION,
-                    new GenericEvent($subscription)
-                );
-            }
         }
     }
 }

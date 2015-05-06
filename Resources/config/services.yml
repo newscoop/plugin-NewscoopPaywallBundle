@@ -88,6 +88,7 @@ services:
             - @newscoop.templates.service
             - @newscoop.placeholders.service
             - @em
+            - @event_dispatcher
 
     newscoop_paywall.notification_listener:
         class: %newscoop.paywall.listener.notification.class%

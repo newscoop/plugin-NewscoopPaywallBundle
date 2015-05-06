@@ -17,4 +17,13 @@ class Emails
     const USER_CONFIRMATION  = 'user_confirmation';
     const SUBSCRIPTION_STATUS = 'subscription_status_change_confirmation';
     const SUBSCRIPTION_EXPIRATION = 'subscription_expiration';
+
+    /* we distinquish two levels of notifications
+    	NOTIFY_LEVEL_ONE -
+    		notify will be send x (e.g. 7) days before expiration
+    	NOTIFY_LEVEL_TWO -
+    		notify will be send x (e.g. 3)days before expiration
+    */
+    const NOTIFY_LEVEL_ONE = 1;
+    const NOTIFY_LEVEL_TWO = 2;
 }

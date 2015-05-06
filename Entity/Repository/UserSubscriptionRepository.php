@@ -5,13 +5,13 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Newscoop\ListResult;
+use Newscoop\PaywallBundle\Notifications\Emails;
 
 /**
  * Subscription repository
@@ -63,7 +63,7 @@ class UserSubscriptionRepository extends EntityRepository
 
         if (!empty($criteria->query)) {
             $qb->andWhere($qb->expr()->orX("(u.username LIKE :query)", "(p.name LIKE :query)"));
-            $qb->setParameter('query', '%' . trim($criteria->query, '%') . '%');
+            $qb->setParameter('query', '%'.trim($criteria->query, '%').'%');
         }
 
         if ($criteria->firstResult != 0) {
@@ -124,5 +124,87 @@ class UserSubscriptionRepository extends EntityRepository
         return $this->findBy(array(
             'user' => is_numeric($user) ? $user : $user->getId(),
         ), array('id' => 'desc'), 1000);
+    }
+
+    /**
+     * Gets expiring subscriptions count.
+     *
+     * @param \DateTime $now    Date time
+     * @param integer   $notify Notify type
+     * @param integer   $days   Days amount, when to send notification
+     *
+     * @return Doctrine\ORM\Query
+     */
+    public function getExpiringSubscriptionsCount($now, $notify, $days = 7)
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb
+            ->select('count(s)')
+            ->where("DATE_SUB(s.expire_at, :days, 'DAY') < :now")
+            ->andWhere('s.active = :status');
+
+        switch ($notify) {
+            case Emails::NOTIFY_LEVEL_ONE:
+                $qb->andWhere($qb->expr()->isNull('s.notifySentLevelOne'));
+                break;
+            case Emails::NOTIFY_LEVEL_TWO:
+                $qb->andWhere($qb->expr()->isNotNull('s.notifySentLevelOne'));
+                $qb->andWhere($qb->expr()->isNull('s.notifySentLevelTwo'));
+                break;
+            default:
+                break;
+        }
+
+        $qb->setParameters(array(
+            'status' => 'Y',
+            'now' => $now,
+            'days' => $days,
+        ))
+        ->orderBy('s.created_at', 'desc');
+
+        return $qb->getQuery();
+    }
+
+    /**
+     * Gets expiration subscriptions query.
+     *
+     * @param integer   $offset First result
+     * @param integer   $batch  Max results
+     * @param \DateTime $now    Date time
+     * @param integer   $notify Notify type
+     * @param integer   $days   Days amount, when to send notification
+     *
+     * @return Doctrine\ORM\Query
+     */
+    public function getExpiringSubscriptions($offset, $batch, $now, $notify, $days = 7)
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb
+            ->where("DATE_SUB(s.expire_at, :days, 'DAY') < :now")
+            ->andWhere('s.active = :status');
+
+        switch ($notify) {
+            case Emails::NOTIFY_LEVEL_ONE:
+                $qb->andWhere($qb->expr()->isNull('s.notifySentLevelOne'));
+                break;
+            case Emails::NOTIFY_LEVEL_TWO:
+                $qb->andWhere($qb->expr()->isNotNull('s.notifySentLevelOne'));
+                $qb->andWhere($qb->expr()->isNull('s.notifySentLevelTwo'));
+                break;
+            default:
+                break;
+        }
+
+        $qb
+            ->setParameters(array(
+                'status' => 'Y',
+                'now' => $now,
+                'days' => $days,
+            ))
+            ->orderBy('s.created_at', 'desc')
+            ->setFirstResult($offset)
+            ->setMaxResults($batch);
+
+        return $qb->getQuery();
     }
 }

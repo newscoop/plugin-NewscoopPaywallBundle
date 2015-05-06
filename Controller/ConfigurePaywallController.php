@@ -34,6 +34,7 @@ class ConfigurePaywallController extends Controller
         $form = $this->container->get('form.factory')->create(new SettingsFormType(), array(
             'notificationEmail' => $preferencesService->PaywallMembershipNotifyEmail,
             'enableNotify' => $preferencesService->PaywallEmailNotifyEnabled == "1" ? true : false,
+            'notificationFromEmail' => $preferencesService->PaywallMembershipNotifyFromEmail,
         ));
 
         if ($request->isMethod('POST')) {
@@ -42,6 +43,7 @@ class ConfigurePaywallController extends Controller
                 $data = $form->getData();
                 $preferencesService->set('PaywallMembershipNotifyEmail', $data['notificationEmail']);
                 $preferencesService->set('PaywallEmailNotifyEnabled', $data['enableNotify']);
+                $preferencesService->set('PaywallMembershipNotifyFromEmail', $data['notificationFromEmail']);
 
                 if (is_numeric($data['adapter'])) {
                     $settings = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
