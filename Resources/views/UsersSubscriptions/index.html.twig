@@ -65,7 +65,7 @@ $(document).ready(function(){
         "bServerSide": true,
         "sAjaxSource": Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'),
         "aoColumnDefs": [
-            { 'bSortable': false, 'aTargets': [ 7 ] }
+            { 'bSortable': false, 'aTargets': [ 9 ] }
         ],
         "aoColumns" : [
             { "mData": "username" },
@@ -73,36 +73,56 @@ $(document).ready(function(){
             { "mData": "subscription" },
             { "mData": "topay" },
             { "mData": "currency" },
-            { "mData": "active", "sClass": "status"},
             { "mData": "type" },
+            { "mData": "firstNotify" },
+            { "mData": "secondNotify" },
+            { "mData": "expiresAt" },
+            { "mData": "active", "sClass": "status"},
             { "mData": null, "sWidth": "28%"},
         ],
         fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                 $('td:eq(0)', nRow).parent().attr('id', aData['id']);
                 if (aData['active'] == "Y")
                 {
-                    $('td:eq(5)', nRow).attr('id','active');
-                    $('td:eq(5)', nRow).html("{{ 'paywall.manage.label.active'|trans }}");
+                    $('td:eq(9)', nRow).attr('id','active');
+                    $('td:eq(9)', nRow).html("{{ 'paywall.manage.label.active'|trans }}");
                 } else {
-                    $('td:eq(5)', nRow).attr('id','deactivated');
-                    $('td:eq(5)', nRow).html("{{ 'paywall.manage.label.deactivated'|trans }}");
+                    $('td:eq(9)', nRow).attr('id','deactivated');
+                    $('td:eq(9)', nRow).html("{{ 'paywall.manage.label.deactivated'|trans }}");
                 }
 
                 if (aData['type'] == "P") {
-                    $('td:eq(6)', nRow).html('{{ 'paywall.manage.label.paid'|trans }}');
+                    $('td:eq(5)', nRow).html('{{ 'paywall.manage.label.paid'|trans }}');
                 } else if (aData['type'] == "PN") {
-                    $('td:eq(6)', nRow).html('{{'paywall.manage.label.paidnow'|trans }}');
+                    $('td:eq(5)', nRow).html('{{'paywall.manage.label.paidnow'|trans }}');
                 } else if (aData['type'] == "T") {
-                    $('td:eq(6)', nRow).html('{{ 'paywall.manage.label.trial'|trans }}');
+                    $('td:eq(5)', nRow).html('{{ 'paywall.manage.label.trial'|trans }}');
                 }
 
-                $('td:eq(7)', nRow).empty();
-                $('td:eq(7)', nRow).append("<a class='details-subscription btn btn-xs btn-default' href='"+Routing.generate('newscoop_paywall_userssubscriptions_editsubscription', {'id': aData['id']})+"'><span class=\"glyphicon glyphicon-edit\"></span> {{ 'paywall.btn.edit'|trans }}</a>");
-                $('td:eq(7)', nRow).append(" <a class='details-subscription btn btn-xs btn-default' href="+Routing.generate('newscoop_paywall_userssubscriptions_details', {'id': aData['id']})+">{{ 'paywall.btn.details'|trans }}</a>");
-                if (aData['active'] == "Y") {
-                    $('td:eq(7)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-remove-circle\"></span> {{ 'paywall.btn.deactivate'|trans }}</a>");
+                if (aData['firstNotify']) {
+                    $('td:eq(6)', nRow).html(aData['firstNotify']['date']);
                 } else {
-                    $('td:eq(7)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-ok-circle\"></span> {{ 'paywall.btn.activate'|trans }}</a>");
+                    $('td:eq(6)', nRow).html('-');
+                }
+
+                if (aData['secondNotify']) {
+                    $('td:eq(7)', nRow).html(aData['secondNotify']['date']);
+                } else {
+                    $('td:eq(7)', nRow).html('-');
+                }
+
+                if (aData['expiresAt']) {
+                    $('td:eq(8)', nRow).html(aData['expiresAt']['date']);
+                } else {
+                    $('td:eq(8)', nRow).html('-');
+                }
+
+                $('td:eq(10)', nRow).empty();
+                $('td:eq(10)', nRow).append("<a class='details-subscription btn btn-xs btn-default' href='"+Routing.generate('newscoop_paywall_userssubscriptions_editsubscription', {'id': aData['id']})+"'><span class=\"glyphicon glyphicon-edit\"></span> {{ 'paywall.btn.edit'|trans }}</a>");
+                if (aData['active'] == "Y") {
+                    $('td:eq(10)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-remove-circle\"></span> {{ 'paywall.btn.deactivate'|trans }}</a>");
+                } else {
+                    $('td:eq(10)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-ok-circle\"></span> {{ 'paywall.btn.activate'|trans }}</a>");
                 }
         },
     });
@@ -141,7 +161,7 @@ $(document).ready(function(){
                     flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
                 }
             } else {
-                flashMessage('{{ 'paywall.flash.message.error.wrong'|trans }}', 'error');
+                flashMessage('{{ 'paywall.flash.message.error'|trans }}', 'error');
             }
         });
     });
@@ -287,8 +307,11 @@ $(document).ready(function(){
                     <th>{{ 'paywall.step1.form.label.subscription'|trans }}</th>
                     <th>{{ 'paywall.manage.label.topay'|trans }}</th>
                     <th>{{ 'paywall.step2.label.currency'|trans }}</th>
-                    <th>{{ 'paywall.step2.label.active'|trans }}</th>
                     <th>{{ 'paywall.manage.label.paymenttype'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.firstNotify'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.secondNotify'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.expiresAt'|trans }}</th>
+                    <th>{{ 'paywall.step2.label.active'|trans }}</th>
                     <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </thead>

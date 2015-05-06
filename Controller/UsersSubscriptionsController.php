@@ -69,6 +69,9 @@ class UsersSubscriptionsController extends BaseController
             'currency' => $userSubscription['currency'],
             'type' => $userSubscription['type'],
             'active' => $userSubscription['active'],
+            'firstNotify' => $userSubscription['notifySentLevelOne'],
+            'secondNotify' => $userSubscription['notifySentLevelTwo'],
+            'expiresAt' => $userSubscription['expire_at'],
         );
     }
 
@@ -103,9 +106,9 @@ class UsersSubscriptionsController extends BaseController
                 $subscription = $this->get('paywall.subscription.service')->deactivateById($id);
                 $this->dispatchNotificationEvent(PaywallEvents::SUBSCRIPTION_STATUS_CHANGE, $subscription);
 
-                return new Response(json_encode(array('status' => true)));
+                return new JsonResponse(array('status' => true));
             } catch (\Exception $exception) {
-                return new Response(json_encode(array('status' => false)));
+                return new JsonResponse(array('status' => false));
             }
         }
     }
@@ -120,12 +123,12 @@ class UsersSubscriptionsController extends BaseController
                 $subscription = $this->get('paywall.subscription.service')->activateById($id);
                 $this->dispatchNotificationEvent(PaywallEvents::SUBSCRIPTION_STATUS_CHANGE, $subscription);
 
-                return new Response(json_encode(array('status' => true)));
+                return new JsonResponse(array('status' => true));
             } catch (\Exception $exception) {
-                return new Response(json_encode(array(
+                return new JsonResponse(array(
                     'status' => false,
                     'message' => $exception->getMessage(),
-                )));
+                ));
             }
         }
     }
@@ -142,9 +145,9 @@ class UsersSubscriptionsController extends BaseController
                 $em->remove($subscription);
                 $em->flush();
 
-                return new Response(json_encode(array('status' => true)));
+                return new JsonResponse(array('status' => true));
             } catch (\Exception $exception) {
-                return new Response(json_encode(array('status' => false)));
+                return new JsonResponse(array('status' => false));
             }
         }
     }
