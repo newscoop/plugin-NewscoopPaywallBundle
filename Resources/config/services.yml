@@ -21,6 +21,7 @@ services:
         arguments:
             - @em
             - @dispatcher
+            - @newscoop.scheduler
         tags:
             - { name: kernel.event_subscriber}
 
