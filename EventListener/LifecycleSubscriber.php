@@ -20,12 +20,14 @@ class LifecycleSubscriber implements EventSubscriberInterface
     private $em;
     private $dispatcher;
     private $scheduler;
+    private $systemPreferences;
 
-    public function __construct($em, $dispatcher, $scheduler)
+    public function __construct($em, $dispatcher, $scheduler, $systemPreferences)
     {
         $this->em = $em;
         $this->dispatcher = $dispatcher;
         $this->scheduler = $scheduler;
+        $this->systemPreferences = $systemPreferences;
 
         $appDirectory = realpath(__DIR__.'/../../../../application/console');
         $this->cronjobs = array(
@@ -52,6 +54,9 @@ class LifecycleSubscriber implements EventSubscriberInterface
         // Generate proxies for entities
         $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__.'/../../../../library/Proxy');
         $this->addJobs();
+        $this->systemPreferences->PaywallMembershipNotifyEmail = $this->systemPreferences->EmailFromAddress;
+        $this->systemPreferences->PaywallMembershipNotifyFromEmail = $this->systemPreferences->EmailFromAddress;
+        $this->systemPreferences->PaywallEmailNotifyEnabled = 0;
     }
 
     public function update(GenericEvent $event)
@@ -70,6 +75,18 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->dropSchema($this->getClasses(), true);
         $this->removeJobs();
+    }
+
+    /**
+     * Clean up system preferences
+     *
+     * @return void
+     */
+    private function removeSettings()
+    {
+        $this->systemPreferences->delete('PaywallMembershipNotifyEmail');
+        $this->systemPreferences->delete('PaywallEmailNotifyEnabled');
+        $this->systemPreferences->delete('PaywallMembershipNotifyFromEmail');
     }
 
     /**

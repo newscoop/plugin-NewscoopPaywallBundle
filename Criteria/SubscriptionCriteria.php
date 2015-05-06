@@ -35,6 +35,11 @@ class SubscriptionCriteria extends Criteria
     public $query;
 
     /**
+     * @var integer
+     */
+    public $user;
+
+    /**
      * @var array
      */
     public $created_at = array('created_at' => 'asc');

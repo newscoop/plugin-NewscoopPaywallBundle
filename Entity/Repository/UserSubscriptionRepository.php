@@ -35,6 +35,11 @@ class UserSubscriptionRepository extends EntityRepository
             ->leftJoin('s.user', 'u')
             ->leftJoin('s.subscription', 'ss');
 
+        if ($criteria->user) {
+            $qb->where('s.user = :user')
+                ->setParameter('user', $criteria->user);
+        }
+
         foreach ($criteria->orderBy as $key => $value) {
             switch ($key) {
                 case '0':
@@ -56,6 +61,11 @@ class UserSubscriptionRepository extends EntityRepository
                     $qb->orderBy('s.type', $value);
                     break;
             }
+        }
+
+        foreach ($criteria->perametersOperators as $key => $operator) {
+            $qb->andWhere('s.'.$key.' = :'.$key)
+                ->setParameter($key, $criteria->$key);
         }
 
         $countQb = clone $qb;
@@ -204,6 +214,23 @@ class UserSubscriptionRepository extends EntityRepository
             ->orderBy('s.created_at', 'desc')
             ->setFirstResult($offset)
             ->setMaxResults($batch);
+
+        return $qb->getQuery();
+    }
+
+    public function getValidSubscriptionsBy($userId)
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        $qb
+            ->select('s', 'ss', 'sp')
+            ->where('s.user = :user')
+            ->andWhere("s.active = 'Y'")
+            ->andWhere('s.expire_at >= :now')
+            ->join('s.subscription', 'ss')
+            ->join('ss.specification', 'sp')
+            ->setParameter('user', $userId)
+            ->setParameter('now', new \DateTime('now'));
 
         return $qb->getQuery();
     }

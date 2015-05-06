@@ -33,8 +33,11 @@ class MetaSubscription
     {
         if (!$subscription instanceof UserSubscription) {
             $em = \Zend_Registry::get('container')->getService('em');
-            $this->subscription = $em->getReference('Newscoop\PaywallBundle\Entity\UserSubscription', $subscription);
+            if (!$subscription) {
+                return;
+            }
 
+            $this->subscription = $em->getReference('Newscoop\PaywallBundle\Entity\UserSubscription', $subscription);
             if (!$this->subscription) {
                 $this->subscription = new UserSubscription();
             }

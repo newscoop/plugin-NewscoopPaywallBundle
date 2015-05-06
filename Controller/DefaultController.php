@@ -90,13 +90,7 @@ class DefaultController extends BaseController
 
         $specificationArray = $chosenSubscription->getSpecification()->toArray();
         $specification = $specificationArray[0];
-
         $publication = $em->getReference('Newscoop\Entity\Publication', $specification->getPublication());
-        $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('language_id'));
-        if (!$language && $publication) {
-            $language = $publication->getLanguage();
-        }
-
         $subscription = $subscriptionService->create();
         $subscriptionData = new SubscriptionData(array(
             'userId' => $user,
@@ -109,26 +103,6 @@ class DefaultController extends BaseController
             'type' => 'T',
             'active' => false,
         ), $subscription);
-
-        switch ($chosenSubscription->getType()) {
-            case 'article':
-                $article = $subscriptionService->getArticleRepository()->findOneByNumber($request->get('article_id') ?: $specification->getArticle());
-                $subscriptionData->addArticle($article, $language);
-                break;
-
-            case 'section':
-                $section = $subscriptionService->getSectionRepository()->findOneByNumber($request->get('section_id') ?: $specification->getSection());
-                $subscriptionData->addSection($section, $language);
-                break;
-
-            case 'issue':
-                $issue = $subscriptionService->getIssueRepository()->findOneByNumber($request->get('issue_id') ?: $specification->getIssue());
-                $subscriptionData->addIssue($issue, $language);
-                break;
-            default:
-                # code...
-                break;
-        }
 
         $subscription = $subscriptionService->update($subscription, $subscriptionData);
         $subscriptionService->save($subscription);
