@@ -44,6 +44,19 @@ class NotificationListener
     }
 
     /**
+     * Sends confirmation email with informations
+     * about created subscription for user, by admin
+     * in backend.
+     *
+     * @param GenericEvent $event
+     */
+    public function sendAdminCreatedNotification(GenericEvent $event)
+    {
+        $subscription = $event->getSubject();
+        $this->sendValidatedNotification(Emails::ADMIN_CREATED_CONFIRMATION, $subscription);
+    }
+
+    /**
      * Sends notification email to admin
      *
      * @param GenericEvent $event

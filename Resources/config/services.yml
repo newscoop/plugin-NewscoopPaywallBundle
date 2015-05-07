@@ -43,11 +43,6 @@ services:
         tags:
             - { name: form.type, alias: specificationForm }
 
-    newscoop_paywall.form.type.details:
-        class: Newscoop\PaywallBundle\Form\Type\SubscriptionDetailsType
-        tags:
-            - { name: form.type, alias: detailsForm }
-
     newscoop_paywall.form.type.subscriptionedit:
         class: Newscoop\PaywallBundle\Form\Type\SubscriptionEditType
         tags:
@@ -101,3 +96,4 @@ services:
             - { name: kernel.event_listener, event: paywall.subscription.order, method: sendUserNotificationEmail }
             - { name: kernel.event_listener, event: paywall.subscription.status_change, method: sendUserSubscriptionStatusChangeEmail }
             - { name: kernel.event_listener, event: paywall.subscription.expiration, method: sendSubscriptionExpirationEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.admin_order, method: sendAdminCreatedNotification }

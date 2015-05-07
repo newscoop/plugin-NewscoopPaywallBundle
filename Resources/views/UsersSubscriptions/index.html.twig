@@ -119,8 +119,9 @@ $(document).ready(function(){
 
                 $('td:eq(10)', nRow).empty();
                 $('td:eq(10)', nRow).append("<a class='details-subscription btn btn-xs btn-default' href='"+Routing.generate('newscoop_paywall_userssubscriptions_editsubscription', {'id': aData['id']})+"'><span class=\"glyphicon glyphicon-edit\"></span> {{ 'paywall.btn.edit'|trans }}</a>");
+                $('td:eq(10)', nRow).append("<a class='delete-action btn btn-xs btn-default' id="+aData['id']+" href='"+Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': aData['id']})+"'><span class=\"glyphicon glyphicon-trash\"></span> {{ 'paywall.btn.delete'|trans }}</a>");
                 if (aData['active'] == "Y") {
-                    $('td:eq(10)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-remove-circle\"></span> {{ 'paywall.btn.deactivate'|trans }}</a>");
+                    $('td:eq(10)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_deactivate', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-remove-circle\"></span> {{ 'paywall.btn.deactivate'|trans }}</a>");
                 } else {
                     $('td:eq(10)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-ok-circle\"></span> {{ 'paywall.btn.activate'|trans }}</a>");
                 }
@@ -160,6 +161,21 @@ $(document).ready(function(){
                     refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'));
                     flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
                 }
+            } else {
+                flashMessage('{{ 'paywall.flash.message.error'|trans }}', 'error');
+            }
+        });
+    });
+
+    $('#users-subscriptionsTable').on('click', '.delete-action', function(event){
+        var id = $(this).attr('id');
+        var obj = $("tr#"+id);
+        event.preventDefault();
+        $.post($(this).attr('href'),
+         function(data) {
+            if (data.status) {
+                flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
+                obj.remove();
             } else {
                 flashMessage('{{ 'paywall.flash.message.error'|trans }}', 'error');
             }

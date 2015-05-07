@@ -131,7 +131,13 @@ class NotificationsService
                 $message = $this->templatesService->fetchTemplate(
                     "_paywall/email_subscription_expiration.tpl"
                 );
-                $message = 'test';
+                break;
+            case Emails::ADMIN_CREATED_CONFIRMATION:
+                $message = $this->templatesService->fetchTemplate(
+                    "_paywall/email_subscription_admin_created.tpl"
+                );
+                break;
+            default:
                 break;
         }
 

@@ -17,6 +17,7 @@ class Emails
     const USER_CONFIRMATION  = 'user_confirmation';
     const SUBSCRIPTION_STATUS = 'subscription_status_change_confirmation';
     const SUBSCRIPTION_EXPIRATION = 'subscription_expiration';
+    const ADMIN_CREATED_CONFIRMATION = 'admin_created_subscription_confirmation';
 
     /* we distinquish two levels of notifications
     	NOTIFY_LEVEL_ONE -

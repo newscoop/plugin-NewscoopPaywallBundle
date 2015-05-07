@@ -90,13 +90,11 @@ class DefaultController extends BaseController
 
         $specificationArray = $chosenSubscription->getSpecification()->toArray();
         $specification = $specificationArray[0];
-        $publication = $em->getReference('Newscoop\Entity\Publication', $specification->getPublication());
         $subscription = $subscriptionService->create();
         $subscriptionData = new SubscriptionData(array(
             'userId' => $user,
-            //'subscriptionId' => $chosenSubscription->getId(),
-            'mainSubscriptionId' => $chosenSubscription,
-            'publicationId' => $request->get('publication_id') ?: $publication->getId(),
+            'subscriptionId' => $chosenSubscription,
+            'publicationId' => $request->get('publication_id') ?: $specification->getPublication()->getId(),
             'toPay' => $chosenSubscription->getPrice(),
             'days' => $chosenSubscription->getRange(),
             'currency' => $chosenSubscription->getCurrency(),

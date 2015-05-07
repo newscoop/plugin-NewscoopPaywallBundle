@@ -461,7 +461,7 @@ class PaywallService
         $daysDiffrence = (int) $now->diff($createdAt)->format("%a");
         $startDate = $createdAt ?: $now;
         $days = $userSubscription->getSubscription()->getRange();
-        $days = $days + $daysDiffrence + 1;
+        $days = $days + $daysDiffrence;
         $timeSpan = new \DateInterval('P'.$days.'D');
 
         return $startDate->add($timeSpan);
@@ -654,8 +654,8 @@ class PaywallService
             $subscription->setToPay($data->toPay);
         }
 
-        if ($data->mainSubscriptionId) {
-            $subscription->setSubscription($data->mainSubscriptionId);
+        if ($data->subscriptionId) {
+            $subscription->setSubscription($data->subscriptionId);
         }
 
         if ($data->currency) {
@@ -668,39 +668,6 @@ class PaywallService
 
         if ($data->type) {
             $subscription->setType($data->type);
-        }
-
-        if ($data->sections) {
-            $sectionsIds = array();
-            foreach ($data->sections as $key => $section) {
-                $subscription->addSection($section);
-                $sectionsIds[] = $section->getId();
-            }
-
-            //Clean connected sections list
-            $subscription->setSections($sectionsIds);
-        }
-
-        if ($data->articles) {
-            $articlesIds = array();
-            foreach ($data->articles as $key => $article) {
-                $subscription->addArticle($article);
-                $articlesIds[] = $article->getId();
-            }
-
-            //Clean connected articles list
-            $subscription->setArticles($articlesIds);
-        }
-
-        if ($data->issues) {
-            $issuesIds = array();
-            foreach ($data->issues as $key => $issue) {
-                $subscription->addIssue($issue);
-                $issuesIds[] = $issue->getId();
-            }
-
-            //Clean connected issues list
-            $subscription->setIssues($issuesIds);
         }
 
         return $subscription;
@@ -727,6 +694,28 @@ class PaywallService
         if ($subscription) {
             $subscription->setActive(false);
             $subscription->setType('T');
+            $this->em->flush();
+        }
+
+        return $subscription;
+    }
+
+    /**
+     * Removes Subscription by Id and returns its instance
+     *
+     * @param integer $id User subscription id
+     *
+     * @return UserSubscription
+     */
+    public function deleteById($id)
+    {
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
+            ->findOneBy(array(
+                'id' => $id,
+            ));
+
+        if ($subscription) {
+            $this->em->remove($subscription);
             $this->em->flush();
         }
 
