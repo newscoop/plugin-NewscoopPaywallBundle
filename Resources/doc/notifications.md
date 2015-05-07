@@ -21,4 +21,4 @@ Copy [`_paywall`](https://github.com/newscoop/plugin-NewscoopPaywallBundle/tree/
 
 ##Notification console command
 
-There is also console command reponsible for sending notifications about expiring subscriptions 7 days and 3 days before subscription expiration date which runs by default every day at 2am (0 20 * * *). This cron job is automatically set up on plugin install event. After plugin installation this cron job can be managed using Newscoop Admin Panel (`Configure -> System Preferences -> Background Jobs Settings). See `EventListener/LifecycleSubscriber.php`
+There is also console command reponsible for sending notifications about expiring subscriptions 7 days and 3 days before subscription expiration date which runs by default every day at 2am (`0 2 * * *`). This cron job is automatically set up on plugin install event. After plugin installation this cron job can be managed using Newscoop Admin Panel (`Configure -> System Preferences -> Background Jobs Settings). See `EventListener/LifecycleSubscriber.php`
