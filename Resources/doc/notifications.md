@@ -18,3 +18,7 @@ Notifications can be enabled/disabled via Paywall backend (`Paywall -> Configure
 In Paywall configuration there is also field called "Sender email" - all notifications will be sent from this email. By default this email is set to the email address provided during the Newscoop installation process.
 
 Copy [`_paywall`](https://github.com/newscoop/plugin-NewscoopPaywallBundle/tree/master/Resources/_paywall) folder to your themes main directory and customize its templates for your needs.
+
+##Notification console command
+
+There is also console command reponsible for sending notifications about expiring subscriptions 7 days and 3 days before subscription expiration date which runs by default every day at 2am (0 20 * * *). This cron job is automatically set up on plugin install event. After plugin installation this cron job can be managed using Newscoop Admin Panel (`Configure -> System Preferences -> Background Jobs Settings). See `EventListener/LifecycleSubscriber.php`
