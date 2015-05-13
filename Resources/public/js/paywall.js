@@ -197,7 +197,9 @@ $(document).ready(function() {
                                 $("#s2id_selectSections .select2-choice .select2-chosen").empty();
                                 $("#s2id_selectSections .select2-choice .select2-chosen").append(data.Sections[0].name);
                                 $("#s2id_selectArticles .select2-choice .select2-chosen").empty();
-                                $("#s2id_selectArticles .select2-choice .select2-chosen").append(data.Articles[0].text);
+                                if (data.Articles) {
+                                    $("#s2id_selectArticles .select2-choice .select2-chosen").append(data.Articles[0].text);
+                                }
                             }, 'json');
                         }
                     } else {
