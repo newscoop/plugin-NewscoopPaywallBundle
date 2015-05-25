@@ -7,7 +7,5 @@ Newscoop\PaywallBundle\Entity\Subscriptions:
             - Range:
                 min: 1
             - Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimal: { message: "paywall.step1.form.error.price.decimal" }
-        range:
-            - NotBlank: { message: "paywall.step1.form.error.range.blank" }
         currency:
             - NotBlank: { message: "paywall.step1.form.error.currency.blank" }

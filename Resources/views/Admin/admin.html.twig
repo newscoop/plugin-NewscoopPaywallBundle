@@ -15,198 +15,313 @@
 
 {% block admin_content %}
 <div class="plugin-container">
-{% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 1} %}
-<div id="add-subscription" style="padding: 10px 10px 30px 10px;">
-	<form id="confForm" action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(form) }} >
-		<table id="step1" border="0" cellspacing="0" cellpadding="0" class="box_table">
-			<tbody>
-				<tr>
-					<td colspan="2" align="left" style="width: 634px">
-						<input style="width: 240px" class="save-button" name="step1" value="{{ 'paywall.btn.button1'|trans }} (1)" disabled>
-						<input style="width: 240px" class="button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (2)" disabled><br><br>
-						<strong>{{ 'paywall.step1.header'|trans }}</strong>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="alert error"></div>
-					</td>
-				</tr>
-				<tr>
-					<td align="left">	
-						{{ form_label(form.name) }}
-					</td>
-				</tr>
-				<tr>
-					<td align="left" valign="top">
-						{{ form_widget(form.name, {'attr' : {'class' : 'input_text'}}) }}
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ form_label(form.type) }} 
-					</td>
-				</tr>
-				<tr>
-					<td>
-						{{ form_widget(form.type, {'attr' : {'class' : 'input_select', 'style' : 'width:150px'}}) }}
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ form_label(form.range) }}    
-					</td>
-				</tr>
-				<tr>
-					<td align="left" valign="top">
-						{{ form_widget(form.range, {'attr' : {'class' : 'input_text'}}) }}
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ form_label(form.price) }}    
-					</td>
-				</tr>
-				<tr>
-					<td align="left" valign="top">
-						{{ form_widget(form.price, {'attr' : {'class' : 'input_text'}}) }}
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ form_label(form.currency) }}    
-					</td>
-				</tr>
-				<tr>
-					<td align="left" valign="top">
-						{{ form_widget(form.currency, {'attr' : {'class' : 'input_text'}}) }}
-					</td>
-				</tr>
-				<tr>
-					<td align="left">
-						{{ form_label(form.description) }} ({{ 'paywall.step1.form.label.optional'|trans }})
-					</td>
-				</tr>
-				<tr>
-					<td align="left" valign="top">
-						{{ form_widget(form.description) }}
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2"><hr></td>
-				</tr>
-				<tr>
-					<td colspan="2" align="right" style="padding-top: 10px;">
-						<input type="submit" id="next" value="{{ 'paywall.btn.next'|trans }}" class="save-button">
-					</td>
-				</tr>
-				{{ form_rest(form) }}
-			</tbody>
-		</table>
-	</form>
-	<form id="step2Form" action="{{ path('newscoop_paywall_admin_step2', {'id': subscription_id }) }}" method="post" {{ form_enctype(formSpecification) }}>
-		<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
-			<tbody>
-				<tr>
-					<td colspan="2" align="left">
-						<input class="button" type="submit" name="step1" value="{{ 'paywall.btn.button1'|trans }} (1)" disabled>
-						<input class="save-button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (2)" disabled><br><br>
-						<div style="float: left"><strong>{{ 'paywall.step2.header'|trans }}</strong><br><br>
-							
-							<table border="0" cellspacing="0" cellpadding="0" class="display">
-								<tbody>
-									<tr>
-										<td>
-											<div class="alert error"></div>
-										</td>
-									</tr>
-									<tr>
-										<td align="left">	
-											{{ 'paywall.step2.label.publication'|trans }}:
-										</td>
-									</tr>
-									<tr>
-										<td align="left" valign="top">
-											<input id="subscriptionName" name="subscriptionTitle" type="hidden"></input>
-										</td>
-									</tr>
-									<tr>
-										<td align="left" valign="top">
-											<div id="selectPublications" style="width:350px" class="populate placeholder"></div>
-											{{ form_widget(formSpecification.publication, {'attr' : {'style' : 'display: none'}}) }}
-										</td>
-									</tr>
-									<tr>
-										<td id="title-issue" align="left"></td>
-									</tr>
-									<tr>
-										<td align="left" valign="top">
-											<div id="selectIssues" style="width:350px" class="populate placeholder"></div>
-											{{ form_widget(formSpecification.issue, {'attr' : {'style' : 'display: none'}}) }}
-										</td>
-									</tr>
-									<tr>
-										<td id="title-section" align="left"></td>
-									</tr>
-									<tr>
-										<td align="left" valign="top">
-											<div id="selectSections" style="width:350px" class="populate placeholder"></div>
-											{{ form_widget(formSpecification.section, {'attr' : {'style' : 'display: none'}}) }}
-										</td>
-									</tr>
-									<tr>
-										<td id="title-article" align="left">
-											{{ 'paywall.step2.label.article'|trans }}:
-										</td>
-									</tr>
-									<tr>
-										<td align="left" valign="top">
-											<div id="selectArticles" name="articleNumber" style="width:350px" class="populate placeholder"></div>
-											{{ form_widget(formSpecification.article, {'attr' : {'style' : 'display: none'}}) }}
-										</td>
-									</tr>
-									{{ form_widget(formSpecification._token) }}
-								</tbody>
-							</table>
-						</div>
-						<div style="float: right">
-							<table border="0" cellspacing="1" cellpadding="3" class="table_list">
-								<tbody><tr class="table_list_header">
-									<td align="left" id="titleBox" valign="top"></td>
-									<td align="center" valign="top"></td>
-									<tr>
-										<td align="left">{{ 'paywall.step2.label.type'|trans }}:</td>
-										<td id="typeBox"></td>
-									</tr>
-									<tr>
-										<td align="left">{{ 'paywall.step2.label.durationbox'|trans }}:</td>
-										<td id="durationBox"></td>
-									</tr>
-									<tr>
-										<td align="left">{{ 'paywall.step2.label.price'|trans }}:</td>
-										<td id="valueBox"></td>
-									</tr>
-									<tr>
-										<td align="left">{{ 'paywall.step2.label.currency'|trans }}:</td>
-										<td id="currencyBox"></td>
-									</tr>
-								</tbody></table>
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr>
+	{% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 1} %}
+	<div id="add-subscription" style="padding: 10px 10px 30px 10px;">
+		<form id="confForm" action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(form) }} >
+			<table id="step1" border="0" cellspacing="0" cellpadding="0" class="box_table">
+				<tbody>
+					<tr>
+						<td colspan="2" align="left">
+							<input style="min-width: 240px" class="save-button" name="step1" value="{{ 'paywall.btn.button1'|trans }} (1)" disabled>
+							<input class="button" name="step3" value="{{ 'paywall.label.defineduration'|trans }} (2)" disabled>
+							<input style="min-width: 240px" class="button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (3)" disabled><br><br>
+							<strong>{{ 'paywall.step1.header'|trans }}</strong>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="alert error"></div>
+						</td>
+					</tr>
+					<tr>
+						<td align="left">	
+							{{ form_label(form.name) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left" valign="top">
+							{{ form_widget(form.name, {'attr' : {'class' : 'input_text'}}) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
+							{{ form_label(form.type) }} 
+						</td>
+					</tr>
+					<tr>
+						<td>
+							{{ form_widget(form.type, {'attr' : {'class' : 'input_select', 'style' : 'width:150px'}}) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
+							{{ form_label(form.price) }}    
+						</td>
+					</tr>
+					<tr>
+						<td align="left" valign="top">
+							{{ form_widget(form.price, {'attr' : {'class' : 'input_text'}}) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
+							{{ form_label(form.currency) }}    
+						</td>
+					</tr>
+					<tr>
+						<td align="left" valign="top">
+							{{ form_widget(form.currency, {'attr' : {'class' : 'input_text'}}) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
+							{{ form_label(form.description) }} ({{ 'paywall.step1.form.label.optional'|trans }})
+						</td>
+					</tr>
+					<tr>
+						<td align="left" valign="top">
+							{{ form_widget(form.description) }}
+						</td>
+					</tr>
 					<tr>
 						<td colspan="2"><hr></td>
 					</tr>
-					<td colspan="2" align="right" style="padding-top: 10px;">
-						<input type="button" id="skip" value="{{ 'paywall.btn.skip'|trans }}" class="button">
-						<input type="submit" id="save" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</form>
+					<tr>
+						<td colspan="2" align="right" style="padding-top: 10px;">
+							<input type="submit" id="next" value="{{ 'paywall.btn.next'|trans }}" class="save-button">
+						</td>
+					</tr>
+					{{ form_rest(form) }}
+				</tbody>
+			</table>
+		</form>
+		<form id="step2Form" action="{{ path('newscoop_paywall_admin_step2', {'id': subscription_id }) }}" method="post" {{ form_enctype(formSpecification) }}>
+			<table id="step2" border="0" cellspacing="0" cellpadding="0" class="box_table">
+				<tbody>
+					<tr>
+						<td colspan="2" align="left">
+							<input class="button" type="submit" name="step1" value="{{ 'paywall.btn.button1'|trans }} (1)" disabled>
+							<input class="button" name="step3" value="{{ 'paywall.label.defineduration'|trans }} (2)" disabled>
+							<input class="save-button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (3)" disabled><br><br>
+							<div style="float: left"><strong>{{ 'paywall.step2.header'|trans }}</strong><br><br>
+
+								<table border="0" cellspacing="0" cellpadding="0" class="display">
+									<tbody>
+										<tr>
+											<td>
+												<div class="alert error"></div>
+											</td>
+										</tr>
+										<tr>
+											<td align="left">	
+												{{ 'paywall.step2.label.publication'|trans }}:
+											</td>
+										</tr>
+										<tr>
+											<td align="left" valign="top">
+												<input id="subscriptionName" name="subscriptionTitle" type="hidden"></input>
+											</td>
+										</tr>
+										<tr>
+											<td align="left" valign="top">
+												<div id="selectPublications" style="width:350px" class="populate placeholder"></div>
+												{{ form_widget(formSpecification.publication, {'attr' : {'style' : 'display: none'}}) }}
+											</td>
+										</tr>
+										<tr>
+											<td id="title-issue" align="left"></td>
+										</tr>
+										<tr>
+											<td align="left" valign="top">
+												<div id="selectIssues" style="width:350px" class="populate placeholder"></div>
+												{{ form_widget(formSpecification.issue, {'attr' : {'style' : 'display: none'}}) }}
+											</td>
+										</tr>
+										<tr>
+											<td id="title-section" align="left"></td>
+										</tr>
+										<tr>
+											<td align="left" valign="top">
+												<div id="selectSections" style="width:350px" class="populate placeholder"></div>
+												{{ form_widget(formSpecification.section, {'attr' : {'style' : 'display: none'}}) }}
+											</td>
+										</tr>
+										<tr>
+											<td id="title-article" align="left">
+												{{ 'paywall.step2.label.article'|trans }}:
+											</td>
+										</tr>
+										<tr>
+											<td align="left" valign="top">
+												<div id="selectArticles" name="articleNumber" style="width:350px" class="populate placeholder"></div>
+												{{ form_widget(formSpecification.article, {'attr' : {'style' : 'display: none'}}) }}
+											</td>
+										</tr>
+										{{ form_widget(formSpecification._token) }}
+									</tbody>
+								</table>
+							</div>
+							<div style="float: right">
+								<table border="0" cellspacing="1" cellpadding="3" class="table_list">
+									<tbody><tr class="table_list_header">
+										<td align="left" id="titleBox" valign="top"></td>
+										<td align="center" valign="top"></td>
+										<tr>
+											<td align="left">{{ 'paywall.step2.label.type'|trans }}:</td>
+											<td id="typeBox"></td>
+										</tr>
+										<tr>
+											<td align="left">{{ 'paywall.step2.label.durationbox'|trans }}:</td>
+											<td id="durationBox"></td>
+										</tr>
+										<tr>
+											<td align="left">{{ 'paywall.step2.label.price'|trans }}:</td>
+											<td id="valueBox"></td>
+										</tr>
+										<tr>
+											<td align="left">{{ 'paywall.step2.label.currency'|trans }}:</td>
+											<td id="currencyBox"></td>
+										</tr>
+									</tbody></table>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<tr>
+							<td colspan="2"><hr></td>
+						</tr>
+						<td colspan="2" align="right" style="padding-top: 10px;">
+							<input type="button" id="skip" value="{{ 'paywall.btn.skip'|trans }}" class="button">
+							<input type="submit" id="save" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<form id="step3Form" class="form-inline" action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(formSpecification) }}>
+			<table id="step3" border="0" cellspacing="0" cellpadding="0" class="box_table">
+				<tbody>
+					<tr>
+						<td colspan="2" align="left">
+							<input class="button" type="submit" name="step1" value="{{ 'paywall.btn.button1'|trans }} (1)" disabled>
+							<input class="save-button" name="step3" value="{{ 'paywall.label.defineduration'|trans }} (2)" disabled>
+							<input class="button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (3)" disabled><br><br>
+
+							<div style="float: left"><strong>{{ 'paywall.step2.header'|trans }}</strong><br><br>
+								<div class="form-group">
+									<label for="exampleInputName2">{{ 'paywall.step2.label.durationbox'|trans }}</label>
+									{{ form_widget(formDuration.value) }}
+									{{ form_widget(formDuration.attribute) }}
+									<button style="margin-left: 20px;" type="submit" class="btn btn-xs btn-success">
+										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+									</button>
+								</div>
+
+								{{ form_widget(formDuration._token) }}
+								<br>
+								<br>
+								<table id="duration-table" class="table" {% if ranges is empty %} style="display: none" {% endif %}>
+									<thead>
+										<tr>
+											<th>{{ 'paywall.step2.label.durationbox'|trans }}</th>
+											<th>{{ 'paywall.manage.label.options'|trans }}</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for range in ranges %}
+										<tr id="{{ range.id }}">
+											<td>{{ range.value }}{% if range.attribute == 'month' %} {{ 'paywall.label.months'|trans }} {% endif %}</td>
+											<td><button type="button" id="remove-duration" data-path="{{ path('newscoop_paywall_admin_duration_remove', {'id': range.id }) }}" class="btn btn-xs btn-danger">
+												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+											</button></td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<tr>
+							<td colspan="2"><hr></td>
+						</tr>
+						<td colspan="2" align="right" style="padding-top: 10px;">
+							<input type="button" id="next-last" value="{{ 'paywall.btn.next'|trans }}" class="save-button">
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
 </div>
-</div>
+<script>
+	$('form#step3Form').live('submit', function () {
+		var that = $(this);
+		var data = that.serialize();
+		data += "&subscriptionName=" + encodeURIComponent($('#subscriptionconf_name').val());
+		callServer('ping', [], function(json) {
+			$.ajax({
+				type: 'POST',
+				url: "{{ path('newscoop_paywall_admin_duration', {'id': subscription_id }) }}",
+				data: data,
+				success: function (data) {
+					if (data.status) {
+						flashMessage("{{ 'paywall.success.added'|trans }}");
+						if (data.duration) {
+							$('#duration-table tbody').append(
+								'<tr id="'+data.duration.id+'">'+
+									'<td>'+data.duration.value+
+									' {{ 'paywall.label.months'|trans }}</td>'+
+									'<td><button type="button" id="remove-duration" data-path="{{ path('newscoop_paywall_admin_duration_remove') }}/'+data.duration.id+'" class="btn btn-xs btn-danger">'+
+										'<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>'+
+									'</button></td>'+
+								'</tr>'
+							);
+						} else {
+							flashMessage("{{ 'paywall.error.notadded'|trans }}");
+						}
+					} else {
+						if (data.errors) {
+							flashMessage(data.errors.value[0], "error");
+						} else {
+							flashMessage("{{ 'paywall.msg.exists'|trans }}", "error");
+						}
+					}
+				},
+				error: function (rq, status, error) {
+					if (status == 0 || status == -1) {
+						flashMessage('Error occured!', "error");
+					}
+				}
+			});
+		});
+
+		return false;
+	});
+	$('#remove-duration').live('click', function () {
+		var that = $(this);
+		callServer('ping', [], function(json) {
+			$.ajax({
+				type: 'POST',
+				url: that.data('path'),
+				success: function (data) {
+					if (data.status) {
+						flashMessage('{{ 'paywall.success.removed'|trans }}');
+						that.parent().parent().remove();
+					} else {
+						flashMessage('Can not remove duration at the moment.', "error");
+					}
+				},
+				error: function (rq, status, error) {
+					if (status == 0 || status == -1) {
+						flashMessage('Error occured!', "error");
+					}
+				}
+			});
+		});
+
+		return false;
+	});
+</script>
 {% endblock %}

@@ -1,5 +1,8 @@
 Plugins: Plugins
 paywall:
+    label:
+      defineduration: "Define duration"
+      months: "month(s)"
     alert:
        notexists: "Selected subscription does not exist."
     title: "Paywall"
@@ -142,8 +145,11 @@ paywall:
     error:
       fatal: "Unexpected error occured!"
       settingserror: "Error occured. Can not save settings."
+      notadded: "Could not render added entry."
     success:
       settingssaved: "Settings successfully saved."
+      added: "Successfully added."
+      removed: Successfully removed.
     msg:
       membershipemail: "Provide email for notifications"
       membershipemaillabel: "Notifications email"
@@ -153,3 +159,4 @@ paywall:
       enableNotifydesc: "Enables/disables email notifications"
       fromemaillabel: "Sender email"
       fromemail: "All notifications will be sent from this email."
+      exists: "Duration with the same value is already defined!"

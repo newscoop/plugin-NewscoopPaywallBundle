@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -10,11 +10,14 @@ namespace Newscoop\PaywallBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Newscoop\PaywallBundle\Entity\Subscriptions;
 use Newscoop\PaywallBundle\Entity\SubscriptionSpecification;
+use Newscoop\PaywallBundle\Entity\Duration;
+use Newscoop\PaywallBundle\Form\Type\DurationType;
 
 class AdminController extends Controller
 {
@@ -49,6 +52,7 @@ class AdminController extends Controller
 
         $form = $this->createForm('subscriptionconf', $subscription);
         $formSpecification = $this->createForm('specificationForm', $specification);
+        $durationForm = $this->createForm(new DurationType());
         if ($request->isMethod('POST')) {
             $form->bind($request);
             if ($form->isValid()) {
@@ -77,7 +81,97 @@ class AdminController extends Controller
             'form' => $form->createView(),
             'formSpecification' => $formSpecification->createView(),
             'subscription_id' => $subscription->getId(),
+            'ranges' => $subscription->getRanges()->toArray(),
+            'formDuration' => $durationForm->createView(),
         );
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/duration/update/{id}", name="newscoop_paywall_admin_duration")
+     *
+     * @Method("POST")
+     */
+    public function durationAction(Request $request, $id = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $duration = new Duration();
+        $form = $this->createForm(new DurationType(), $duration);
+        $form->handleRequest($request);
+        $errors = array();
+        try {
+            if ($form->isValid()) {
+                if (is_null($id)) {
+                    $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                        ->findOneBy(array(
+                            'name' => $request->get('subscriptionName'),
+                            'is_active' => true,
+                        ));
+
+                    $id = $subscription->getId();
+                }
+
+                $durationEntity = $em->getRepository('Newscoop\PaywallBundle\Entity\Duration')
+                    ->findOneBy(array(
+                        'value' => $duration->getValue(),
+                        'subscription' => $id,
+                    ));
+
+                if (!$durationEntity) {
+                    $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                        ->findOneBy(array(
+                            'id' => $id,
+                            'is_active' => true,
+                        ));
+
+                    $duration->setSubscription($subscription);
+                    $em->persist($duration);
+                    $em->flush();
+
+                    return new JsonResponse(array(
+                        'status' => true,
+                        'duration' => array(
+                            'id' => $duration->getId(),
+                            'value' => $duration->getValue(),
+                            'attribute' => $duration->getAttribute(),
+                        ),
+                    ));
+                }
+            } else {
+                $errors = $this->getErrorMessages($form);
+            }
+        } catch (\Exception $e) {
+            //return false status
+        }
+
+        return new JsonResponse(array(
+            'status' => false,
+            'errors' => $errors,
+        ));
+    }
+
+    /**
+     * @Route("/admin/paywall_plugin/duration/remove/{id}", name="newscoop_paywall_admin_duration_remove")
+     *
+     * @Method("POST")
+     */
+    public function durationRemoveAction(Request $request, $id = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $duration = $em->getRepository('Newscoop\PaywallBundle\Entity\Duration')
+            ->findOneById($id);
+
+        if ($duration) {
+            $em->remove($duration);
+            $em->flush();
+
+            return new JsonResponse(array(
+                'status' => true,
+            ));
+        }
+
+        return new JsonResponse(array(
+            'status' => false,
+        ));
     }
 
     /**
@@ -184,7 +278,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Gets form errors
+     * Gets form errors.
      *
      * @param \Symfony\Component\Form\Form $form
      *
@@ -209,7 +303,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Gets all publications
+     * Gets all publications.
      *
      * @param Doctrine\ORM\EntityManager $em
      *
@@ -227,7 +321,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Gets all issues for given publication Id
+     * Gets all issues for given publication Id.
      *
      * @param Doctrine\ORM\EntityManager               $em
      * @param Symfony\Component\HttpFoundation\Request $request
@@ -248,7 +342,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Gets all sections for given publication and issue Id
+     * Gets all sections for given publication and issue Id.
      *
      * @param Doctrine\ORM\EntityManager               $em
      * @param Symfony\Component\HttpFoundation\Request $request
@@ -271,7 +365,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Gets all articles for given publication, issue, section Id
+     * Gets all articles for given publication, issue, section Id.
      *
      * @param Doctrine\ORM\EntityManager               $em
      * @param Symfony\Component\HttpFoundation\Request $request
@@ -309,7 +403,7 @@ class AdminController extends Controller
     }
 
     /**
-     * Gets all publications, issues, sections, articles
+     * Gets all publications, issues, sections, articles.
      *
      * @param Doctrine\ORM\EntityManager               $em
      * @param Symfony\Component\HttpFoundation\Request $request
