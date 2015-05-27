@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -13,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Newscoop\PaywallBundle\Entity\Subscriptions;
 use Newscoop\PaywallBundle\Entity\SubscriptionSpecification;
 
@@ -31,7 +31,7 @@ class AdminController extends Controller
             $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                 ->findOneBy(array(
                     'id' => $id,
-                    'is_active' => true
+                    'is_active' => true,
                 ));
 
             if (!$subscription) {
@@ -40,7 +40,7 @@ class AdminController extends Controller
 
             $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
                 ->findOneBy(array(
-                    'subscription' => $subscription
+                    'subscription' => $subscription,
                 ));
         } else {
             $subscription = new Subscriptions();
@@ -59,16 +59,16 @@ class AdminController extends Controller
                 $em->flush();
 
                 if ($request->isXmlHttpRequest()) {
-                    return array('status' => true);
+                    return new JsonResponse(array('status' => true));
                 }
 
                 return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));
             } else {
                 if ($request->isXmlHttpRequest()) {
-                    return array(
+                    return new JsonResponse(array(
                         'status' => false,
-                        'errors' => json_encode($this->getErrorMessages($form))
-                    );
+                        'errors' => $this->getErrorMessages($form),
+                    ));
                 }
             }
         }
@@ -76,7 +76,7 @@ class AdminController extends Controller
         return array(
             'form' => $form->createView(),
             'formSpecification' => $formSpecification->createView(),
-            'subscription_id' => $subscription->getId()
+            'subscription_id' => $subscription->getId(),
         );
     }
 
@@ -91,7 +91,7 @@ class AdminController extends Controller
         if ($id) {
             $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
                 ->findOneBy(array(
-                    'subscription' => $id
+                    'subscription' => $id,
                 ));
             if (!$specification) {
                 $specification = new SubscriptionSpecification();
@@ -109,7 +109,7 @@ class AdminController extends Controller
                 $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                     ->findOneBy(array(
                         'name' => strtolower($request->request->get('subscriptionTitle')),
-                        'is_active' => true
+                        'is_active' => true,
                     ));
                 $specification->setSubscription($subscription);
                 if (!$id || $create) {
@@ -132,7 +132,7 @@ class AdminController extends Controller
             $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
                 ->findOneBy(array(
                     'name' => strtolower($request->request->get('subscriptionName')),
-                    'is_active' => true
+                    'is_active' => true,
                 ));
 
             if (!$entity) {
@@ -217,7 +217,6 @@ class AdminController extends Controller
      */
     private function getPublication($em)
     {
-
         $publications = $em->getRepository('Newscoop\Entity\Publication')
             ->createQueryBuilder('p')
             ->select('p.id', 'p.name')
@@ -237,7 +236,6 @@ class AdminController extends Controller
      */
     private function getIssue($request, $em)
     {
-
         $issues = $em->getRepository('Newscoop\Entity\Issue')
             ->createQueryBuilder('i')
             ->select('i.number as id', 'i.name')
@@ -290,7 +288,7 @@ class AdminController extends Controller
             ->setParameters(array(
                 'publicationId' => $request->get('publicationId'),
                 'issueId' => $request->get('issueId'),
-                'sectionId' => $request->get('sectionId')
+                'sectionId' => $request->get('sectionId'),
             ))
             ->getQuery()
             ->getOneOrNullResult();
@@ -303,7 +301,7 @@ class AdminController extends Controller
         foreach ($articles as $article) {
             $articlesArray[] = array(
                 'id' => $article->getNumber(),
-                'text' => $article->getName()
+                'text' => $article->getName(),
             );
         }
 
@@ -324,7 +322,7 @@ class AdminController extends Controller
             'Publications' => $this->getPublication($em),
             'Issues' => $this->getIssue($request, $em),
             'Sections' => $this->getSection($request, $em),
-            'Articles' => $this->getArticle($request, $em)
+            'Articles' => $this->getArticle($request, $em),
         );
 
         return $resultArray;

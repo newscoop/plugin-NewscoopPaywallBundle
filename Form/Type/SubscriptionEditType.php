@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -21,13 +20,14 @@ class SubscriptionEditType extends AbstractType
             'label'  => 'paywall.manage.label.topay',
             'error_bubbling' => true,
             'invalid_message' => 'paywall.manage.error.topay',
-            'required' => true
+            'required' => true,
+            'currency' => false,
         ))
         ->add('currency', null, array(
             'label'  => 'paywall.step2.label.currency',
             'error_bubbling' => true,
             'invalid_message' => 'paywall.manage.error.currency',
-            'required' => true
+            'required' => true,
         ))
          ->add('type', 'choice', array(
             'label' => 'paywall.manage.label.paymenttype',
@@ -36,14 +36,14 @@ class SubscriptionEditType extends AbstractType
                 'PN'   => 'paywall.manage.label.paidnow',
                 'T' => 'paywall.manage.label.trial',
             ),
-            'required' => true
+            'required' => true,
         ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'csrf_protection' => false
+            'csrf_protection' => false,
         ));
     }
 

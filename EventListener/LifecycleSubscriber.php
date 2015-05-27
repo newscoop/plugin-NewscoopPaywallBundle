@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -19,13 +18,24 @@ use Newscoop\PaywallBundle\Events\AdaptersEvent;
 class LifecycleSubscriber implements EventSubscriberInterface
 {
     private $em;
-
     private $dispatcher;
+    private $scheduler;
+    private $systemPreferences;
 
-    public function __construct($em, $dispatcher)
+    public function __construct($em, $dispatcher, $scheduler, $systemPreferences)
     {
         $this->em = $em;
         $this->dispatcher = $dispatcher;
+        $this->scheduler = $scheduler;
+        $this->systemPreferences = $systemPreferences;
+
+        $appDirectory = realpath(__DIR__.'/../../../../application/console');
+        $this->cronjobs = array(
+            "Sends email notifications for expiring subscriptions" => array(
+                'command' => $appDirectory.' paywall:notifier:expiring',
+                'schedule' => '0 2 * * *',
+            ),
+        );
     }
 
     public function install(GenericEvent $event)
@@ -42,7 +52,11 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
 
         // Generate proxies for entities
-        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__ . '/../../../../library/Proxy');
+        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__.'/../../../../library/Proxy');
+        $this->addJobs();
+        $this->systemPreferences->PaywallMembershipNotifyEmail = $this->systemPreferences->EmailFromAddress;
+        $this->systemPreferences->PaywallMembershipNotifyFromEmail = $this->systemPreferences->EmailFromAddress;
+        $this->systemPreferences->PaywallEmailNotifyEnabled = 0;
     }
 
     public function update(GenericEvent $event)
@@ -53,13 +67,46 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
 
         // Generate proxies for entities
-        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__ . '/../../../../library/Proxy');
+        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__.'/../../../../library/Proxy');
     }
 
     public function remove(GenericEvent $event)
     {
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->dropSchema($this->getClasses(), true);
+        $this->removeJobs();
+    }
+
+    /**
+     * Clean up system preferences
+     *
+     * @return void
+     */
+    private function removeSettings()
+    {
+        $this->systemPreferences->delete('PaywallMembershipNotifyEmail');
+        $this->systemPreferences->delete('PaywallEmailNotifyEnabled');
+        $this->systemPreferences->delete('PaywallMembershipNotifyFromEmail');
+    }
+
+    /**
+     * Add plugin cron jobs
+     */
+    private function addJobs()
+    {
+        foreach ($this->cronjobs as $jobName => $jobConfig) {
+            $this->scheduler->registerJob($jobName, $jobConfig);
+        }
+    }
+
+    /**
+     * Remove plugin cron jobs
+     */
+    private function removeJobs()
+    {
+        foreach ($this->cronjobs as $jobName => $jobConfig) {
+            $this->scheduler->removeJob($jobName, $jobConfig);
+        }
     }
 
     public static function getSubscribedEvents()

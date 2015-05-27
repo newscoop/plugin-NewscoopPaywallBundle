@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
@@ -26,10 +27,20 @@ class ListObjectsListener
             'class' => '\Newscoop\PaywallBundle\Meta\MetaMainSubscription',
         ));
 
+        $event->registerObjectTypes('user_subscription', array(
+            'class' => '\Newscoop\PaywallBundle\Meta\MetaSubscription',
+        ));
+
         $event->registerListObject('newscoop\paywallbundle\templatelist\price', array(
             'class' => 'Newscoop\PaywallBundle\TemplateList\Price',
             'list' => 'pricetable',
             'url_id' => 'pslid',
+        ));
+
+        $event->registerListObject('newscoop\paywallbundle\templatelist\usersubscriptions', array(
+            'class' => 'Newscoop\PaywallBundle\TemplateList\UserSubscriptions',
+            'list' => 'usersubscriptions',
+            'url_id' => 'pusid',
         ));
     }
 }

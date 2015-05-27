@@ -5,13 +5,11 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Newscoop\Entity\Publication;
 use Newscoop\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Subscription entity
@@ -72,24 +70,6 @@ class UserSubscription
     protected $currency;
 
     /**
-     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\Section", mappedBy="subscription", cascade={"persist", "remove"})
-     * @var array
-     */
-    protected $sections;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\Article", mappedBy="subscription", cascade={"persist", "remove"})
-     * @var array
-     */
-    protected $articles;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\Issue", mappedBy="subscription", cascade={"persist", "remove"})
-     * @var array
-     */
-    public $issues;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Trial")
      * @ORM\JoinColumn(name="trial_id", referencedColumnName="id")
      * @var Newscoop\PaywallBundle\Entity\Trial
@@ -137,16 +117,25 @@ class UserSubscription
     protected $is_active;
 
     /**
+     * @ORM\Column(type="datetime", name="notify_sent_first", nullable=true)
+     * @var \DateTime
+     */
+    protected $notifySentLevelOne;
+
+    /**
+     * @ORM\Column(type="datetime", name="notify_sent_second", nullable=true)
+     * @var \DateTime
+     */
+    protected $notifySentLevelTwo;
+
+    /**
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
-     * @var DateTime
+     * @var \DateTime
      */
     protected $updated;
 
     public function __construct()
     {
-        $this->sections = new ArrayCollection();
-        $this->articles = new ArrayCollection();
-        $this->issues = new ArrayCollection();
         $this->currency = '';
         $this->active = 'N';
         $this->created_at = new \DateTime();
@@ -154,6 +143,8 @@ class UserSubscription
         $this->custom = false;
         $this->customOther = false;
         $this->type = self::TYPE_PAID;
+        $this->notifySentLevelOne = null;
+        $this->notifySentLevelTwo = null;
     }
 
     /**
@@ -319,7 +310,6 @@ class UserSubscription
      */
     public function setActive($active)
     {
-
         $this->active = ((bool) $active) ? 'Y' : 'N';
 
         return $this;
@@ -333,200 +323,6 @@ class UserSubscription
     public function isActive()
     {
         return strtoupper($this->active) === 'Y';
-    }
-
-    /**
-     * Add sections
-     *
-     * @param  array                       $values
-     * @param  Newscoop\Entity\Publication $publication
-     * @return void
-     */
-    public function addSections(array $values, Publication $publication)
-    {
-        $languages = array();
-        if (!empty($values['individual_languages']) && $values['individual_languages']) {
-            $languages = $values['languages'];
-            if (empty($languages)) {
-                throw new \InvalidArgumentException("No languages set for individual languages");
-            }
-        }
-
-        foreach ($publication->getIssues() as $issue) {
-            if (!empty($languages) && !in_array($issue->getLanguageId(), $languages)) {
-                continue;
-            }
-
-            foreach ($issue->getSections() as $section) {
-                if ($this->hasSection($section, $languages)) {
-                    continue;
-                }
-
-                $subSection = new Section($this, $section->getNumber());
-                $subSection->setStartDate(new \DateTime($values['start_date']));
-                $subSection->setDays($values['days']);
-
-                if ($this->isTrial() || $values['type'] === self::TYPE_PAID_NOW) {
-                    $subSection->setPaidDays($values['days']);
-                }
-
-                if (!empty($languages)) {
-                    $subSection->setLanguage($issue->getLanguage());
-                }
-            }
-        }
-    }
-
-    /**
-     * Set sections
-     *
-     * @param  array $values
-     * @return void
-     */
-    public function setSections(array $values)
-    {
-        $ids = array_map(function ($section) {
-            return !empty($section['id']) ? $section['id'] : null;
-        }, $values);
-
-        foreach ($this->sections as $key => $section) {
-            if (!in_array($section->getId(), $ids)) {
-                $this->sections->remove($key);
-            }
-        }
-    }
-
-    /**
-     * Add section
-     *
-     * @param  Newscoop\Subscription\Section $section
-     * @return void
-     */
-    public function addSection(Section $section)
-    {
-        if (!$this->sections->contains($section)) {
-            $this->sections->add($section);
-        }
-    }
-
-    /**
-     * Set articles
-     *
-     * @param  array $values
-     * @return void
-     */
-    public function setArticles(array $values)
-    {
-        $ids = array_map(function ($article) {
-            return !empty($article['id']) ? $article['id'] : null;
-        }, $values);
-
-        foreach ($this->articles as $key => $article) {
-            if (!in_array($article->getId(), $ids)) {
-                $this->articles->remove($key);
-            }
-        }
-    }
-
-    /**
-     * Add article
-     *
-     * @param  Newscoop\Subscription\Article $article
-     * @return void
-     */
-    public function addArticle(Article $article)
-    {
-        if (!$this->articles->contains($article)) {
-            $this->articles->add($article);
-        }
-    }
-
-    /**
-     * Set issues
-     *
-     * @param  array $values
-     * @return void
-     */
-    public function setIssues(array $values)
-    {
-        $ids = array_map(function ($issue) {
-            return !empty($issue['id']) ? $issue['id'] : null;
-        }, $values);
-
-        foreach ($this->issues as $key => $issue) {
-            if (!in_array($issue->getId(), $ids)) {
-                $this->issues->remove($key);
-            }
-        }
-    }
-
-    /**
-     * Add issue
-     *
-     * @param  Newscoop\Subscription\Issue $issue
-     * @return void
-     */
-    public function addIssue(Issue $issue)
-    {
-        if (!$this->issues->contains($issue)) {
-            $this->issues->add($issue);
-        }
-    }
-
-    /**
-     * Test if has given section
-     *
-     * @param  Newscoop\Subscription\Section $section
-     * @param  array                         $languages
-     * @return bool
-     */
-    protected function hasSection(Section $section, array $languages)
-    {
-        foreach ($this->sections as $s) {
-            if ($s->getSectionNumber() == $section->getNumber()) {
-                if (!$s->hasLanguage()) {
-                    return true;
-                } elseif (empty($languages)) {
-                    $s->setLanguage(null);
-
-                    return true;
-                } elseif ($s->getLanguage() == $section->getLanguage()) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Get sections
-     *
-     * @return array
-     */
-    public function getSections()
-    {
-        return $this->sections;
-    }
-
-    /**
-     * Get articles
-     *
-     * @return array
-     */
-    public function getArticles()
-    {
-        return $this->articles;
-    }
-
-    /**
-     * Get issues
-     *
-     * @return array
-     */
-    public function getIssues()
-    {
-        return $this->issues;
     }
 
     /**
@@ -706,6 +502,54 @@ class UserSubscription
     public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of notifySentLevelOne.
+     *
+     * @return \DateTime
+     */
+    public function getNotifySentLevelOne()
+    {
+        return $this->notifySentLevelOne;
+    }
+
+    /**
+     * Sets the value of notifySentLevelOne.
+     *
+     * @param \DateTime $notifySentLevelOne the notify sent level one
+     *
+     * @return self
+     */
+    public function setNotifySentLevelOne(\DateTime $notifySentLevelOne)
+    {
+        $this->notifySentLevelOne = $notifySentLevelOne;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of notifySentLevelTwo.
+     *
+     * @return \DateTime
+     */
+    public function getNotifySentLevelTwo()
+    {
+        return $this->notifySentLevelTwo;
+    }
+
+    /**
+     * Sets the value of notifySentLevelTwo.
+     *
+     * @param \DateTime $notifySentLevelTwo the notify sent level two
+     *
+     * @return self
+     */
+    public function setNotifySentLevelTwo(\DateTime $notifySentLevelTwo)
+    {
+        $this->notifySentLevelTwo = $notifySentLevelTwo;
 
         return $this;
     }

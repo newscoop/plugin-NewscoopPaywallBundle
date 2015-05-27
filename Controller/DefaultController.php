@@ -3,12 +3,12 @@
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
+use Newscoop\PaywallBundle\Events\PaywallEvents;
 
-class DefaultController extends Controller
+class DefaultController extends BaseController
 {
     /**
      * Show succes page or redirect to one
@@ -78,8 +78,9 @@ class DefaultController extends Controller
             return $response;
         }
 
+        $userSubscriptionInactive = $subscriptionService->getOneByUserAndSubscription($user->getId(), $chosenSubscription->getId(), 'N');
         $userSubscription = $subscriptionService->getOneByUserAndSubscription($user->getId(), $chosenSubscription->getId());
-        if ($userSubscription) {
+        if ($userSubscription || $userSubscriptionInactive) {
             $response->setContent($templatesService->fetchTemplate("_paywall/error.tpl", array(
                 'msg' => $translator->trans('paywall.manage.error.exists.subscription'),
             )));
@@ -89,19 +90,11 @@ class DefaultController extends Controller
 
         $specificationArray = $chosenSubscription->getSpecification()->toArray();
         $specification = $specificationArray[0];
-
-        $publication = $em->getReference('Newscoop\Entity\Publication', $specification->getPublication());
-        $language = $subscriptionService->getLanguageRepository()->findOneById($request->get('language_id'));
-        if (!$language && $publication) {
-            $language = $publication->getLanguage();
-        }
-
         $subscription = $subscriptionService->create();
         $subscriptionData = new SubscriptionData(array(
             'userId' => $user,
-            //'subscriptionId' => $chosenSubscription->getId(),
-            'mainSubscriptionId' => $chosenSubscription,
-            'publicationId' => $request->get('publication_id') ?: $publication->getId(),
+            'subscriptionId' => $chosenSubscription,
+            'publicationId' => $request->get('publication_id') ?: $specification->getPublication()->getId(),
             'toPay' => $chosenSubscription->getPrice(),
             'days' => $chosenSubscription->getRange(),
             'currency' => $chosenSubscription->getCurrency(),
@@ -109,29 +102,14 @@ class DefaultController extends Controller
             'active' => false,
         ), $subscription);
 
-        switch ($chosenSubscription->getType()) {
-            case 'article':
-                $article = $subscriptionService->getArticleRepository()->findOneByNumber($request->get('article_id') ?: $specification->getArticle());
-                $subscriptionData->addArticle($article, $language);
-                break;
-
-            case 'section':
-                $section = $subscriptionService->getSectionRepository()->findOneByNumber($request->get('section_id') ?: $specification->getSection());
-                $subscriptionData->addSection($section, $language);
-                break;
-
-            case 'issue':
-                $issue = $subscriptionService->getIssueRepository()->findOneByNumber($request->get('issue_id') ?: $specification->getIssue());
-                $subscriptionData->addIssue($issue, $language);
-                break;
-            default:
-                # code...
-                break;
-        }
-
         $subscription = $subscriptionService->update($subscription, $subscriptionData);
         $subscriptionService->save($subscription);
-        $response->setContent($templatesService->fetchTemplate("_paywall/success.tpl", array('subscription' => $subscription)));
+
+        $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $subscription);
+
+        $response->setContent($templatesService->fetchTemplate("_paywall/success.tpl", array(
+            'subscription' => $subscription,
+        )));
 
         return $response;
     }

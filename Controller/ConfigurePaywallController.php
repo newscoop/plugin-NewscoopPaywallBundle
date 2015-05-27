@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -29,11 +28,13 @@ class ConfigurePaywallController extends Controller
         $translator = $this->container->get('translator');
         $active = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
             ->findOneBy(array(
-                'is_active' => true
+                'is_active' => true,
             ));
 
         $form = $this->container->get('form.factory')->create(new SettingsFormType(), array(
             'notificationEmail' => $preferencesService->PaywallMembershipNotifyEmail,
+            'enableNotify' => $preferencesService->PaywallEmailNotifyEnabled == "1" ? true : false,
+            'notificationFromEmail' => $preferencesService->PaywallMembershipNotifyFromEmail,
         ));
 
         if ($request->isMethod('POST')) {
@@ -41,6 +42,8 @@ class ConfigurePaywallController extends Controller
             if ($form->isValid()) {
                 $data = $form->getData();
                 $preferencesService->set('PaywallMembershipNotifyEmail', $data['notificationEmail']);
+                $preferencesService->set('PaywallEmailNotifyEnabled', $data['enableNotify']);
+                $preferencesService->set('PaywallMembershipNotifyFromEmail', $data['notificationFromEmail']);
 
                 if (is_numeric($data['adapter'])) {
                     $settings = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
@@ -57,13 +60,12 @@ class ConfigurePaywallController extends Controller
 
                     $settings->setIsActive(true);
                     $em->flush();
-
-                    $this->get('session')->getFlashBag()->add('success', $translator->trans('paywall.success.settingssaved'));
-
-                    return $this->redirect($this->generateUrl('newscoop_paywall_configurepaywall_index'));
                 }
-            } else {
 
+                $this->get('session')->getFlashBag()->add('success', $translator->trans('paywall.success.settingssaved'));
+
+                return $this->redirect($this->generateUrl('newscoop_paywall_configurepaywall_index'));
+            } else {
                 $this->get('session')->getFlashBag()->add('error', $translator->trans('paywall.error.settingserror'));
 
                 return $this->redirect($this->generateUrl('newscoop_paywall_configurepaywall_index'));
@@ -73,14 +75,14 @@ class ConfigurePaywallController extends Controller
         if ($request->isXmlHttpRequest()) {
             $inactive = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
                 ->findBy(array(
-                    'is_active' => false
+                    'is_active' => false,
                 ));
 
             $adapters = array();
             foreach ($inactive as $value) {
                 $adapters[] = array(
                     'id' => $value->getId(),
-                    'text' => $value->getName()
+                    'text' => $value->getName(),
                 );
             }
 
@@ -89,7 +91,7 @@ class ConfigurePaywallController extends Controller
 
         return array(
             'form' => $form->createView(),
-            'current' => $active->getName()
+            'current' => $active->getName(),
         );
     }
 }

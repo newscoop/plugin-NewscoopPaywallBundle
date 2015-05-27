@@ -25,7 +25,11 @@ $(document).ready(function() {
         <div class="row" id="user-profile-subscription">
             <div class="col-sm-4 col-md-4 user-details">
                 <div class="user-image">
-                    <img src="{{ user.image(100, 100, 'crop') }}" alt="{{ subscription.user.name }}" title="{{ subscription.user.name }}" class="img-circle">
+                    {% if user.image(100, 100, 'crop') is empty %}
+                      <img src="http://www.gravatar.com/avatar/{{ avatarHash }}?s=100&amp;d=identicon">
+                    {% else %}
+                      <img src="{{ user.image(100, 100, 'crop') }}" alt="{{ subscription.user.name }}" title="{{ subscription.user.name }}" class="img-circle">
+                    {% endif %}
                 </div>
                 <div class="user-info-block">
                     <div class="user-heading">
@@ -39,6 +43,14 @@ $(document).ready(function() {
         <form class="form-horizontal" role="form" id="subscriptioneditForm" action="{{ path('newscoop_paywall_userssubscriptions_editsubscription', {'id': subscription.id}) }}" method="post" {{ form_enctype(form) }}>
             <fieldset>
                 <div class="errors">{{ form_errors(form) }}</div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="card-holder-name">
+                    {{ form_label(form.topay) }}
+                    </label>
+                    <div class="col-sm-3">
+                      {{ form_widget(form.topay, {'attr' : {'class' : 'form-control'}}) }}
+                  </div>
+                </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label" for="card-holder-name">{{ form_label(form.currency) }}</label>
                     <div class="col-sm-3">

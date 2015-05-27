@@ -1,6 +1,7 @@
 parameters:
     newscoop.paywall.adapter.class: "Newscoop\\PaywallBundle\\Adapter\\PaypalAdapter"
     subscriptions.service.class: "Newscoop\\PaywallBundle\\Services\\PaywallService"
+    newscoop.paywall.listener.notification.class: "Newscoop\\PaywallBundle\\EventListener\\NotificationListener"
 
 services:
     paywall.subscription.service:
@@ -20,6 +21,8 @@ services:
         arguments:
             - @em
             - @dispatcher
+            - @newscoop.scheduler
+            - @preferences
         tags:
             - { name: kernel.event_subscriber}
 
@@ -39,11 +42,6 @@ services:
         class: Newscoop\PaywallBundle\Form\Type\SpecificationType
         tags:
             - { name: form.type, alias: specificationForm }
-
-    newscoop_paywall.form.type.details:
-        class: Newscoop\PaywallBundle\Form\Type\SubscriptionDetailsType
-        tags:
-            - { name: form.type, alias: detailsForm }
 
     newscoop_paywall.form.type.subscriptionedit:
         class: Newscoop\PaywallBundle\Form\Type\SubscriptionEditType
@@ -79,3 +77,23 @@ services:
         arguments:  ["@newscoop_paywall.criteria.subscriptions_criteria"]
         tags:
             -  { name: newscoop.template_lists }
+    newscoop_paywall.notifications_service:
+        class: Newscoop\PaywallBundle\Services\NotificationsService
+        arguments:
+            - @email
+            - @preferences
+            - @newscoop.templates.service
+            - @newscoop.placeholders.service
+            - @em
+            - @event_dispatcher
+
+    newscoop_paywall.notification_listener:
+        class: %newscoop.paywall.listener.notification.class%
+        arguments:
+            - @newscoop_paywall.notifications_service
+        tags:
+            - { name: kernel.event_listener, event: paywall.subscription.order, method: sendSubscriptionNotificationEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.order, method: sendUserNotificationEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.status_change, method: sendUserSubscriptionStatusChangeEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.expiration, method: sendSubscriptionExpirationEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.admin_order, method: sendAdminCreatedNotification }
