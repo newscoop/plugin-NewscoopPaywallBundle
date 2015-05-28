@@ -86,7 +86,7 @@ paywall:
             deactivated: Deactivated
             users: Users
             subscriptions: Subscriptions
-            paymenttype: null
+            paymenttype: Type
             paid: Paid
             paidnow: 'Paid now'
             trial: Trial
@@ -115,9 +115,9 @@ paywall:
             adapters: 'Available providers:'
             current: 'Current provider:'
             goback: 'Go back to users subscriptions'
-            firstNotify: null
-            secondNotify: null
-            expiresAt: null
+            firstNotify: 'First reminder sent at'
+            secondNotify: 'Second reminder sent at'
+            expiresAt: 'Expires at'
     menu:
         label:
             addsubscription: 'Add new subscription'
@@ -149,7 +149,7 @@ paywall:
         membershipemaillabel: 'Notifications email'
         providersmall: 'Select Paywall provider'
         providername: Provider
-        enableNotify: null
-        enableNotifydesc: null
-        fromemaillabel: null
-        fromemail: null
+        enableNotify: 'Enable email notifications'
+        enableNotifydesc: 'Enables/disables email notifications'
+        fromemaillabel: 'Sender email'
+        fromemail: 'All notifications will be sent from this email.'
