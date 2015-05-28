@@ -1,0 +1,14 @@
+paywall:
+    step1:
+        form:
+            error:
+                price:
+                    decimal: null
+                    custom: null
+                    blank: null
+                range:
+                    blank: null
+                currency:
+                    blank: null
+                name:
+                    blank: null
