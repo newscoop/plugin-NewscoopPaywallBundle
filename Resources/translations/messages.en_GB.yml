@@ -86,7 +86,7 @@ paywall:
             deactivated: Deactivated
             users: Users
             subscriptions: Subscriptions
-            paymenttype: 'Payment type'
+            paymenttype: null
             paid: Paid
             paidnow: 'Paid now'
             trial: Trial
@@ -115,6 +115,9 @@ paywall:
             adapters: 'Available providers:'
             current: 'Current provider:'
             goback: 'Go back to users subscriptions'
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'Add new subscription'
@@ -146,3 +149,7 @@ paywall:
         membershipemaillabel: 'Notifications email'
         providersmall: 'Select Paywall provider'
         providername: Provider
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

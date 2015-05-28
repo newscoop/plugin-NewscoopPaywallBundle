@@ -115,6 +115,9 @@ paywall:
             adapters: null
             current: null
             goback: null
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: null
@@ -146,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: null
         providername: null
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

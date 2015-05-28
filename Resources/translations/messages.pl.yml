@@ -86,7 +86,7 @@ paywall:
             deactivated: Dezaktywowana
             users: Użytkownicy
             subscriptions: Subskrypcje
-            paymenttype: Typ
+            paymenttype: null
             paid: Płatne
             paidnow: 'Płatne teraz'
             trial: Próbne
@@ -115,6 +115,9 @@ paywall:
             adapters: 'Dostępni dostawcy płatności:'
             current: 'Obecny dostawca płatności:'
             goback: 'Wróć do subskrypcji użytkowników'
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'Dodaj nową subskrypcję'
@@ -146,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: null
         providername: null
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

@@ -86,7 +86,7 @@ paywall:
             deactivated: Deaktivovat
             users: Uživatelé
             subscriptions: Předplatné
-            paymenttype: 'Způsob platby'
+            paymenttype: null
             paid: Zaplaceno
             paidnow: Zaplaceno
             trial: Zkušební
@@ -115,6 +115,9 @@ paywall:
             adapters: 'Dostupní provozovatelé:'
             current: 'Aktuální provozovatel:'
             goback: 'Zpět k předplatným uživatelů'
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'Přidat nové předplatné'
@@ -146,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: 'Vyberte Paywall dodavatele'
         providername: Dodavatel
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

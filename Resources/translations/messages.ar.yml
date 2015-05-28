@@ -86,7 +86,7 @@ paywall:
             deactivated: معطل
             users: المستخدمون
             subscriptions: الإشتراكات
-            paymenttype: 'نوع الدفع'
+            paymenttype: null
             paid: 'تم الدفع'
             paidnow: 'مدفوع الآن'
             trial: تجريبي
@@ -115,6 +115,9 @@ paywall:
             adapters: 'مزودون متوفرون:'
             current: 'المزود الحالي:'
             goback: 'الرجوع إلى إشتراكات المستخدمين'
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'إضافة إشتراك جديد.'
@@ -146,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: 'إختر مزود صفحة الدفع.'
         providername: المزوّد
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

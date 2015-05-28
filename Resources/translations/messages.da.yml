@@ -86,7 +86,7 @@ paywall:
             deactivated: Deaktiveret
             users: Brugere
             subscriptions: Abonnementer
-            paymenttype: 'Betalings type'
+            paymenttype: null
             paid: Betalt
             paidnow: 'Betal nu'
             trial: Prøve
@@ -115,6 +115,9 @@ paywall:
             adapters: 'Tilgængelige udbydere:'
             current: 'Nuværende udbyder:'
             goback: 'Tilbage til brugerens abonnementer'
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'Tilføj nyt abonnement'
@@ -146,3 +149,7 @@ paywall:
         membershipemaillabel: 'Email til medlemsbeskeder'
         providersmall: 'Vælg udbyder til betalingsmur'
         providername: Udbyder
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

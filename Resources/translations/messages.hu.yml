@@ -86,7 +86,7 @@ paywall:
             deactivated: Inaktiválva
             users: Felhasználók
             subscriptions: Előfizetések
-            paymenttype: 'Fizetés típusa'
+            paymenttype: null
             paid: Fizetett
             paidnow: 'Fizetve most'
             trial: Próbaolvasás
@@ -115,6 +115,9 @@ paywall:
             adapters: 'Létező szolgáltatók:'
             current: 'Jelenlegi szolgáltató:'
             goback: 'Vissza a felhasználói előfizetésekhez'
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'Új előfizetés hozzáadása'
@@ -146,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: 'Válassz fizetési fal szolgáltatót'
         providername: Szolgáltató
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null
