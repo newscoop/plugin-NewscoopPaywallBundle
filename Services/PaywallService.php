@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -11,9 +11,10 @@ use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Doctrine\ORM\EntityManager;
+use Newscoop\PaywallBundle\Entity\Duration;
 
 /**
- * PaywallService manages user's subscriptions
+ * PaywallService manages user's subscriptions.
  */
 class PaywallService
 {
@@ -29,7 +30,7 @@ class PaywallService
     }
 
     /**
-     * Gets all user's subscriptions by criteria
+     * Gets all user's subscriptions by criteria.
      *
      * @return array
      */
@@ -39,7 +40,7 @@ class PaywallService
     }
 
     /**
-     * Gets all available subscriptions by criteria
+     * Gets all available subscriptions by criteria.
      *
      * @return array
      */
@@ -50,7 +51,7 @@ class PaywallService
     }
 
     /**
-     * Gets all user subscriptions by criteria
+     * Gets all user subscriptions by criteria.
      *
      * @return array
      */
@@ -61,7 +62,7 @@ class PaywallService
     }
 
     /**
-     * Count subscriptions by given criteria
+     * Count subscriptions by given criteria.
      *
      * @param array $criteria
      *
@@ -73,7 +74,7 @@ class PaywallService
     }
 
     /**
-     * Gets user's subscriptions repository
+     * Gets user's subscriptions repository.
      *
      * @return EntityRepository
      */
@@ -83,9 +84,9 @@ class PaywallService
     }
 
     /**
-     * Gets user's subscriptions for issues by given Id
+     * Gets user's subscriptions for issues by given Id.
      *
-     * @param integer $id Subscription Id to search for
+     * @param int $id Subscription Id to search for
      *
      * @return array
      */
@@ -114,9 +115,9 @@ class PaywallService
     }
 
     /**
-     * Gets user's subscriptions for sections by given Id
+     * Gets user's subscriptions for sections by given Id.
      *
-     * @param integer $id Subscription Id to search for
+     * @param int $id Subscription Id to search for
      *
      * @return array
      */
@@ -143,9 +144,9 @@ class PaywallService
     }
 
     /**
-     * Gets user's subscriptions for articles by given Id
+     * Gets user's subscriptions for articles by given Id.
      *
-     * @param integer $id Subscription Id to search for
+     * @param int $id Subscription Id to search for
      *
      * @return array
      */
@@ -172,10 +173,10 @@ class PaywallService
     }
 
     /**
-     * Gets currently added user's Sections by given language Id and subscription Id
+     * Gets currently added user's Sections by given language Id and subscription Id.
      *
-     * @param integer $language       Language Id to search for
-     * @param integer $subscriptionId Subscription Id to search for
+     * @param int $language       Language Id to search for
+     * @param int $subscriptionId Subscription Id to search for
      *
      * @return array
      */
@@ -191,7 +192,7 @@ class PaywallService
     }
 
     /**
-     * Checks if user had trial
+     * Checks if user had trial.
      *
      * @param Newscoop\Entity\User $user User
      *
@@ -213,7 +214,7 @@ class PaywallService
     }
 
     /**
-     * Checks if trial is valid
+     * Checks if trial is valid.
      *
      * @param Newscoop\Entity\User $user User
      *
@@ -246,7 +247,7 @@ class PaywallService
     }
 
     /**
-     * Checks if trial is active
+     * Checks if trial is active.
      *
      * @param Newscoop\Entity\User $user User
      *
@@ -267,7 +268,7 @@ class PaywallService
     }
 
     /**
-     * Deactivates trial
+     * Deactivates trial.
      *
      * @param Newscoop\Entity\User $user User
      *
@@ -292,9 +293,9 @@ class PaywallService
     }
 
     /**
-     * Gets all available sections by given language Id
+     * Gets all available sections by given language Id.
      *
-     * @param integer $language Language Id to search for
+     * @param int $language Language Id to search for
      *
      * @return array
      */
@@ -309,10 +310,10 @@ class PaywallService
     }
 
     /**
-     * Gets currently added user's Issues by given language Id and subscription Id
+     * Gets currently added user's Issues by given language Id and subscription Id.
      *
-     * @param integer $language        Language Id to search for
-     * @param integer $subscription_id Subscription Id to search for
+     * @param int $language        Language Id to search for
+     * @param int $subscription_id Subscription Id to search for
      *
      * @return array
      */
@@ -328,9 +329,9 @@ class PaywallService
     }
 
     /**
-     * Gets all available Issues by given language Id
+     * Gets all available Issues by given language Id.
      *
-     * @param integer $language Language Id to search for
+     * @param int $language Language Id to search for
      *
      * @return array
      */
@@ -345,10 +346,10 @@ class PaywallService
     }
 
     /**
-     * Gets currently added user's Articles by given language Id and subscription Id
+     * Gets currently added user's Articles by given language Id and subscription Id.
      *
-     * @param integer $language        Language Id to search for
-     * @param integer $subscription_id Subscription Id to search for
+     * @param int $language        Language Id to search for
+     * @param int $subscription_id Subscription Id to search for
      *
      * @return array
      */
@@ -364,9 +365,9 @@ class PaywallService
     }
 
     /**
-     * Gets all available Articles by given language Id
+     * Gets all available Articles by given language Id.
      *
-     * @param integer $language Language Id to search for
+     * @param int $language Language Id to search for
      *
      * @return array
      */
@@ -381,9 +382,9 @@ class PaywallService
     }
 
     /**
-     * Gets subscription details by given subscription Id
+     * Gets subscription details by given subscription Id.
      *
-     * @param integer $subscriptionId Subscription Id to search for
+     * @param int $subscriptionId Subscription Id to search for
      *
      * @return array
      */
@@ -402,9 +403,9 @@ class PaywallService
     }
 
     /**
-     * Gets one defined subscription by given subscription Id
+     * Gets one defined subscription by given subscription Id.
      *
-     * @param integer $subscriptionId Subscription Id to search for
+     * @param int $subscriptionId Subscription Id to search for
      *
      * @return entity object
      */
@@ -419,9 +420,9 @@ class PaywallService
     }
 
     /**
-     * Activates Subscription by Id and returns its instance
+     * Activates Subscription by Id and returns its instance.
      *
-     * @param integer $id User subscription id
+     * @param int $id User subscription id
      *
      * @return UserSubscription
      */
@@ -446,7 +447,7 @@ class PaywallService
     }
 
     /**
-     * Gets user subscription expiration date
+     * Gets user subscription expiration date.
      *
      * @param UserSubscription $userSubscription User subscription
      *
@@ -458,19 +459,30 @@ class PaywallService
         $createdAt = $userSubscription->getCreatedAt();
         // diffrence in days between subscription create date
         // and actual activation date
-        $daysDiffrence = (int) $now->diff($createdAt)->format("%a");
         $startDate = $createdAt ?: $now;
-        $days = $userSubscription->getSubscription()->getRange();
-        $days = $days + $daysDiffrence;
-        $timeSpan = new \DateInterval('P'.$days.'D');
+        $value = $userSubscription->getDuration()->getValue();
+        $attribute = $userSubscription->getDuration()->getAttribute();
+        $timeSpan = null;
+        switch ($attribute) {
+            case Duration::MONTHS:
+                $diffrence = (int) $now->diff($createdAt)->format('%m');
+                $months = $value + $diffrence;
+                $timeSpan = new \DateInterval('P'.$months.'M');
+                break;
+            case Duration::DAYS:
+                $daysDiffrence = (int) $now->diff($createdAt)->format('%a');
+                $days = $days + $daysDiffrence;
+                $timeSpan = new \DateInterval('P'.$days.'D');
+                break;
+        }
 
         return $startDate->add($timeSpan);
     }
 
     /**
-     * Gets Subscription configuration(details) by given Subscription Id
+     * Gets Subscription configuration(details) by given Subscription Id.
      *
-     * @param integer $subscriptionId Subscription id
+     * @param int $subscriptionId Subscription id
      *
      * @return entity object
      */
@@ -485,7 +497,7 @@ class PaywallService
     }
 
     /**
-     * Gets active Subscriptions
+     * Gets active Subscriptions.
      *
      * @return array
      */
@@ -498,11 +510,11 @@ class PaywallService
     }
 
     /**
-     * Checks if Subscription by given User Id and Subscription Id exists
+     * Checks if Subscription by given User Id and Subscription Id exists.
      *
-     * @param integer $userId         User id
-     * @param integer $subscriptionId Subscription id
-     * @param string  $active         Active on inactive subscription
+     * @param int    $userId         User id
+     * @param int    $subscriptionId Subscription id
+     * @param string $active         Active on inactive subscription
      *
      * @return array
      */
@@ -523,7 +535,7 @@ class PaywallService
     }
 
     /**
-     * Get one user subscription by user
+     * Get one user subscription by user.
      *
      * @param Newscoop\Entity\User|int $user User or user id
      *
@@ -546,10 +558,10 @@ class PaywallService
 
     /**
      * Gets all sections diffrent from already added user's sections by given language
-     * and publication
+     * and publication.
      *
-     * @param integer $languageId    Language Id
-     * @param integer $publicationId Publication Id
+     * @param int $languageId    Language Id
+     * @param int $publicationId Publication Id
      *
      * @return array
      */
@@ -571,10 +583,10 @@ class PaywallService
 
     /**
      * Gets all issues diffrent from already added user's issues by given language
-     * and publication
+     * and publication.
      *
-     * @param integer $languageId    Language Id
-     * @param integer $publicationId Publication Id
+     * @param int $languageId    Language Id
+     * @param int $publicationId Publication Id
      *
      * @return array
      */
@@ -596,10 +608,10 @@ class PaywallService
 
     /**
      * Gets all articles diffrent from already added user's articles by given language
-     * and publication
+     * and publication.
      *
-     * @param integer $languageId    Language Id
-     * @param integer $publicationId Publication Id
+     * @param int $languageId    Language Id
+     * @param int $publicationId Publication Id
      *
      * @return array
      */
@@ -620,7 +632,7 @@ class PaywallService
     }
 
     /**
-     * Update Subscription according to SubscritionData class
+     * Update Subscription according to SubscritionData class.
      *
      * @param UserSubscription $subscription
      * @param SubscriptionData $data
@@ -654,6 +666,10 @@ class PaywallService
             $subscription->setToPay($data->toPay);
         }
 
+        if ($data->duration) {
+            $subscription->setDuration($data->duration);
+        }
+
         if ($data->subscriptionId) {
             $subscription->setSubscription($data->subscriptionId);
         }
@@ -675,13 +691,24 @@ class PaywallService
 
     public function save(UserSubscription $subscription)
     {
-        $this->em->persist($subscription);
-        $this->em->flush();
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->em->persist($subscription);
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            // Rollback
+            $em->getConnection()->rollback();
+            throw $e;
+        }
     }
 
     /**
-     * Deactivates Subscription by Id and returns its instance
-     * @param  integer          $id - user subscription id
+     * Deactivates Subscription by Id and returns its instance.
+     *
+     * @param int $id - user subscription id
+     *
      * @return UserSubscription
      */
     public function deactivateById($id)
@@ -701,9 +728,9 @@ class PaywallService
     }
 
     /**
-     * Removes Subscription by Id and returns its instance
+     * Removes Subscription by Id and returns its instance.
      *
-     * @param integer $id User subscription id
+     * @param int $id User subscription id
      *
      * @return UserSubscription
      */

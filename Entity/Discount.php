@@ -1,0 +1,273 @@
+<?php
+
+/**
+ * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
+ * @copyright 2015 Sourcefabric z.ú.
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ */
+namespace Newscoop\PaywallBundle\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Discount entity.
+ *
+ * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\DiscountRepository")
+ * @ORM\Table(name="plugin_paywall_discount")
+ */
+class Discount
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer", name="id")
+     *
+     * @var int
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(type="string", name="name", length=100)
+     *
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @ORM\Column(type="string", name="description")
+     *
+     * @var string
+     */
+    protected $description;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Duration", mappedBy="discount")
+     *
+     * @var Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $durations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Action", mappedBy="discount", cascade={"all"})
+     *
+     * @var ArrayCollection
+     */
+    protected $actions;
+
+    /**
+     * @ORM\Column(type="datetime", name="updated_at", nullable=true)
+     *
+     * @var \DateTime
+     */
+    protected $updatedAt;
+
+    /**
+     * @ORM\Column(type="datetime", name="created_at")
+     *
+     * @var \DateTime
+     */
+    protected $createdAt;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->durations = new ArrayCollection();
+        $this->actions = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+    }
+
+    public function hasActions()
+    {
+        return !$this->actions->isEmpty();
+    }
+
+    public function getActions()
+    {
+        return $this->actions;
+    }
+
+    public function hasAction($action)
+    {
+        return $this->actions->contains($action);
+    }
+
+    public function addAction($action)
+    {
+        if (!$this->hasAction($action)) {
+            $action->setDiscount($this);
+            $this->actions->add($action);
+        }
+
+        return $this;
+    }
+
+    public function removeAction($action)
+    {
+        $action->setDiscount(null);
+        $this->actions->removeElement($action);
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of id.
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Sets the value of id.
+     *
+     * @param int $id the id
+     *
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Sets the value of name.
+     *
+     * @param string $name the name
+     *
+     * @return self
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Sets the value of description.
+     *
+     * @param string $description the description
+     *
+     * @return self
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Gets the Associated rules.
+     *
+     * @return Collection|RuleInterface[]
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * Sets the Associated rules.
+     *
+     * @param Collection|RuleInterface[] $duration the duration
+     *
+     * @return self
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Sets the Associated actions.
+     *
+     * @param Collection $actions the actions
+     *
+     * @return self
+     */
+    public function setActions($actions)
+    {
+        $this->actions = $actions;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of updatedAt.
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Sets the value of updatedAt.
+     *
+     * @param \DateTime $updatedAt the updated at
+     *
+     * @return self
+     */
+    public function setUpdatedAt(\DateTime $updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of createdAt.
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Sets the value of createdAt.
+     *
+     * @param \DateTime $createdAt the created at
+     *
+     * @return self
+     */
+    public function setCreatedAt(\DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+}

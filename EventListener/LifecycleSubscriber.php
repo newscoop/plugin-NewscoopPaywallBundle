@@ -42,7 +42,8 @@ class LifecycleSubscriber implements EventSubscriberInterface
     {
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->updateSchema($this->getClasses(), true);
-        $adapter = new Settings();
+        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__.'/../../../../library/Proxy');
+        /*$adapter = new Settings();
         $adapter->setName('Paypal');
         $adapter->setValue('PaypalAdapter');
         $this->em->persist($adapter);
@@ -55,7 +56,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $this->addJobs();
         $this->systemPreferences->PaywallMembershipNotifyEmail = $this->systemPreferences->EmailFromAddress;
         $this->systemPreferences->PaywallMembershipNotifyFromEmail = $this->systemPreferences->EmailFromAddress;
-        $this->systemPreferences->PaywallEmailNotifyEnabled = 0;
+        $this->systemPreferences->PaywallEmailNotifyEnabled = 0;*/
     }
 
     public function update(GenericEvent $event)
@@ -123,7 +124,9 @@ class LifecycleSubscriber implements EventSubscriberInterface
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Settings'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\UserSubscription'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Trial'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Discount'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Duration'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Action'),
         );
     }
 }

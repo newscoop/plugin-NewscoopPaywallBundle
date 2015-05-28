@@ -6,15 +6,29 @@ This smarty function displays all available subscriptions to create price list.
 ##Usage:
 
 ```
-{{ list_pricetable }}
-	{{ $gimme->subscription->identifier }} // Subscription identifier
-    {{ $gimme->subscription->name }} // Subscription name
-    {{ $gimme->subscription->price }} // Subscription price
-    {{ $gimme->subscription->description }} // Subscription description
-    {{ $gimme->subscription->range }} // Subscription range in days
-    {{ $gimme->subscription->type }} // Subscription type (e.g. publication)
-    {{ $gimme->subscription->currency }} // Subscription currency (e.g. EUR)
-{{ /list_pricetable }}
+ <table class="table table-striped table-bordered">
+    <tr>
+        <td>Name of subscription</td>
+        <td>Price</td>
+        <td>Duration of subscription</td>
+        <td>Description</td>
+    </tr>
+    {{ list_pricetable }}
+    <tr>
+        <td>{{ $gimme->subscription->name }} </td>
+        <td>{{ $gimme->subscription->price }} {{ $gimme->subscription->currency }} </td>
+        <td>
+        <select name="">
+        <option value="">-- choose ---</option>
+            {{foreach from=$gimme->subscription->ranges item=val}}
+                <option value="{{$val.id}}">{{$val.value}} {{ if $val.attribute == 'month' }} month(s){{ /if}}</option>
+            {{/foreach}}
+        </select>
+        </td>
+        <td>{{ $gimme->subscription->description }} </td>
+    </tr>
+    {{ /list_pricetable }}
+</table>
 ```
 
 ##List constraints are:

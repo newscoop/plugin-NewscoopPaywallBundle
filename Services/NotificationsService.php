@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2014 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -20,7 +19,7 @@ use Newscoop\EventDispatcher\Events\GenericEvent;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 
 /**
- * Notifications service
+ * Notifications service.
  */
 class NotificationsService
 {
@@ -45,7 +44,6 @@ class NotificationsService
     protected $placeholdersService;
 
     /**
-     *
      * @var EntityManager
      */
     protected $em;
@@ -77,7 +75,7 @@ class NotificationsService
     }
 
     /**
-     * Sends email notifications
+     * Sends email notifications.
      *
      * @param string                                $code             Email message type
      * @param Newscoop\Entity\User                  $user             User object
@@ -92,7 +90,15 @@ class NotificationsService
         $now = new \DateTime('now');
         $smarty = $this->templatesService->getSmarty();
         $smarty->assign('user', new \MetaUser($data['user']));
-        $smarty->assign('userSubscription', new MetaSubscription($data['subscription']));
+        $subscriptions = array();
+        if (!$data['subscriptions'] instanceof UserSubscription) {
+            foreach ($data['subscriptions'] as $key => $value) {
+                $subscriptions[] = new MetaSubscription($value);
+            }
+            $smarty->assign('userSubscriptions', $subscriptions);
+        } else {
+            $smarty->assign('userSubscription', new MetaSubscription($data['subscriptions']));
+        }
 
         try {
             $message = $this->loadProperMessageTemplateBy($code);
@@ -114,27 +120,27 @@ class NotificationsService
         switch ($code) {
             case Emails::USER_CONFIRMATION:
                 $message = $this->templatesService->fetchTemplate(
-                    "_paywall/email_notify_user.tpl"
+                    '_paywall/email_notify_user.tpl'
                 );
                 break;
             case Emails::SUBSCRIPTION_CONFIRMATION:
                 $message = $this->templatesService->fetchTemplate(
-                    "_paywall/email_notify_admin.tpl"
+                    '_paywall/email_notify_admin.tpl'
                 );
                 break;
             case Emails::SUBSCRIPTION_STATUS:
                 $message = $this->templatesService->fetchTemplate(
-                    "_paywall/email_subscription_status.tpl"
+                    '_paywall/email_subscription_status.tpl'
                 );
                 break;
             case Emails::SUBSCRIPTION_EXPIRATION:
                 $message = $this->templatesService->fetchTemplate(
-                    "_paywall/email_subscription_expiration.tpl"
+                    '_paywall/email_subscription_expiration.tpl'
                 );
                 break;
             case Emails::ADMIN_CREATED_CONFIRMATION:
                 $message = $this->templatesService->fetchTemplate(
-                    "_paywall/email_subscription_admin_created.tpl"
+                    '_paywall/email_subscription_admin_created.tpl'
                 );
                 break;
             default:
@@ -177,7 +183,7 @@ class NotificationsService
      * notifications to users.
      *
      * @param \DateTime $now                Current date time
-     * @param integer   $subscriptionsCount Subscriptions count
+     * @param int       $subscriptionsCount Subscriptions count
      */
     public function processExpiringSubscriptions($now, $notify, $count = 0, $days = 7)
     {
@@ -201,8 +207,9 @@ class NotificationsService
     /**
      * Gets expiring subscriptions count.
      *
-     * @param  \DateTime $now Current date time
-     * @return integer
+     * @param \DateTime $now Current date time
+     *
+     * @return int
      */
     public function getExpiringSubscriptionsCount($now, $notify, $days = 7)
     {

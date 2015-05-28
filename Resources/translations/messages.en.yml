@@ -13,6 +13,8 @@ paywall:
         manage: "Manage Subscriptions"
         manageusers: "Manage User Subscriptions"
         configure: "Configure Paywall"
+        discounts: "Discounts"
+        creatediscount: Create new discount
     step1:
       header: "Please specify the name and value for your new subscription. You can set up various diffrent types of subscriptions, but just one after the other."
       form:
@@ -48,6 +50,8 @@ paywall:
         currency: "Currency"
         active: "Status"
     btn:
+      create: "Create"
+      creatediscount: "Create discount"
       skip: "Skip"
       save: "Save"
       edit: "Edit"
@@ -60,6 +64,7 @@ paywall:
       add: "Add"
       deactivate: "Deactivate"
       activate: "Activate"
+      cancel: "Cancel"
     flash:
       message:
         error: "Something went wrong."
@@ -81,7 +86,8 @@ paywall:
           choose: "Please choose provider!"
       label:
         name: "Name"
-        duration: "Duration in days"
+        description: "Description"
+        duration: "Duration"
         options: "Options"
         username: "Username"
         topay: "To pay"
@@ -127,6 +133,7 @@ paywall:
         managesubscriptions: "Manage Subscriptions"
         subscriptions.user: "Manage User Subscriptions"
         configure.paywall: "Configure Paywall"
+        discounts: "Discounts"
     datatable:
         table:
           info: "Showing _START_ to _END_ of _TOTAL_ entries"

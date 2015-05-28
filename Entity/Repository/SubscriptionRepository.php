@@ -26,7 +26,9 @@ class SubscriptionRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('s');
 
-        $qb->andWhere('s.is_active = :is_active')
+        $qb->select('s', 'r')
+            ->andWhere('s.is_active = :is_active')
+            ->leftJoin('s.ranges', 'r')
             ->setParameter('is_active', true);
 
         if ($criteria->name) {

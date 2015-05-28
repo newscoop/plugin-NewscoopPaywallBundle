@@ -1,11 +1,10 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -31,7 +30,7 @@ class ManageSubscriptionsController extends Controller
 
         return array(
             'subscriptions' => $subscriptions,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         );
     }
 

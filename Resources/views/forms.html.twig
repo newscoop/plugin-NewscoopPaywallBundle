@@ -1,0 +1,61 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{% block textarea_widget %}
+{% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
+{{ parent() }}
+{% endblock textarea_widget %}
+
+{% block form_label %}
+{% spaceless %}
+    {% set label_attr = label_attr|merge({'class': label_attr.class|default('col-lg-2') ~ ' control-label'}) %}
+    {{ parent() }}
+{% endspaceless %}
+{% endblock form_label %}
+
+{% block money_widget %}
+{% spaceless %}
+    <div class="input-group">
+        <span class="input-group-addon">{{ money_pattern|replace({'{{ widget }}': ''}) }}</span>
+        {{ block('form_widget_simple') }}
+    </div>
+{% endspaceless %}
+{% endblock money_widget %}
+
+{% block percent_widget %}
+{% spaceless %}
+    <div class="input-group">
+        <span class="input-group-addon">%</span>
+        {{ block('form_widget_simple') }}
+    </div>
+{% endspaceless %}
+{% endblock percent_widget %}
+
+{% block form_row %}
+{% spaceless %}
+    <div class="form-group{% if errors|length > 0 %} has-error{% endif %}">
+        {{ form_label(form) }}
+        <div {% if label %}class="col-lg-10"{% endif %}>
+        {{ form_widget(form) }}
+        {% for error in errors %}
+            <span class="help-block form-error">
+                {{
+                    error.messagePluralization is null
+                    ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                    : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
+                }}
+            </span>
+        {% endfor %}
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock form_row %}
+
+{% block form_errors %}
+{% spaceless %}
+    {% if errors|length > 0 %}
+        {% for error in errors %}
+            <div class="alert alert-danger">{{ error.message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endspaceless %}
+{% endblock form_errors %}

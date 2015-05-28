@@ -76,7 +76,15 @@ $(document).ready(function(){
                 <tr id="{{ subscription.id }}">
                     <td>{{ subscription.name }}</td>
                     <td align="center">{{ subscription.type }}</td>
-                    <td align="center">link to durations</td>
+                    <td align="center">
+                    {% for range in subscription.ranges %}
+                        {{ range.value }}
+                        {% if range.attribute == 'month' %}
+                            {{ 'paywall.label.months'|trans }}
+                        {% endif %}
+                        {% if loop.last == false %}<br> {% endif %}
+                    {% endfor %}
+                    </td>
                     <td align="center">{{ subscription.price }}</td>
                     <td align="center">{{ subscription.currency }}</td>
                     <td>

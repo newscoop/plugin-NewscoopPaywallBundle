@@ -2,5 +2,6 @@
         <li class="{% if active == 1 %}active{% endif %}"><a class="tab-link" href="{{ url('newscoop_paywall_admin_admin') }}" data-href="">{{ 'paywall.menu.label.addsubscription'|trans }}</a></li>
         <li class="{% if active == 2 %}active{% endif %}"><a class="tab-link" href="{{ url('newscoop_paywall_managesubscriptions_manage') }}" data-href="">{{ 'paywall.menu.label.managesubscriptions'|trans }}</a></li>
         <li class="{% if active == 3 %}active{% endif %}"><a class="tab-link" href="{{ url('newscoop_paywall_userssubscriptions_index') }}">{{ 'paywall.menu.label.subscriptions.user'|trans }}</a></li>
-        <li class="{% if active == 4 %}active{% endif %} last"><a class="tab-link" href="{{ url('newscoop_paywall_configurepaywall_index') }}">{{ 'paywall.menu.label.configure.paywall'|trans }}</a></li>
+        <li class="{% if active == 4 %}active{% endif %}"><a class="tab-link" href="{{ url('newscoop_paywall_configurepaywall_index') }}">{{ 'paywall.menu.label.configure.paywall'|trans }}</a></li>
+        <li class="{% if active == 5 %}active{% endif %} last"><a class="tab-link" href="{{ url('newscoop_paywall_discount_index') }}">{{ 'paywall.menu.label.discounts'|trans }}</a></li>
 </ul>

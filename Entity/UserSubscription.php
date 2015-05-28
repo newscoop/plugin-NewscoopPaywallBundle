@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -12,7 +12,8 @@ use Newscoop\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Subscription entity
+ * Subscription entity.
+ *
  * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\UserSubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_user_subscriptions")
  */
@@ -26,6 +27,7 @@ class UserSubscription
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer", name="Id")
+     *
      * @var int
      */
     protected $id;
@@ -33,6 +35,7 @@ class UserSubscription
     /**
      * @ORM\ManyToOne(targetEntity="Newscoop\Entity\User")
      * @ORM\JoinColumn(name="IdUser", referencedColumnName="Id")
+     *
      * @var Newscoop\Entity\User
      */
     protected $user;
@@ -40,6 +43,7 @@ class UserSubscription
     /**
      * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscriptions")
      * @ORM\JoinColumn(name="IdSubscription", referencedColumnName="id")
+     *
      * @var Newscoop\PaywallBundle\Entity\Subscriptions
      */
     protected $subscription;
@@ -47,24 +51,28 @@ class UserSubscription
     /**
      * @ORM\ManyToOne(targetEntity="Newscoop\Entity\Publication")
      * @ORM\JoinColumn(name="IdPublication", referencedColumnName="Id")
+     *
      * @var Newscoop\Entity\Publication
      */
     protected $publication;
 
     /**
      * @ORM\Column(type="decimal", name="ToPay")
+     *
      * @var float
      */
     protected $toPay = 0.0;
 
     /**
      * @ORM\Column(name="Type")
+     *
      * @var string
      */
     protected $type;
 
     /**
      * @ORM\Column(name="Currency")
+     *
      * @var string
      */
     protected $currency;
@@ -72,67 +80,89 @@ class UserSubscription
     /**
      * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Trial")
      * @ORM\JoinColumn(name="trial_id", referencedColumnName="id")
+     *
      * @var Newscoop\PaywallBundle\Entity\Trial
      */
     protected $trial;
 
     /**
-     * Subscription status visible for admin
+     * Subscription status visible for admin.
+     *
      * @ORM\Column(name="Active")
+     *
      * @var string
      */
     protected $active;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
+     *
      * @var DateTime
      */
     protected $created_at;
 
     /**
      * @ORM\Column(type="datetime", name="expire_at", nullable=true)
+     *
      * @var DateTime
      */
     protected $expire_at;
 
     /**
-     * Custom field
+     * Custom field.
+     *
      * @ORM\Column(type="boolean", name="custom")
-     * @var boolean
+     *
+     * @var bool
      */
     protected $custom;
 
     /**
-     * Second custom field
+     * Second custom field.
+     *
      * @ORM\Column(type="boolean", name="custom_2")
-     * @var boolean
+     *
+     * @var bool
      */
     protected $customOther;
 
     /**
-     * To hide from users totally
+     * To hide from users totally.
+     *
      * @ORM\Column(type="boolean", name="is_active")
-     * @var boolean
+     *
+     * @var bool
      */
     protected $is_active;
 
     /**
      * @ORM\Column(type="datetime", name="notify_sent_first", nullable=true)
+     *
      * @var \DateTime
      */
     protected $notifySentLevelOne;
 
     /**
      * @ORM\Column(type="datetime", name="notify_sent_second", nullable=true)
+     *
      * @var \DateTime
      */
     protected $notifySentLevelTwo;
 
     /**
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
+     *
      * @var \DateTime
      */
     protected $updated;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Duration")
+     * @ORM\JoinColumn(name="duration_id", referencedColumnName="id")
+     *
+     * @var Duration
+     */
+    protected $duration;
 
     public function __construct()
     {
@@ -148,7 +178,7 @@ class UserSubscription
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -158,10 +188,9 @@ class UserSubscription
     }
 
     /**
-     * Set subscription
+     * Set subscription.
      *
-     * @param  Newscoop\PaywallBundle\Entity\Subscriptions $subscription
-     * @return void
+     * @param Newscoop\PaywallBundle\Entity\Subscriptions $subscription
      */
     public function setSubscription($subscription)
     {
@@ -171,7 +200,7 @@ class UserSubscription
     }
 
     /**
-     * Get subscription
+     * Get subscription.
      *
      * @return Newscoop\PaywallBundle\Entity\Subscription_specification
      */
@@ -181,10 +210,9 @@ class UserSubscription
     }
 
     /**
-     * Set user
+     * Set user.
      *
-     * @param  Newscoop\Entity\User $user
-     * @return void
+     * @param Newscoop\Entity\User $user
      */
     public function setUser(User $user)
     {
@@ -194,7 +222,7 @@ class UserSubscription
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return Newscoop\Entity\User
      */
@@ -204,9 +232,10 @@ class UserSubscription
     }
 
     /**
-     * Set publication
+     * Set publication.
      *
-     * @param  Newscoop\Entity\Publication  $publication
+     * @param Newscoop\Entity\Publication $publication
+     *
      * @return Newscoop\Entity\Subscription
      */
     public function setPublication(Publication $publication)
@@ -217,7 +246,7 @@ class UserSubscription
     }
 
     /**
-     * Get publication
+     * Get publication.
      *
      * @return Newscoop\Entity\Publication
      */
@@ -227,7 +256,7 @@ class UserSubscription
     }
 
     /**
-     * Get publication name
+     * Get publication name.
      *
      * @return string
      */
@@ -237,7 +266,7 @@ class UserSubscription
     }
 
     /**
-     * Get publication id
+     * Get publication id.
      *
      * @return int
      */
@@ -247,9 +276,10 @@ class UserSubscription
     }
 
     /**
-     * Set to pay
+     * Set to pay.
      *
-     * @param  float                        $toPay
+     * @param float $toPay
+     *
      * @return Newscoop\Entity\Subscription
      */
     public function setToPay($toPay)
@@ -260,7 +290,7 @@ class UserSubscription
     }
 
     /**
-     * Get to pay
+     * Get to pay.
      *
      * @return float
      */
@@ -270,9 +300,10 @@ class UserSubscription
     }
 
     /**
-     * Set type
+     * Set type.
      *
-     * @param  string                       $type
+     * @param string $type
+     *
      * @return Newscoop\Entity\Subscription
      */
     public function setType($type)
@@ -283,7 +314,7 @@ class UserSubscription
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -293,7 +324,7 @@ class UserSubscription
     }
 
     /**
-     * Test if is trial
+     * Test if is trial.
      *
      * @return bool
      */
@@ -303,9 +334,10 @@ class UserSubscription
     }
 
     /**
-     * Set active
+     * Set active.
      *
-     * @param  bool                         $active
+     * @param bool $active
+     *
      * @return Newscoop\Entity\Subscription
      */
     public function setActive($active)
@@ -316,7 +348,7 @@ class UserSubscription
     }
 
     /**
-     * Is active
+     * Is active.
      *
      * @return bool
      */
@@ -326,7 +358,8 @@ class UserSubscription
     }
 
     /**
-     * Get currency
+     * Get currency.
+     *
      * @return string
      */
     public function getCurrency()
@@ -335,7 +368,8 @@ class UserSubscription
     }
 
     /**
-     * Set currency
+     * Set currency.
+     *
      * @return string
      */
     public function setCurrency($currency)
@@ -346,7 +380,8 @@ class UserSubscription
     }
 
     /**
-     * Get trial
+     * Get trial.
+     *
      * @return Trial
      */
     public function getTrial()
@@ -355,7 +390,8 @@ class UserSubscription
     }
 
     /**
-     * Set trial
+     * Set trial.
+     *
      * @return Trial
      */
     public function setTrial($trial)
@@ -366,7 +402,7 @@ class UserSubscription
     }
 
     /**
-     * Get create date
+     * Get create date.
      *
      * @return datetime
      */
@@ -376,9 +412,10 @@ class UserSubscription
     }
 
     /**
-     * Set create date
+     * Set create date.
      *
-     * @param  datetime $created_at
+     * @param datetime $created_at
+     *
      * @return datetime
      */
     public function setCreatedAt(\DateTime $created_at)
@@ -389,7 +426,7 @@ class UserSubscription
     }
 
     /**
-     * Get expire date
+     * Get expire date.
      *
      * @return datetime
      */
@@ -399,9 +436,10 @@ class UserSubscription
     }
 
     /**
-     * Set expire date
+     * Set expire date.
      *
-     * @param  datetime $expire_at
+     * @param datetime $expire_at
+     *
      * @return datetime
      */
     public function setExpireAt(\DateTime $expire_at = null)
@@ -412,9 +450,9 @@ class UserSubscription
     }
 
     /**
-     * Get status
+     * Get status.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
@@ -422,10 +460,11 @@ class UserSubscription
     }
 
     /**
-     * Set status
+     * Set status.
      *
-     * @param  boolean $is_active
-     * @return boolean
+     * @param bool $is_active
+     *
+     * @return bool
      */
     public function setIsActive($is_active)
     {
@@ -437,7 +476,7 @@ class UserSubscription
     /**
      * Gets the Custom field.
      *
-     * @return boolean
+     * @return bool
      */
     public function getCustom()
     {
@@ -447,7 +486,7 @@ class UserSubscription
     /**
      * Sets the Custom field.
      *
-     * @param boolean $custom the custom
+     * @param bool $custom the custom
      *
      * @return self
      */
@@ -461,7 +500,7 @@ class UserSubscription
     /**
      * Gets the Second custom field.
      *
-     * @return boolean
+     * @return bool
      */
     public function getCustomOther()
     {
@@ -471,7 +510,7 @@ class UserSubscription
     /**
      * Sets the Second custom field.
      *
-     * @param boolean $customOther the custom other
+     * @param bool $customOther the custom other
      *
      * @return self
      */
@@ -550,6 +589,30 @@ class UserSubscription
     public function setNotifySentLevelTwo(\DateTime $notifySentLevelTwo)
     {
         $this->notifySentLevelTwo = $notifySentLevelTwo;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of duration.
+     *
+     * @return Duration
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * Sets the value of duration.
+     *
+     * @param Duration $duration the duration
+     *
+     * @return self
+     */
+    public function setDuration(Duration $duration)
+    {
+        $this->duration = $duration;
 
         return $this;
     }

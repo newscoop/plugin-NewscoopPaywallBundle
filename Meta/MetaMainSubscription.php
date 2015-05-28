@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -8,7 +8,7 @@
 namespace Newscoop\PaywallBundle\Meta;
 
 /**
- * Meta main subscription class
+ * Meta main subscription class.
  */
 class MetaMainSubscription
 {
@@ -21,7 +21,7 @@ class MetaMainSubscription
     public $description;
 
     /**
-     * Construct
+     * Construct.
      *
      * @param array $subscription
      */
@@ -30,7 +30,7 @@ class MetaMainSubscription
         $this->identifier = $subscription['id'];
         $this->name = $subscription['name'];
         $this->price = $subscription['price'];
-        $this->range = $subscription['range'];
+        $this->ranges = $subscription['ranges'];
         $this->type = $subscription['type'];
         $this->currency = $subscription['currency'];
         $this->description = $subscription['description'];

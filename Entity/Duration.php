@@ -18,6 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Duration
 {
     const MONTHS = 'month';
+    const DAYS = 'day';
 
     /**
      * @ORM\Id
@@ -29,7 +30,7 @@ class Duration
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Subscriptions", inversedBy="range")
+     * @ORM\ManyToOne(targetEntity="Subscriptions", inversedBy="ranges")
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id")
      *
      * @var Subscriptions
@@ -49,6 +50,14 @@ class Duration
      * @var string
      */
     protected $attribute = self::MONTHS;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Discount", inversedBy="durations")
+     * @ORM\JoinColumn(name="discount_id", referencedColumnName="id")
+     *
+     * @var Discount
+     */
+    protected $discount;
 
     /**
      * Gets the value of id.
@@ -142,6 +151,30 @@ class Duration
     public function setAttribute($attribute)
     {
         $this->attribute = $attribute;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of discount.
+     *
+     * @return Discount
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
+
+    /**
+     * Sets the value of discount.
+     *
+     * @param Discount $discount the discount
+     *
+     * @return self
+     */
+    public function setDiscount(Discount $discount)
+    {
+        $this->discount = $discount;
 
         return $this;
     }
