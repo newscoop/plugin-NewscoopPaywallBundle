@@ -50,11 +50,18 @@ class Discount
     protected $durations;
 
     /**
-     * @ORM\OneToMany(targetEntity="Action", mappedBy="discount", cascade={"all"})
+     * @ORM\Column(type="string", name="type")
      *
-     * @var ArrayCollection
+     * @var string
      */
-    protected $actions;
+    protected $type;
+
+    /**
+     * @ORM\Column(type="float", scale=3, name="value")
+     *
+     * @var float
+     */
+    protected $value;
 
     /**
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
@@ -76,41 +83,7 @@ class Discount
     public function __construct()
     {
         $this->durations = new ArrayCollection();
-        $this->actions = new ArrayCollection();
         $this->createdAt = new \DateTime();
-    }
-
-    public function hasActions()
-    {
-        return !$this->actions->isEmpty();
-    }
-
-    public function getActions()
-    {
-        return $this->actions;
-    }
-
-    public function hasAction($action)
-    {
-        return $this->actions->contains($action);
-    }
-
-    public function addAction($action)
-    {
-        if (!$this->hasAction($action)) {
-            $action->setDiscount($this);
-            $this->actions->add($action);
-        }
-
-        return $this;
-    }
-
-    public function removeAction($action)
-    {
-        $action->setDiscount(null);
-        $this->actions->removeElement($action);
-
-        return $this;
     }
 
     /**
@@ -210,20 +183,6 @@ class Discount
     }
 
     /**
-     * Sets the Associated actions.
-     *
-     * @param Collection $actions the actions
-     *
-     * @return self
-     */
-    public function setActions($actions)
-    {
-        $this->actions = $actions;
-
-        return $this;
-    }
-
-    /**
      * Gets the value of updatedAt.
      *
      * @return \DateTime
@@ -267,6 +226,54 @@ class Discount
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of type.
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Sets the value of type.
+     *
+     * @param string $type the type
+     *
+     * @return self
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of value.
+     *
+     * @return decimal
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * Sets the value of value.
+     *
+     * @param decimal $value the value
+     *
+     * @return self
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
 
         return $this;
     }

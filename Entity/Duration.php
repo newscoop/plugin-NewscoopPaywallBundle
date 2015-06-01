@@ -53,7 +53,7 @@ class Duration
 
     /**
      * @ORM\ManyToOne(targetEntity="Discount", inversedBy="durations")
-     * @ORM\JoinColumn(name="discount_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="discount_id", referencedColumnName="id", nullable=true)
      *
      * @var Discount
      */

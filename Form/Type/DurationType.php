@@ -34,6 +34,13 @@ class DurationType extends AbstractType
                 'month' => 'paywall.label.months',
             ),
             'required' => true,
+        ))
+        ->add('discount', 'entity', array(
+            'label' => 'Discount',
+            'empty_value' => 'Choose a discount',
+            'property' => 'name',
+            'class' => 'NewscoopPaywallBundle:Discount',
+            'required' => false,
         ));
     }
 

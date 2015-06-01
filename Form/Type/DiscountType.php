@@ -42,10 +42,17 @@ class DiscountType extends AbstractType
                     )),
                 ),
             ))
-            ->add('actions', 'entity', array(
-                'label' => 'Type',
-                'property' => 'type',
-                'class' => 'NewscoopPaywallBundle:Action',
+            ->add('type', 'choice', array(
+                'choices' => array(
+                    'percentage_discount' => 'Percentage discount',
+                ),
+            ))
+            ->add('value', 'percent', array(
+                'label' => 'Value',
+                'constraints' => array(
+                    new Assert\NotBlank(),
+                    new Assert\Type(array('type' => 'numeric')),
+                ),
             ));
     }
 

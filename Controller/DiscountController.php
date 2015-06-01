@@ -8,6 +8,7 @@
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Newscoop\PaywallBundle\Form\Type\DiscountType;
 use Newscoop\PaywallBundle\Entity\Discount;
@@ -32,13 +33,6 @@ class DiscountController extends BaseController
         ));
     }
 
-    private function getDiscountRepository()
-    {
-        $em = $this->get('em');
-
-        return $em->getRepository('Newscoop\PaywallBundle\Entity\Discount');
-    }
-
     /**
      * @Route("/admin/paywall_plugin/create/", options={"expose"=true}, name="paywall_plugin_discount_create")
      */
@@ -46,9 +40,22 @@ class DiscountController extends BaseController
     {
         $discount = new Discount();
         $form = $this->createForm(new DiscountType(), $discount);
-
+        $em = $this->get('em');
+        $translator = $this->get('translator');
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
+            if ($form->isValid()) {
+                if (!$this->exists($discount)) {
+                    $em->persist($discount);
+                    $em->flush();
+
+                    $this->get('session')->getFlashBag()->add('success', $translator->trans('paywall.success.created'));
+                } else {
+                    $this->get('session')->getFlashBag()->add('error', $translator->trans('paywall.success.exists'));
+                }
+
+                return $this->redirect($this->generateUrl('newscoop_paywall_discount_index'));
+            }
         }
 
         return $this->render('NewscoopPaywallBundle:Discount:create.html.twig', array(
@@ -58,10 +65,23 @@ class DiscountController extends BaseController
 
     /**
      * @Route("/admin/paywall_plugin/delete/{id}", options={"expose"=true}, name="paywall_plugin_discount_delete")
+     *
+     * @Method("DELETE")
      */
     public function deleteAction(Request $request, Discount $discount)
     {
-        return array();
+        $translator = $this->get('translator');
+        if ($this->exists($discount)) {
+            $em = $this->get('em');
+            $em->remove($discount);
+            $em->flush();
+
+            $this->get('session')->getFlashBag()->add('success', $translator->trans('paywall.success.removed'));
+        } else {
+            $this->get('session')->getFlashBag()->add('error', $translator->trans('paywall.success.notexists'));
+        }
+
+        return $this->redirect($this->generateUrl('newscoop_paywall_discount_index'));
     }
 
     /**
@@ -69,14 +89,65 @@ class DiscountController extends BaseController
      */
     public function editAction(Request $request, Discount $discount)
     {
-        return array();
+        $form = $this->createForm(new DiscountType(), $discount);
+        $em = $this->get('em');
+        $translator = $this->get('translator');
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                if (!$this->checkForExistenceBy($discount)) {
+                    $em->flush();
+
+                    $this->get('session')->getFlashBag()->add('success', $translator->trans('paywall.success.saved'));
+
+                    return $this->redirect($this->generateUrl('newscoop_paywall_discount_index'));
+                }
+
+                $this->get('session')->getFlashBag()->add('error', $translator->trans('paywall.success.exists'));
+
+                return $this->redirect($this->generateUrl('paywall_plugin_discount_edit', array(
+                    'id' => $discount->getId(),
+                )));
+            }
+        }
+
+        return $this->render('NewscoopPaywallBundle:Discount:edit.html.twig', array(
+            'form' => $form->createView(),
+            'discountId' => $discount->getId(),
+        ));
     }
 
-    /**
-     * @Route("/admin/paywall_plugin/show/{id}", options={"expose"=true}, name="paywall_plugin_discount_show")
-     */
-    public function showAction(Request $request, Discount $discount)
+    private function exists(Discount $discount)
     {
-        return array();
+        if ($this->getDiscountRepository()->findOneByName($discount->getName())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function checkForExistenceBy(Discount $discount)
+    {
+        $result = $this->getDiscountRepository()->createQueryBuilder('d')
+            ->select('count(d)')
+            ->where('d.name = :name')
+            ->andWhere('d.id <> :id')
+            ->setParameter('name', $discount->getName())
+            ->setParameter('id', $discount->getId())
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if ((int) $result > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function getDiscountRepository()
+    {
+        $em = $this->get('em');
+
+        return $em->getRepository('Newscoop\PaywallBundle\Entity\Discount');
     }
 }

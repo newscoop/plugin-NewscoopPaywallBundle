@@ -3,6 +3,7 @@ paywall:
     label:
       defineduration: "Define duration"
       months: "month(s)"
+      discount: "Discount"
     alert:
        notexists: "Selected subscription does not exist."
     title: "Paywall"
@@ -79,8 +80,6 @@ paywall:
       error:
         currency: "Currency is in invalid format."
         topay: "To pay field value is in wrong format."
-        exists:
-          subscription: "Chosen subscription already exists for this user."
         select:
           empty: "Select box can not be empty!"
           choose: "Please choose provider!"
@@ -153,10 +152,14 @@ paywall:
       fatal: "Unexpected error occured!"
       settingserror: "Error occured. Can not save settings."
       notadded: "Could not render added entry."
+      exists: "This name already exists. Please, choose diffrent one."
+      notexists: "Item with such identifier does not exist."
     success:
       settingssaved: "Settings successfully saved."
       added: "Successfully added."
       removed: Successfully removed.
+      saved: "Successfully saved."
+      created: "Successfully created."
     msg:
       membershipemail: "Provide email for notifications"
       membershipemaillabel: "Notifications email"

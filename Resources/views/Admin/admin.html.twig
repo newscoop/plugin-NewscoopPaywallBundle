@@ -210,9 +210,10 @@
 
 							<div style="float: left"><strong>{{ 'paywall.step2.header'|trans }}</strong><br><br>
 								<div class="form-group">
-									<label for="exampleInputName2">{{ 'paywall.step2.label.durationbox'|trans }}</label>
+									<label>{{ 'paywall.step2.label.durationbox'|trans }}</label>
 									{{ form_widget(formDuration.value) }}
 									{{ form_widget(formDuration.attribute) }}
+									{{ form_widget(formDuration.discount) }}
 									<button style="margin-left: 20px;" type="submit" class="btn btn-xs btn-success">
 										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 									</button>
@@ -221,10 +222,11 @@
 								{{ form_widget(formDuration._token) }}
 								<br>
 								<br>
-								<table id="duration-table" class="table" {% if ranges is empty %} style="display: none" {% endif %}>
+								<table id="duration-table" class="table">
 									<thead>
 										<tr>
 											<th>{{ 'paywall.step2.label.durationbox'|trans }}</th>
+											<th>{{ 'paywall.label.discount'|trans }}</th>
 											<th>{{ 'paywall.manage.label.options'|trans }}</th>
 										</tr>
 									</thead>
@@ -232,6 +234,7 @@
 										{% for range in ranges %}
 										<tr id="{{ range.id }}">
 											<td>{{ range.value }}{% if range.attribute == 'month' %} {{ 'paywall.label.months'|trans }} {% endif %}</td>
+											<td>{% if range.discount %} {{ range.discount.name}} ({{ range.discount.value * 100 }}%){% else %} - {% endif %}</td>
 											<td><button type="button" id="remove-duration" data-path="{{ path('newscoop_paywall_admin_duration_remove', {'id': range.id }) }}" class="btn btn-xs btn-danger">
 												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 											</button></td>
@@ -269,10 +272,15 @@
 					if (data.status) {
 						flashMessage("{{ 'paywall.success.added'|trans }}");
 						if (data.duration) {
+							var discount = "-";
+							if (Object.keys(data.duration.discount).length > 0) {
+								discount = data.duration.discount.name+' ('+(data.duration.discount.value * 100)+'%)';
+							}
 							$('#duration-table tbody').append(
 								'<tr id="'+data.duration.id+'">'+
 									'<td>'+data.duration.value+
 									' {{ 'paywall.label.months'|trans }}</td>'+
+									'<td>'+discount+'</td>'+
 									'<td><button type="button" id="remove-duration" data-path="{{ path('newscoop_paywall_admin_duration_remove') }}/'+data.duration.id+'" class="btn btn-xs btn-danger">'+
 										'<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>'+
 									'</button></td>'+
@@ -282,7 +290,7 @@
 							flashMessage("{{ 'paywall.error.notadded'|trans }}");
 						}
 					} else {
-						if (data.errors) {
+						if (data.errors.length > 0) {
 							flashMessage(data.errors.value[0], "error");
 						} else {
 							flashMessage("{{ 'paywall.msg.exists'|trans }}", "error");
@@ -310,7 +318,7 @@
 						flashMessage('{{ 'paywall.success.removed'|trans }}');
 						that.parent().parent().remove();
 					} else {
-						flashMessage('Can not remove duration at the moment.', "error");
+						flashMessage(data.message, "error");
 					}
 				},
 				error: function (rq, status, error) {

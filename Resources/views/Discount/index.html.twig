@@ -13,6 +13,12 @@
 {% endblock %}
 {% block admin_content %}
 <div class="plugin-container">
+{% for flashMessage in app.session.flashbag.get('success') %}
+<div class="alert alert-success alert-dismissible font-fix" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{{ 'aes.btn.close'|trans}}</span></button>
+  <center>{{ flashMessage }}</center>
+</div>
+{% endfor %}
     {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 5} %}
     <div id="configure-paywall" class="box_table">
         <div class="pull-right">
@@ -26,7 +32,8 @@
                     <tr>
                       <th>{{ knp_pagination_sortable(pagination, '#ID', 'd.id') }}</th>
                       <th>{{ knp_pagination_sortable(pagination, 'paywall.manage.label.name'|trans, 'd.name') }}</th>
-                      <th>{{ knp_pagination_sortable(pagination, 'paywall.manage.label.description', 'd.description') }}</th>
+                      <th>{{ knp_pagination_sortable(pagination, 'paywall.manage.label.description'|trans, 'd.description') }}</th>
+                      <th>{{ knp_pagination_sortable(pagination, 'paywall.label.discount'|trans, 'd.value') }}</th>
                       <th></th>
                   </tr>
               </thead>
@@ -36,8 +43,8 @@
                     <td>{{ discount.id }}</td>
                     <td>{{ discount.name }}</td>
                     <td>{{ discount.description }}</td>
+                    <td>{{ discount.value * 100 }}%</td>
                     <td>
-                        {{ buttons.show(path('paywall_plugin_discount_show', {'id': discount.id})) }}
                         {{ buttons.edit(path('paywall_plugin_discount_edit', {'id': discount.id})) }}
                         {{ buttons.delete(path('paywall_plugin_discount_delete', {'id': discount.id})) }}
                     </td>

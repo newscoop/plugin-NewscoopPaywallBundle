@@ -127,12 +127,21 @@ class AdminController extends Controller
                     $em->persist($duration);
                     $em->flush();
 
+                    $discount = array();
+                    if ($duration->getDiscount()) {
+                        $discount = array(
+                            'name' => $duration->getDiscount()->getName(),
+                            'value' => $duration->getDiscount()->getValue(),
+                        );
+                    }
+
                     return new JsonResponse(array(
                         'status' => true,
                         'duration' => array(
                             'id' => $duration->getId(),
                             'value' => $duration->getValue(),
                             'attribute' => $duration->getAttribute(),
+                            'discount' => $discount,
                         ),
                     ));
                 }
@@ -160,18 +169,25 @@ class AdminController extends Controller
         $duration = $em->getRepository('Newscoop\PaywallBundle\Entity\Duration')
             ->findOneById($id);
 
-        if ($duration) {
-            $em->remove($duration);
-            $em->flush();
+        try {
+            if ($duration) {
+                $em->remove($duration);
+                $em->flush();
+
+                return new JsonResponse(array(
+                    'status' => true,
+                ));
+            }
 
             return new JsonResponse(array(
-                'status' => true,
+                'status' => false,
+            ));
+        } catch (\Exception $e) {
+            return new JsonResponse(array(
+                'status' => false,
+                'message' => 'Cannot remove this period because its assigned for some user subscriptions',
             ));
         }
-
-        return new JsonResponse(array(
-            'status' => false,
-        ));
     }
 
     /**

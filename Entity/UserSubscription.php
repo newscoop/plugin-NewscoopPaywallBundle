@@ -157,12 +157,18 @@ class UserSubscription
     protected $updated;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Duration")
-     * @ORM\JoinColumn(name="duration_id", referencedColumnName="id")
+     * @ORM\Column(type="array", name="duration")
      *
-     * @var Duration
+     * @var array
      */
     protected $duration;
+
+    /**
+     * @ORM\Column(type="array", name="discount")
+     *
+     * @var array
+     */
+    protected $discount = array();
 
     public function __construct()
     {
@@ -594,9 +600,33 @@ class UserSubscription
     }
 
     /**
+     * Gets the value of discount.
+     *
+     * @return array
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
+
+    /**
+     * Sets the value of discount.
+     *
+     * @param array $discount the discount
+     *
+     * @return self
+     */
+    public function setDiscount(array $discount = array())
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
      * Gets the value of duration.
      *
-     * @return Duration
+     * @return array
      */
     public function getDuration()
     {
@@ -606,11 +636,11 @@ class UserSubscription
     /**
      * Sets the value of duration.
      *
-     * @param Duration $duration the duration
+     * @param array $duration the duration
      *
      * @return self
      */
-    public function setDuration(Duration $duration)
+    public function setDuration(array $duration)
     {
         $this->duration = $duration;
 

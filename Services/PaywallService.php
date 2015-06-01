@@ -460,8 +460,9 @@ class PaywallService
         // diffrence in days between subscription create date
         // and actual activation date
         $startDate = $createdAt ?: $now;
-        $value = $userSubscription->getDuration()->getValue();
-        $attribute = $userSubscription->getDuration()->getAttribute();
+        $duration = $userSubscription->getDuration();
+        $value = $duration['value'];
+        $attribute = $duration['attribute'];
         $timeSpan = null;
         switch ($attribute) {
             case Duration::MONTHS:
@@ -471,7 +472,7 @@ class PaywallService
                 break;
             case Duration::DAYS:
                 $daysDiffrence = (int) $now->diff($createdAt)->format('%a');
-                $days = $days + $daysDiffrence;
+                $days = $value + $daysDiffrence;
                 $timeSpan = new \DateInterval('P'.$days.'D');
                 break;
         }
@@ -666,8 +667,12 @@ class PaywallService
             $subscription->setToPay($data->toPay);
         }
 
-        if ($data->duration) {
+        if (!empty($data->duration)) {
             $subscription->setDuration($data->duration);
+        }
+
+        if (!empty($data->discount)) {
+            $subscription->setDiscount($data->discount);
         }
 
         if ($data->subscriptionId) {

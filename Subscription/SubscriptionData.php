@@ -66,9 +66,16 @@ class SubscriptionData
     /**
      * Subscription duration.
      *
-     * @var Newscoop\PaywallBundle\Entity\Duration
+     * @var array
      */
     public $duration;
+
+    /**
+     * Subscription discount.
+     *
+     * @var array
+     */
+    public $discount;
 
     /**
      * How long subscription will be valid.

@@ -14,9 +14,15 @@
 {% endblock %}
 {% block admin_content %}
 <div class="plugin-container">
+{% for flashMessage in app.session.flashbag.get('error') %}
+<div class="alert alert-danger alert-dismissible font-fix" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{{ 'aes.btn.close'|trans}}</span></button>
+  <center>{{ flashMessage }}</center>
+</div>
+{% endfor %}
   {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 5} %}
   {{ form_errors(form) }}
-  <form action="{{ path('paywall_plugin_discount_create') }}" method="post" class="form-horizontal" novalidate>
+  <form action="{{ path('paywall_plugin_discount_edit', {id: discountId}) }}" method="post" class="form-horizontal" novalidate>
     <center>
       <div class="row">
         <br>
@@ -30,7 +36,7 @@
       </div>
       <hr>
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> {{ 'paywall.btn.create'|trans }}</button>
+        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> {{ 'paywall.btn.save'|trans }}</button>
         <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {{ 'paywall.btn.cancel'|trans }}</a>
       </center>
     </div>
