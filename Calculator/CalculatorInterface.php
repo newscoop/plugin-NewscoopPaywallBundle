@@ -7,7 +7,7 @@
  */
 namespace Newscoop\PaywallBundle\Calculator;
 
-use Newscoop\PaywallBundle\Order\OrderInterface;
+use Newscoop\PaywallBundle\Entity\OrderInterface;
 
 /**
  * Price calculator interface.

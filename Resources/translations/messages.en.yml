@@ -4,6 +4,21 @@ paywall:
       defineduration: "Define duration"
       months: "month(s)"
       discount: "Discount"
+      unitprice: "Unit Price"
+      period: "Period"
+      total: "Total"
+      number: "Number"
+      createdat: "Created at"
+      user: "User"
+      countbased: "Count based?"
+      updatedat: "Updated at"
+      discounttype: "Discount type"
+      exchangerate: "Exchange rate"
+      isactive: "Enabled?"
+      showing: "Showing %from% to %to% of %total% records."
+      code: "Code"
+      isdefault: "Is default?"
+      editcurrency: "Edit currency"
     alert:
        notexists: "Selected subscription does not exist."
     title: "Paywall"
@@ -16,6 +31,8 @@ paywall:
         configure: "Configure Paywall"
         discounts: "Discounts"
         creatediscount: Create new discount
+        orders: "Manage Orders"
+        createcurrency: "Create currency"
     step1:
       header: "Please specify the name and value for your new subscription. You can set up various diffrent types of subscriptions, but just one after the other."
       form:
@@ -53,6 +70,8 @@ paywall:
     btn:
       create: "Create"
       creatediscount: "Create discount"
+      createorder: "Create order"
+      createorderitem: "Create order item"
       skip: "Skip"
       save: "Save"
       edit: "Edit"
@@ -66,6 +85,8 @@ paywall:
       deactivate: "Deactivate"
       activate: "Activate"
       cancel: "Cancel"
+      close: "Close"
+      createcurrency: "Create currency"
     flash:
       message:
         error: "Something went wrong."
@@ -80,6 +101,8 @@ paywall:
       error:
         currency: "Currency is in invalid format."
         topay: "To pay field value is in wrong format."
+        exists:
+          subscription: "Subscription already exists!"
         select:
           empty: "Select box can not be empty!"
           choose: "Please choose provider!"
@@ -133,6 +156,8 @@ paywall:
         subscriptions.user: "Manage User Subscriptions"
         configure.paywall: "Configure Paywall"
         discounts: "Discounts"
+        orders: "Orders"
+        currencies: "Currencies"
     datatable:
         table:
           info: "Showing _START_ to _END_ of _TOTAL_ entries"
@@ -152,7 +177,7 @@ paywall:
       fatal: "Unexpected error occured!"
       settingserror: "Error occured. Can not save settings."
       notadded: "Could not render added entry."
-      exists: "This name already exists. Please, choose diffrent one."
+      exists: "Resource named %resource% already exists."
       notexists: "Item with such identifier does not exist."
     success:
       settingssaved: "Settings successfully saved."

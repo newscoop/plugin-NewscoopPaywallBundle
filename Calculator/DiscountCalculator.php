@@ -7,7 +7,7 @@
  */
 namespace Newscoop\PaywallBundle\Calculator;
 
-use Newscoop\PaywallBundle\Order\OrderInterface;
+use Newscoop\PaywallBundle\Entity\OrderInterface;
 
 /**
  * Standard pricing calculator.
@@ -22,7 +22,8 @@ class DiscountCalculator implements CalculatorInterface
         $total = 0;
         foreach ($order->getItems() as $key => $item) {
             $duration = $item->getDuration();
-            $total += $duration['value'] * $item->getToPay();
+            $discount = $duration['value'] * $item->getToPay();
+            $total += $discount;
         }
 
         return (int) round($total);

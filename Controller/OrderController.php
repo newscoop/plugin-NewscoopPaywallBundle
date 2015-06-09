@@ -10,16 +10,32 @@ namespace Newscoop\PaywallBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Newscoop\PaywallBundle\Entity\Subscriptions;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
 use Newscoop\PaywallBundle\Entity\Duration;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
-use Newscoop\PaywallBundle\Discount\PercentageDiscount;
 use Newscoop\PaywallBundle\Discount\DiscountProcessor;
+use Newscoop\PaywallBundle\Entity\Order;
+use Newscoop\PaywallBundle\Calculator\DiscountCalculator;
 
 class OrderController extends BaseController
 {
+    /**
+     * @Route("/{language}/paywall/subscriptions", name="paywall_subscriptions", options={"expose"=true})
+     *
+     * @Method("GET")
+     */
+    public function indexAction(Request $request)
+    {
+        $response = new Response();
+        $templatesService = $this->get('newscoop.templates.service');
+        $response->setContent($templatesService->fetchTemplate('_paywall/index.tpl'));
+
+        return $response;
+    }
+
     /**
      * @Route("/paywall/subscriptions/order-batch", name="paywall_subscribe_order_batch", options={"expose"=true})
      *
@@ -36,21 +52,37 @@ class OrderController extends BaseController
         $user = $userService->getCurrentUser();
         $response = new JsonResponse();
 
-        $orderObj = $this->processOrderItems($items);
-        $processor = new DiscountProcessor();
-        $processedOrder = $processor->process($orderObj, new PercentageDiscount());
+        /*$calculator = new DiscountCalculator();
+        $order = $this->processOrderItems($items);
 
-        $orderedSubscriptions = array();
-        foreach ($orderObj->getItems() as $key => $item) {
-            $orderedSubscriptions[] = $item;
-            $subscriptionService->save($item);
+        $beforeDiscount = $calculator->calculate($order);*/
+
+        $order = $this->processOrderItems($items);
+        $processor = $this->get('newscoop_paywall.processor.discounts');
+        //$processor->process($order);
+        foreach ($order->getItems() as $item) {
+            $processor->process($item);
         }
 
-        $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $orderedSubscriptions);
+        $order->calculateTotal();
 
-        $response->setContent($templatesService->fetchTemplate('_paywall/success.tpl', array(
-            'subscriptions' => $orderedSubscriptions,
-        )));
+        //$processor = new DiscountProcessor();
+        /*$percentageDiscount = $this->get('newscoop_paywall.discounts.percentage_discount');
+        $processedOrder = $processor->process($order, $percentageDiscount);
+
+        $afterDiscount = $calculator->calculate($processedOrder);
+
+        //$order->setDiscountTotal($beforeDiscount - $afterDiscount);
+        $order->setTotal($afterDiscount);*/
+        $order->setUser($user);
+        $order->setCurrency('USD');
+
+        $em->persist($order);
+        $em->flush();
+
+        $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $order->getItems()->toArray());
+
+        $response->setStatusCode(204);
 
         return $response;
     }
@@ -63,22 +95,21 @@ class OrderController extends BaseController
     public function calculateAction(Request $request)
     {
         $em = $this->get('em');
-        $items = $request->request->get('batchorder');
-        $subscriptionService = $this->container->get('paywall.subscription.service');
-        $templatesService = $this->get('newscoop.templates.service');
+        $items = $request->request->get('batchorder', array());
         $userService = $this->get('user');
-        $translator = $this->get('translator');
         $user = $userService->getCurrentUser();
         $response = new JsonResponse();
+        $order = $this->processOrderItems($items);
+        $processor = $this->get('newscoop_paywall.processor.discounts');
+        foreach ($order->getItems() as $item) {
+            $processor->process($item);
+        }
 
-        $orderObj = $this->processOrderItems($items);
-        $processor = new \Newscoop\PaywallBundle\Discount\DiscountProcessor();
-        $processedOrder = $processor->process($orderObj);
-        $calculator = new \Newscoop\PaywallBundle\Calculator\DiscountCalculator();
+        $order->calculateTotal();
 
         return new JsonResponse(array(
-            'itemsCount' => $processedOrder->countItems(),
-            'total' => $calculator->calculate($processedOrder),
+            'itemsCount' => $order->countItems(),
+            'total' => $order->getTotal(),
         ));
     }
 
@@ -89,14 +120,13 @@ class OrderController extends BaseController
             $userService = $this->get('user');
             $user = $userService->getCurrentUser();
             $subscriptionService = $this->container->get('paywall.subscription.service');
-            $orderObj = new \Newscoop\PaywallBundle\Order\Order();
-
-            foreach ($items as $key => $item) {
-                if (!$item[0]) {
+            $order = new Order();
+            foreach ($items as $subscriptionId => $periodId) {
+                if (!$periodId) {
                     continue;
                 }
 
-                $subscription = $em->getReference('Newscoop\PaywallBundle\Entity\Subscriptions', $key);
+                $subscription = $em->getReference('Newscoop\PaywallBundle\Entity\Subscriptions', $subscriptionId);
                 $userSubscriptionInactive = $subscriptionService->getOneByUserAndSubscription(
                     $user->getId(),
                     $subscription->getId(),
@@ -112,34 +142,26 @@ class OrderController extends BaseController
                     continue;
                 }
 
-                $userSubscription = $this->createUserSubscriptionFrom($subscription, $item[0]);
-                //$subscriptionService->save($userSubscription, false);
-                $orderObj->addItem($userSubscription);
+                $userSubscription = $this->createUserSubscriptionFrom($subscription, $periodId);
+                $userSubscription->setOrder($order);
+                $order->addItem($userSubscription);
             }
 
-            return $orderObj;
+            return $order;
         } catch (\Exception $e) {
             throw $e;
         }
     }
 
-    private function filterRanges(Subscriptions $subscription, $durationId)
-    {
-        $ranges = $subscription->getRanges()->filter(function (Duration $duration) use ($durationId) {
-            return $duration->getId() == $durationId;
-        });
-
-        return $ranges->first();
-    }
-
-    private function createUserSubscriptionFrom(Subscriptions $subscription, $durationId)
+    private function createUserSubscriptionFrom(Subscriptions $subscription, $periodId)
     {
         $subscriptionService = $this->container->get('paywall.subscription.service');
         $userService = $this->get('user');
         $user = $userService->getCurrentUser();
 
-        $durationObj = $this->filterRanges($subscription, $durationId);
+        $durationObj = $subscriptionService->filterRanges($subscription, $periodId);
         $duration = array(
+            'id' => $durationObj->getId(),
             'value' => $durationObj->getValue(),
             'attribute' => $durationObj->getAttribute(),
         );

@@ -7,7 +7,7 @@
  */
 namespace Newscoop\PaywallBundle\Discount;
 
-use Newscoop\PaywallBundle\Order\OrderInterface;
+use Newscoop\PaywallBundle\Entity\OrderInterface;
 
 /**
  * Discount processor interface.
@@ -20,10 +20,9 @@ interface DiscountProcessorInterface
      * It applies discounts for each order item,
      * depends which discount type has been chosen.
      *
-     * @param OrderInterface    $order
-     * @param DiscountInterface $discount
+     * @param DiscountableInterface $object
      *
      * @return OrderInterface
      */
-    public function process(OrderInterface $order, DiscountInterface $discount);
+    public function process(DiscountableInterface $object);
 }

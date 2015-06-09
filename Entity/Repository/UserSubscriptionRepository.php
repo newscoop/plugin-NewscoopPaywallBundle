@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -12,20 +12,21 @@ use Doctrine\ORM\Query\Expr;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Newscoop\ListResult;
 use Newscoop\PaywallBundle\Notifications\Emails;
+use Newscoop\PaywallBundle\Entity\UserSubscription;
 
 /**
- * Subscription repository
+ * Subscription repository.
  */
 class UserSubscriptionRepository extends EntityRepository
 {
     /**
-     * Get list for given criteria
+     * Get list for given criteria.
      *
      * @param SubscriptionCriteria $criteria
      *
      * @return Newscoop\ListResult
      */
-    public function getListByCriteria(SubscriptionCriteria $criteria)
+    public function getListByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
     {
         $qb = $this->createQueryBuilder('s');
         $list = new ListResult();
@@ -35,8 +36,13 @@ class UserSubscriptionRepository extends EntityRepository
             ->leftJoin('s.user', 'u')
             ->leftJoin('s.subscription', 'ss');
 
+        if ($criteria->order) {
+            $qb->where('s.order = :order')
+                ->setParameter('order', $criteria->order);
+        }
+
         if ($criteria->user) {
-            $qb->where('s.user = :user')
+            $qb->andWhere('s.user = :user')
                 ->setParameter('user', $criteria->user);
         }
 
@@ -72,7 +78,7 @@ class UserSubscriptionRepository extends EntityRepository
         $list->count = (int) $countQb->select('COUNT(DISTINCT u)')->getQuery()->getSingleScalarResult();
 
         if (!empty($criteria->query)) {
-            $qb->andWhere($qb->expr()->orX("(u.username LIKE :query)", "(p.name LIKE :query)"));
+            $qb->andWhere($qb->expr()->orX('(u.username LIKE :query)', '(p.name LIKE :query)'));
             $qb->setParameter('query', '%'.trim($criteria->query, '%').'%');
         }
 
@@ -84,13 +90,17 @@ class UserSubscriptionRepository extends EntityRepository
             $qb->setMaxResults($criteria->maxResults);
         }
 
+        if ($returnQuery) {
+            return $qb->getQuery();
+        }
+
         $list->items = $qb->getQuery()->getArrayResult();
 
         return $list;
     }
 
     /**
-     * Get subscriptions count for given criteria
+     * Get subscriptions count for given criteria.
      *
      * @param array $criteria
      *
@@ -119,7 +129,7 @@ class UserSubscriptionRepository extends EntityRepository
     }
 
     /**
-     * Find by user
+     * Find by user.
      *
      * @param Newscoop\Entity\User|int $user
      *
@@ -140,8 +150,8 @@ class UserSubscriptionRepository extends EntityRepository
      * Gets expiring subscriptions count.
      *
      * @param \DateTime $now    Date time
-     * @param integer   $notify Notify type
-     * @param integer   $days   Days amount, when to send notification
+     * @param int       $notify Notify type
+     * @param int       $days   Days amount, when to send notification
      *
      * @return Doctrine\ORM\Query
      */
@@ -178,11 +188,11 @@ class UserSubscriptionRepository extends EntityRepository
     /**
      * Gets expiration subscriptions query.
      *
-     * @param integer   $offset First result
-     * @param integer   $batch  Max results
+     * @param int       $offset First result
+     * @param int       $batch  Max results
      * @param \DateTime $now    Date time
-     * @param integer   $notify Notify type
-     * @param integer   $days   Days amount, when to send notification
+     * @param int       $notify Notify type
+     * @param int       $days   Days amount, when to send notification
      *
      * @return Doctrine\ORM\Query
      */
@@ -233,5 +243,25 @@ class UserSubscriptionRepository extends EntityRepository
             ->setParameter('now', new \DateTime('now'));
 
         return $qb->getQuery();
+    }
+
+    /**
+     * Finds item in order.
+     */
+    public function checkExistanceInOrder(UserSubscription $item)
+    {
+        $qb = $this
+            ->createQueryBuilder('i')
+            ->select('count(i)')
+            ->where('i.subscription = :subscriptionId')
+            ->andWhere('i.order = :orderId')
+            ->setParameters(array(
+                'subscriptionId' => $item->getSubscription()->getId(),
+                'orderId' => $item->getOrder()->getId(),
+            ));
+
+        return (int) $qb
+            ->getQuery()->getSingleScalarResult()
+        ;
     }
 }

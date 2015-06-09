@@ -1,0 +1,39 @@
+Newscoop\PaywallBundle\Entity\Subscriptions:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: id
+        name:
+            expose: true
+            read_only: true
+            type: string
+            groups: ["list", "details"]
+            serialized_name: name
+        price:
+            expose: true
+            type: integer
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: price
+        currency:
+            expose: true
+            type: string
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: currency
+        description:
+            expose: true
+            type: string
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: description
+        ranges:
+            expose: true
+            read_only: true
+            type: array
+            groups: ["list", "details"]
+            serialized_name: periods

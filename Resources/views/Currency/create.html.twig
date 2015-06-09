@@ -1,0 +1,45 @@
+
+{% import 'NewscoopPaywallBundle:Macros:buttons.html.twig' as buttons %}
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+{% form_theme form 'NewscoopPaywallBundle::forms.html.twig' %}
+
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.toolbar.label.createcurrency'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+{% endblock %}
+{% block admin_content %}
+<div class="plugin-container">
+{% for flashMessage in app.session.flashbag.get('error') %}
+<div class="alert alert-danger alert-dismissible font-fix" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{{ 'paywall.btn.close'|trans}}</span></button>
+  <center>{{ flashMessage }}</center>
+</div>
+  {% endfor %}
+  {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 6} %}
+  {{ form_errors(form) }}
+  <form action="{{ path('paywall_plugin_currency_create') }}" method="post" class="form-horizontal" novalidate>
+      <div class="row">
+        <br>
+        <div class="col-md-10">
+          {{ form_row(form.code, {'attr': {'class': 'form-control  input-sm'}}) }}
+          {{ form_row(form.exchangeRate, {'attr': {'class': 'form-control  input-sm'}}) }}
+          {{ form_row(form.isActive) }}
+          {{ form_row(form.default) }}
+          {{ form_widget(form._token) }}
+        </div>
+      </div>
+      <hr>
+      <center>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> {{ 'paywall.btn.create'|trans }}</button>
+        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {{ 'paywall.btn.cancel'|trans }}</a>
+    </div>
+    </center>
+  </form>
+</div>
+{% endblock %}

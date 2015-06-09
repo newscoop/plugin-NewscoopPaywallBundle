@@ -40,12 +40,6 @@ class SubscriptionConfType extends AbstractType
             'error_bubbling' => true,
             'required' => true,
             'invalid_message' => 'paywall.step1.form.error.price',
-        ))
-        ->add('currency', null, array(
-            'label' => 'paywall.step1.form.label.currency',
-            'error_bubbling' => true,
-            'required' => true,
-            'invalid_message' => 'paywall.step1.form.error.price',
         ));
     }
 

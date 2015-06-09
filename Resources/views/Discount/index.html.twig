@@ -1,5 +1,6 @@
 
 {% import 'NewscoopPaywallBundle:Macros:buttons.html.twig' as buttons %}
+{% from 'NewscoopPaywallBundle:Macros:pagination.html.twig' import pagination %}
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
 {% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
@@ -24,7 +25,6 @@
         <div class="pull-right">
             {{ buttons.create(path('paywall_plugin_discount_create'), 'paywall.btn.creatediscount'|trans) }}
         </div>
-        <center>
             {% if pagination|length > 0 %}
             <div class="table">
                 <table class="table">
@@ -33,7 +33,9 @@
                       <th>{{ knp_pagination_sortable(pagination, '#ID', 'd.id') }}</th>
                       <th>{{ knp_pagination_sortable(pagination, 'paywall.manage.label.name'|trans, 'd.name') }}</th>
                       <th>{{ knp_pagination_sortable(pagination, 'paywall.manage.label.description'|trans, 'd.description') }}</th>
+                      <th>{{ knp_pagination_sortable(pagination, 'paywall.label.countbased'|trans, 'd.countBased') }}</th>
                       <th>{{ knp_pagination_sortable(pagination, 'paywall.label.discount'|trans, 'd.value') }}</th>
+                      <th>{{ knp_pagination_sortable(pagination, 'paywall.label.updatedat'|trans, 'd.updatedAt') }}</th>
                       <th></th>
                   </tr>
               </thead>
@@ -43,7 +45,15 @@
                     <td>{{ discount.id }}</td>
                     <td>{{ discount.name }}</td>
                     <td>{{ discount.description }}</td>
+                    <td>
+                    {% if discount.countBased %}
+                      <span class="label label-info">{{'paywall.manage.label.yes'|trans}}</span>
+                    {% else %}
+                      <span class="label label-default">{{'paywall.manage.label.no'|trans}}</span>
+                    {% endif %}
+                    </td>
                     <td>{{ discount.value * 100 }}%</td>
+                    <td>{% if discount.updatedAt %}{{ discount.updatedAt|date('Y-m-d H:i:s') }} {% else %} - {% endif %}</td>
                     <td>
                         {{ buttons.edit(path('paywall_plugin_discount_edit', {'id': discount.id})) }}
                         {{ buttons.delete(path('paywall_plugin_discount_delete', {'id': discount.id})) }}
@@ -55,11 +65,8 @@
         {% else %}
         No discounts found.
         {% endif %}
-        <div class="navigation">
-            {{ knp_pagination_render(pagination) }}
-        </div>
+        {{ pagination(pagination) }}
     </div>
-</center>
 </div>
 </div>
 {% endblock %}

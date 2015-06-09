@@ -7,19 +7,18 @@
  */
 namespace Newscoop\PaywallBundle\Discount;
 
-use Newscoop\PaywallBundle\Order\OrderInterface;
+use Newscoop\PaywallBundle\Entity\DiscountInterface;
 
 /**
- * Discount interface.
+ * Discount Type interface.
  */
-interface DiscountInterface
+interface DiscountTypeInterface
 {
     /**
      * Applies the discount to the order items.
      *
-     * @param OrderInterface $subject
-     *
-     * @return mixed
+     * @param DiscountableInterface $object
+     * @param DiscountInterface     $discount
      */
-    public function applyTo(OrderInterface $order);
+    public function applyTo(DiscountableInterface $object, DiscountInterface $discount);
 }

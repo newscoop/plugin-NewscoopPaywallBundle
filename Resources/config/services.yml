@@ -48,11 +48,6 @@ services:
         tags:
             - { name: form.type, alias: subscriptioneditForm }
 
-    newscoop_paywall.form.type.subscriptionadd:
-        class: Newscoop\PaywallBundle\Form\Type\SubscriptionAddType
-        tags:
-            - { name: form.type, alias: subscriptionaddForm }
-
     newscoop_paywall.validator.unique.containsdecimal:
         class: Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimalValidator
         tags:
@@ -86,6 +81,42 @@ services:
             - @newscoop.placeholders.service
             - @em
             - @event_dispatcher
+
+    newscoop_paywall.currency.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Newscoop\PaywallBundle\Entity\Currency
+
+    newscoop_paywall.currency_provider:
+        class: Newscoop\PaywallBundle\Provider\CurrencyProvider
+        arguments:
+            - @newscoop_paywall.currency.repository
+
+    newscoop_paywall.form.type.currency_code:
+        class: Newscoop\PaywallBundle\Form\Type\CurrencyCodeType
+        arguments:
+            - "@newscoop_paywall.currency_provider"
+        tags:
+            - { name: form.type, alias: paywall_currency_code }
+
+    newscoop_paywall.discounts.percentage_discount:
+        class: Newscoop\PaywallBundle\Discount\PercentageDiscount
+        tags:
+            - { name: newscoop_paywall.discount_type, type: percentage_discount, label: Percentage discount}
+
+    newscoop_paywall.processor.discounts:
+        class: Newscoop\PaywallBundle\Discount\DiscountProcessor
+        arguments:  ["@service_container"]
+
+    newscoop_paywall.currency_importer.ecb:
+        class: Newscoop\PaywallBundle\Importer\EuropeanCentralBankImporter
+        arguments: ['@em', '@newscoop_paywall.currency.repository', { base_currency: 'EUR' }]
+
+    newscoop_paywall.currency_importer.cab:
+        class: Newscoop\PaywallBundle\Importer\CentralAzerbaijanBank
+        arguments: ['@em', '@newscoop_paywall.currency.repository', { base_currency: 'AZN' }]
 
     newscoop_paywall.notification_listener:
         class: %newscoop.paywall.listener.notification.class%

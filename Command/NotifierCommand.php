@@ -1,7 +1,6 @@
 <?php
 
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2014 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -33,55 +32,39 @@ class NotifierCommand extends ContainerAwareCommand
         try {
             $notificationService = $this->getContainer()->getService('newscoop_paywall.notifications_service');
             $now = new \DateTime();
-            $subscriptionsCount = $notificationService->getExpiringSubscriptionsCount(
-                $now,
-                Emails::NOTIFY_LEVEL_ONE,
-                7
-            );
-
-            if ($subscriptionsCount !== 0) {
-                $notificationService->processExpiringSubscriptions(
-                    $now,
-                    Emails::NOTIFY_LEVEL_ONE,
-                    $subscriptionsCount,
-                    7
-                );
-
-                if ($input->getOption('verbose')) {
-                    $output->writeln('<info>'.$subscriptionsCount.' notifications sent...(which expire in 7 days)</info>');
-                }
-            } else {
-                if ($input->getOption('verbose')) {
-                    $output->writeln('<info>There are no subscriptions expiring within 7 day(s).<info>');
-                }
-            }
-
-            $subscriptionsCount = $notificationService->getExpiringSubscriptionsCount(
-                $now,
-                Emails::NOTIFY_LEVEL_TWO,
-                3
-            );
-
-            if ($subscriptionsCount !== 0) {
-                $notificationService->processExpiringSubscriptions(
-                    $now,
-                    Emails::NOTIFY_LEVEL_TWO,
-                    $subscriptionsCount,
-                    3
-                );
-
-                if ($input->getOption('verbose')) {
-                    $output->writeln('<info>'.$subscriptionsCount.' notifications sent... (which expire in 3 days)</info>');
-                }
-            } else {
-                if ($input->getOption('verbose')) {
-                    $output->writeln('<info>There are no subscriptions expiring within 3 day(s).<info>');
-                }
-            }
+            $this->runProcessing($now, 7, Emails::NOTIFY_LEVEL_ONE);
+            $this->runProcessing($now, 3, Emails::NOTIFY_LEVEL_TWO);
         } catch (\Exception $e) {
             $output->writeln('<error>Error occured: '.$e->getMessage().'</error>');
 
             return false;
+        }
+    }
+
+    private function runProcessing($now, $daysBefore, $level)
+    {
+        $notificationService = $this->getContainer()->getService('newscoop_paywall.notifications_service');
+        $subscriptionsCount = $notificationService->getExpiringSubscriptionsCount(
+            $now,
+            $subscriptionsCount,
+            $daysBefore
+        );
+
+        if ($subscriptionsCount !== 0) {
+            $notificationService->processExpiringSubscriptions(
+                $now,
+                $level,
+                $subscriptionsCount,
+                $daysBefore
+            );
+
+            if ($input->getOption('verbose')) {
+                $output->writeln('<info>'.$subscriptionsCount.' notifications sent... (which expire in '.$daysBefore.' days)</info>');
+            }
+        } else {
+            if ($input->getOption('verbose')) {
+                $output->writeln('<info>There are no subscriptions expiring within '.$daysBefore.' day(s).<info>');
+            }
         }
     }
 }

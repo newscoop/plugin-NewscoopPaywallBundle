@@ -43,9 +43,14 @@ class DiscountType extends AbstractType
                 ),
             ))
             ->add('type', 'choice', array(
+                'label' => 'paywall.label.discounttype',
                 'choices' => array(
                     'percentage_discount' => 'Percentage discount',
                 ),
+            ))
+            ->add('countBased', 'checkbox', array(
+                'label' => 'paywall.label.countbased',
+                'required' => false,
             ))
             ->add('value', 'percent', array(
                 'label' => 'Value',

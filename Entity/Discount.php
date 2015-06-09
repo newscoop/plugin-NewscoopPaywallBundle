@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\DiscountRepository")
  * @ORM\Table(name="plugin_paywall_discount")
  */
-class Discount
+class Discount implements DiscountInterface
 {
     /**
      * @ORM\Id
@@ -62,6 +62,13 @@ class Discount
      * @var float
      */
     protected $value;
+
+    /**
+     * @ORM\Column(type="boolean", name="count_based")
+     *
+     * @var bool
+     */
+    protected $countBased = false;
 
     /**
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
@@ -274,6 +281,30 @@ class Discount
     public function setValue($value)
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of countBased.
+     *
+     * @return bool
+     */
+    public function getCountBased()
+    {
+        return $this->countBased;
+    }
+
+    /**
+     * Sets the value of countBased.
+     *
+     * @param bool $countBased the count based
+     *
+     * @return self
+     */
+    public function setCountBased($countBased)
+    {
+        $this->countBased = $countBased;
 
         return $this;
     }

@@ -34,7 +34,7 @@ class DiscountController extends BaseController
     }
 
     /**
-     * @Route("/admin/paywall_plugin/create/", options={"expose"=true}, name="paywall_plugin_discount_create")
+     * @Route("/admin/paywall_plugin/discounts/create/", options={"expose"=true}, name="paywall_plugin_discount_create")
      */
     public function createAction(Request $request)
     {
@@ -64,7 +64,7 @@ class DiscountController extends BaseController
     }
 
     /**
-     * @Route("/admin/paywall_plugin/delete/{id}", options={"expose"=true}, name="paywall_plugin_discount_delete")
+     * @Route("/admin/paywall_plugin/discounts/delete/{id}", options={"expose"=true}, name="paywall_plugin_discount_delete")
      *
      * @Method("DELETE")
      */
@@ -85,7 +85,7 @@ class DiscountController extends BaseController
     }
 
     /**
-     * @Route("/admin/paywall_plugin/edit/{id}", options={"expose"=true}, name="paywall_plugin_discount_edit")
+     * @Route("/admin/paywall_plugin/discounts/edit/{id}", options={"expose"=true}, name="paywall_plugin_discount_edit")
      */
     public function editAction(Request $request, Discount $discount)
     {
@@ -96,6 +96,7 @@ class DiscountController extends BaseController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 if (!$this->checkForExistenceBy($discount)) {
+                    $discount->setUpdatedAt(new \DateTime('now'));
                     $em->flush();
 
                     $this->get('session')->getFlashBag()->add('success', $translator->trans('paywall.success.saved'));

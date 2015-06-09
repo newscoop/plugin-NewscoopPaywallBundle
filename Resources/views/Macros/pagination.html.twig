@@ -1,0 +1,22 @@
+{% macro pagination(list) %}
+
+{% if list.getTotalItemCount > 0 %}
+{% set pages = (list.getItemNumberPerPage * (list.getCurrentPageNumber)) %}
+{% set startRange = (list.getCurrentPageNumber * list.getItemNumberPerPage) - list.getItemNumberPerPage + 1 %}
+<div class="row">
+    <div class="col-md-12 pull-left">
+        {% if list.getCurrentPageNumber == 1 %}
+        {% set startRange = list.getCurrentPageNumber %}
+        {% elseif list.getTotalItemCount < (list.getItemNumberPerPage * (list.getCurrentPageNumber)) %}
+        {% set pages = list.getTotalItemCount %}
+        {% endif %}
+        {{ 'paywall.label.showing'|trans({'%from%': startRange, '%to%': pages, '%total%': list.getTotalItemCount }) }}
+    </div>
+</div>
+{% endif %}
+<center>
+    <div class="navigation">
+        {{ knp_pagination_render(list) }}
+    </div>
+</center>
+{% endmacro %}

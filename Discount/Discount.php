@@ -7,52 +7,27 @@
  */
 namespace Newscoop\PaywallBundle\Discount;
 
-use Newscoop\PaywallBundle\Order\OrderInterface;
+use Newscoop\PaywallBundle\Entity\Modification;
+use Newscoop\PaywallBundle\Entity\DiscountInterface;
 
 /**
- * Abstract discount.
+ * Abstract discount class.
  */
-class Discount implements DiscountInterface
+abstract class Discount implements DiscountTypeInterface
 {
-    protected $order;
-
     /**
-     * {@inheritdoc}
+     * @param DiscountInterface $discount
+     *
+     * @return DiscountInterface
      */
-    public function applyTo(OrderInterface $order)
+    public function createModification(DiscountInterface $discount)
     {
-        foreach ($order->getItems() as $key => $item) {
-            if ($this->isEligibleForGlobalDiscount($order)) {
-                $this->addGlobalDiscount($item);
-            }
-        }
+        $modification = new Modification();
+        $modification->setLabel('discount');
+        $modification->setDescription($discount->getDescription());
+        $modification->setModificationOriginId($discount->getId());
+        $modification->setModificationType(get_class($discount));
 
-        $this->order = $order;
-    }
-
-    protected function isEligibleForGlobalDiscount($order)
-    {
-        if ($order->countItems() > 1 /* && $systemPref->PaywallGlobalDiscount > 0**/) {
-            return true;
-        }
-
-        return false;
-    }
-
-    protected function isEligibleForDiscount($item)
-    {
-        if ($item->getDiscount()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    protected function addGlobalDiscount($item)
-    {
-        $globalDiscount = 5 / 100; // get from system pref
-        $item->setToPay($item->getToPay() - ($item->getToPay() * $globalDiscount));
-
-        return $item;
+        return $modification;
     }
 }

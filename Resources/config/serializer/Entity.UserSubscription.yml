@@ -1,0 +1,48 @@
+Newscoop\PaywallBundle\Entity\UserSubscription:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: id
+        discountTotal:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: discountTotal
+        toPay:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: toPay
+        currency:
+            expose: true
+            read_only: true
+            type: string
+            groups: ["list", "details"]
+            serialized_name: currency
+        discount:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: discount
+        duration:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: period
+        active:
+            expose: true
+            read_only: true
+            type: string
+            groups: ["list", "details"]
+            serialized_name: active
+        subscription:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: subscription

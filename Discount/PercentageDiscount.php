@@ -7,7 +7,7 @@
  */
 namespace Newscoop\PaywallBundle\Discount;
 
-use Newscoop\PaywallBundle\Order\OrderInterface;
+use Newscoop\PaywallBundle\Entity\DiscountInterface;
 
 /**
  * Percentage discount.
@@ -17,18 +17,19 @@ class PercentageDiscount extends Discount
     /**
      * {@inheritdoc}
      */
-    public function applyTo(OrderInterface $order)
+    public function applyTo(DiscountableInterface $object, DiscountInterface $discount)
     {
-        parent::applyTo($order);
+        $modification = $this->createModification($discount);
+        $modificationAmount = (float) ($object->getToPay() * $discount->getValue());
+        $modification->setAmount(-$modificationAmount);
+        //$modification->setCoundBased($discount->getCountBased());
 
-        foreach ($this->order->getItems() as $key => $item) {
-            if ($this->isEligibleForDiscount($item)) {
-                $discount = $item->getDiscount();
-                $discountPrice = (float) $item->getToPay() * $discount['value'];
-                $item->setToPay($item->getToPay() - $discountPrice);
-            }
-        }
+       // $object->setToPay($object->getToPay() - $modificationAmount);
+        $object->addModification($modification);
+        $object->addDiscount($discount);
 
-        return $this->order;
+        /*$discount = $item->getToPay() * $globalDiscount;
+        $item->setDiscountTotal($discount);
+        $item->setToPay($item->getToPay() - $discount);*/
     }
 }

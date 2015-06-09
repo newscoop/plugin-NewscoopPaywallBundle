@@ -29,6 +29,7 @@
         <div class="col-md-10">
           {{ form_row(form.name, {'attr': {'class': 'form-control  input-lg'}}) }}
           {{ form_row(form.description, {'attr': {'class': 'form-control  input-sm'}}) }}
+          {{ form_row(form.countBased) }}
           {{ form_row(form.type) }}
           {{ form_row(form.value, {'attr': {'class': 'form-control  input-sm'}}) }}
           {{ form_widget(form._token) }}

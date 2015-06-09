@@ -40,7 +40,7 @@
 					</tr>
 					<tr>
 						<td align="left" valign="top">
-							{{ form_widget(form.name, {'attr' : {'class' : 'input_text'}}) }}
+							{{ form_widget(form.name, {'attr' : {'class' : 'form-control'}}) }}
 						</td>
 					</tr>
 					<tr>
@@ -50,7 +50,7 @@
 					</tr>
 					<tr>
 						<td>
-							{{ form_widget(form.type, {'attr' : {'class' : 'input_select', 'style' : 'width:150px'}}) }}
+							{{ form_widget(form.type, {'attr' : {'class' : 'form-control'}}) }}
 						</td>
 					</tr>
 					<tr>
@@ -60,17 +60,21 @@
 					</tr>
 					<tr>
 						<td align="left" valign="top">
-							{{ form_widget(form.price, {'attr' : {'class' : 'input_text'}}) }}
+							{{ form_widget(form.price, {'attr' : {'class' : 'form-control'}}) }}
 						</td>
 					</tr>
 					<tr>
 						<td align="left">
-							{{ form_label(form.currency) }}    
+							<label>{{ 'paywall.step1.form.label.currency'|trans }}</label>
 						</td>
 					</tr>
 					<tr>
 						<td align="left" valign="top">
-							{{ form_widget(form.currency, {'attr' : {'class' : 'input_text'}}) }}
+							{% if defaultCurrency %}
+							<span class="label label-info">{{defaultCurrency}}</span>
+							{% else %}
+							<span class="alert alert-danger">No default currency selected. Please, define one in Currencies tab.</span>
+							{% endif %}
 						</td>
 					</tr>
 					<tr>
@@ -80,7 +84,7 @@
 					</tr>
 					<tr>
 						<td align="left" valign="top">
-							{{ form_widget(form.description) }}
+							{{ form_widget(form.description, {'attr' : {'class' : 'form-control'}}) }}
 						</td>
 					</tr>
 					<tr>
@@ -88,7 +92,7 @@
 					</tr>
 					<tr>
 						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="submit" id="next" value="{{ 'paywall.btn.next'|trans }}" class="save-button">
+							<input type="submit" id="next" value="{{ 'paywall.btn.next'|trans }}" class="btn btn-primary">
 						</td>
 					</tr>
 					{{ form_rest(form) }}
@@ -180,7 +184,11 @@
 										</tr>
 										<tr>
 											<td align="left">{{ 'paywall.step2.label.currency'|trans }}:</td>
-											<td id="currencyBox"></td>
+											<td id="currencyBox">{% if defaultCurrency %}
+											<span class="label label-info">{{defaultCurrency}}</span>
+											{% else %}
+											-
+											{% endif %}</td>
 										</tr>
 									</tbody></table>
 								</div>

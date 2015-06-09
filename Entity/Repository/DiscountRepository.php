@@ -28,4 +28,20 @@ class DiscountRepository extends EntityRepository
             ->getQuery()
         ;
     }
+
+    /**
+     * Finds count based discounts.
+     */
+    public function findCountBased()
+    {
+        $qb = $this
+            ->createQueryBuilder('d')
+            ->where('d.countBased = true')
+            ->orderBy('d.createdAt', 'DESC')
+        ;
+
+        return $qb
+            ->getQuery()
+        ;
+    }
 }

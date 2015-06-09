@@ -9,7 +9,9 @@ namespace Newscoop\PaywallBundle\Entity;
 
 use Newscoop\Entity\Publication;
 use Newscoop\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Newscoop\PaywallBundle\Discount\DiscountableInterface;
 
 /**
  * Subscription entity.
@@ -17,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\UserSubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_user_subscriptions")
  */
-class UserSubscription
+class UserSubscription implements DiscountableInterface
 {
     const TYPE_PAID = 'P';
     const TYPE_PAID_NOW = 'PN';
@@ -47,6 +49,21 @@ class UserSubscription
      * @var Newscoop\PaywallBundle\Entity\Subscriptions
      */
     protected $subscription;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Order", inversedBy="items")
+     * @ORM\JoinColumn(name="order_id", referencedColumnName="id", nullable=false)
+     *
+     * @var Order
+     */
+    protected $order;
+
+    /**
+     * @ORM\Column(type="integer", name="discount_total")
+     *
+     * @var int
+     */
+    protected $discountTotal = 0;
 
     /**
      * @ORM\ManyToOne(targetEntity="Newscoop\Entity\Publication")
@@ -164,11 +181,26 @@ class UserSubscription
     protected $duration;
 
     /**
-     * @ORM\Column(type="array", name="discount")
+     * @ORM\OneToMany(targetEntity="Modification", mappedBy="orderItem", orphanRemoval=true, cascade={"all"})
      *
-     * @var array
+     * @var ArrayCollection
      */
-    protected $discount = array();
+    protected $modifications;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Discount", cascade={"persist"})
+     * @ORM\JoinTable(name="plugin_paywall_order_item_discount",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="order_item_id", referencedColumnName="Id")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="discount_id", referencedColumnName="id")
+     *      }
+     *  )
+     *
+     * @var Discount
+     */
+    protected $discounts;
 
     public function __construct()
     {
@@ -181,6 +213,8 @@ class UserSubscription
         $this->type = self::TYPE_PAID;
         $this->notifySentLevelOne = null;
         $this->notifySentLevelTwo = null;
+        $this->modifications = new ArrayCollection();
+        $this->discounts = new ArrayCollection();
     }
 
     /**
@@ -348,7 +382,7 @@ class UserSubscription
      */
     public function setActive($active)
     {
-        $this->active = ((bool) $active) ? 'Y' : 'N';
+        $this->active = $active;
 
         return $this;
     }
@@ -616,7 +650,7 @@ class UserSubscription
      *
      * @return self
      */
-    public function setDiscount(array $discount = array())
+    public function setDiscount($discount)
     {
         $this->discount = $discount;
 
@@ -640,9 +674,192 @@ class UserSubscription
      *
      * @return self
      */
-    public function setDuration(array $duration)
+    public function setDuration($duration)
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of order.
+     *
+     * @return Order
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * Sets the value of order.
+     *
+     * @param Order $order the order
+     *
+     * @return self
+     */
+    public function setOrder(Order $order)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of discountTotal.
+     *
+     * @return int
+     */
+    public function getDiscountTotal()
+    {
+        return $this->discountTotal;
+    }
+
+    /**
+     * Sets the value of discountTotal.
+     *
+     * @param int $discountTotal the discounts total
+     *
+     * @return self
+     */
+    public function setDiscountTotal($discountTotal)
+    {
+        $this->discountTotal = $discountTotal;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of modifications.
+     * Can filter modifications by type.
+     *
+     * @return ArrayCollection
+     */
+    public function getModifications($type = null)
+    {
+        if (null === $type) {
+            return $this->modifications;
+        }
+
+        return $this->modifications->filter(function (Modification $modification) use ($type) {
+            return $type === $modification->getLabel();
+        });
+    }
+
+    /**
+     * Sets the value of modifications.
+     *
+     * @param ArrayCollection $modifications the modifications
+     *
+     * @return self
+     */
+    public function setModifications(ArrayCollection $modifications)
+    {
+        $this->modifications = $modifications;
+
+        return $this;
+    }
+
+    public function addModification(Modification $modification)
+    {
+        if (!$this->hasModification($modification)) {
+            $modification->setOrderItem($this);
+            $this->modifications->add($modification);
+        }
+
+        return $this;
+    }
+
+    public function hasModification(Modification $modification)
+    {
+        return $this->modifications->contains($modification);
+    }
+
+    public function removeModification(Modification $modification)
+    {
+        if ($this->hasModification($modification)) {
+            $modification->setOrderItem(null);
+            $this->modifications->removeElement($modification);
+        }
+
+        return $this;
+    }
+
+    public function addDiscount($discount)
+    {
+        if (!$this->hasDiscount($discount)) {
+            $this->discounts->add($discount);
+        }
+
+        return $this;
+    }
+
+    public function hasDiscount($discount)
+    {
+        return $this->discounts->contains($discount);
+    }
+
+    public function removeDiscount($discount)
+    {
+        if ($this->hasDiscount($discount)) {
+            $this->discounts->removeElement($discount);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets the discounts.
+     *
+     * @return Discount
+     */
+    public function getDiscounts()
+    {
+        return $this->discounts;
+    }
+
+    /**
+     * Sets the discounts.
+     *
+     * @param Discount $discounts the discounts
+     *
+     * @return self
+     */
+    public function setDiscounts(Discount $discounts)
+    {
+        $this->discounts = $discounts;
+
+        return $this;
+    }
+
+    public function calculateToPay()
+    {
+        $this->calculateModificationsAndToPay();
+
+        return $this;
+    }
+
+    public function calculateModificationsAndToPay()
+    {
+        $this->discountTotal = 0;
+        $this->toPay = $this->subscription->getPrice();
+        $totalWithoutDiscount = $this->toPay * $this->duration['value'];
+        foreach ($this->modifications as $modification) {
+            $temp = $this->toPay + $modification->getAmount();
+        }
+
+        foreach ($this->discounts as $discount) {
+            if ($discount->getCountBased()) {
+                $temp -= $temp * $discount->getValue();
+            }
+        }
+
+        $this->toPay = $totalWithoutDiscount;
+        $this->discountTotal = $totalWithoutDiscount - ($temp * $this->duration['value']);
+
+        if ($this->toPay < 0) {
+            $this->toPay = 0;
+        }
 
         return $this;
     }

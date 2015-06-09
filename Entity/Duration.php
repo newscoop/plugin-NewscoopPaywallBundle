@@ -53,7 +53,7 @@ class Duration
 
     /**
      * @ORM\ManyToOne(targetEntity="Discount", inversedBy="durations")
-     * @ORM\JoinColumn(name="discount_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="discount_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      *
      * @var Discount
      */
@@ -177,5 +177,10 @@ class Duration
         $this->discount = $discount;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return sprintf('%s %s', $this->value, $this->attribute);
     }
 }

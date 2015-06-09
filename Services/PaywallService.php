@@ -9,6 +9,7 @@ namespace Newscoop\PaywallBundle\Services;
 
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
+use Newscoop\PaywallBundle\Entity\Subscriptions;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Doctrine\ORM\EntityManager;
 use Newscoop\PaywallBundle\Entity\Duration;
@@ -27,6 +28,15 @@ class PaywallService
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+    }
+
+    public function filterRanges(Subscriptions $subscription, $periodId)
+    {
+        $ranges = $subscription->getRanges()->filter(function (Duration $duration) use ($periodId) {
+            return $duration->getId() == $periodId;
+        });
+
+        return $ranges->first();
     }
 
     /**
@@ -55,10 +65,10 @@ class PaywallService
      *
      * @return array
      */
-    public function getUserSubscriptionsByCriteria(SubscriptionCriteria $criteria)
+    public function getUserSubscriptionsByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
     {
         return $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
-            ->getListByCriteria($criteria);
+            ->getListByCriteria($criteria, $returnQuery);
     }
 
     /**
@@ -392,7 +402,7 @@ class PaywallService
     {
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
             ->createQueryBuilder('s')
-            ->select('s.type', 's.range', 's.price', 's.currency', 'i.publication')
+            ->select('s.type', 's.duration', 's.price', 's.currency', 'i.publication')
             ->innerJoin('s.specification', 'i', 'WITH', 'i.subscription = :id')
             ->where('s.id = :id AND s.is_active = true')
             ->setParameter('id', $subscriptionId)
@@ -704,7 +714,7 @@ class PaywallService
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             // Rollback
-            $em->getConnection()->rollback();
+            $this->em->getConnection()->rollback();
             throw $e;
         }
     }

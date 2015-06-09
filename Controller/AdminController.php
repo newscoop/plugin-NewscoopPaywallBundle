@@ -50,7 +50,13 @@ class AdminController extends Controller
             $specification = new SubscriptionSpecification();
         }
 
+        $currencyProvider = $this->get('newscoop_paywall.currency_provider');
+        $defaultCurrency = $currencyProvider->getDefaultCurrency();
+        if ($defaultCurrency) {
+            $defaultCurrency = $defaultCurrency->getCode();
+        }
         $form = $this->createForm('subscriptionconf', $subscription);
+        $subscription->setCurrency($defaultCurrency);
         $formSpecification = $this->createForm('specificationForm', $specification);
         $durationForm = $this->createForm(new DurationType());
         if ($request->isMethod('POST')) {
@@ -83,6 +89,7 @@ class AdminController extends Controller
             'subscription_id' => $subscription->getId(),
             'ranges' => $subscription->getRanges()->toArray(),
             'formDuration' => $durationForm->createView(),
+            'defaultCurrency' => $defaultCurrency,
         );
     }
 

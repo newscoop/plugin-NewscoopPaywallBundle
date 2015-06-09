@@ -1,0 +1,26 @@
+Newscoop\PaywallBundle\Entity\Duration:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: id
+        value:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: value
+        attribute:
+            expose: true
+            type: string
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: attribute
+        discount:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: discount

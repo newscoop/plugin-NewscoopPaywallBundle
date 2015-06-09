@@ -1,0 +1,37 @@
+Newscoop\PaywallBundle\Entity\Currency:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: id
+        code:
+            expose: true
+            read_only: true
+            type: string
+            groups: ["list", "details"]
+            serialized_name: code
+        exchangeRate:
+            expose: true
+            type: float
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: exchange_rate
+        default:
+            expose: true
+            type: boolean
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: is_default
+        createdAt:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: created_at
+        updatedAt:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: updated_at
