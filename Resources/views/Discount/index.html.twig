@@ -1,6 +1,7 @@
 
 {% import 'NewscoopPaywallBundle:Macros:buttons.html.twig' as buttons %}
 {% from 'NewscoopPaywallBundle:Macros:pagination.html.twig' import pagination %}
+{% import 'NewscoopPaywallBundle:Macros:modals.html.twig' as modals %}
 {% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
 
 {% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
@@ -63,10 +64,11 @@
             </tbody>
         </table>
         {% else %}
-        No discounts found.
+        <center><span class="alert alert-info">{{'paywall.datatable.label.norecords'|trans}}</span></center>
         {% endif %}
         {{ pagination(pagination) }}
     </div>
 </div>
 </div>
+{{ modals.confirm('paywall.label.confirmation'|trans, 'paywall.label.removeitem'|trans, 'paywall.btn.delete'|trans)}}
 {% endblock %}

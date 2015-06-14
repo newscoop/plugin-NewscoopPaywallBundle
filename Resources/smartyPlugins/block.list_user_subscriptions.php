@@ -1,14 +1,13 @@
 <?php
 
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
 /**
- * Display all available user subscriptions
+ * Display all available user subscriptions.
  *
  * Type:     block
  * Name:     user_subscriptions
@@ -22,7 +21,6 @@
  *     $content
  *
  * @return
- *
  */
 function smarty_block_list_user_subscriptions($params, $content, &$smarty, &$repeat)
 {
@@ -48,7 +46,7 @@ function smarty_block_list_user_subscriptions($params, $content, &$smarty, &$rep
         $repeat = true;
     } else { // next
         $context->current_usersubscriptions_list->defaultIterator()->next();
-        if (!is_null($context->current_usersubscription_list->current)) {
+        if (!is_null($context->current_usersubscriptions_list->current)) {
             $context->user_subscription = $context->current_usersubscriptions_list->current;
             $repeat = true;
         } else {

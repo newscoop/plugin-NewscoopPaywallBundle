@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @author Paweł Mikołajczuk <pawel.mikolajczuk@sourcefabric.org>
  * @copyright 2014 Sourcefabric o.p.s.p
@@ -11,7 +11,7 @@ namespace Newscoop\PaywallBundle\Meta;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 
 /**
- * Meta subscriptions class
+ * Meta subscriptions class.
  */
 class MetaSubscription
 {
@@ -23,7 +23,6 @@ class MetaSubscription
     public $start_date;
     public $expiration_date;
     public $is_active;
-    public $is_valid;
     public $publication;
     public $defined;
     public $expire_in_days;

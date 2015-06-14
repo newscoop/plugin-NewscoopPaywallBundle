@@ -33,10 +33,6 @@ class CurrencyType extends AbstractType
                 'label' => 'paywall.label.isactive',
                 'required' => false,
             ))
-            ->add('default', 'checkbox', array(
-                'label' => 'paywall.label.isdefault',
-                'required' => false,
-            ))
             ->add('exchangeRate', 'number', array(
                 'label' => 'paywall.label.exchangerate',
                 'constraints' => array(

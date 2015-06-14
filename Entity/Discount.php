@@ -308,4 +308,28 @@ class Discount implements DiscountInterface
 
         return $this;
     }
+
+    /**
+     * Gets the value of durations.
+     *
+     * @return Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getDurations()
+    {
+        return $this->durations;
+    }
+
+    /**
+     * Sets the value of durations.
+     *
+     * @param ArrayCollection $durations the durations
+     *
+     * @return self
+     */
+    public function setDurations(ArrayCollection $durations)
+    {
+        $this->durations = $durations;
+
+        return $this;
+    }
 }

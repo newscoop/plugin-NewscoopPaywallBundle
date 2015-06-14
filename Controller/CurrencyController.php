@@ -23,7 +23,7 @@ class CurrencyController extends BaseController
      */
     public function indexAction(Request $request)
     {
-        $query = $this->getRepository()->findActive();
+        $query = $this->getRepository()->findAllAvailable();
         $paginator = $this->get('knp_paginator');
         $currencies = $paginator->paginate(
             $query,
@@ -81,7 +81,6 @@ class CurrencyController extends BaseController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 if (!$this->checkForExistenceBy($currency)) {
-                    $currency = $this->checkAndSetDefaultFlag($currency, $isDefault);
                     $currency->setUpdatedAt(new \DateTime('now'));
                     $em->flush();
 

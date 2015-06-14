@@ -23,9 +23,9 @@
 					<tr>
 						<td colspan="2" align="left">
 							<input style="min-width: 240px" class="save-button" name="step1" value="{{ 'paywall.btn.button1'|trans }} (1)" disabled>
-							<input class="button" name="step3" value="{{ 'paywall.label.defineduration'|trans }} (2)" disabled>
-							<input style="min-width: 240px" class="button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (3)" disabled><br><br>
-							<strong>{{ 'paywall.step1.header'|trans }}</strong>
+							<input style="min-width: 240px" class="button" name="step3" value="{{ 'paywall.label.defineduration'|trans }} (2)" disabled>
+							<input style="min-width: 240px" class="button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (3)" disabled><br>
+							<div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> {{ 'paywall.step1.header'|trans }}</div>
 						</td>
 					</tr>
 					<tr>
@@ -216,7 +216,7 @@
 							<input class="save-button" name="step3" value="{{ 'paywall.label.defineduration'|trans }} (2)" disabled>
 							<input class="button" name="step2" value="{{ 'paywall.btn.button2'|trans }} (3)" disabled><br><br>
 
-							<div style="float: left"><strong>{{ 'paywall.step2.header'|trans }}</strong><br><br>
+							<div class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> {{ 'paywall.label.defineduration'|trans }}</div>
 								<div class="form-group">
 									<label>{{ 'paywall.step2.label.durationbox'|trans }}</label>
 									{{ form_widget(formDuration.value) }}
@@ -225,7 +225,6 @@
 									<button style="margin-left: 20px;" type="submit" class="btn btn-xs btn-success">
 										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 									</button>
-								</div>
 
 								{{ form_widget(formDuration._token) }}
 								<br>

@@ -29,9 +29,6 @@
           {{ form_row(form.code, {'attr': {'class': 'form-control  input-sm'}}) }}
           {{ form_row(form.exchangeRate, {'attr': {'class': 'form-control  input-sm'}}) }}
           {{ form_row(form.isActive) }}
-          {% if currency.default == false %}
-            {{ form_row(form.default) }}
-          {% endif %}
           {{ form_widget(form._token) }}
         </div>
       </div>

@@ -19,7 +19,7 @@ use Newscoop\PaywallBundle\Discount\DiscountableInterface;
  * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\UserSubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_user_subscriptions")
  */
-class UserSubscription implements DiscountableInterface
+class UserSubscription implements DiscountableInterface, ProlongableItemInterface
 {
     const TYPE_PAID = 'P';
     const TYPE_PAID_NOW = 'PN';
@@ -153,6 +153,15 @@ class UserSubscription implements DiscountableInterface
     protected $is_active;
 
     /**
+     * Is prolonged?
+     *
+     * @ORM\Column(type="boolean", name="prolonged")
+     *
+     * @var bool
+     */
+    protected $prolonged = false;
+
+    /**
      * @ORM\Column(type="datetime", name="notify_sent_first", nullable=true)
      *
      * @var \DateTime
@@ -202,6 +211,13 @@ class UserSubscription implements DiscountableInterface
      */
     protected $discounts;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Prolongation", mappedBy="orderItem", orphanRemoval=true, cascade={"all"})
+     *
+     * @var ArrayCollection
+     */
+    protected $prolongations;
+
     public function __construct()
     {
         $this->currency = '';
@@ -215,6 +231,7 @@ class UserSubscription implements DiscountableInterface
         $this->notifySentLevelTwo = null;
         $this->modifications = new ArrayCollection();
         $this->discounts = new ArrayCollection();
+        $this->prolongations = new ArrayCollection();
     }
 
     /**
@@ -382,7 +399,10 @@ class UserSubscription implements DiscountableInterface
      */
     public function setActive($active)
     {
-        $this->active = $active;
+        $this->active = 'N';
+        if ($active) {
+            $this->active = 'Y';
+        }
 
         return $this;
     }
@@ -821,11 +841,11 @@ class UserSubscription implements DiscountableInterface
     /**
      * Sets the discounts.
      *
-     * @param Discount $discounts the discounts
+     * @param ArrayCollection $discounts the discounts
      *
      * @return self
      */
-    public function setDiscounts(Discount $discounts)
+    public function setDiscounts($discounts)
     {
         $this->discounts = $discounts;
 
@@ -842,24 +862,90 @@ class UserSubscription implements DiscountableInterface
     public function calculateModificationsAndToPay()
     {
         $this->discountTotal = 0;
-        $this->toPay = $this->subscription->getPrice();
-        $totalWithoutDiscount = $this->toPay * $this->duration['value'];
+        $temp = 0;
+        //$this->toPay = $this->subscription->getPrice();
+        $totalWithoutDiscount = (float) $this->toPay * $this->duration['value'];
+
         foreach ($this->modifications as $modification) {
             $temp = $this->toPay + $modification->getAmount();
         }
 
         foreach ($this->discounts as $discount) {
-            if ($discount->getCountBased()) {
+            if ($discount->getCountBased() && $this->duration['value'] > 1) {
                 $temp -= $temp * $discount->getValue();
             }
         }
 
         $this->toPay = $totalWithoutDiscount;
-        $this->discountTotal = $totalWithoutDiscount - ($temp * $this->duration['value']);
+        if ($temp !== 0) {
+            $this->discountTotal = $totalWithoutDiscount - (round($temp, 2) * $this->duration['value']);
+        }
 
         if ($this->toPay < 0) {
             $this->toPay = 0;
         }
+
+        return $this;
+    }
+
+    public function addProlongation($prolongation)
+    {
+        if (!$this->hasProlongation($prolongation)) {
+            $this->prolongations->add($prolongation);
+        }
+
+        return $this;
+    }
+
+    public function hasProlongation($prolongation)
+    {
+        return $this->prolongations->contains($prolongation);
+    }
+
+    /**
+     * Gets the value of prolongations.
+     *
+     * @return ArrayCollection
+     */
+    public function getProlongations()
+    {
+        return $this->prolongations;
+    }
+
+    /**
+     * Sets the value of prolongations.
+     *
+     * @param ArrayCollection $prolongations the prolongations
+     *
+     * @return self
+     */
+    public function setProlongations(ArrayCollection $prolongations)
+    {
+        $this->prolongations = $prolongations;
+
+        return $this;
+    }
+
+    /**
+     * Gets the Is prolonged?.
+     *
+     * @return bool
+     */
+    public function getProlonged()
+    {
+        return $this->prolonged;
+    }
+
+    /**
+     * Sets the Is prolonged?.
+     *
+     * @param bool $prolonged the prolonged
+     *
+     * @return self
+     */
+    public function setProlonged($prolonged)
+    {
+        $this->prolonged = $prolonged;
 
         return $this;
     }

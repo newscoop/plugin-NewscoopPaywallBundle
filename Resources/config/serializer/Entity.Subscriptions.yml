@@ -13,18 +13,6 @@ Newscoop\PaywallBundle\Entity\Subscriptions:
             type: string
             groups: ["list", "details"]
             serialized_name: name
-        price:
-            expose: true
-            type: integer
-            read_only: true
-            groups: ["list", "details"]
-            serialized_name: price
-        currency:
-            expose: true
-            type: string
-            read_only: true
-            groups: ["list", "details"]
-            serialized_name: currency
         description:
             expose: true
             type: string
@@ -37,3 +25,18 @@ Newscoop\PaywallBundle\Entity\Subscriptions:
             type: array
             groups: ["list", "details"]
             serialized_name: periods
+    virtual_properties:
+        getObject:
+            expose: true
+            read_only: true
+            max_depth: 1
+            type: converter
+            groups: ["list", "details"]
+            serialized_name: price
+        getContextCurrency:
+            expose: true
+            read_only: true
+            max_depth: 1
+            type: currency
+            groups: ["list", "details"]
+            serialized_name: currency

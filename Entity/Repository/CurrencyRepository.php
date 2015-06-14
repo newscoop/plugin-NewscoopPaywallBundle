@@ -56,7 +56,6 @@ class CurrencyRepository extends EntityRepository implements RepositoryInterface
     {
         $qb = $this
             ->createQueryBuilder('d')
-            ->orderBy('d.createdAt', 'DESC')
         ;
 
         return $qb

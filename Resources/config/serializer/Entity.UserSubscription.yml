@@ -35,11 +35,23 @@ Newscoop\PaywallBundle\Entity\UserSubscription:
             read_only: true
             groups: ["list", "details"]
             serialized_name: period
+        expire_at:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: expires_at
+        created_at:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: started_at
         active:
             expose: true
             read_only: true
-            type: string
+            type: boolean
             groups: ["list", "details"]
+            accessor:
+                getter: isActive
             serialized_name: active
         subscription:
             expose: true

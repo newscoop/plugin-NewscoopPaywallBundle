@@ -41,6 +41,7 @@ abstract class AbstractImporter extends BaseImporter
             $currency->setExchangeRate($rate);
             if ($currency->getCode() === $this->baseCurrency) {
                 $currency->setDefault(true);
+                $currency->setIsActive(true);
             }
 
             $this->manager->persist($currency);

@@ -1,7 +1,7 @@
 Plugins: Plugins
 paywall:
     label:
-      defineduration: "Define duration"
+      defineduration: "Define periods & discounts"
       months: "month(s)"
       discount: "Discount"
       unitprice: "Unit Price"
@@ -19,6 +19,8 @@ paywall:
       code: "Code"
       isdefault: "Is default?"
       editcurrency: "Edit currency"
+      removeitem: "Are you sure you want to delete this item?"
+      confirmation: "Confirmation"
     alert:
        notexists: "Selected subscription does not exist."
     title: "Paywall"
@@ -39,7 +41,7 @@ paywall:
         label:
           name: "Name of subscription:"
           type: "Type of subscription:"
-          duration: "Duration of subscription in days:"
+          duration: "Period of subscription in days:"
           price: "Price:"
           currency: "Currency:"
           description: "Description:"
@@ -53,7 +55,7 @@ paywall:
             article: "Article"
         error:
           name: "Subscription name can not be empty."
-          duration: "Duration field is invalid."
+          duration: "Period field is invalid."
           price: "Price field is invalid."
           currency: "Type currency."
           description: "Type description."
@@ -63,7 +65,7 @@ paywall:
         article: "Articles"
         publication: "Publications"
         type: "Type"
-        durationbox: "Duration"
+        durationbox: "Period"
         price: "Price"
         currency: "Currency"
         active: "Status"
@@ -109,7 +111,7 @@ paywall:
       label:
         name: "Name"
         description: "Description"
-        duration: "Duration"
+        duration: "Period"
         options: "Options"
         username: "Username"
         topay: "To pay"
@@ -194,4 +196,6 @@ paywall:
       enableNotifydesc: "Enables/disables email notifications"
       fromemaillabel: "Sender email"
       fromemail: "All notifications will be sent from this email."
-      exists: "Duration with the same value is already defined!"
+      exists: "Period with the same value is already defined!"
+      defaultcurrency: "Default currency"
+      defaultcurrencysmall: "Choose default currency for the subscriptions."

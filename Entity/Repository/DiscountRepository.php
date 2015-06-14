@@ -21,7 +21,7 @@ class DiscountRepository extends EntityRepository
     {
         $qb = $this
             ->createQueryBuilder('d')
-            ->orderBy('d.id', 'DESC')
+            ->orderBy('d.countBased', 'DESC')
         ;
 
         return $qb

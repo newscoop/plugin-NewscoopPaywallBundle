@@ -13,6 +13,7 @@ use Newscoop\PaywallBundle\Entity\Subscriptions;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Doctrine\ORM\EntityManager;
 use Newscoop\PaywallBundle\Entity\Duration;
+use Newscoop\Services\UserService;
 
 /**
  * PaywallService manages user's subscriptions.
@@ -22,12 +23,15 @@ class PaywallService
     /** @var EntityManager */
     protected $em;
 
+    protected $userService;
+
     /**
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em,  UserService $userService)
     {
         $this->em = $em;
+        $this->userService = $userService;
     }
 
     public function filterRanges(Subscriptions $subscription, $periodId)
@@ -91,6 +95,16 @@ class PaywallService
     public function getRepository()
     {
         return $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription');
+    }
+
+    /**
+     * Gets subscriptions repository.
+     *
+     * @return EntityRepository
+     */
+    public function getSubscriptionRepository()
+    {
+        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions');
     }
 
     /**
@@ -531,7 +545,7 @@ class PaywallService
      */
     public function getOneByUserAndSubscription($userId, $subscriptionId, $active = 'Y')
     {
-        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
+        $subscription = $this->getRepository()
             ->findOneBy(array(
                 'user' => $userId,
                 'subscription' => $subscriptionId,
@@ -543,6 +557,16 @@ class PaywallService
         }
 
         return;
+    }
+
+    public function getOrderItemBy($id, $period = null)
+    {
+        return $this->getRepository()->getOrderItemBy($id, $this->getCurrentUser(), $period);
+    }
+
+    public function getCurrentUser()
+    {
+        return $this->userService->getCurrentUser();
     }
 
     /**

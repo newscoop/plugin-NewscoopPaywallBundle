@@ -126,7 +126,7 @@ $(document).ready(function(){
         ],
         fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
                 $('td:eq(0)', nRow).parent().attr('id', aData['id']);
-                if (aData['active'] == "Y")
+                if (aData['active'])
                 {
                     $('td:eq(8)', nRow).attr('id','active');
                     $('td:eq(8)', nRow).html("{{ 'paywall.manage.label.active'|trans }}");
@@ -155,7 +155,7 @@ $(document).ready(function(){
                 $('td:eq(9)', nRow).empty();
                 $('td:eq(9)', nRow).append("<a class='details-subscription btn btn-xs btn-default' href='"+Routing.generate('newscoop_paywall_userssubscriptions_editsubscription', {'id': aData['id']})+"'><span class=\"glyphicon glyphicon-edit\"></span> {{ 'paywall.btn.edit'|trans }}</a>");
                 $('td:eq(9)', nRow).append("<a class='delete-action btn btn-xs btn-default' id="+aData['id']+" href='"+Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': aData['id']})+"'><span class=\"glyphicon glyphicon-trash\"></span> {{ 'paywall.btn.delete'|trans }}</a>");
-                if (aData['active'] == "Y") {
+                if (aData['active']) {
                     $('td:eq(9)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_deactivate', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-remove-circle\"></span> {{ 'paywall.btn.deactivate'|trans }}</a>");
                 } else {
                     $('td:eq(9)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-ok-circle\"></span> {{ 'paywall.btn.activate'|trans }}</a>");

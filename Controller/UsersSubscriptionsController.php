@@ -59,7 +59,7 @@ class UsersSubscriptionsController extends BaseController
             'period' => $userSubscription['duration']['value'].' '.$userSubscription['duration']['attribute'],
             'currency' => $userSubscription['currency'],
             'type' => $userSubscription['type'],
-            'active' => (bool) $userSubscription['active'],
+            'active' => $userSubscription['active'] == 'Y' ? true : false,
             'firstNotify' => $userSubscription['notifySentLevelOne'],
             'secondNotify' => $userSubscription['notifySentLevelTwo'],
             'expiresAt' => $userSubscription['expire_at'],

@@ -264,4 +264,29 @@ class UserSubscriptionRepository extends EntityRepository
             ->getQuery()->getSingleScalarResult()
         ;
     }
+
+    public function getOrderItemBy($id, $user, $period = null)
+    {
+        $qb = $this->createQueryBuilder('i');
+        $query = $qb
+            ->where('i.user = :user')
+            ->andWhere('i.subscription = :id')
+            ->andWhere($qb->expr()->orX(
+                $qb->expr()->eq('i.active', $qb->expr()->literal('Y')),
+                $qb->expr()->eq('i.active', $qb->expr()->literal('N'))
+            ))
+            //->andWhere('i.prolonged = true') /// to add?
+            //->andWhere($qb->expr()->eq('i.duration', $qb->expr()->literal(serialize($period))))
+            ->setParameters(array(
+                'user' => $user,
+                'id' => $id,
+            ))
+            ->setMaxResults(1)//
+            ->orderBy('i.created_at', 'desc')//
+            ->getQuery();
+
+        return $query
+            ->getOneOrNullResult()
+        ;
+    }
 }

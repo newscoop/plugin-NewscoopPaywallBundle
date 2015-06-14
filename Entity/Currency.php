@@ -49,7 +49,7 @@ class Currency implements CurrencyInterface
      *
      * @var bool
      */
-    protected $isActive = true;
+    protected $isActive = false;
 
     /**
      * @ORM\Column(type="boolean", name="is_default")

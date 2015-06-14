@@ -29,7 +29,7 @@ class CurrencyProvider extends BaseProvider
     public function getAvailableCurrencies()
     {
         return $this->currencyRepository
-            ->findActive()
+            ->findAllAvailable()
             ->getResult();
     }
 
@@ -41,5 +41,17 @@ class CurrencyProvider extends BaseProvider
     public function getDefaultCurrency()
     {
         return $this->currencyRepository->findDefaultOne();
+    }
+
+    /**
+     * Gets the default currency.
+     *
+     * @return array
+     */
+    public function getEnabledCurrencies()
+    {
+        return $this->currencyRepository
+            ->findActive()
+            ->getResult();
     }
 }

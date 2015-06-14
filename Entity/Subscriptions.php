@@ -356,4 +356,14 @@ class Subscriptions
 
         return $this;
     }
+
+    public function getObject()
+    {
+        return clone $this;
+    }
+
+    public function getContextCurrency()
+    {
+        return clone $this;
+    }
 }

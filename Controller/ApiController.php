@@ -29,11 +29,14 @@ class ApiController extends FOSRestController
     {
         $em = $this->get('em');
         $criteria = new SubscriptionCriteria();
-        $criteria->currency = $currency;
         $paywallService = $this->get('paywall.subscription.service');
-        $list = $paywallService->getSubscriptionsByCriteria($criteria);
+        $currencyContext = $this->get('newscoop_paywall.currency_context');
         $paginator = $this->get('newscoop.paginator.paginator_service');
+
+        $list = $paywallService->getSubscriptionsByCriteria($criteria);
         $paginator->setUsedRouteParams(array('currency' => $currency));
+        $currencyContext->setCurrency($currency);
+
         $priceList = $paginator->paginate(
             $list->items,
             array(
@@ -103,7 +106,7 @@ class ApiController extends FOSRestController
     public function currencyAction(Request $request)
     {
         $currencyRepository = $this->get('newscoop_paywall.currency.repository');
-        $query = $currencyRepository->findActive();
+        $query = $currencyRepository->findAllAvailable();
 
         $paginator = $this->get('newscoop.paginator.paginator_service');
         $currencies = $paginator->paginate(

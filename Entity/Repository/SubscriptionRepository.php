@@ -63,4 +63,9 @@ class SubscriptionRepository extends EntityRepository
 
         return $list;
     }
+
+    public function getReference($id)
+    {
+        return $this->getEntityManager()->getReference($this->getEntityName(), $id);
+    }
 }

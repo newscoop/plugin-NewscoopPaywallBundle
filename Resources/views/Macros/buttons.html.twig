@@ -9,7 +9,7 @@
 </a>
 {% endmacro %}
 
-{% macro show(url, message, id, class) %}
+{% macro show(url, message, id) %}
     {% import _self as buttons %}
 
     {% if message is empty %}
@@ -47,7 +47,7 @@
 {% else %}
 <form action="{{ url }}" method="post" style="display: inline;">
     <input type="hidden" name="_method" value="DELETE">
-    <button class="btn btn-danger btn-confirm" type="submit">
+    <button class="btn btn-danger btn-alert" data-toggle="modal" data-target="#modalAlert" type="submit">
         <i class="glyphicon glyphicon-trash"></i> <span>{{ message is empty ? 'paywall.btn.delete'|trans : message }}</span>
     </button>
 </form>

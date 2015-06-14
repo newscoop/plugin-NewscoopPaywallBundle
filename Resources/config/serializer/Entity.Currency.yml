@@ -25,6 +25,12 @@ Newscoop\PaywallBundle\Entity\Currency:
             read_only: true
             groups: ["list", "details"]
             serialized_name: is_default
+        isActive:
+            expose: true
+            type: boolean
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: is_active
         createdAt:
             expose: true
             read_only: true

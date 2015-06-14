@@ -38,7 +38,7 @@
               <th>{{ 'paywall.manage.label.secondNotify'|trans }}</th>
               <th>{{ 'paywall.manage.label.expiresAt'|trans }}</th>
               <th>{{ 'paywall.step2.label.active'|trans }}</th>
-              <th>Period (Qty)</th>
+              <th>Period</th>
               <th>Unit Price</th>
               <th>Total</th>
             </tr>
@@ -46,8 +46,8 @@
           <tbody>
             {% for item in order.items %}
             <tr>
-              <td>{{ item.subscription.name }}<br>
-                {{ item.subscription.description }}</td>
+              <td style="width: 20%;"><b>{{ item.subscription.name }}</b><br>
+                <small>{{ item.subscription.description }}</small></td>
                 <td>{{ item.createdAt|date('Y-m-d H:i:s') }}</td>
                 <td>{% if item.notifySentLevelOne %}{{ item.notifySentLevelOne|date('Y-m-d H:i:s') }}{% else %}-{% endif %}</td>
                 <td>{% if item.notifySentLevelTwo %}{{ item.notifySentLevelTwo|date('Y-m-d H:i:s') }}{% else %}-{% endif %}</td>
@@ -88,7 +88,7 @@
             </tfoot>
           </table>
           {% else %}
-            <center>No order items.</center>
+            <center><span class="alert alert-info">{{'paywall.datatable.label.norecords'|trans}}</span></center>
             <hr>
             <div class="form-actions">
               <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {{ 'paywall.btn.back'|trans }}</a>

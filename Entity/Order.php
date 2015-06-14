@@ -211,7 +211,7 @@ class Order implements OrderInterface
      */
     public function getTotal()
     {
-        return $this->total;
+        return $this->total / 100;
     }
 
     /**
@@ -223,7 +223,7 @@ class Order implements OrderInterface
      */
     public function setTotal($total)
     {
-        $this->total = $total;
+        $this->total = $total * 100;
 
         return $this;
     }
@@ -399,7 +399,7 @@ class Order implements OrderInterface
     {
         $this->calculateItemsTotal();
         $this->calculateModifications();
-        $this->total = $this->itemsTotal + $this->discountTotal;
+        $this->total = ($this->itemsTotal + $this->discountTotal) * 100;
         if ($this->total < 0) {
             $this->total = 0;
         }

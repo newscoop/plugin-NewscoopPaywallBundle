@@ -39,8 +39,14 @@ class CentralAzerbaijanBank extends AbstractImporter
             $this->updateOrCreate($managedCurrencies, $this->baseCurrency, 1.00);
 
             $data = $xml->xpath('//ValCurs/*[1]');
+            // divides 1.00 by current exchange rate to get the reverse rate,
+            // because CBAR provides only inverse rate
             foreach ($data[0]->children() as $child) {
-                $this->updateOrCreate($managedCurrencies, (string) $child->attributes()->Code, (float) $child->children()->Value);
+                $this->updateOrCreate(
+                    $managedCurrencies,
+                    (string) $child->attributes()->Code,
+                    1.00 / (float) $child->children()->Value
+                );
             }
 
             $this->manager->flush();
