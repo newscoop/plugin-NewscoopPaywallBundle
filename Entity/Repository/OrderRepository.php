@@ -7,12 +7,10 @@
  */
 namespace Newscoop\PaywallBundle\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository;
-
 /**
  * Order repository.
  */
-class OrderRepository extends EntityRepository
+class OrderRepository extends TranslationRepository
 {
     /**
      * Finds all orders.
@@ -22,6 +20,39 @@ class OrderRepository extends EntityRepository
         $qb = $this
             ->createQueryBuilder('o')
             ->orderBy('o.createdAt', 'DESC')
+        ;
+
+        return $qb
+            ->getQuery()
+        ;
+    }
+
+    public function findSingleBy($id, $locale)
+    {
+        $query = $this
+            ->createQueryBuilder('o')
+            ->select('o', 'i', 's')
+            ->join('o.items', 'i')
+            ->join('i.subscription', 's')
+            ->where('o.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+        ;
+
+        return $this->setTranslatableHints($query, $locale)
+            ->getSingleResult()
+        ;
+    }
+
+    /**
+     * Finds all orders by user.
+     */
+    public function findByUser($user)
+    {
+        $qb = $this
+            ->createQueryBuilder('o')
+            ->where('o.user = :user')
+            ->setParameter('user', $user)
         ;
 
         return $qb

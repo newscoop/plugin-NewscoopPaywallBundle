@@ -7,7 +7,6 @@
  */
 namespace Newscoop\PaywallBundle\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Newscoop\ListResult;
@@ -17,7 +16,7 @@ use Newscoop\PaywallBundle\Entity\UserSubscription;
 /**
  * Subscription repository.
  */
-class UserSubscriptionRepository extends EntityRepository
+class UserSubscriptionRepository extends TranslationRepository
 {
     /**
      * Get list for given criteria.
@@ -26,7 +25,7 @@ class UserSubscriptionRepository extends EntityRepository
      *
      * @return Newscoop\ListResult
      */
-    public function getListByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
+    public function getListByCriteria(SubscriptionCriteria $criteria, $returnQuery = false, $valid = false)
     {
         $qb = $this->createQueryBuilder('s');
         $list = new ListResult();
@@ -44,6 +43,14 @@ class UserSubscriptionRepository extends EntityRepository
         if ($criteria->user) {
             $qb->andWhere('s.user = :user')
                 ->setParameter('user', $criteria->user);
+        }
+
+        if ($valid) {
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->isNull('s.expire_at'),
+                $qb->expr()->gt('s.expire_at', '?1')
+            ))
+            ->setParameter(1, new \DateTime('now'));
         }
 
         foreach ($criteria->orderBy as $key => $value) {
@@ -74,9 +81,6 @@ class UserSubscriptionRepository extends EntityRepository
                 ->setParameter($key, $criteria->$key);
         }
 
-        $countQb = clone $qb;
-        $list->count = (int) $countQb->select('COUNT(DISTINCT u)')->getQuery()->getSingleScalarResult();
-
         if (!empty($criteria->query)) {
             $qb->andWhere($qb->expr()->orX('(u.username LIKE :query)', '(p.name LIKE :query)'));
             $qb->setParameter('query', '%'.trim($criteria->query, '%').'%');
@@ -90,11 +94,14 @@ class UserSubscriptionRepository extends EntityRepository
             $qb->setMaxResults($criteria->maxResults);
         }
 
+        $query = $this->setTranslatableHints($qb->getQuery(), $criteria->locale);
         if ($returnQuery) {
-            return $qb->getQuery();
+            return $query;
         }
 
-        $list->items = $qb->getQuery()->getArrayResult();
+        $countQb = clone $qb;
+        $list->count = (int) $countQb->select('COUNT(u)')->getQuery()->getSingleScalarResult();
+        $list->items = $query->getResult();
 
         return $list;
     }

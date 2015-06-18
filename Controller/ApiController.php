@@ -20,19 +20,19 @@ use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 class ApiController extends FOSRestController
 {
     /**
-     * @Route("/api/paywall/pricelist/{currency}.{_format}", defaults={"_format"="json"}, name="newscoop_gimme_paywall_pricelist")
+     * @Route("/api/paywall/pricelist/{currency}/{locale}.{_format}", defaults={"_format"="json"}, name="newscoop_gimme_paywall_pricelist")
      *
      * @Method("GET")
      * @View()
      */
-    public function listAction(Request $request, $currency)
+    public function listAction(Request $request, $currency, $locale = null)
     {
         $em = $this->get('em');
         $criteria = new SubscriptionCriteria();
+        $criteria->locale = $locale;
         $paywallService = $this->get('paywall.subscription.service');
         $currencyContext = $this->get('newscoop_paywall.currency_context');
         $paginator = $this->get('newscoop.paginator.paginator_service');
-
         $list = $paywallService->getSubscriptionsByCriteria($criteria);
         $paginator->setUsedRouteParams(array('currency' => $currency));
         $currencyContext->setCurrency($currency);
@@ -48,21 +48,21 @@ class ApiController extends FOSRestController
     }
 
     /**
-     * @Route("/api/paywall/my-subscriptions.{_format}", defaults={"_format"="json"}, name="newscoop_gimme_paywall_my")
+     * @Route("/api/paywall/my-subscriptions/{locale}.{_format}", defaults={"_format"="json"}, name="newscoop_gimme_paywall_my")
      *
      * @Method("GET")
      * @View()
      */
-    public function myAction(Request $request)
+    public function myAction(Request $request, $locale = null)
     {
         $em = $this->get('em');
         $userService = $this->get('user');
         $user = $userService->getCurrentUser();
         $criteria = new SubscriptionCriteria();
         $criteria->user = $user;
+        $criteria->locale = $locale;
         $paywallService = $this->get('paywall.subscription.service');
-        $query = $paywallService->getUserSubscriptionsByCriteria($criteria, true);
-
+        $query = $paywallService->getMySubscriptionsByCriteria($criteria, true);
         $paginator = $this->get('newscoop.paginator.paginator_service');
         $list = $paginator->paginate(
             $query,
@@ -70,6 +70,8 @@ class ApiController extends FOSRestController
                 'distinct' => false,
             )
         );
+
+        $list['items'] = $paywallService->filterMySubscriptions($list['items']);
 
         return $list;
     }

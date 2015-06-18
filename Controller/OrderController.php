@@ -50,12 +50,15 @@ class OrderController extends BaseController
         $em = $this->get('em');
         $orderService = $this->get('newscoop_paywall.services.order');
         $order = $orderService->processAndCalculateOrderItems($items);
-        $em->persist($order);
-        $em->flush();
 
-        $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $order->getItems()->toArray());
+        $response->setStatusCode(404);
+        if (!$order->getItems()->isEmpty()) {
+            $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $order->getItems()->toArray());
+            $em->persist($order);
+            $em->flush();
 
-        $response->setStatusCode(204);
+            $response->setStatusCode(204);
+        }
 
         return $response;
     }

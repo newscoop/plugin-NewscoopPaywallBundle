@@ -32,10 +32,7 @@ class AdminController extends Controller
 
         if ($id) {
             $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-                ->findOneBy(array(
-                    'id' => $id,
-                    'is_active' => true,
-                ));
+                ->findActiveOneBy($id);
 
             if (!$subscription) {
                 return $this->redirect($this->generateUrl('newscoop_paywall_managesubscriptions_manage'));

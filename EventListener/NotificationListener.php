@@ -60,7 +60,7 @@ class NotificationListener
      *
      * @param GenericEvent $event
      */
-    public function sendSubscriptionNotificationEmail(GenericEvent $event)
+    public function sendAdminNotificationEmail(GenericEvent $event)
     {
         $subscriptions = $event->getSubject();
         $this->isValid($subscriptions);

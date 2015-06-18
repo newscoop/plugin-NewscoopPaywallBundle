@@ -331,7 +331,7 @@ class Order implements OrderInterface
      */
     public function getDiscountTotal()
     {
-        return $this->discountTotal;
+        return $this->discountTotal / 100;
     }
 
     /**
@@ -343,7 +343,7 @@ class Order implements OrderInterface
      */
     public function setDiscountTotal($discountTotal)
     {
-        $this->discountTotal = $discountTotal;
+        $this->discountTotal = $discountTotal * 100;
 
         return $this;
     }
@@ -399,7 +399,7 @@ class Order implements OrderInterface
     {
         $this->calculateItemsTotal();
         $this->calculateModifications();
-        $this->total = ($this->itemsTotal + $this->discountTotal) * 100;
+        $this->total = ($this->itemsTotal / 100 + $this->discountTotal / 100) * 100;
         if ($this->total < 0) {
             $this->total = 0;
         }
@@ -414,10 +414,11 @@ class Order implements OrderInterface
         foreach ($this->items as $item) {
             $item->calculateToPay();
             $itemsTotal += $item->getToPay();
-            $this->discountTotal -= $item->getDiscountTotal();
+
+            $this->discountTotal -= $item->getDiscountTotal() * 100;
         }
 
-        $this->itemsTotal = $itemsTotal;
+        $this->itemsTotal = $itemsTotal * 100;
 
         return $this;
     }
@@ -438,7 +439,7 @@ class Order implements OrderInterface
      */
     public function getItemsTotal()
     {
-        return $this->itemsTotal;
+        return $this->itemsTotal / 100;
     }
 
     /**
@@ -450,7 +451,7 @@ class Order implements OrderInterface
      */
     public function setItemsTotal($itemsTotal)
     {
-        $this->itemsTotal = $itemsTotal;
+        $this->itemsTotal = $itemsTotal * 100;
 
         return $this;
     }

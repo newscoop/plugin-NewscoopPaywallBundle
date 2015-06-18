@@ -10,7 +10,6 @@ namespace Newscoop\PaywallBundle\Discount;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 use Newscoop\PaywallBundle\Entity\OrderInterface;
 use Newscoop\PaywallBundle\Entity\Discount;
-use Doctrine\Common\Collections\Criteria;
 
 /**
  * Process all discounts for order items.
@@ -31,10 +30,6 @@ class DiscountProcessor implements DiscountProcessorInterface
     public function process(DiscountableInterface $object)
     {
         $eligibleDiscounts = array();
-       // ladybug_dump($this->getAllDiscounts());
-   //     die;
-
-
         foreach ($this->getAllDiscounts() as $discount) {
             if (!$this->isEligibleForDiscount($object, $discount)) {
                 continue;
@@ -42,8 +37,7 @@ class DiscountProcessor implements DiscountProcessorInterface
 
             $eligibleDiscounts[] = $discount;
         }
-        //ladybug_dump($eligibleDiscounts);
-        //die;
+
         foreach ($eligibleDiscounts as $discount) {
             $this->container->get('newscoop_paywall.discounts.'.$discount->getType())
                 ->applyTo($object, $discount);
@@ -55,71 +49,18 @@ class DiscountProcessor implements DiscountProcessorInterface
     protected function isEligibleForDiscount(DiscountableInterface $object, Discount $discount)
     {
         if ($object instanceof UserSubscription) {
-            //ladybug_dump($object->getOrder()->countItems(), $object->hasDiscount($discount), $discount->getValue());
-
             if ($object->getProlonged()) {
                 return $this->isEligibleWhenProlonged($object, $discount);
             }
 
-            /*if ($object->getProlonged()) {
-
-                if ($object->getOrder()->countItems() > 1 && $discount->getCountBased()) {
-                    return true;
-                }
-
-                if (!$object->hasDiscount($discount)) {
-                    return false;
-                }
-
-                return true;*/
-
-                // remove count based one
-                /*if ($object->getOrder()->countItems() === 1 && $object->hasDiscount($discount) && $discount->getCountBased()) {
-                    ladybug_dump('111');
-                    $object->removeDiscount($discount);
-
-                    return false;
-                }
-
-                if ($object->getOrder()->countItems() > 1 && $object->hasDiscount($discount) && !$discount->getCountBased()) {
-                    ladybug_dump('vvv');
-                    $object->removeDiscount($discount);
-
-                    return false;
-                }
-
-                if (!$object->hasDiscount($discount)) {
-                    ladybug_dump($discount->getValue());
-
-                    return true;
-                }
-
-                $object->removeDiscount($discount);
-
-                return false;*/
-            //}
-
-            /*if (!$object->hasDiscount($discount) && $object->getOrder()->countItems() > 1) {
-                ladybug_dump('when no discount and count is > 1');
-                //die;
-                return true;
-            }*/
-
-            /*if (!$object->hasDiscount($discount) && !$discount->getCountBased()) {
-                //ladybug_dump('sss');
-
-                return true;
-            }*/
-
-            /*if ($object->getOrder()->countItems() == 1 && !$discount->getCountBased()) {
-                return true;
-            }*/
             $duration = $object->getDuration();
+            if ($object->getOrder()->countItems() == 1 &&
+                !$discount->getCountBased() &&
+                $object->hasDiscount($discount)
+            ) {
+                return true;
+            }
 
-            //$criteria = Criteria::create()->where(Criteria::expr()->in('value', array($duration['value'])));
-
-            //ladybug_dump($object->getDiscounts()->toArray());
-            //die;
             if ($object->getOrder()->countItems() > 1 && $discount->getCountBased()) {
                 return true;
             }
@@ -132,7 +73,6 @@ class DiscountProcessor implements DiscountProcessorInterface
                 return true;
             }
 
-            //$duration = $object->getDuration();
             if ($object->getOrder()->countItems() > 1 && $duration['value'] > 1) {
                 return true;
             }

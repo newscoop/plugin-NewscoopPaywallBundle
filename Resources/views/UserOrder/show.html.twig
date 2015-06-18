@@ -37,6 +37,7 @@
               <th>{{ 'paywall.manage.label.firstNotify'|trans }}</th>
               <th>{{ 'paywall.manage.label.secondNotify'|trans }}</th>
               <th>{{ 'paywall.manage.label.expiresAt'|trans }}</th>
+              <th>Prolonged?</th>
               <th>{{ 'paywall.step2.label.active'|trans }}</th>
               <th>Period</th>
               <th>Unit Price</th>
@@ -52,6 +53,11 @@
                 <td>{% if item.notifySentLevelOne %}{{ item.notifySentLevelOne|date('Y-m-d H:i:s') }}{% else %}-{% endif %}</td>
                 <td>{% if item.notifySentLevelTwo %}{{ item.notifySentLevelTwo|date('Y-m-d H:i:s') }}{% else %}-{% endif %}</td>
                 <td>{% if item.expireAt %}{{ item.expireAt|date('Y-m-d H:i:s') }}{% else %}-{% endif %}</td>
+                <td>{% if item.prolonged %}
+                    <span class="label label-success">{{ 'paywall.manage.label.yes'|trans }}</span>
+                {% else %}
+                    <span class="label label-warning">{{ 'paywall.manage.label.no'|trans }}</span>
+                {% endif %}</td>
                 <td>{% if item.active %}
                     <span class="label label-success">{{ 'paywall.manage.label.active'|trans }}</span>
                 {% else %}
@@ -65,7 +71,7 @@
             </tbody>
             <tfoot>
               <tr>
-                <td class="active text-right" colspan="9">
+                <td class="active text-right" colspan="10">
                   <strong>Items total</strong>:
                   <span class="amount">{{ order.itemsTotal }} {{order.currency}}</span>
                 </td>
@@ -73,14 +79,14 @@
               <tr class="promotion-discount">
                 <td colspan="4">
                 </td>
-                <td class="text-right" colspan="9">
+                <td class="text-right" colspan="10">
                   <strong>Discount total</strong>:
                   <span class="amount">{{ order.discountTotal('discount') }} {{order.currency}}</span>
                 </td>
               </tr>
 
               <tr>
-                <td class="text-right active text-success lead" colspan="9">
+                <td class="text-right active text-success lead" colspan="10">
                   <strong>Total</strong>:
                   <span class="amount">{{order.total}}{{order.currency}}</span>
                 </td>

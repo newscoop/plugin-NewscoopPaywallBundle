@@ -24,20 +24,17 @@ class OrderService
     protected $converter;
     protected $subscriptionService;
     protected $processor;
-    protected $prolongator;
 
     public function __construct(
         CurrencyContextInterface $context,
         CurrencyConverterInterface $converter,
         PaywallService $subscriptionService,
-        DiscountProcessorInterface $processor,
-        ProlongatorInterface $prolongator
+        DiscountProcessorInterface $processor
     ) {
         $this->context = $context;
         $this->converter = $converter;
         $this->subscriptionService = $subscriptionService;
         $this->processor = $processor;
-        $this->prolongator = $prolongator;
     }
 
     /**
@@ -101,78 +98,35 @@ class OrderService
                 $newlySelectedPeriod = $this->subscriptionService->filterRanges($subscription, $periodId);
                 $item = $this->subscriptionService->getOrderItemBy(
                     $subscription->getId()
-                    //$this->createPeriodArray($newlySelectedPeriod)
                 );
 
                 if ($item) {
-                    //is subscribed
-
                     if (!$item->isActive()) {
-                        // prolong subscription
-
                         continue;
                     }
-                    //ladybug_dump($item->getId());
+
                     $currentItemPeriod = $item->getDuration();
                         // e.g month === month
-                        if ($currentItemPeriod['attribute'] === $newlySelectedPeriod->getAttribute()) {
-                            // e.g 6 months > 3 months
-                            //ladybug_dump($newlySelectedPeriod->getValue(), $currentItemPeriod['value']);
-
-                            //if ($newlySelectedPeriod->getValue() != $currentItemPeriod['value']) {
-                            //ladybug_dump($newlySelectedPeriod->getDiscount());
-                            //die;
-                            $orderItem = $this->instantiateOrderItem($subscription, $newlySelectedPeriod);
-
-                            $orderItem->setProlonged(true);
-                            //$orderItem->addDiscount($newlySelectedPeriod->getDiscount());
-                            $orderItem->setCreatedAt($item->getExpireAt());
-                                //$newlySelectedItem = $this->instantiateOrderItem($subscription, $newlySelectedPeriod);
-                                //$userSubscription = $this->instantiateOrderItem($subscription, $newlySelectedPeriod);
-                                //$userSubscription->setOrder($order);
-                                //$order->addItem($userSubscription);
-                                //ladybug_dump($order->getItems()->toArray()[0]->getDiscount());
-                                //die;
-                                //$newlySelectedItem->setOrder($item->getOrder());
-
-                                //ladybug_dump($newlySelectedPeriod->getDiscount()->getValue());
-                                //die;
-                                //$item->setDuration($this->createPeriodArray($newlySelectedPeriod));
-
-                                //$unitPrice = $this->converter->convert($item->getSubscription()->getPrice(), $item->getCurrency());
-                                //$item->setToPay($unitPrice * $newlySelectedPeriod->getValue());
-
-                                //$processedItem = $this->processor->process($item);
-                                //$processedItem->setToPay($total * $newlySelectedPeriod->getDiscount()->getValue());
-                                //ladybug_dump($processedItem->getToPay());
-                                //die;
-
-                                //ladybug_dump();
-                                //die;
-
-                                // tak samo zaimplementowac jak DiscountProcess
-                                //
-                                //$this->prolongator->createRequest($item, $newlySelectedPeriod);
-
-                                //return;
-                                //ladybug_dump('order service prolong');
-                                //die;
-                                // przedluz....
-                            //} else {
-                             //   continue;
-                            //}
-                        } else {
-                            continue;
-                        }
+                    if ($currentItemPeriod['attribute'] === $newlySelectedPeriod->getAttribute()) {
+                        $orderItem = $this->instantiateOrderItem($subscription, $newlySelectedPeriod);
+                        $orderItem->setProlonged(true);
+                        $orderItem->setParent($item);
+                        $orderItem->setCreatedAt($item->getCreatedAt());
+                        $orderItem->setStartsAt($item->getExpireAt());
+                    } else {
+                        continue;
+                    }
                 }
 
                 $userSubscription = $orderItem;
                 if (!$orderItem) {
-                    //$period = $this->subscriptionService->filterRanges($subscription, $periodId);
                     $userSubscription = $this->instantiateOrderItem($subscription, $newlySelectedPeriod);
                 }
 
-                $userSubscription->addDiscount($newlySelectedPeriod->getDiscount());
+                if ($newlySelectedPeriod->getDiscount()) {
+                    $userSubscription->addDiscount($newlySelectedPeriod->getDiscount());
+                }
+
                 $userSubscription->setOrder($order);
                 $order->addItem($userSubscription); // if has item, then merge it else add
             }

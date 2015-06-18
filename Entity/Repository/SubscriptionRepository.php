@@ -7,22 +7,22 @@
  */
 namespace Newscoop\PaywallBundle\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository;
 use Newscoop\ListResult;
 
 /**
  * Subscription repository.
  */
-class SubscriptionRepository extends EntityRepository
+class SubscriptionRepository extends TranslationRepository
 {
     /**
      * Gets all available subscriptions by criteria.
      *
      * @param SubscriptionCriteria $criteria
+     * @param bool                 $returnQuery
      *
-     * @return Newscoop\ListResult
+     * @return ListResult|Doctrine\ORM\Query
      */
-    public function getListByCriteria($criteria)
+    public function getListByCriteria($criteria, $returnQuery = false)
     {
         $qb = $this->createQueryBuilder('s');
 
@@ -58,10 +58,30 @@ class SubscriptionRepository extends EntityRepository
 
         $list = new ListResult();
         $countBuilder = clone $qb;
+        $query = $this->setTranslatableHints($qb->getQuery(), $criteria->locale);
+        if ($returnQuery) {
+            return $query;
+        }
+
         $list->count = (int) $countBuilder->select('COUNT(s)')->getQuery()->getSingleScalarResult();
-        $list->items = $qb->getQuery();
+        $list->items = $query;
 
         return $list;
+    }
+
+    public function findActiveOneBy($id, $locale = null)
+    {
+        $query = $this
+            ->createQueryBuilder('s')
+            ->where('s.id = :id')
+            ->andWhere('s.is_active = true')
+            ->setParameter('id', $id)
+            ->getQuery()
+        ;
+
+        return $this->setTranslatableHints($query, $locale)
+            ->getOneOrNullResult()
+        ;
     }
 
     public function getReference($id)

@@ -40,8 +40,10 @@ class UserOrderController extends BaseController
     /**
      * @Route("/admin/paywall_plugin/orders/{id}", name="paywall_plugin_userorder_show", options={"expose"=true})
      */
-    public function showAction(Request $request, Order $order)
+    public function showAction(Request $request, $id)
     {
+        $order = $this->getOrderRepository()->findSingleBy($id, $request->getLocale());
+
         return $this->render('NewscoopPaywallBundle:UserOrder:show.html.twig', array(
             'order' => $order,
         ));

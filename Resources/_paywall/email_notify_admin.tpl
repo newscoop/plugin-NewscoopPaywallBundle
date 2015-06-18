@@ -10,6 +10,9 @@ Status: {{ if $userSubscription->is_active }} Active {{ else }} Inactive {{ /if 
 <br></br>
 {{/foreach}}
 
+Total items: {{ $order->getItemsTotal() }} {{ $order->getCurrency() }}</br>
+Discount total: {{ $order->getDiscountTotal() }} {{ $order->getCurrency() }}</br>
+Total: {{ $order->getTotal() }} {{ $order->getCurrency() }}</br>
 
 {{ set_placeholder subject="Paywall: New subscription order by {{$user->uname}}!" }}
 {{/dynamic}}

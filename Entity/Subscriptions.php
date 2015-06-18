@@ -10,14 +10,17 @@ namespace Newscoop\PaywallBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Newscoop\PaywallBundle\Validator\Constraints as PaywallValidators;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Translatable\Translatable;
 
 /**
  * Subscriptions entity.
  *
  * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\SubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_subscriptions")
+ * @Gedmo\TranslationEntity(class="SubscriptionTranslation")
  */
-class Subscriptions
+class Subscriptions implements Translatable
 {
     /**
      * @ORM\Id()
@@ -29,6 +32,7 @@ class Subscriptions
     protected $id;
 
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(type="string", name="name")
      *
      * @var string
@@ -72,6 +76,7 @@ class Subscriptions
     protected $currency;
 
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(type="text", name="description", nullable=true)
      *
      * @var text
@@ -99,12 +104,29 @@ class Subscriptions
      */
     protected $is_default;
 
+    /**
+     * @ORM\OneToMany(
+     *   targetEntity="SubscriptionTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
+
+    /**
+     * @Gedmo\Locale
+     * Used locale to override Translation listener`s locale
+     * this is not a mapped field of entity metadata, just a simple property
+     */
+    public $locale;
+
     public function __construct()
     {
         $this->specification = new ArrayCollection();
         $this->setCreatedAt(new \DateTime());
         $this->setIsActive(true);
         $this->ranges = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     /**
@@ -365,5 +387,23 @@ class Subscriptions
     public function getContextCurrency()
     {
         return clone $this;
+    }
+
+    public function setTranslatableLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(SubscriptionTranslation $translation)
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
+        }
     }
 }

@@ -14,6 +14,7 @@ use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Doctrine\ORM\EntityManager;
 use Newscoop\PaywallBundle\Entity\Duration;
 use Newscoop\Services\UserService;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * PaywallService manages user's subscriptions.
@@ -44,35 +45,73 @@ class PaywallService
     }
 
     /**
-     * Gets all user's subscriptions by criteria.
-     *
-     * @return array
-     */
-    public function getListByCriteria(SubscriptionCriteria $criteria)
-    {
-        return $this->getRepository()->getListByCriteria($criteria);
-    }
-
-    /**
      * Gets all available subscriptions by criteria.
      *
      * @return array
      */
-    public function getSubscriptionsByCriteria(SubscriptionCriteria $criteria)
+    public function getSubscriptionsByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
     {
         return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-            ->getListByCriteria($criteria);
+            ->getListByCriteria($criteria, $returnQuery);
     }
 
     /**
      * Gets all user subscriptions by criteria.
      *
-     * @return array
+     * @return mixed
      */
     public function getUserSubscriptionsByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
     {
-        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
-            ->getListByCriteria($criteria, $returnQuery);
+        return $this->getRepository()
+            ->getListByCriteria($criteria, $returnQuery)
+        ;
+    }
+
+    /**
+     * Gets currently logged in user's subscriptions.
+     *
+     * @param SubscriptionCriteria $criteria
+     * @param bool                 $returnQuery
+     *
+     * @return mixed
+     */
+    public function getMySubscriptionsByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
+    {
+        return $this->getRepository()
+            ->getListByCriteria($criteria, $returnQuery, true)
+        ;
+    }
+
+    /**
+     * Filter my subscriptions.
+     *
+     * @param array $items
+     *
+     * @return ArrayCollection
+     */
+    public function filterMySubscriptions(array $items = array())
+    {
+        $orderItems = new ArrayCollection($items);
+        foreach ($orderItems as $item) {
+            foreach ($orderItems as $value) {
+                $parent = $item->getParent();
+                if ($item->getSubscription()->getId() == $value->getSubscription()->getId() &&
+                    $parent  == $value
+                ) {
+                    $value->setProlonged(true);
+                    $expiresAt = $this->getExpirationDate($item);
+                    $value->setToPay($parent->getToPay());
+                    $value->setExpireAt($parent->getExpireAt());
+                    $value->setDuration($parent->getDuration());
+                    $value->setDiscountTotal($parent->getDiscountTotal());
+                    $value->setActive($parent->isActive());
+                    $value->setCreatedAt($parent->getCreatedAt());
+                    $orderItems->removeElement($item);
+                }
+            }
+        }
+
+        return $orderItems;
     }
 
     /**
@@ -455,13 +494,21 @@ class PaywallService
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'id' => $id,
-            ));
+        ));
 
         if ($subscription) {
             $subscription->setActive(true);
             $subscription->setType('P');
+            $subscription->setProlonged(false);
+            $now = new \DateTime('now');
             if (!$subscription->getExpireAt()) {
                 $subscription->setExpireAt($this->getExpirationDate($subscription));
+                $subscription->setCreatedAt($now);
+            }
+
+            if ($subscription->getParent()) {
+                $subscription->getParent()->setActive(false);
+                $subscription->getParent()->setExpireAt($now);
             }
 
             $this->em->flush();
@@ -481,6 +528,10 @@ class PaywallService
     {
         $now = new \DateTime('now');
         $createdAt = $userSubscription->getCreatedAt();
+        if ($userSubscription->getParent()) {
+            $createdAt = $userSubscription->getStartsAt();
+        }
+
         // diffrence in days between subscription create date
         // and actual activation date
         $startDate = $createdAt ?: $now;

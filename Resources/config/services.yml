@@ -148,11 +148,6 @@ services:
         tags:
             - { name: jms_serializer.handler, type: currency, direction: serialization, format: json, method: serializeToJson }
 
-    newscoop_paywall.services.prolongator:
-        class: Newscoop\PaywallBundle\Services\Prolongator
-        arguments:
-            - @em
-
     newscoop_paywall.services.order:
         class: Newscoop\PaywallBundle\Services\OrderService
         arguments:
@@ -160,14 +155,13 @@ services:
             - @newscoop_paywall.currency_converter
             - @paywall.subscription.service
             - @newscoop_paywall.processor.discounts
-            - @newscoop_paywall.services.prolongator
 
     newscoop_paywall.notification_listener:
         class: %newscoop.paywall.listener.notification.class%
         arguments:
             - @newscoop_paywall.notifications_service
         tags:
-            - { name: kernel.event_listener, event: paywall.subscription.order, method: sendSubscriptionNotificationEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.order, method: sendAdminNotificationEmail }
             - { name: kernel.event_listener, event: paywall.subscription.order, method: sendUserNotificationEmail }
             - { name: kernel.event_listener, event: paywall.subscription.status_change, method: sendUserSubscriptionStatusChangeEmail }
             - { name: kernel.event_listener, event: paywall.subscription.expiration, method: sendSubscriptionExpirationEmail }

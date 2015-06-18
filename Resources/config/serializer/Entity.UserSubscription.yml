@@ -10,8 +10,10 @@ Newscoop\PaywallBundle\Entity\UserSubscription:
         discountTotal:
             expose: true
             read_only: true
-            type: integer
+            type: float
             groups: ["list", "details"]
+            accessor:
+                getter: getDiscountTotal
             serialized_name: discountTotal
         toPay:
             expose: true
@@ -53,6 +55,12 @@ Newscoop\PaywallBundle\Entity\UserSubscription:
             accessor:
                 getter: isActive
             serialized_name: active
+        prolonged:
+            expose: true
+            read_only: true
+            type: boolean
+            groups: ["list", "details"]
+            serialized_name: prolonged
         subscription:
             expose: true
             read_only: true

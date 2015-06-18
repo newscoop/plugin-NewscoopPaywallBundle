@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Newscoop\PaywallBundle\Entity\Subscriptions;
+use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 
 class ManageSubscriptionsController extends Controller
 {
@@ -25,8 +26,10 @@ class ManageSubscriptionsController extends Controller
         $subscription = new Subscriptions();
         $form = $this->createForm('subscriptionconf', $subscription);
         $em = $this->getDoctrine()->getManager();
+        $criteria = new SubscriptionCriteria();
         $subscriptions = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-            ->findBy(array('is_active' => true));
+            ->getListByCriteria($criteria, true)
+            ->getResult();
 
         return array(
             'subscriptions' => $subscriptions,

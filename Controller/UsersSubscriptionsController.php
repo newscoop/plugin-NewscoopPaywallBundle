@@ -29,7 +29,9 @@ class UsersSubscriptionsController extends BaseController
         $subscriptionService = $this->get('paywall.subscription.service');
         $criteria = $this->processRequest($request);
         $criteria->order = $id;
-        $userSubscriptions = $this->get('paywall.subscription.service')->getListByCriteria($criteria);
+        $userSubscriptions = $this->get('paywall.subscription.service')
+            ->getUserSubscriptionsByCriteria($criteria, true)
+            ->getArrayResult();
 
         $pocessed = array();
         foreach ($userSubscriptions as $subscription) {
@@ -37,8 +39,8 @@ class UsersSubscriptionsController extends BaseController
         }
 
         $responseArray = array(
-            'iTotalRecords' => $userSubscriptions->count,
-            'iTotalDisplayRecords' => $request->get('sSearch') ? count($pocessed) : $userSubscriptions->count,
+            'iTotalRecords' => count($userSubscriptions),
+            'iTotalDisplayRecords' => $request->get('sSearch') ? count($pocessed) : count($userSubscriptions),
             'sEcho' => (int) $request->get('sEcho'),
             'aaData' => $pocessed,
         );

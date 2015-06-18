@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManager;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
 use Newscoop\EventDispatcher\Events\GenericEvent;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
+use Newscoop\PaywallBundle\Entity\Order;
 
 /**
  * Notifications service.
@@ -91,14 +92,22 @@ class NotificationsService
         $smarty = $this->templatesService->getSmarty();
         $smarty->assign('user', new \MetaUser($data['user']));
         $subscriptions = array();
+        $order = new Order();
         if (!$data['subscriptions'] instanceof UserSubscription) {
+            $subscription = $data['subscriptions'][0];
+            $order = $subscription->getOrder();
             foreach ($data['subscriptions'] as $key => $value) {
                 $subscriptions[] = new MetaSubscription($value);
             }
+
             $smarty->assign('userSubscriptions', $subscriptions);
         } else {
-            $smarty->assign('userSubscription', new MetaSubscription($data['subscriptions']));
+            $subscription = $data['subscriptions'];
+            $order = $subscription->getOrder();
+            $smarty->assign('userSubscription', new MetaSubscription($subscription));
         }
+
+        $smarty->assign('order', $order);
 
         try {
             $message = $this->loadProperMessageTemplateBy($code);

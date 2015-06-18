@@ -50,6 +50,11 @@ class SubscriptionCriteria extends Criteria
     public $currency;
 
     /**
+     * @var string
+     */
+    public $locale;
+
+    /**
      * @var array
      */
     public $created_at = array('created_at' => 'asc');

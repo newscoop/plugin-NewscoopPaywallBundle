@@ -212,11 +212,25 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     protected $discounts;
 
     /**
-     * @ORM\OneToMany(targetEntity="Prolongation", mappedBy="orderItem", orphanRemoval=true, cascade={"all"})
+     * @ORM\ManyToOne(targetEntity="UserSubscription", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="Id", onDelete="SET NULL")
      *
-     * @var ArrayCollection
+     * @var UserSubscription
      */
-    protected $prolongations;
+    protected $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserSubscription", mappedBy="parent")
+     * @ORM\OrderBy({"created_at" = "DESC"})
+     */
+    protected $children;
+
+    /**
+     * @ORM\Column(type="datetime", name="starts_at", nullable=true)
+     *
+     * @var DateTime
+     */
+    protected $startsAt;
 
     public function __construct()
     {
@@ -231,7 +245,6 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
         $this->notifySentLevelTwo = null;
         $this->modifications = new ArrayCollection();
         $this->discounts = new ArrayCollection();
-        $this->prolongations = new ArrayCollection();
     }
 
     /**
@@ -732,7 +745,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
      */
     public function getDiscountTotal()
     {
-        return $this->discountTotal;
+        return $this->discountTotal / 100;
     }
 
     /**
@@ -744,7 +757,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
      */
     public function setDiscountTotal($discountTotal)
     {
-        $this->discountTotal = $discountTotal;
+        $this->discountTotal = $discountTotal * 100;
 
         return $this;
     }
@@ -863,7 +876,6 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     {
         $this->discountTotal = 0;
         $temp = 0;
-        //$this->toPay = $this->subscription->getPrice();
         $totalWithoutDiscount = (float) $this->toPay * $this->duration['value'];
 
         foreach ($this->modifications as $modification) {
@@ -878,50 +890,12 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
 
         $this->toPay = $totalWithoutDiscount;
         if ($temp !== 0) {
-            $this->discountTotal = $totalWithoutDiscount - (round($temp, 2) * $this->duration['value']);
+            $this->discountTotal = ($totalWithoutDiscount - (round($temp, 2) * $this->duration['value'])) * 100;
         }
 
         if ($this->toPay < 0) {
             $this->toPay = 0;
         }
-
-        return $this;
-    }
-
-    public function addProlongation($prolongation)
-    {
-        if (!$this->hasProlongation($prolongation)) {
-            $this->prolongations->add($prolongation);
-        }
-
-        return $this;
-    }
-
-    public function hasProlongation($prolongation)
-    {
-        return $this->prolongations->contains($prolongation);
-    }
-
-    /**
-     * Gets the value of prolongations.
-     *
-     * @return ArrayCollection
-     */
-    public function getProlongations()
-    {
-        return $this->prolongations;
-    }
-
-    /**
-     * Sets the value of prolongations.
-     *
-     * @param ArrayCollection $prolongations the prolongations
-     *
-     * @return self
-     */
-    public function setProlongations(ArrayCollection $prolongations)
-    {
-        $this->prolongations = $prolongations;
 
         return $this;
     }
@@ -946,6 +920,78 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     public function setProlonged($prolonged)
     {
         $this->prolonged = $prolonged;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of parent.
+     *
+     * @return UserSubscription
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Sets the value of parent.
+     *
+     * @param UserSubscription $parent the parent
+     *
+     * @return self
+     */
+    public function setParent(UserSubscription $parent)
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of children.
+     *
+     * @return mixed
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Sets the value of children.
+     *
+     * @param mixed $children the children
+     *
+     * @return self
+     */
+    public function setChildren($children)
+    {
+        $this->children = $children;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of startsAt.
+     *
+     * @return DateTime
+     */
+    public function getStartsAt()
+    {
+        return $this->startsAt;
+    }
+
+    /**
+     * Sets the value of startsAt.
+     *
+     * @param DateTime $startsAt the starts at
+     *
+     * @return self
+     */
+    public function setStartsAt(\DateTime $startsAt)
+    {
+        $this->startsAt = $startsAt;
 
         return $this;
     }
