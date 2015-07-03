@@ -70,7 +70,7 @@ interface OrderInterface extends DiscountableInterface
     /**
      * Gets User.
      *
-     * @return User
+     * @return \Newscoop\Entity\User
      */
     public function getUser();
 }

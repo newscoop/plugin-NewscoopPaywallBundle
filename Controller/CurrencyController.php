@@ -105,21 +105,6 @@ class CurrencyController extends BaseController
         ));
     }
 
-    private function checkAndSetDefaultFlag(CurrencyInterface $currency, $isDefault)
-    {
-        $defaultCurrency = $this->getRepository()->findDefaultOne();
-        if ($defaultCurrency && $defaultCurrency->getId() !=
-            $currency->getId() && $currency->getDefault()
-        ) {
-            $defaultCurrency->setDefault(false);
-            $currency->setDefault(true);
-        } else {
-            $currency->setDefault($isDefault);
-        }
-
-        return $currency;
-    }
-
     /**
      * @Route("/admin/paywall_plugin/currencies/delete/{id}", name="paywall_plugin_currency_delete", options={"expose"=true})
      *

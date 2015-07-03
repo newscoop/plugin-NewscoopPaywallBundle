@@ -89,7 +89,7 @@ class Order implements OrderInterface
      *      }
      *  )
      *
-     * @var Discount
+     * @var ArrayCollection
      */
     protected $discounts;
 

@@ -40,7 +40,7 @@ class Currency implements CurrencyInterface
      * @PaywallValidators\ContainsDecimal(entity="Currency", property="exchangeRate")
      * @ORM\Column(type="decimal", name="exchange_rate", precision=10, scale=5)
      *
-     * @var decimal
+     * @var float
      */
     protected $exchangeRate;
 
