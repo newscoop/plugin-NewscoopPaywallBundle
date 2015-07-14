@@ -1,7 +1,7 @@
 Plugins: Plugins
 paywall:
     alert:
-        notexists: null
+        notexists: 'Det valgte abonnement findes ikke.'
     title: Betalingsmur
     search: Søg...
     toolbar:
@@ -72,7 +72,7 @@ paywall:
             currency: 'Valutaformatet er ugyldigt.'
             topay: 'At betale værdien er ugyldig.'
             exists:
-                subscription: null
+                subscription: 'Denne bruger har allerede det valgte abonnement.'
             select:
                 empty: 'Feltet kan ikke være tomt!'
                 choose: 'Vælg udbyder!'
@@ -115,9 +115,9 @@ paywall:
             adapters: 'Tilgængelige udbydere:'
             current: 'Nuværende udbyder:'
             goback: 'Tilbage til brugerens abonnementer'
-            firstNotify: null
-            secondNotify: null
-            expiresAt: null
+            firstNotify: 'Første påmindelse sendes'
+            secondNotify: 'Anden påmindelse sendes'
+            expiresAt: 'Udløber den'
     menu:
         label:
             addsubscription: 'Tilføj nyt abonnement'
@@ -149,7 +149,7 @@ paywall:
         membershipemaillabel: 'Email til medlemsbeskeder'
         providersmall: 'Vælg udbyder til betalingsmur'
         providername: Udbyder
-        enableNotify: null
-        enableNotifydesc: null
-        fromemaillabel: null
-        fromemail: null
+        enableNotify: 'Aktiver email beskeder'
+        enableNotifydesc: 'Aktiver/deaktiver email beskeder'
+        fromemaillabel: 'Sender email'
+        fromemail: 'Alle beskeder bliver sendt fra denne email.'
