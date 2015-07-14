@@ -86,7 +86,7 @@ paywall:
             deactivated: Deaktiveret
             users: Brugere
             subscriptions: Abonnementer
-            paymenttype: null
+            paymenttype: Type
             paid: Betalt
             paidnow: 'Betal nu'
             trial: Prøve
