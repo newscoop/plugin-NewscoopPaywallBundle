@@ -1,8 +1,9 @@
 Newscoop Paywall Bundle
 =====================
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/takeit/plugin-NewscoopPaywallBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/takeit/plugin-NewscoopPaywallBundle/?branch=master)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/37349e63-64e7-46fc-84e4-454f9a1c8394/mini.png)](https://insight.sensiolabs.com/projects/37349e63-64e7-46fc-84e4-454f9a1c8394)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/newscoop/plugin-NewscoopPaywallBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/newscoop/plugin-NewscoopPaywallBundle/?branch=master)
+[![Code Climate](https://codeclimate.com/github/newscoop/plugin-NewscoopPaywallBundle/badges/gpa.svg)](https://codeclimate.com/github/newscoop/plugin-NewscoopPaywallBundle)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/b86606ea-4910-4f65-bef0-32a0efc07b30/mini.png)](https://insight.sensiolabs.com/projects/b86606ea-4910-4f65-bef0-32a0efc07b30)
 
 Newscoop Paywall Bundle is a simple and powerful plugin that allows online publishers to monetize their content.
 
