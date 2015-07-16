@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -12,6 +13,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints as Assert;
+use Newscoop\PaywallBundle\Entity\Subscription;
+use Symfony\Component\Form\FormInterface;
 
 class OrderItemType extends AbstractType
 {
@@ -20,7 +23,7 @@ class OrderItemType extends AbstractType
         $builder
         ->add('subscription', 'entity', array(
             'label' => 'paywall.manage.label.subscriptions',
-            'class' => 'Newscoop\PaywallBundle\Entity\Subscriptions',
+            'class' => 'Newscoop\PaywallBundle\Entity\Subscription',
             'property' => 'name',
             'empty_value' => 'paywall.manage.label.choose',
             'required' => true,
@@ -52,7 +55,7 @@ class OrderItemType extends AbstractType
             ),
         ));
 
-        $formModifier = function ($form, $subscription = null) {
+        $formModifier = function (FormInterface $form, Subscription $subscription = null) {
             $periods = null === $subscription ? array() : $subscription->getRanges();
             $form->add('duration', 'entity', array(
                 'label' => 'paywall.label.period',

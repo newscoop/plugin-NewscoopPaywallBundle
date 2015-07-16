@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -35,7 +36,7 @@ class SubscriptionTranslation extends AbstractPersonalTranslation
     }
 
     /**
-     * @ORM\ManyToOne(targetEntity="Subscriptions", inversedBy="translations", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Subscription", inversedBy="translations", cascade={"persist"})
      * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $object;

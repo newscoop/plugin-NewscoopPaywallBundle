@@ -5,6 +5,7 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -14,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Newscoop\PaywallBundle\Entity\Subscriptions;
+use Newscoop\PaywallBundle\Entity\Subscription;
 use Newscoop\PaywallBundle\Entity\SubscriptionSpecification;
 use Newscoop\PaywallBundle\Entity\Duration;
 use Newscoop\PaywallBundle\Form\Type\DurationType;
@@ -31,7 +32,7 @@ class AdminController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         if ($id) {
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                 ->findActiveOneBy($id);
 
             if (!$subscription) {
@@ -43,7 +44,7 @@ class AdminController extends Controller
                     'subscription' => $subscription,
                 ));
         } else {
-            $subscription = new Subscriptions();
+            $subscription = new Subscription();
             $specification = new SubscriptionSpecification();
         }
 
@@ -105,7 +106,7 @@ class AdminController extends Controller
         try {
             if ($form->isValid()) {
                 if (is_null($id)) {
-                    $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                    $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                         ->findOneBy(array(
                             'name' => $request->get('subscriptionName'),
                             'is_active' => true,
@@ -121,7 +122,7 @@ class AdminController extends Controller
                     ));
 
                 if (!$durationEntity) {
-                    $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                    $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                         ->findOneBy(array(
                             'id' => $id,
                             'is_active' => true,
@@ -220,7 +221,7 @@ class AdminController extends Controller
         if ($request->isMethod('POST')) {
             $formSpecification->bind($request);
             if ($formSpecification->isValid()) {
-                $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+                $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                     ->findOneBy(array(
                         'name' => strtolower($request->request->get('subscriptionTitle')),
                         'is_active' => true,
@@ -243,7 +244,7 @@ class AdminController extends Controller
     {
         if ($request->isMethod('POST')) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            $entity = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                 ->findOneBy(array(
                     'name' => strtolower($request->request->get('subscriptionName')),
                     'is_active' => true,

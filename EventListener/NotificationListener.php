@@ -5,6 +5,7 @@
  * @copyright 2014 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Newscoop\EventDispatcher\Events\GenericEvent;

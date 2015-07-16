@@ -5,6 +5,7 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +21,7 @@ use Gedmo\Translatable\Translatable;
  * @ORM\Table(name="plugin_paywall_subscriptions")
  * @Gedmo\TranslationEntity(class="SubscriptionTranslation")
  */
-class Subscriptions implements Translatable
+class Subscription implements Translatable, PriceableInterface
 {
     /**
      * @ORM\Id()
@@ -61,7 +62,7 @@ class Subscriptions implements Translatable
     protected $ranges;
 
     /**
-     * @PaywallValidators\ContainsDecimal(entity="Subscriptions", property="price")
+     * @PaywallValidators\ContainsDecimal(entity="Subscription", property="price")
      * @ORM\Column(type="decimal", name="price")
      *
      * @var decimal

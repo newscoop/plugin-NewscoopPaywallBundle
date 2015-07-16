@@ -5,6 +5,7 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity;
 
 use Newscoop\Entity\Publication;
@@ -19,7 +20,7 @@ use Newscoop\PaywallBundle\Discount\DiscountableInterface;
  * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\UserSubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_user_subscriptions")
  */
-class UserSubscription implements DiscountableInterface, ProlongableItemInterface
+class UserSubscription implements DiscountableInterface, ProlongableItemInterface, PriceableInterface
 {
     const TYPE_PAID = 'P';
     const TYPE_PAID_NOW = 'PN';
@@ -43,7 +44,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     protected $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscriptions")
+     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscription")
      * @ORM\JoinColumn(name="IdSubscription", referencedColumnName="id")
      *
      * @var Newscoop\PaywallBundle\Entity\Subscriptions
@@ -260,7 +261,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     /**
      * Set subscription.
      *
-     * @param Newscoop\PaywallBundle\Entity\Subscriptions $subscription
+     * @param Newscoop\PaywallBundle\Entity\Subscription $subscription
      */
     public function setSubscription($subscription)
     {
@@ -365,6 +366,30 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
      * @return float
      */
     public function getToPay()
+    {
+        return (float) $this->toPay;
+    }
+
+    /**
+     * Set to pay.
+     *
+     * @param float $toPay
+     *
+     * @return Newscoop\Entity\Subscription
+     */
+    public function setPrice($toPay)
+    {
+        $this->toPay = (float) $toPay;
+
+        return $this;
+    }
+
+    /**
+     * Get to pay.
+     *
+     * @return float
+     */
+    public function getPrice()
     {
         return (float) $this->toPay;
     }
@@ -739,9 +764,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     }
 
     /**
-     * Gets the value of discountTotal.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getDiscountTotal()
     {
@@ -749,11 +772,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     }
 
     /**
-     * Sets the value of discountTotal.
-     *
-     * @param int $discountTotal the discounts total
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setDiscountTotal($discountTotal)
     {
@@ -901,9 +920,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     }
 
     /**
-     * Gets the Is prolonged?.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function getProlonged()
     {
@@ -911,11 +928,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     }
 
     /**
-     * Sets the Is prolonged?.
-     *
-     * @param bool $prolonged the prolonged
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setProlonged($prolonged)
     {

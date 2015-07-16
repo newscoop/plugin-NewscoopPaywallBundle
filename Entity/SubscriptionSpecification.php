@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rmuszynski1@gmail.com>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -9,11 +9,10 @@
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Subscription Specification entity
+ * Subscription Specification entity.
  *
  * @ORM\Entity()
  * @ORM\Table(name="plugin_paywall_subscription_specification")
@@ -24,63 +23,72 @@ class SubscriptionSpecification
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer", name="id")
+     *
      * @var int
      */
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscriptions", inversedBy="specification")
+     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscription", inversedBy="specification")
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id")
+     *
      * @var Newscoop\PaywallBundle\Entity\Subscriptions
      */
     protected $subscription;
 
     /**
      * @ORM\Column(type="integer", name="publication")
+     *
      * @var int
      */
     protected $publication;
 
     /**
      * @ORM\Column(type="integer", name="issue", nullable=true)
+     *
      * @var int
      */
     protected $issue;
 
     /**
      * @ORM\Column(type="integer", name="section", nullable=true)
+     *
      * @var int
      */
     protected $section;
 
     /**
      * @ORM\Column(type="integer", name="article", nullable=true)
+     *
      * @var int
      */
     protected $article;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
+     *
      * @var string
      */
     protected $created_at;
 
     /**
      * @ORM\Column(type="boolean", name="is_active")
-     * @var boolean
+     *
+     * @var bool
      */
     protected $is_active;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->setCreatedAt(new \DateTime());
         $this->setIsActive(true);
         $this->subscription = new ArrayCollection();
     }
 
     /**
-     * Get specification id
+     * Get specification id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -88,7 +96,7 @@ class SubscriptionSpecification
     }
 
     /**
-     * Get subscription
+     * Get subscription.
      *
      * @return Newscoop\PaywallBundle\Entity\Subscriptions
      */
@@ -98,22 +106,23 @@ class SubscriptionSpecification
     }
 
     /**
-     * Get subscription
+     * Get subscription.
      *
-     * @param Newscoop\PaywallBundle\Entity\Subscriptions $subscription
+     * @param Newscoop\PaywallBundle\Entity\Subscription $subscription
+     *
      * @return Newscoop\PaywallBundle\Entity\Subscriptions
      */
     public function setSubscription($subscription)
     {
         $this->subscription = $subscription;
-        
+
         return $subscription;
     }
 
     /**
-     * Get publication id
+     * Get publication id.
      *
-     * @return integer
+     * @return int
      */
     public function getPublication()
     {
@@ -121,22 +130,23 @@ class SubscriptionSpecification
     }
 
     /**
-     * Set publication id
+     * Set publication id.
      *
-     * @param integer $publication
-     * @return integer
+     * @param int $publication
+     *
+     * @return int
      */
     public function setPublication($publication)
     {
         $this->publication = $publication;
-        
+
         return $this;
     }
 
     /**
-     * Get issue id
+     * Get issue id.
      *
-     * @return integer
+     * @return int
      */
     public function getIssue()
     {
@@ -144,22 +154,23 @@ class SubscriptionSpecification
     }
 
     /**
-     * Set issue id
+     * Set issue id.
      *
-     * @param integer $issue
-     * @return integer
+     * @param int $issue
+     *
+     * @return int
      */
     public function setIssue($issue)
     {
         $this->issue = $issue;
-        
+
         return $this;
     }
 
     /**
-     * Get section id
+     * Get section id.
      *
-     * @return integer
+     * @return int
      */
     public function getSection()
     {
@@ -167,22 +178,23 @@ class SubscriptionSpecification
     }
 
     /**
-     * Set section id
+     * Set section id.
      *
-     * @param integer $section
-     * @return integer
+     * @param int $section
+     *
+     * @return int
      */
     public function setSection($section)
     {
         $this->section = $section;
-        
+
         return $this;
     }
 
     /**
-     * Get article id
+     * Get article id.
      *
-     * @return integer
+     * @return int
      */
     public function getArticle()
     {
@@ -190,22 +202,23 @@ class SubscriptionSpecification
     }
 
     /**
-     * Set article id
+     * Set article id.
      *
-     * @param integer $article
-     * @return integer
+     * @param int $article
+     *
+     * @return int
      */
     public function setArticle($article)
     {
         $this->article = $article;
-        
+
         return $this;
     }
 
     /**
-     * Get specification status
+     * Get specification status.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
@@ -213,20 +226,21 @@ class SubscriptionSpecification
     }
 
     /**
-     * Set specification status
+     * Set specification status.
      *
-     * @param boolean $is_active
-     * @return boolean
+     * @param bool $is_active
+     *
+     * @return bool
      */
     public function setIsActive($is_active)
     {
         $this->is_active = $is_active;
-        
+
         return $this;
     }
 
     /**
-     * Get specification create date
+     * Get specification create date.
      *
      * @return datetime
      */
@@ -236,9 +250,10 @@ class SubscriptionSpecification
     }
 
     /**
-     * Set specification create date
+     * Set specification create date.
      *
      * @param datetime $created_at
+     *
      * @return datetime
      */
     public function setCreatedAt(\DateTime $created_at)

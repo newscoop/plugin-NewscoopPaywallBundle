@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -238,9 +239,7 @@ class Discount implements DiscountInterface
     }
 
     /**
-     * Gets the value of type.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getType()
     {
@@ -248,11 +247,7 @@ class Discount implements DiscountInterface
     }
 
     /**
-     * Sets the value of type.
-     *
-     * @param string $type the type
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setType($type)
     {
@@ -262,9 +257,7 @@ class Discount implements DiscountInterface
     }
 
     /**
-     * Gets the value of value.
-     *
-     * @return decimal
+     * {@inheritdoc}
      */
     public function getValue()
     {
@@ -272,11 +265,7 @@ class Discount implements DiscountInterface
     }
 
     /**
-     * Sets the value of value.
-     *
-     * @param decimal $value the value
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setValue($value)
     {

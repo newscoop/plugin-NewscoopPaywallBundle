@@ -5,11 +5,12 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Services;
 
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
-use Newscoop\PaywallBundle\Entity\Subscriptions;
+use Newscoop\PaywallBundle\Entity\Subscription;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Doctrine\ORM\EntityManager;
 use Newscoop\PaywallBundle\Entity\Duration;
@@ -29,13 +30,13 @@ class PaywallService
     /**
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em,  UserService $userService)
+    public function __construct(EntityManager $em, UserService $userService)
     {
         $this->em = $em;
         $this->userService = $userService;
     }
 
-    public function filterRanges(Subscriptions $subscription, $periodId)
+    public function filterRanges(Subscription $subscription, $periodId)
     {
         $ranges = $subscription->getRanges()->filter(function (Duration $duration) use ($periodId) {
             return $duration->getId() == $periodId;
@@ -51,7 +52,7 @@ class PaywallService
      */
     public function getSubscriptionsByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
     {
-        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
             ->getListByCriteria($criteria, $returnQuery);
     }
 
@@ -143,7 +144,7 @@ class PaywallService
      */
     public function getSubscriptionRepository()
     {
-        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions');
+        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription');
     }
 
     /**
@@ -453,7 +454,7 @@ class PaywallService
      */
     public function getSubscriptionDetails($subscriptionId)
     {
-        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
             ->createQueryBuilder('s')
             ->select('s.type', 's.duration', 's.price', 's.currency', 'i.publication')
             ->innerJoin('s.specification', 'i', 'WITH', 'i.subscription = :id')
@@ -474,7 +475,7 @@ class PaywallService
      */
     public function getOneSubscriptionById($subscriptionId)
     {
-        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
             ->findOneBy(array(
                 'id' => $subscriptionId,
             ));
@@ -579,7 +580,7 @@ class PaywallService
      */
     public function getSubscriptionsConfig()
     {
-        $subscriptions = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+        $subscriptions = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
             ->findBy(array('is_active' => true));
 
         return $subscriptions;

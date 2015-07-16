@@ -5,15 +5,17 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Services;
 
 use Newscoop\PaywallBundle\Currency\Context\CurrencyContextInterface;
 use Sylius\Component\Currency\Converter\CurrencyConverterInterface;
 use Newscoop\PaywallBundle\Entity\Order;
 use Newscoop\PaywallBundle\Entity\OrderInterface;
-use Newscoop\PaywallBundle\Entity\Subscriptions;
+use Newscoop\PaywallBundle\Entity\Subscription;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Discount\DiscountProcessorInterface;
+use Newscoop\PaywallBundle\Entity\Duration;
 
 /**
  * Order service.
@@ -137,7 +139,7 @@ class OrderService
         }
     }
 
-    private function instantiateOrderItem(Subscriptions $subscription, $period)
+    private function instantiateOrderItem(Subscription $subscription, $period)
     {
         $specification = $subscription->getSpecification()->first();
         $userSubscription = $this->subscriptionService->create();
@@ -147,7 +149,6 @@ class OrderService
             'publicationId' => $specification->getPublication(),
             'toPay' => $this->converter->convert($subscription->getPrice(), $this->context->getCurrency()),
             'duration' => $this->createPeriodArray($period),
-            'discount' => $this->createDiscountArray($period), // TODO not used remove
             'currency' => $this->context->getCurrency(),
             'type' => 'T',
             'active' => false,
@@ -156,7 +157,7 @@ class OrderService
         return $this->subscriptionService->update($userSubscription, $subscriptionData);
     }
 
-    private function createDiscountArray($period)
+    private function createDiscountArray(Duration $period)
     {
         $discount = array();
         if ($period->getDiscount()) {

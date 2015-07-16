@@ -5,6 +5,7 @@
  * @copyright 2014 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Services;
 
 use Newscoop\Services\EmailService;
@@ -202,7 +203,7 @@ class NotificationsService
 
         $batch = 100;
         $steps = ($count > $batch) ? ceil($count / $batch) : 1;
-        for ($i = 0; $i < $steps; $i++) {
+        for ($i = 0; $i < $steps; ++$i) {
             $offset = $i * $batch;
 
             $query = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')

@@ -5,6 +5,7 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -46,7 +47,7 @@ class SubscriptionConfType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Newscoop\PaywallBundle\Entity\Subscriptions',
+            'data_class' => 'Newscoop\PaywallBundle\Entity\Subscription',
             'csrf_protection' => false,
         ));
     }

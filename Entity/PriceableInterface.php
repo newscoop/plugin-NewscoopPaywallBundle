@@ -5,10 +5,11 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-namespace Newscoop\PaywallBundle\Order;
+
+namespace Newscoop\PaywallBundle\Entity;
 
 /**
- * Price calculator interface.
+ * Priceable interface.
  */
 interface PriceableInterface
 {
@@ -25,4 +26,18 @@ interface PriceableInterface
      * @param int $price
      */
     public function setPrice($price);
+
+    /**
+     * Gets currency.
+     *
+     * @return string
+     */
+    public function getCurrency();
+
+    /**
+     * Sets currency.
+     *
+     * @param string $currency
+     */
+    public function setCurrency($currency);
 }

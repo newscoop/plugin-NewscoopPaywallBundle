@@ -1,13 +1,13 @@
 <?php
+
 /**
- * @package Newscoop
  * @author Paweł Mikołajczuk <pawel.mikolajczuk@sourcefabric.org>
  * @copyright 2012 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
 /**
- * Newscoop paypal_payment_form block plugin
+ * Newscoop paypal_payment_form block plugin.
  *
  * Type:     block
  * Name:     paypal_payment_form
@@ -21,7 +21,6 @@
  *     $content
  *
  * @return
- *
  */
 function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
 {
@@ -71,7 +70,7 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
     $html = '<form name="subscribe_content" action="'.$formData['paypal_url'].'" method="post" '.$params['html_code'].'>'."\n";
 
     if (isset($template)) {
-        $html .= "<input type=\"hidden\" name=\"tpl\" value=\"".$template->identifier."\" />\n";
+        $html .= '<input type="hidden" name="tpl" value="'.$template->identifier."\" />\n";
     }
 
     $html .= '<input type="hidden" name="cmd" value="_xclick">'."\n";
@@ -99,7 +98,7 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
 
     $html .= $content;
 
-    $html .= "<input type=\"submit\" name=\"submit_form\" id=\"paypal_form_submit\" value=\"".smarty_function_escape_special_chars($params['submit_button'])."\" ".$params['button_html_code']." />\n";
+    $html .= '<input type="submit" name="submit_form" id="paypal_form_submit" value="'.smarty_function_escape_special_chars($params['submit_button']).'" '.$params['button_html_code']." />\n";
 
     $html .= "</form>\n";
 

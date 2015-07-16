@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -30,10 +31,10 @@ class Duration
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Subscriptions", inversedBy="ranges")
+     * @ORM\ManyToOne(targetEntity="Subscription", inversedBy="ranges")
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id")
      *
-     * @var Subscriptions
+     * @var Subscription
      */
     protected $subscription;
 
@@ -96,11 +97,11 @@ class Duration
     /**
      * Sets the value of subscription.
      *
-     * @param Subscriptions $subscription the subscription
+     * @param Subscription $subscription the subscription
      *
      * @return self
      */
-    public function setSubscription(Subscriptions $subscription)
+    public function setSubscription(Subscription $subscription)
     {
         $this->subscription = $subscription;
 

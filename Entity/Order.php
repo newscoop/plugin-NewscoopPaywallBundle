@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -325,9 +326,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Gets the value of discountTotal.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getDiscountTotal()
     {
@@ -335,11 +334,7 @@ class Order implements OrderInterface
     }
 
     /**
-     * Sets the value of discountTotal.
-     *
-     * @param int $discountTotal the discount total
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setDiscountTotal($discountTotal)
     {
