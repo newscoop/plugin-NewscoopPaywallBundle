@@ -1,104 +1,139 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Newscoop\PaywallBundle\Validator\Constraints as PaywallValidators;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Translatable\Translatable;
 
 /**
- * Subscriptions entity
+ * Subscriptions entity.
  *
  * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\SubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_subscriptions")
+ * @Gedmo\TranslationEntity(class="SubscriptionTranslation")
  */
-class Subscriptions
+class Subscription implements Translatable, PriceableInterface
 {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer", name="id")
+     *
      * @var int
      */
     protected $id;
 
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(type="string", name="name")
+     *
      * @var string
      */
     protected $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Newscoop\PaywallBundle\Entity\SubscriptionSpecification", mappedBy="subscription")
+     * @ORM\OneToMany(targetEntity="SubscriptionSpecification", mappedBy="subscription")
+     *
      * @var array
      */
     protected $specification;
 
     /**
      * @ORM\Column(type="text", name="type")
+     *
      * @var string
      */
     protected $type;
 
     /**
-     * @ORM\Column(type="integer", name="ranges")
-     * @var int
+     * @ORM\OneToMany(targetEntity="Duration", mappedBy="subscription", cascade={"persist", "remove"})
+     *
+     * @var Doctrine\Common\Collections\ArrayCollection
      */
-    protected $range;
+    protected $ranges;
 
     /**
-     * @PaywallValidators\ContainsDecimal(entity="Newscoop\PaywallBundle\Entity\Subscriptions", property="price")
+     * @PaywallValidators\ContainsDecimal(entity="Subscription", property="price")
      * @ORM\Column(type="decimal", name="price")
+     *
      * @var decimal
      */
     protected $price;
 
     /**
      * @ORM\Column(type="string", name="currency")
+     *
      * @var string
      */
     protected $currency;
 
     /**
+     * @Gedmo\Translatable
      * @ORM\Column(type="text", name="description", nullable=true)
+     *
      * @var text
      */
     protected $description;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
+     *
      * @var string
      */
     protected $created_at;
 
     /**
      * @ORM\Column(type="boolean", name="is_active")
-     * @var boolean
+     *
+     * @var bool
      */
     protected $is_active;
 
     /**
      * @ORM\Column(type="boolean", name="is_default", nullable=true)
-     * @var boolean
+     *
+     * @var bool
      */
     protected $is_default;
+
+    /**
+     * @ORM\OneToMany(
+     *   targetEntity="SubscriptionTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
+    protected $translations;
+
+    /**
+     * @Gedmo\Locale
+     * Used locale to override Translation listener`s locale
+     * this is not a mapped field of entity metadata, just a simple property
+     */
+    public $locale;
 
     public function __construct()
     {
         $this->specification = new ArrayCollection();
         $this->setCreatedAt(new \DateTime());
         $this->setIsActive(true);
+        $this->ranges = new ArrayCollection();
+        $this->translations = new ArrayCollection();
     }
 
     /**
-     * Get subscription id
+     * Get subscription id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -106,7 +141,7 @@ class Subscriptions
     }
 
     /**
-     * Get subscription name
+     * Get subscription name.
      *
      * @return string
      */
@@ -116,9 +151,10 @@ class Subscriptions
     }
 
     /**
-     * Set subscription name
+     * Set subscription name.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return string
      */
     public function setName($name)
@@ -129,7 +165,7 @@ class Subscriptions
     }
 
     /**
-     * Get specification
+     * Get specification.
      *
      * @return array
      */
@@ -139,9 +175,9 @@ class Subscriptions
     }
 
     /**
-     * Get subscription type
+     * Get subscription type.
      *
-     * @return integer
+     * @return int
      */
     public function getType()
     {
@@ -149,10 +185,11 @@ class Subscriptions
     }
 
     /**
-     * Set subscription type
+     * Set subscription type.
      *
-     * @param  integer $type
-     * @return integer
+     * @param int $type
+     *
+     * @return int
      */
     public function setType($type)
     {
@@ -162,30 +199,7 @@ class Subscriptions
     }
 
     /**
-     * Get subscription range
-     *
-     * @return integer
-     */
-    public function getRange()
-    {
-        return $this->range;
-    }
-
-    /**
-     * Set subscription range
-     *
-     * @param  integer $range
-     * @return integer
-     */
-    public function setRange($range)
-    {
-        $this->range = $range;
-
-        return $this;
-    }
-
-    /**
-     * Get subscription price
+     * Get subscription price.
      *
      * @return decimal
      */
@@ -195,9 +209,10 @@ class Subscriptions
     }
 
     /**
-     * Set subscription price
+     * Set subscription price.
      *
-     * @param  decimal $price
+     * @param decimal $price
+     *
      * @return decimal
      */
     public function setPrice($price)
@@ -208,7 +223,7 @@ class Subscriptions
     }
 
     /**
-     * Get subscription currency
+     * Get subscription currency.
      *
      * @return string
      */
@@ -218,9 +233,10 @@ class Subscriptions
     }
 
     /**
-     * Set subscription currency
+     * Set subscription currency.
      *
-     * @param  string $currency
+     * @param string $currency
+     *
      * @return string
      */
     public function setCurrency($currency)
@@ -231,7 +247,7 @@ class Subscriptions
     }
 
     /**
-     * Get subscription description
+     * Get subscription description.
      *
      * @return text
      */
@@ -241,9 +257,10 @@ class Subscriptions
     }
 
     /**
-     * Set subscription description
+     * Set subscription description.
      *
-     * @param  text $description
+     * @param text $description
+     *
      * @return text
      */
     public function setDescription($description)
@@ -254,9 +271,9 @@ class Subscriptions
     }
 
     /**
-     * Get subscription status
+     * Get subscription status.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
@@ -264,10 +281,11 @@ class Subscriptions
     }
 
     /**
-     * Set subscription status
+     * Set subscription status.
      *
-     * @param  boolean $is_active
-     * @return boolean
+     * @param bool $is_active
+     *
+     * @return bool
      */
     public function setIsActive($is_active)
     {
@@ -277,7 +295,7 @@ class Subscriptions
     }
 
     /**
-     * Get subscription create date
+     * Get subscription create date.
      *
      * @return datetime
      */
@@ -287,9 +305,10 @@ class Subscriptions
     }
 
     /**
-     * Set subscription create date
+     * Set subscription create date.
      *
-     * @param  datetime $created_at
+     * @param datetime $created_at
+     *
      * @return datetime
      */
     public function setCreatedAt(\DateTime $created_at)
@@ -300,9 +319,9 @@ class Subscriptions
     }
 
     /**
-     * Get default
+     * Get default.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsDefault()
     {
@@ -310,15 +329,82 @@ class Subscriptions
     }
 
     /**
-     * Set is_default
+     * Set is_default.
      *
-     * @param  boolean $is_default
-     * @return boolean
+     * @param bool $is_default
+     *
+     * @return bool
      */
     public function setIsDefault($is_default)
     {
         $this->is_default = $is_default;
 
         return $this;
+    }
+
+    /**
+     * Gets the value of ranges.
+     *
+     * @return Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getRanges()
+    {
+        return $this->ranges;
+    }
+
+    /**
+     * Sets the value of ranges.
+     *
+     * @param Doctrine\Common\Collections\ArrayCollection $ranges the ranges
+     *
+     * @return self
+     */
+    public function setRanges(\Doctrine\Common\Collections\ArrayCollection $ranges)
+    {
+        $this->ranges = $ranges;
+
+        return $this;
+    }
+
+    /**
+     * Adds Subscription duration.
+     *
+     * @param Duration $duration Duration to add
+     *
+     * @return Duration
+     */
+    public function addRange(Duration $duration)
+    {
+        $this->ranges->add($duration);
+
+        return $this;
+    }
+
+    public function getObject()
+    {
+        return clone $this;
+    }
+
+    public function getContextCurrency()
+    {
+        return clone $this;
+    }
+
+    public function setTranslatableLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(SubscriptionTranslation $translation)
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
+        }
     }
 }

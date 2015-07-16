@@ -1,0 +1,65 @@
+
+{% import 'NewscoopPaywallBundle:Macros:buttons.html.twig' as buttons %}
+{% from 'NewscoopPaywallBundle:Macros:pagination.html.twig' import pagination %}
+{% import 'NewscoopPaywallBundle:Macros:modals.html.twig' as modals %}
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.toolbar.label.discounts'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+{% endblock %}
+{% block admin_content %}
+<div class="plugin-container">
+{% for flashMessage in app.session.flashbag.get('success') %}
+<div class="alert alert-success alert-dismissible font-fix" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{{ 'aes.btn.close'|trans}}</span></button>
+  <center>{{ flashMessage }}</center>
+</div>
+{% endfor %}
+    {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
+    <div id="configure-paywall" class="box_table">
+        <br>
+            {% if pagination|length > 0 %}
+            <div class="table">
+                <table class="table">
+                  <thead>
+                    <tr>
+                    <th>{{ knp_pagination_sortable(pagination, 'paywall.label.number'|trans, 'o.id') }}</th>
+                      <th>{{ knp_pagination_sortable(pagination, 'paywall.label.createdat'|trans, 'o.createdAt') }}</th>
+                      <th>{{ knp_pagination_sortable(pagination, 'paywall.label.total'|trans, 'o.total') }}</th>
+                      <th>{{ knp_pagination_sortable(pagination, 'paywall.label.user'|trans, 'o.user') }}</th>
+                      <th></th>
+                  </tr>
+              </thead>
+              <tbody>
+                {% for item in pagination %}
+                <tr>
+                    <td><a href="{{ path('paywall_plugin_userorder_show', {'id': item.id}) }}">#{{ '%09d'|format(item.id) }}</a></td>
+                    <td>{{ item.createdAt|date('Y-m-d H:i:s') }}</td>
+                    <td>{{ item.total }} {{ item.currency }}</td>
+                    <td>{{ item.user.firstName }} {{ item.user.lastName }} ({{item.user.email}})</td>
+                    <td>
+                        {{ buttons.show(path('paywall_plugin_userorder_show', {'id': item.id})) }}
+                        {{ buttons.edit(path('paywall_plugin_userorder_edit', {'id': item.id})) }}
+                        {{ buttons.delete(path('paywall_plugin_userorder_delete', {'id': item.id})) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <center>
+        <span class="alert alert-info">{{'paywall.datatable.label.norecords'|trans}}</span>
+        </center>
+        {% endif %}
+        {{ pagination(pagination) }}
+    </div>
+</div>
+</div>
+{{ modals.confirm('paywall.label.confirmation'|trans, 'paywall.label.removeitem'|trans, 'paywall.btn.delete'|trans)}}
+{% endblock %}

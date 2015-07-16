@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -13,7 +13,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Newscoop\PaywallBundle\Entity\Subscriptions;
+use Newscoop\PaywallBundle\Entity\Subscription;
+use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 
 class ManageSubscriptionsController extends Controller
 {
@@ -23,15 +24,17 @@ class ManageSubscriptionsController extends Controller
      */
     public function manageAction(Request $request)
     {
-        $subscription = new Subscriptions();
+        $subscription = new Subscription();
         $form = $this->createForm('subscriptionconf', $subscription);
         $em = $this->getDoctrine()->getManager();
-        $subscriptions = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-            ->findBy(array('is_active' => true));
+        $criteria = new SubscriptionCriteria();
+        $subscriptions = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
+            ->getListByCriteria($criteria, true)
+            ->getResult();
 
         return array(
             'subscriptions' => $subscriptions,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         );
     }
 
@@ -42,7 +45,7 @@ class ManageSubscriptionsController extends Controller
     {
         if ($request->isMethod('POST')) {
             $em = $this->getDoctrine()->getManager();
-            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+            $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                 ->findOneBy(array('id' => $id));
             $subscription->setIsActive(false);
             $em->flush();

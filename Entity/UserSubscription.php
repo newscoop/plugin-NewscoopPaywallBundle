@@ -1,22 +1,26 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity;
 
 use Newscoop\Entity\Publication;
 use Newscoop\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Newscoop\PaywallBundle\Discount\DiscountableInterface;
 
 /**
- * Subscription entity
+ * Subscription entity.
+ *
  * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\UserSubscriptionRepository")
  * @ORM\Table(name="plugin_paywall_user_subscriptions")
  */
-class UserSubscription
+class UserSubscription implements DiscountableInterface, ProlongableItemInterface, PriceableInterface
 {
     const TYPE_PAID = 'P';
     const TYPE_PAID_NOW = 'PN';
@@ -26,6 +30,7 @@ class UserSubscription
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer", name="Id")
+     *
      * @var int
      */
     protected $id;
@@ -33,38 +38,59 @@ class UserSubscription
     /**
      * @ORM\ManyToOne(targetEntity="Newscoop\Entity\User")
      * @ORM\JoinColumn(name="IdUser", referencedColumnName="Id")
+     *
      * @var Newscoop\Entity\User
      */
     protected $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscriptions")
+     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscription")
      * @ORM\JoinColumn(name="IdSubscription", referencedColumnName="id")
+     *
      * @var Newscoop\PaywallBundle\Entity\Subscriptions
      */
     protected $subscription;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Order", inversedBy="items")
+     * @ORM\JoinColumn(name="order_id", referencedColumnName="id", nullable=false)
+     *
+     * @var Order
+     */
+    protected $order;
+
+    /**
+     * @ORM\Column(type="integer", name="discount_total")
+     *
+     * @var int
+     */
+    protected $discountTotal = 0;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Newscoop\Entity\Publication")
      * @ORM\JoinColumn(name="IdPublication", referencedColumnName="Id")
+     *
      * @var Newscoop\Entity\Publication
      */
     protected $publication;
 
     /**
      * @ORM\Column(type="decimal", name="ToPay")
+     *
      * @var float
      */
     protected $toPay = 0.0;
 
     /**
      * @ORM\Column(name="Type")
+     *
      * @var string
      */
     protected $type;
 
     /**
      * @ORM\Column(name="Currency")
+     *
      * @var string
      */
     protected $currency;
@@ -72,67 +98,140 @@ class UserSubscription
     /**
      * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Trial")
      * @ORM\JoinColumn(name="trial_id", referencedColumnName="id")
+     *
      * @var Newscoop\PaywallBundle\Entity\Trial
      */
     protected $trial;
 
     /**
-     * Subscription status visible for admin
+     * Subscription status visible for admin.
+     *
      * @ORM\Column(name="Active")
+     *
      * @var string
      */
     protected $active;
 
     /**
      * @ORM\Column(type="datetime", name="created_at")
+     *
      * @var DateTime
      */
     protected $created_at;
 
     /**
      * @ORM\Column(type="datetime", name="expire_at", nullable=true)
+     *
      * @var DateTime
      */
     protected $expire_at;
 
     /**
-     * Custom field
+     * Custom field.
+     *
      * @ORM\Column(type="boolean", name="custom")
-     * @var boolean
+     *
+     * @var bool
      */
     protected $custom;
 
     /**
-     * Second custom field
+     * Second custom field.
+     *
      * @ORM\Column(type="boolean", name="custom_2")
-     * @var boolean
+     *
+     * @var bool
      */
     protected $customOther;
 
     /**
-     * To hide from users totally
+     * To hide from users totally.
+     *
      * @ORM\Column(type="boolean", name="is_active")
-     * @var boolean
+     *
+     * @var bool
      */
     protected $is_active;
 
     /**
+     * Is prolonged?
+     *
+     * @ORM\Column(type="boolean", name="prolonged")
+     *
+     * @var bool
+     */
+    protected $prolonged = false;
+
+    /**
      * @ORM\Column(type="datetime", name="notify_sent_first", nullable=true)
+     *
      * @var \DateTime
      */
     protected $notifySentLevelOne;
 
     /**
      * @ORM\Column(type="datetime", name="notify_sent_second", nullable=true)
+     *
      * @var \DateTime
      */
     protected $notifySentLevelTwo;
 
     /**
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
+     *
      * @var \DateTime
      */
     protected $updated;
+
+    /**
+     * @ORM\Column(type="array", name="duration")
+     *
+     * @var array
+     */
+    protected $duration;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Modification", mappedBy="orderItem", orphanRemoval=true, cascade={"all"})
+     *
+     * @var ArrayCollection
+     */
+    protected $modifications;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Discount", cascade={"persist"})
+     * @ORM\JoinTable(name="plugin_paywall_order_item_discount",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="order_item_id", referencedColumnName="Id")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="discount_id", referencedColumnName="id")
+     *      }
+     *  )
+     *
+     * @var Discount
+     */
+    protected $discounts;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="UserSubscription", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="Id", onDelete="SET NULL")
+     *
+     * @var UserSubscription
+     */
+    protected $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserSubscription", mappedBy="parent")
+     * @ORM\OrderBy({"created_at" = "DESC"})
+     */
+    protected $children;
+
+    /**
+     * @ORM\Column(type="datetime", name="starts_at", nullable=true)
+     *
+     * @var DateTime
+     */
+    protected $startsAt;
 
     public function __construct()
     {
@@ -145,10 +244,12 @@ class UserSubscription
         $this->type = self::TYPE_PAID;
         $this->notifySentLevelOne = null;
         $this->notifySentLevelTwo = null;
+        $this->modifications = new ArrayCollection();
+        $this->discounts = new ArrayCollection();
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -158,10 +259,9 @@ class UserSubscription
     }
 
     /**
-     * Set subscription
+     * Set subscription.
      *
-     * @param  Newscoop\PaywallBundle\Entity\Subscriptions $subscription
-     * @return void
+     * @param Newscoop\PaywallBundle\Entity\Subscription $subscription
      */
     public function setSubscription($subscription)
     {
@@ -171,7 +271,7 @@ class UserSubscription
     }
 
     /**
-     * Get subscription
+     * Get subscription.
      *
      * @return Newscoop\PaywallBundle\Entity\Subscription_specification
      */
@@ -181,10 +281,9 @@ class UserSubscription
     }
 
     /**
-     * Set user
+     * Set user.
      *
-     * @param  Newscoop\Entity\User $user
-     * @return void
+     * @param Newscoop\Entity\User $user
      */
     public function setUser(User $user)
     {
@@ -194,7 +293,7 @@ class UserSubscription
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return Newscoop\Entity\User
      */
@@ -204,9 +303,10 @@ class UserSubscription
     }
 
     /**
-     * Set publication
+     * Set publication.
      *
-     * @param  Newscoop\Entity\Publication  $publication
+     * @param Newscoop\Entity\Publication $publication
+     *
      * @return Newscoop\Entity\Subscription
      */
     public function setPublication(Publication $publication)
@@ -217,7 +317,7 @@ class UserSubscription
     }
 
     /**
-     * Get publication
+     * Get publication.
      *
      * @return Newscoop\Entity\Publication
      */
@@ -227,7 +327,7 @@ class UserSubscription
     }
 
     /**
-     * Get publication name
+     * Get publication name.
      *
      * @return string
      */
@@ -237,7 +337,7 @@ class UserSubscription
     }
 
     /**
-     * Get publication id
+     * Get publication id.
      *
      * @return int
      */
@@ -247,9 +347,10 @@ class UserSubscription
     }
 
     /**
-     * Set to pay
+     * Set to pay.
      *
-     * @param  float                        $toPay
+     * @param float $toPay
+     *
      * @return Newscoop\Entity\Subscription
      */
     public function setToPay($toPay)
@@ -260,7 +361,7 @@ class UserSubscription
     }
 
     /**
-     * Get to pay
+     * Get to pay.
      *
      * @return float
      */
@@ -270,9 +371,34 @@ class UserSubscription
     }
 
     /**
-     * Set type
+     * Set to pay.
      *
-     * @param  string                       $type
+     * @param float $toPay
+     *
+     * @return Newscoop\Entity\Subscription
+     */
+    public function setPrice($toPay)
+    {
+        $this->toPay = (float) $toPay;
+
+        return $this;
+    }
+
+    /**
+     * Get to pay.
+     *
+     * @return float
+     */
+    public function getPrice()
+    {
+        return (float) $this->toPay;
+    }
+
+    /**
+     * Set type.
+     *
+     * @param string $type
+     *
      * @return Newscoop\Entity\Subscription
      */
     public function setType($type)
@@ -283,7 +409,7 @@ class UserSubscription
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -293,7 +419,7 @@ class UserSubscription
     }
 
     /**
-     * Test if is trial
+     * Test if is trial.
      *
      * @return bool
      */
@@ -303,20 +429,24 @@ class UserSubscription
     }
 
     /**
-     * Set active
+     * Set active.
      *
-     * @param  bool                         $active
+     * @param bool $active
+     *
      * @return Newscoop\Entity\Subscription
      */
     public function setActive($active)
     {
-        $this->active = ((bool) $active) ? 'Y' : 'N';
+        $this->active = 'N';
+        if ($active) {
+            $this->active = 'Y';
+        }
 
         return $this;
     }
 
     /**
-     * Is active
+     * Is active.
      *
      * @return bool
      */
@@ -326,7 +456,8 @@ class UserSubscription
     }
 
     /**
-     * Get currency
+     * Get currency.
+     *
      * @return string
      */
     public function getCurrency()
@@ -335,7 +466,8 @@ class UserSubscription
     }
 
     /**
-     * Set currency
+     * Set currency.
+     *
      * @return string
      */
     public function setCurrency($currency)
@@ -346,7 +478,8 @@ class UserSubscription
     }
 
     /**
-     * Get trial
+     * Get trial.
+     *
      * @return Trial
      */
     public function getTrial()
@@ -355,7 +488,8 @@ class UserSubscription
     }
 
     /**
-     * Set trial
+     * Set trial.
+     *
      * @return Trial
      */
     public function setTrial($trial)
@@ -366,7 +500,7 @@ class UserSubscription
     }
 
     /**
-     * Get create date
+     * Get create date.
      *
      * @return datetime
      */
@@ -376,9 +510,10 @@ class UserSubscription
     }
 
     /**
-     * Set create date
+     * Set create date.
      *
-     * @param  datetime $created_at
+     * @param datetime $created_at
+     *
      * @return datetime
      */
     public function setCreatedAt(\DateTime $created_at)
@@ -389,7 +524,7 @@ class UserSubscription
     }
 
     /**
-     * Get expire date
+     * Get expire date.
      *
      * @return datetime
      */
@@ -399,9 +534,10 @@ class UserSubscription
     }
 
     /**
-     * Set expire date
+     * Set expire date.
      *
-     * @param  datetime $expire_at
+     * @param datetime $expire_at
+     *
      * @return datetime
      */
     public function setExpireAt(\DateTime $expire_at = null)
@@ -412,9 +548,9 @@ class UserSubscription
     }
 
     /**
-     * Get status
+     * Get status.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsActive()
     {
@@ -422,10 +558,11 @@ class UserSubscription
     }
 
     /**
-     * Set status
+     * Set status.
      *
-     * @param  boolean $is_active
-     * @return boolean
+     * @param bool $is_active
+     *
+     * @return bool
      */
     public function setIsActive($is_active)
     {
@@ -437,7 +574,7 @@ class UserSubscription
     /**
      * Gets the Custom field.
      *
-     * @return boolean
+     * @return bool
      */
     public function getCustom()
     {
@@ -447,7 +584,7 @@ class UserSubscription
     /**
      * Sets the Custom field.
      *
-     * @param boolean $custom the custom
+     * @param bool $custom the custom
      *
      * @return self
      */
@@ -461,7 +598,7 @@ class UserSubscription
     /**
      * Gets the Second custom field.
      *
-     * @return boolean
+     * @return bool
      */
     public function getCustomOther()
     {
@@ -471,7 +608,7 @@ class UserSubscription
     /**
      * Sets the Second custom field.
      *
-     * @param boolean $customOther the custom other
+     * @param bool $customOther the custom other
      *
      * @return self
      */
@@ -550,6 +687,324 @@ class UserSubscription
     public function setNotifySentLevelTwo(\DateTime $notifySentLevelTwo)
     {
         $this->notifySentLevelTwo = $notifySentLevelTwo;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of discount.
+     *
+     * @return array
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
+
+    /**
+     * Sets the value of discount.
+     *
+     * @param array $discount the discount
+     *
+     * @return self
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of duration.
+     *
+     * @return Duration
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * Sets the value of duration.
+     *
+     * @param array $duration the duration
+     *
+     * @return self
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of order.
+     *
+     * @return Order
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * Sets the value of order.
+     *
+     * @param Order $order the order
+     *
+     * @return self
+     */
+    public function setOrder(Order $order)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDiscountTotal()
+    {
+        return $this->discountTotal / 100;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDiscountTotal($discountTotal)
+    {
+        $this->discountTotal = $discountTotal * 100;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of modifications.
+     * Can filter modifications by type.
+     *
+     * @return ArrayCollection
+     */
+    public function getModifications($type = null)
+    {
+        if (null === $type) {
+            return $this->modifications;
+        }
+
+        return $this->modifications->filter(function (Modification $modification) use ($type) {
+            return $type === $modification->getLabel();
+        });
+    }
+
+    /**
+     * Sets the value of modifications.
+     *
+     * @param ArrayCollection $modifications the modifications
+     *
+     * @return self
+     */
+    public function setModifications(ArrayCollection $modifications)
+    {
+        $this->modifications = $modifications;
+
+        return $this;
+    }
+
+    public function addModification(Modification $modification)
+    {
+        if (!$this->hasModification($modification)) {
+            $modification->setOrderItem($this);
+            $this->modifications->add($modification);
+        }
+
+        return $this;
+    }
+
+    public function hasModification(Modification $modification)
+    {
+        return $this->modifications->contains($modification);
+    }
+
+    public function removeModification(Modification $modification)
+    {
+        if ($this->hasModification($modification)) {
+            $modification->setOrderItem(null);
+            $this->modifications->removeElement($modification);
+        }
+
+        return $this;
+    }
+
+    public function addDiscount($discount)
+    {
+        if (!$this->hasDiscount($discount)) {
+            $this->discounts->add($discount);
+        }
+
+        return $this;
+    }
+
+    public function hasDiscount($discount)
+    {
+        return $this->discounts->contains($discount);
+    }
+
+    public function removeDiscount($discount)
+    {
+        if ($this->hasDiscount($discount)) {
+            $this->discounts->removeElement($discount);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets the discounts.
+     *
+     * @return Discount
+     */
+    public function getDiscounts()
+    {
+        return $this->discounts;
+    }
+
+    /**
+     * Sets the discounts.
+     *
+     * @param ArrayCollection $discounts the discounts
+     *
+     * @return self
+     */
+    public function setDiscounts($discounts)
+    {
+        $this->discounts = $discounts;
+
+        return $this;
+    }
+
+    public function calculateToPay()
+    {
+        $this->calculateModificationsAndToPay();
+
+        return $this;
+    }
+
+    public function calculateModificationsAndToPay()
+    {
+        $this->discountTotal = 0;
+        $temp = 0;
+        $totalWithoutDiscount = (float) $this->toPay * $this->duration['value'];
+
+        foreach ($this->modifications as $modification) {
+            $temp = $this->toPay + $modification->getAmount();
+        }
+
+        foreach ($this->discounts as $discount) {
+            if ($discount->getCountBased() && $this->duration['value'] > 1) {
+                $temp -= $temp * $discount->getValue();
+            }
+        }
+
+        $this->toPay = $totalWithoutDiscount;
+        if ($temp !== 0) {
+            $this->discountTotal = ($totalWithoutDiscount - (round($temp, 2) * $this->duration['value'])) * 100;
+        }
+
+        if ($this->toPay < 0) {
+            $this->toPay = 0;
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProlonged()
+    {
+        return $this->prolonged;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setProlonged($prolonged)
+    {
+        $this->prolonged = $prolonged;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of parent.
+     *
+     * @return UserSubscription
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * Sets the value of parent.
+     *
+     * @param UserSubscription $parent the parent
+     *
+     * @return self
+     */
+    public function setParent(UserSubscription $parent)
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of children.
+     *
+     * @return mixed
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Sets the value of children.
+     *
+     * @param mixed $children the children
+     *
+     * @return self
+     */
+    public function setChildren($children)
+    {
+        $this->children = $children;
+
+        return $this;
+    }
+
+    /**
+     * Gets the value of startsAt.
+     *
+     * @return DateTime
+     */
+    public function getStartsAt()
+    {
+        return $this->startsAt;
+    }
+
+    /**
+     * Sets the value of startsAt.
+     *
+     * @param DateTime $startsAt the starts at
+     *
+     * @return self
+     */
+    public function setStartsAt(\DateTime $startsAt)
+    {
+        $this->startsAt = $startsAt;
 
         return $this;
     }

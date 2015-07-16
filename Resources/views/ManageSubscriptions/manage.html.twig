@@ -40,7 +40,7 @@ $(document).ready(function(){
         var dataTableCell = $(this).parent();
         var dataTableRow = dataTableCell.parent().get(0);
         event.preventDefault();
-        $.post($(this).attr('href'), 
+        $.post($(this).attr('href'),
          function(data) {
             if (data.status) {
                 flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
@@ -76,11 +76,19 @@ $(document).ready(function(){
                 <tr id="{{ subscription.id }}">
                     <td>{{ subscription.name }}</td>
                     <td align="center">{{ subscription.type }}</td>
-                    <td align="center">{{ subscription.range }}</td>
+                    <td align="center">
+                    {% for range in subscription.ranges %}
+                        {{ range.value }}
+                        {% if range.attribute == 'month' %}
+                            {{ 'paywall.label.months'|trans }}
+                        {% endif %}
+                        {% if loop.last == false %}<br> {% endif %}
+                    {% endfor %}
+                    </td>
                     <td align="center">{{ subscription.price }}</td>
                     <td align="center">{{ subscription.currency }}</td>
                     <td>
-                        <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> | 
+                        <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> |
                         <a class="edit-subscription" href="{{ path('newscoop_paywall_admin_update', {'id': subscription.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>
                     </td>
                 </tr>

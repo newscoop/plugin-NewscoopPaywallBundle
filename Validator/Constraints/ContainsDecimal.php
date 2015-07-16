@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -20,7 +20,7 @@ class ContainsDecimal extends Constraint
     public $property;
 
     /**
-     * Use ContainsDecimalValidator class when actually performing the validation
+     * Use ContainsDecimalValidator class when actually performing the validation.
      *
      * @return Newscoop\PaywallBundle\Validator\Constraints\ContainsDecimalValidator
      */

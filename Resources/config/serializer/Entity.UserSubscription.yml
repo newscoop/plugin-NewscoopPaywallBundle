@@ -1,0 +1,68 @@
+Newscoop\PaywallBundle\Entity\UserSubscription:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: id
+        discountTotal:
+            expose: true
+            read_only: true
+            type: float
+            groups: ["list", "details"]
+            accessor:
+                getter: getDiscountTotal
+            serialized_name: discountTotal
+        toPay:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: toPay
+        currency:
+            expose: true
+            read_only: true
+            type: string
+            groups: ["list", "details"]
+            serialized_name: currency
+        discount:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: discount
+        duration:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: period
+        expire_at:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: expires_at
+        created_at:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: started_at
+        active:
+            expose: true
+            read_only: true
+            type: boolean
+            groups: ["list", "details"]
+            accessor:
+                getter: isActive
+            serialized_name: active
+        prolonged:
+            expose: true
+            read_only: true
+            type: boolean
+            groups: ["list", "details"]
+            serialized_name: prolonged
+        subscription:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: subscription

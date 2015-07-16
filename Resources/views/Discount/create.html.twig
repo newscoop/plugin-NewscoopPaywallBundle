@@ -1,0 +1,41 @@
+
+{% import 'NewscoopPaywallBundle:Macros:buttons.html.twig' as buttons %}
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+{% form_theme form 'NewscoopPaywallBundle::forms.html.twig' %}
+
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.toolbar.label.creatediscount'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+{% endblock %}
+{% block admin_content %}
+<div class="plugin-container">
+  {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 5} %}
+  {{ form_errors(form) }}
+  <form action="{{ path('paywall_plugin_discount_create') }}" method="post" class="form-horizontal" novalidate>
+
+      <div class="row">
+        <br>
+        <div class="col-md-10">
+          {{ form_row(form.name, {'attr': {'class': 'form-control  input-lg'}}) }}
+          {{ form_row(form.description, {'attr': {'class': 'form-control  input-sm'}}) }}
+          {{ form_row(form.countBased) }}
+          {{ form_row(form.type, {'attr': {'class': 'form-control'}}) }}
+          {{ form_row(form.value, {'attr': {'class': 'form-control  input-sm'}}) }}
+          {{ form_widget(form._token) }}
+        </div>
+      </div>
+      <hr>
+      <center>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i> {{ 'paywall.btn.create'|trans }}</button>
+        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {{ 'paywall.btn.cancel'|trans }}</a>
+    </div>
+    </center>
+  </form>
+</div>
+{% endblock %}

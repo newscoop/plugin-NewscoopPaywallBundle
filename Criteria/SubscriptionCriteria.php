@@ -1,10 +1,11 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Criteria;
 
 use Newscoop\Criteria;
@@ -35,9 +36,24 @@ class SubscriptionCriteria extends Criteria
     public $query;
 
     /**
-     * @var integer
+     * @var int
      */
     public $user;
+
+    /**
+     * @var int
+     */
+    public $order;
+
+    /**
+     * @var string
+     */
+    public $currency;
+
+    /**
+     * @var string
+     */
+    public $locale;
 
     /**
      * @var array

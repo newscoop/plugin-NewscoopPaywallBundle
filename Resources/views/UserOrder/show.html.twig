@@ -1,0 +1,108 @@
+
+{% import 'NewscoopPaywallBundle:Macros:buttons.html.twig' as buttons %}
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.toolbar.label.discounts'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+{% endblock %}
+{% block admin_content %}
+<div class="plugin-container">
+  {% for flashMessage in app.session.flashbag.get('success') %}
+  <div class="alert alert-success alert-dismissible font-fix" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{{ 'aes.btn.close'|trans}}</span></button>
+    <center>{{ flashMessage }}</center>
+  </div>
+  {% endfor %}
+  {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
+  <div id="configure-paywall" class="box_table">
+  <div class="pull-right">
+            {{ buttons.edit(path('paywall_plugin_userorder_edit', {'id': order.id})) }}
+        </div>
+        <br>
+        <hr>
+    <center>
+      <div class="table">
+      {% if order.items|length > 0 %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Subscription</th>
+              <th>Ordered at</th>
+              <th>{{ 'paywall.manage.label.firstNotify'|trans }}</th>
+              <th>{{ 'paywall.manage.label.secondNotify'|trans }}</th>
+              <th>{{ 'paywall.manage.label.expiresAt'|trans }}</th>
+              <th>Prolonged?</th>
+              <th>{{ 'paywall.step2.label.active'|trans }}</th>
+              <th>Period</th>
+              <th>Unit Price</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order.items %}
+            <tr>
+              <td style="width: 20%;"><b>{{ item.subscription.name }}</b><br>
+                <small>{{ item.subscription.description }}</small></td>
+                <td>{{ item.createdAt|date('Y-m-d H:i:s') }}</td>
+                <td>{% if item.notifySentLevelOne %}{{ item.notifySentLevelOne|date('Y-m-d H:i:s') }}{% else %}-{% endif %}</td>
+                <td>{% if item.notifySentLevelTwo %}{{ item.notifySentLevelTwo|date('Y-m-d H:i:s') }}{% else %}-{% endif %}</td>
+                <td>{% if item.expireAt %}{{ item.expireAt|date('Y-m-d H:i:s') }}{% else %}-{% endif %}</td>
+                <td>{% if item.prolonged %}
+                    <span class="label label-success">{{ 'paywall.manage.label.yes'|trans }}</span>
+                {% else %}
+                    <span class="label label-warning">{{ 'paywall.manage.label.no'|trans }}</span>
+                {% endif %}</td>
+                <td>{% if item.active %}
+                    <span class="label label-success">{{ 'paywall.manage.label.active'|trans }}</span>
+                {% else %}
+                    <span class="label label-warning">{{ 'paywall.manage.label.deactivated'|trans }}</span>
+                {% endif %}</td>
+                <td>{{ item.duration.value }} {% if item.duration.attribute == "month" %}month(s){% endif %}</td>
+                <td>{{ item.toPay / item.duration.value }} {{ item.currency }}</td>
+                <td>{{ item.toPay }} {{ item.currency }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td class="active text-right" colspan="10">
+                  <strong>Items total</strong>:
+                  <span class="amount">{{ order.itemsTotal }} {{order.currency}}</span>
+                </td>
+              </tr>
+              <tr class="promotion-discount">
+                <td colspan="4">
+                </td>
+                <td class="text-right" colspan="10">
+                  <strong>Discount total</strong>:
+                  <span class="amount">{{ order.discountTotal('discount') }} {{order.currency}}</span>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="text-right active text-success lead" colspan="10">
+                  <strong>Total</strong>:
+                  <span class="amount">{{order.total}}{{order.currency}}</span>
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+          {% else %}
+            <center><span class="alert alert-info">{{'paywall.datatable.label.norecords'|trans}}</span></center>
+            <hr>
+            <div class="form-actions">
+              <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {{ 'paywall.btn.back'|trans }}</a>
+          </div>
+          {% endif %}
+        </div>
+      </center>
+    </div>
+  </div>
+
+  {% endblock %}

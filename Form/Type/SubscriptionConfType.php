@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -20,7 +20,7 @@ class SubscriptionConfType extends AbstractType
         ->add('name', null, array(
             'label' => 'paywall.step1.form.label.name',
             'error_bubbling' => true,
-            'invalid_message' => 'paywall.step1.form.error.name'
+            'invalid_message' => 'paywall.step1.form.error.name',
         ))
         ->add('description', 'textarea', array(
             'label' => 'paywall.step1.form.label.description',
@@ -28,39 +28,27 @@ class SubscriptionConfType extends AbstractType
             'error_bubbling' => true,
         ))
         ->add('type', 'choice', array(
-            'label'  => 'paywall.step1.form.label.type',
-            'choices'   => array(
-                'publication'   => 'paywall.step1.form.select.type.publication',
-                'issue'   => 'paywall.step1.form.select.type.issue',
+            'label' => 'paywall.step1.form.label.type',
+            'choices' => array(
+                'publication' => 'paywall.step1.form.select.type.publication',
+                'issue' => 'paywall.step1.form.select.type.issue',
                 'section' => 'paywall.step1.form.select.type.section',
-                'article'   => 'paywall.step1.form.select.type.article',
-            )
-        ))
-        ->add('range', null, array(
-            'label' => 'paywall.step1.form.label.duration',
-            'attr' => array('min'=>'1'),
-            'error_bubbling' => true,
-            'invalid_message' => 'paywall.step1.form.error.duration'
+                'article' => 'paywall.step1.form.select.type.article',
+            ),
         ))
         ->add('price', null, array(
             'label' => 'paywall.step1.form.label.price',
             'error_bubbling' => true,
             'required' => true,
-            'invalid_message' => 'paywall.step1.form.error.price'
-        ))
-        ->add('currency', null, array(
-            'label' => 'paywall.step1.form.label.currency',
-            'error_bubbling' => true,
-            'required' => true,
-            'invalid_message' => 'paywall.step1.form.error.price'
+            'invalid_message' => 'paywall.step1.form.error.price',
         ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Newscoop\PaywallBundle\Entity\Subscriptions',
-            'csrf_protection' => false
+            'data_class' => 'Newscoop\PaywallBundle\Entity\Subscription',
+            'csrf_protection' => false,
         ));
     }
 

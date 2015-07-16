@@ -1,100 +1,108 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Subscription;
 
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 
 /**
- * Subscription Data holder
+ * Subscription Data holder.
  */
 class SubscriptionData
 {
     /**
-     * Subscription Class
+     * Subscription Class.
+     *
      * @var Subscription
      */
     public $subscription;
 
     /**
-     * Array of SubscriptionSections
-     * @var array
-     */
-    public $sections = array();
-
-    /**
-     * Array of Subscription Articles
-     * @var array
-     */
-    public $articles = array();
-
-    /**
-     * Array of Subscription Issues
-     * @var array
-     */
-    public $issues = array();
-
-    /**
-     * User id
+     * User id.
+     *
      * @var int
      */
     public $userId;
 
     /**
-     * Subscription id
+     * Subscription id.
+     *
      * @var int
      */
     public $subscriptionId;
 
     /**
-     * Publication Id
+     * Publication Id.
+     *
      * @var int
      */
     public $publicationId;
 
     /**
-     * To pay value
+     * To pay value.
+     *
      * @var decimal
      */
     public $toPay;
 
     /**
-     * Subscription start date
+     * Subscription start date.
+     *
      * @var \DateTime
      */
     public $startDate;
 
     /**
-     * How long subscription should be valid
+     * How long subscription should be valid.
+     *
      * @var int
      */
     public $days;
 
     /**
-     * How long subscription will be valid
+     * Subscription duration.
+     *
+     * @var array
+     */
+    public $duration;
+
+    /**
+     * Subscription discount.
+     *
+     * @var array
+     */
+    public $discount;
+
+    /**
+     * How long subscription will be valid.
+     *
      * @var int
      */
     public $paidDays;
 
     /**
-     * Currency
+     * Currency.
+     *
      * @var string
      */
     public $currency;
 
     /**
-     * Subscription status
-     * @var boolean
+     * Subscription status.
+     *
+     * @var bool
      */
     public $active;
 
     /**
-     * Status to hide it globally
-     * @var boolean
+     * Status to hide it globally.
+     *
+     * @var bool
      */
     public $is_active;
 
@@ -116,11 +124,6 @@ class SubscriptionData
             if (property_exists($this, $key)) {
                 $this->$key = $value;
             }
-        }
-
-        // fill paidDays with days value
-        if (!$this->paidDays) {
-            $this->paidDays = $this->days;
         }
 
         if (!$subscription) {

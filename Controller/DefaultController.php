@@ -11,7 +11,7 @@ use Newscoop\PaywallBundle\Events\PaywallEvents;
 class DefaultController extends BaseController
 {
     /**
-     * Show succes page or redirect to one
+     * Show succes page or redirect to one.
      *
      * @Route("/paywall/return/success")
      */
@@ -21,7 +21,7 @@ class DefaultController extends BaseController
     }
 
     /**
-     * Show error page or redirect to one
+     * Show error page or redirect to one.
      *
      * @Route("/paywall/return/error")
      */
@@ -31,7 +31,7 @@ class DefaultController extends BaseController
     }
 
     /**
-     * Show cancel page or redirect to one
+     * Show cancel page or redirect to one.
      *
      * @Route("/paywall/return/cancel")
      */
@@ -67,11 +67,11 @@ class DefaultController extends BaseController
         $response->setCharset('utf-8');
         $templatesService = $this->get('newscoop.templates.service');
 
-        $chosenSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+        $chosenSubscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
             ->findOneByName($request->get('subscription_name'));
 
         if (!$chosenSubscription) {
-            $response->setContent($templatesService->fetchTemplate("_paywall/error.tpl", array(
+            $response->setContent($templatesService->fetchTemplate('_paywall/error.tpl', array(
                 'msg' => $translator->trans('paywall.alert.notexists'),
             )));
 
@@ -81,7 +81,7 @@ class DefaultController extends BaseController
         $userSubscriptionInactive = $subscriptionService->getOneByUserAndSubscription($user->getId(), $chosenSubscription->getId(), 'N');
         $userSubscription = $subscriptionService->getOneByUserAndSubscription($user->getId(), $chosenSubscription->getId());
         if ($userSubscription || $userSubscriptionInactive) {
-            $response->setContent($templatesService->fetchTemplate("_paywall/error.tpl", array(
+            $response->setContent($templatesService->fetchTemplate('_paywall/error.tpl', array(
                 'msg' => $translator->trans('paywall.manage.error.exists.subscription'),
             )));
 
@@ -107,7 +107,7 @@ class DefaultController extends BaseController
 
         $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $subscription);
 
-        $response->setContent($templatesService->fetchTemplate("_paywall/success.tpl", array(
+        $response->setContent($templatesService->fetchTemplate('_paywall/success.tpl', array(
             'subscription' => $subscription,
         )));
 

@@ -28,7 +28,7 @@ function getDetails(typeDetails, durationDetails, priceDetails, currencyDetails 
 };
 
 $(document).ready(function(){
-    var translations = {'btn.deactivate': 'Deactivate', 
+    var translations = {'btn.deactivate': 'Deactivate',
         'label.active': 'Active',
         'label.deactivated': 'Deactivated',
         'btn.activate': 'Activate',
@@ -63,7 +63,7 @@ $(document).ready(function(){
         "bJQueryUI": true,
         "sPaginationType": "full_numbers",
         "bServerSide": true,
-        "sAjaxSource": Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'),
+        "sAjaxSource": Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: order.id}),
         "aoColumnDefs": [
             { 'bSortable': false, 'aTargets': [ 9 ] }
         ],
@@ -155,10 +155,10 @@ $(document).ready(function(){
          function(data) {
             if (data.status) {
                 if (obj.find('td.status').attr('id') === 'deactivated') {
-                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'));
+                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: order.id}));
                     flashMessage('{{ 'paywall.flash.message.subscription.activated'|trans }}');
                 } else {
-                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions'));
+                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: order.id}));
                     flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
                 }
             } else {

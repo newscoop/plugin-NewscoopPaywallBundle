@@ -1,0 +1,49 @@
+Newscoop\PaywallBundle\Entity\Discount:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: id
+        name:
+            expose: true
+            read_only: true
+            type: string
+            groups: ["list", "details"]
+            serialized_name: name
+        description:
+            expose: true
+            type: string
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: description
+        type:
+            expose: true
+            type: string
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: type
+        value:
+            expose: true
+            type: float
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: value
+        countBased:
+            expose: true
+            type: boolean
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: countBased
+        createdAt:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: created_at
+        updatedAt:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: updated_at

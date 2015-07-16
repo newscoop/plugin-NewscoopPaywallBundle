@@ -1,25 +1,24 @@
 <?php
 
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
- * @copyright 2014 Sourcefabric z.ú.
+ * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\Event;
 use Newscoop\EventDispatcher\Events\GenericEvent;
-use Newscoop\PaywallBundle\Entity\UserSubscription;
 
 /**
- * Base Controller
+ * Base Controller.
  */
 abstract class BaseController extends Controller
 {
     /**
-     * Dispatch event
+     * Dispatch event.
      *
      * @param string $name
      * @param Event  $event
@@ -30,12 +29,12 @@ abstract class BaseController extends Controller
     }
 
     /**
-     * Dispatch notification event
+     * Dispatch notification event.
      *
-     * @param string           $name
-     * @param UserSubscription $subscription
+     * @param string $name
+     * @param mixed  $subscription
      */
-    protected function dispatchNotificationEvent($name, UserSubscription $subscription)
+    protected function dispatchNotificationEvent($name, $subscription)
     {
         $this->dispatchEvent($name, new GenericEvent($subscription));
     }

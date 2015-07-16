@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @author Paweł Mikołajczuk <pawel.mikolajczuk@sourcefabric.org>
  * @copyright 2014 Sourcefabric o.p.s.
@@ -10,7 +10,7 @@
 namespace Newscoop\PaywallBundle\Meta;
 
 /**
- * Meta subscriptions class
+ * Meta subscriptions class.
  */
 class MetaSubscriptions
 {
@@ -26,7 +26,7 @@ class MetaSubscriptions
     }
 
     /**
-     * Get all subscriptions by given publication id and user id
+     * Get all subscriptions by given publication id and user id.
      *
      * @param int $publicationId Publication id
      * @param int $userId        User id
@@ -44,7 +44,7 @@ class MetaSubscriptions
             ->andWhere('s.user = :userId')
             ->setParameters(array(
                 'publicationId' => $publicationId,
-                'userId' => $userId
+                'userId' => $userId,
             ))
             ->orderBy('s.created_at', 'asc')
             ->getQuery()

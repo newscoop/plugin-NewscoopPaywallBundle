@@ -1,10 +1,11 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -13,7 +14,7 @@ use Newscoop\PaywallBundle\Entity\Settings;
 use Newscoop\PaywallBundle\Events\AdaptersEvent;
 
 /**
- * Event lifecycle management
+ * Event lifecycle management.
  */
 class LifecycleSubscriber implements EventSubscriberInterface
 {
@@ -31,7 +32,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
 
         $appDirectory = realpath(__DIR__.'/../../../../application/console');
         $this->cronjobs = array(
-            "Sends email notifications for expiring subscriptions" => array(
+            'Sends email notifications for expiring subscriptions' => array(
                 'command' => $appDirectory.' paywall:notifier:expiring',
                 'schedule' => '0 2 * * *',
             ),
@@ -42,7 +43,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
     {
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->updateSchema($this->getClasses(), true);
-
+        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__.'/../../../../library/Proxy');
         $adapter = new Settings();
         $adapter->setName('Paypal');
         $adapter->setValue('PaypalAdapter');
@@ -78,9 +79,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Clean up system preferences
-     *
-     * @return void
+     * Clean up system preferences.
      */
     private function removeSettings()
     {
@@ -90,7 +89,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Add plugin cron jobs
+     * Add plugin cron jobs.
      */
     private function addJobs()
     {
@@ -100,7 +99,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Remove plugin cron jobs
+     * Remove plugin cron jobs.
      */
     private function removeJobs()
     {
@@ -121,11 +120,17 @@ class LifecycleSubscriber implements EventSubscriberInterface
     private function getClasses()
     {
         return array(
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Subscriptions'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Subscription'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionSpecification'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Settings'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\UserSubscription'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Trial'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Discount'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Duration'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Order'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Modification'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Currency'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionTranslation'),
         );
     }
 }

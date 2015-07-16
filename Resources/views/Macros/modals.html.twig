@@ -1,0 +1,52 @@
+{% macro modal(title, message, button, icon, class) %}
+{% if icon is empty %}
+    {% set icon = 'ok' %}
+{% endif %}
+{% if class is empty %}
+    {% set class = 'btn-primary' %}
+{% endif %}
+
+<!-- Modal -->
+<div class="modal fade" id="modalAlert" tabindex="-1" role="dialog" aria-labelledby="modalAlertLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="{{'paywall.button.close'|trans}}"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modalAlertLabel">{{title}}</h4>
+      </div>
+      <div class="modal-body" style="font-size: 13px;">
+        {{message}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="modal-btn" class="btn {{class}}"><i class="glyphicon glyphicon-{{icon}}"></i> {{ button }}</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> {{'paywall.btn.cancel'|trans}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$(document).ready(function() {
+  var deleteButton;
+  $(document).on('click', '.btn-alert',function(e) {
+      e.preventDefault();
+      deleteButton = $(this);
+      if (deleteButton.is("a")) {
+          $('#alertModal #modal-btn').attr('href', deleteButton.attr('href'));
+      }
+  });
+
+  $('#modalAlert #modal-btn').click(function(e) {
+      if (deleteButton.is("button")) {
+          e.preventDefault();
+          deleteButton.closest('form').submit();
+      }
+  });
+});
+
+</script>
+{% endmacro %}
+
+{% macro confirm(title, message, button) %}
+    {% import _self as modals %}
+    {{ modals.modal(title, message, button, 'trash', 'btn-danger') }}
+{% endmacro %}

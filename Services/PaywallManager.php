@@ -1,6 +1,6 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
@@ -9,12 +9,11 @@
 namespace Newscoop\PaywallBundle\Services;
 
 use Doctrine\ORM\EntityManager;
-use Newscoop\PaywallBundle\Services\PaywallService;
 use Newscoop\PaywallBundle\Events\AdaptersEvent;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
- * PaywallManager class manages paywall adapters
+ * PaywallManager class manages paywall adapters.
  */
 class PaywallManager
 {
@@ -28,9 +27,9 @@ class PaywallManager
     private $dispatcher;
 
     /**
-     * Apply entity manager and injected services
+     * Apply entity manager and injected services.
      *
-     * @param EntityManager       $em
+     * @param EntityManager  $em
      * @param PaywallService $subscriptionService
      */
     public function __construct(EntityManager $em, PaywallService $subscriptionService, EventDispatcher $dispatcher)
@@ -41,7 +40,7 @@ class PaywallManager
     }
 
     /**
-     * Get adapters, if adapter doesn't exist, use default one
+     * Get adapters, if adapter doesn't exist, use default one.
      *
      * @return PaypalAdapter|object
      */
@@ -49,7 +48,7 @@ class PaywallManager
     {
         $adaptersEvent = $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
         $settings = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Settings')->findOneBy(array(
-            'is_active' =>true,
+            'is_active' => true,
         ));
 
         $adapter = null;
@@ -58,7 +57,6 @@ class PaywallManager
         }
 
         if (!class_exists($adapter)) {
-
             return new \Newscoop\PaywallBundle\Adapter\PaypalAdapter($this->subscriptionService);
         }
 

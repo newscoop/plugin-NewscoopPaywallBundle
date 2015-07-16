@@ -1,13 +1,13 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
 /**
- * Display all available subscriptions with its price
+ * Display all available subscriptions with its price.
  *
  * Type:     block
  * Name:     price_table
@@ -21,7 +21,6 @@
  *     $content
  *
  * @return
- *
  */
 function smarty_block_list_pricetable($params, $content, &$smarty, &$repeat)
 {

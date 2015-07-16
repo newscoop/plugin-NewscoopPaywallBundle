@@ -23,8 +23,15 @@ $(document).ready(function() {
     };
     $('#step2').hide();
     $('#step1').show();
+    $('#step3').hide();
     $('.alert.error').hide();
     var subscription_name = $('#subscriptionconf_name');
+    $("#next-last").click(function () {
+        $('#step2').show();
+        $('#step3').hide();
+
+        return false;
+    });
     $("#next").click(function () {  
         var titleIssue = $('#title-issue');
         var titleSection = $('#title-section');
@@ -44,7 +51,7 @@ $(document).ready(function() {
                     if (msg.status === true) {
                         var type = $('#subscriptionconf_type').val();
                         $('#step1').hide();
-                        $('#step2').show();
+                        $('#step3').show();
                         $('#titleBox').append(subscription_name.val());
                         $('#typeBox').append($('#subscriptionconf_type').val());
                         $('#durationBox').append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' '+translations['day']: $('#subscriptionconf_range').val()+' '+translations['days']);

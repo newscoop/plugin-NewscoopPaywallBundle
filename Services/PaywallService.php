@@ -1,67 +1,122 @@
 <?php
+
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Services;
 
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
+use Newscoop\PaywallBundle\Entity\Subscription;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Doctrine\ORM\EntityManager;
+use Newscoop\PaywallBundle\Entity\Duration;
+use Newscoop\Services\UserService;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * PaywallService manages user's subscriptions
+ * PaywallService manages user's subscriptions.
  */
 class PaywallService
 {
     /** @var EntityManager */
     protected $em;
 
+    protected $userService;
+
     /**
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, UserService $userService)
     {
         $this->em = $em;
+        $this->userService = $userService;
+    }
+
+    public function filterRanges(Subscription $subscription, $periodId)
+    {
+        $ranges = $subscription->getRanges()->filter(function (Duration $duration) use ($periodId) {
+            return $duration->getId() == $periodId;
+        });
+
+        return $ranges->first();
     }
 
     /**
-     * Gets all user's subscriptions by criteria
+     * Gets all available subscriptions by criteria.
      *
      * @return array
      */
-    public function getListByCriteria(SubscriptionCriteria $criteria)
+    public function getSubscriptionsByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
     {
-        return $this->getRepository()->getListByCriteria($criteria);
+        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
+            ->getListByCriteria($criteria, $returnQuery);
     }
 
     /**
-     * Gets all available subscriptions by criteria
+     * Gets all user subscriptions by criteria.
      *
-     * @return array
+     * @return mixed
      */
-    public function getSubscriptionsByCriteria(SubscriptionCriteria $criteria)
+    public function getUserSubscriptionsByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
     {
-        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
-            ->getListByCriteria($criteria);
+        return $this->getRepository()
+            ->getListByCriteria($criteria, $returnQuery)
+        ;
     }
 
     /**
-     * Gets all user subscriptions by criteria
+     * Gets currently logged in user's subscriptions.
      *
-     * @return array
+     * @param SubscriptionCriteria $criteria
+     * @param bool                 $returnQuery
+     *
+     * @return mixed
      */
-    public function getUserSubscriptionsByCriteria(SubscriptionCriteria $criteria)
+    public function getMySubscriptionsByCriteria(SubscriptionCriteria $criteria, $returnQuery = false)
     {
-        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
-            ->getListByCriteria($criteria);
+        return $this->getRepository()
+            ->getListByCriteria($criteria, $returnQuery, true)
+        ;
     }
 
     /**
-     * Count subscriptions by given criteria
+     * Filter my subscriptions.
+     *
+     * @param array $items
+     *
+     * @return ArrayCollection
+     */
+    public function filterMySubscriptions(array $items = array())
+    {
+        $orderItems = new ArrayCollection($items);
+        foreach ($orderItems as $item) {
+            foreach ($orderItems as $value) {
+                $parent = $item->getParent();
+                if ($item->getSubscription()->getId() == $value->getSubscription()->getId() &&
+                    $parent  == $value
+                ) {
+                    $value->setProlonged(true);
+                    $expiresAt = $this->getExpirationDate($item);
+                    $value->setToPay($parent->getToPay());
+                    $value->setExpireAt($parent->getExpireAt());
+                    $value->setDuration($parent->getDuration());
+                    $value->setDiscountTotal($parent->getDiscountTotal());
+                    $value->setActive($parent->isActive());
+                    $value->setCreatedAt($parent->getCreatedAt());
+                    $orderItems->removeElement($item);
+                }
+            }
+        }
+
+        return $orderItems;
+    }
+
+    /**
+     * Count subscriptions by given criteria.
      *
      * @param array $criteria
      *
@@ -73,7 +128,7 @@ class PaywallService
     }
 
     /**
-     * Gets user's subscriptions repository
+     * Gets user's subscriptions repository.
      *
      * @return EntityRepository
      */
@@ -83,9 +138,19 @@ class PaywallService
     }
 
     /**
-     * Gets user's subscriptions for issues by given Id
+     * Gets subscriptions repository.
      *
-     * @param integer $id Subscription Id to search for
+     * @return EntityRepository
+     */
+    public function getSubscriptionRepository()
+    {
+        return $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription');
+    }
+
+    /**
+     * Gets user's subscriptions for issues by given Id.
+     *
+     * @param int $id Subscription Id to search for
      *
      * @return array
      */
@@ -114,9 +179,9 @@ class PaywallService
     }
 
     /**
-     * Gets user's subscriptions for sections by given Id
+     * Gets user's subscriptions for sections by given Id.
      *
-     * @param integer $id Subscription Id to search for
+     * @param int $id Subscription Id to search for
      *
      * @return array
      */
@@ -143,9 +208,9 @@ class PaywallService
     }
 
     /**
-     * Gets user's subscriptions for articles by given Id
+     * Gets user's subscriptions for articles by given Id.
      *
-     * @param integer $id Subscription Id to search for
+     * @param int $id Subscription Id to search for
      *
      * @return array
      */
@@ -172,10 +237,10 @@ class PaywallService
     }
 
     /**
-     * Gets currently added user's Sections by given language Id and subscription Id
+     * Gets currently added user's Sections by given language Id and subscription Id.
      *
-     * @param integer $language       Language Id to search for
-     * @param integer $subscriptionId Subscription Id to search for
+     * @param int $language       Language Id to search for
+     * @param int $subscriptionId Subscription Id to search for
      *
      * @return array
      */
@@ -191,7 +256,7 @@ class PaywallService
     }
 
     /**
-     * Checks if user had trial
+     * Checks if user had trial.
      *
      * @param Newscoop\Entity\User $user User
      *
@@ -213,7 +278,7 @@ class PaywallService
     }
 
     /**
-     * Checks if trial is valid
+     * Checks if trial is valid.
      *
      * @param Newscoop\Entity\User $user User
      *
@@ -246,7 +311,7 @@ class PaywallService
     }
 
     /**
-     * Checks if trial is active
+     * Checks if trial is active.
      *
      * @param Newscoop\Entity\User $user User
      *
@@ -267,7 +332,7 @@ class PaywallService
     }
 
     /**
-     * Deactivates trial
+     * Deactivates trial.
      *
      * @param Newscoop\Entity\User $user User
      *
@@ -292,9 +357,9 @@ class PaywallService
     }
 
     /**
-     * Gets all available sections by given language Id
+     * Gets all available sections by given language Id.
      *
-     * @param integer $language Language Id to search for
+     * @param int $language Language Id to search for
      *
      * @return array
      */
@@ -309,10 +374,10 @@ class PaywallService
     }
 
     /**
-     * Gets currently added user's Issues by given language Id and subscription Id
+     * Gets currently added user's Issues by given language Id and subscription Id.
      *
-     * @param integer $language        Language Id to search for
-     * @param integer $subscription_id Subscription Id to search for
+     * @param int $language        Language Id to search for
+     * @param int $subscription_id Subscription Id to search for
      *
      * @return array
      */
@@ -328,9 +393,9 @@ class PaywallService
     }
 
     /**
-     * Gets all available Issues by given language Id
+     * Gets all available Issues by given language Id.
      *
-     * @param integer $language Language Id to search for
+     * @param int $language Language Id to search for
      *
      * @return array
      */
@@ -345,10 +410,10 @@ class PaywallService
     }
 
     /**
-     * Gets currently added user's Articles by given language Id and subscription Id
+     * Gets currently added user's Articles by given language Id and subscription Id.
      *
-     * @param integer $language        Language Id to search for
-     * @param integer $subscription_id Subscription Id to search for
+     * @param int $language        Language Id to search for
+     * @param int $subscription_id Subscription Id to search for
      *
      * @return array
      */
@@ -364,9 +429,9 @@ class PaywallService
     }
 
     /**
-     * Gets all available Articles by given language Id
+     * Gets all available Articles by given language Id.
      *
-     * @param integer $language Language Id to search for
+     * @param int $language Language Id to search for
      *
      * @return array
      */
@@ -381,17 +446,17 @@ class PaywallService
     }
 
     /**
-     * Gets subscription details by given subscription Id
+     * Gets subscription details by given subscription Id.
      *
-     * @param integer $subscriptionId Subscription Id to search for
+     * @param int $subscriptionId Subscription Id to search for
      *
      * @return array
      */
     public function getSubscriptionDetails($subscriptionId)
     {
-        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
             ->createQueryBuilder('s')
-            ->select('s.type', 's.range', 's.price', 's.currency', 'i.publication')
+            ->select('s.type', 's.duration', 's.price', 's.currency', 'i.publication')
             ->innerJoin('s.specification', 'i', 'WITH', 'i.subscription = :id')
             ->where('s.id = :id AND s.is_active = true')
             ->setParameter('id', $subscriptionId)
@@ -402,15 +467,15 @@ class PaywallService
     }
 
     /**
-     * Gets one defined subscription by given subscription Id
+     * Gets one defined subscription by given subscription Id.
      *
-     * @param integer $subscriptionId Subscription Id to search for
+     * @param int $subscriptionId Subscription Id to search for
      *
      * @return entity object
      */
     public function getOneSubscriptionById($subscriptionId)
     {
-        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
             ->findOneBy(array(
                 'id' => $subscriptionId,
             ));
@@ -419,9 +484,9 @@ class PaywallService
     }
 
     /**
-     * Activates Subscription by Id and returns its instance
+     * Activates Subscription by Id and returns its instance.
      *
-     * @param integer $id User subscription id
+     * @param int $id User subscription id
      *
      * @return UserSubscription
      */
@@ -430,13 +495,21 @@ class PaywallService
         $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
             ->findOneBy(array(
                 'id' => $id,
-            ));
+        ));
 
         if ($subscription) {
             $subscription->setActive(true);
             $subscription->setType('P');
+            $subscription->setProlonged(false);
+            $now = new \DateTime('now');
             if (!$subscription->getExpireAt()) {
                 $subscription->setExpireAt($this->getExpirationDate($subscription));
+                $subscription->setCreatedAt($now);
+            }
+
+            if ($subscription->getParent()) {
+                $subscription->getParent()->setActive(false);
+                $subscription->getParent()->setExpireAt($now);
             }
 
             $this->em->flush();
@@ -446,7 +519,7 @@ class PaywallService
     }
 
     /**
-     * Gets user subscription expiration date
+     * Gets user subscription expiration date.
      *
      * @param UserSubscription $userSubscription User subscription
      *
@@ -456,21 +529,37 @@ class PaywallService
     {
         $now = new \DateTime('now');
         $createdAt = $userSubscription->getCreatedAt();
+        if ($userSubscription->getParent()) {
+            $createdAt = $userSubscription->getStartsAt();
+        }
+
         // diffrence in days between subscription create date
         // and actual activation date
-        $daysDiffrence = (int) $now->diff($createdAt)->format("%a");
         $startDate = $createdAt ?: $now;
-        $days = $userSubscription->getSubscription()->getRange();
-        $days = $days + $daysDiffrence;
-        $timeSpan = new \DateInterval('P'.$days.'D');
+        $duration = $userSubscription->getDuration();
+        $value = $duration['value'];
+        $attribute = $duration['attribute'];
+        $timeSpan = null;
+        switch ($attribute) {
+            case Duration::MONTHS:
+                $diffrence = (int) $now->diff($createdAt)->format('%m');
+                $months = $value + $diffrence;
+                $timeSpan = new \DateInterval('P'.$months.'M');
+                break;
+            case Duration::DAYS:
+                $daysDiffrence = (int) $now->diff($createdAt)->format('%a');
+                $days = $value + $daysDiffrence;
+                $timeSpan = new \DateInterval('P'.$days.'D');
+                break;
+        }
 
         return $startDate->add($timeSpan);
     }
 
     /**
-     * Gets Subscription configuration(details) by given Subscription Id
+     * Gets Subscription configuration(details) by given Subscription Id.
      *
-     * @param integer $subscriptionId Subscription id
+     * @param int $subscriptionId Subscription id
      *
      * @return entity object
      */
@@ -485,30 +574,30 @@ class PaywallService
     }
 
     /**
-     * Gets active Subscriptions
+     * Gets active Subscriptions.
      *
      * @return array
      */
     public function getSubscriptionsConfig()
     {
-        $subscriptions = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscriptions')
+        $subscriptions = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
             ->findBy(array('is_active' => true));
 
         return $subscriptions;
     }
 
     /**
-     * Checks if Subscription by given User Id and Subscription Id exists
+     * Checks if Subscription by given User Id and Subscription Id exists.
      *
-     * @param integer $userId         User id
-     * @param integer $subscriptionId Subscription id
-     * @param string  $active         Active on inactive subscription
+     * @param int    $userId         User id
+     * @param int    $subscriptionId Subscription id
+     * @param string $active         Active on inactive subscription
      *
      * @return array
      */
     public function getOneByUserAndSubscription($userId, $subscriptionId, $active = 'Y')
     {
-        $subscription = $this->em->getRepository('Newscoop\PaywallBundle\Entity\UserSubscription')
+        $subscription = $this->getRepository()
             ->findOneBy(array(
                 'user' => $userId,
                 'subscription' => $subscriptionId,
@@ -522,8 +611,18 @@ class PaywallService
         return;
     }
 
+    public function getOrderItemBy($id, $period = null)
+    {
+        return $this->getRepository()->getOrderItemBy($id, $this->getCurrentUser(), $period);
+    }
+
+    public function getCurrentUser()
+    {
+        return $this->userService->getCurrentUser();
+    }
+
     /**
-     * Get one user subscription by user
+     * Get one user subscription by user.
      *
      * @param Newscoop\Entity\User|int $user User or user id
      *
@@ -546,10 +645,10 @@ class PaywallService
 
     /**
      * Gets all sections diffrent from already added user's sections by given language
-     * and publication
+     * and publication.
      *
-     * @param integer $languageId    Language Id
-     * @param integer $publicationId Publication Id
+     * @param int $languageId    Language Id
+     * @param int $publicationId Publication Id
      *
      * @return array
      */
@@ -571,10 +670,10 @@ class PaywallService
 
     /**
      * Gets all issues diffrent from already added user's issues by given language
-     * and publication
+     * and publication.
      *
-     * @param integer $languageId    Language Id
-     * @param integer $publicationId Publication Id
+     * @param int $languageId    Language Id
+     * @param int $publicationId Publication Id
      *
      * @return array
      */
@@ -596,10 +695,10 @@ class PaywallService
 
     /**
      * Gets all articles diffrent from already added user's articles by given language
-     * and publication
+     * and publication.
      *
-     * @param integer $languageId    Language Id
-     * @param integer $publicationId Publication Id
+     * @param int $languageId    Language Id
+     * @param int $publicationId Publication Id
      *
      * @return array
      */
@@ -620,7 +719,7 @@ class PaywallService
     }
 
     /**
-     * Update Subscription according to SubscritionData class
+     * Update Subscription according to SubscritionData class.
      *
      * @param UserSubscription $subscription
      * @param SubscriptionData $data
@@ -654,6 +753,14 @@ class PaywallService
             $subscription->setToPay($data->toPay);
         }
 
+        if (!empty($data->duration)) {
+            $subscription->setDuration($data->duration);
+        }
+
+        if (!empty($data->discount)) {
+            $subscription->setDiscount($data->discount);
+        }
+
         if ($data->subscriptionId) {
             $subscription->setSubscription($data->subscriptionId);
         }
@@ -675,13 +782,24 @@ class PaywallService
 
     public function save(UserSubscription $subscription)
     {
-        $this->em->persist($subscription);
-        $this->em->flush();
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->em->persist($subscription);
+            $this->em->flush();
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            // Rollback
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
     }
 
     /**
-     * Deactivates Subscription by Id and returns its instance
-     * @param  integer          $id - user subscription id
+     * Deactivates Subscription by Id and returns its instance.
+     *
+     * @param int $id - user subscription id
+     *
      * @return UserSubscription
      */
     public function deactivateById($id)
@@ -701,9 +819,9 @@ class PaywallService
     }
 
     /**
-     * Removes Subscription by Id and returns its instance
+     * Removes Subscription by Id and returns its instance.
      *
-     * @param integer $id User subscription id
+     * @param int $id User subscription id
      *
      * @return UserSubscription
      */

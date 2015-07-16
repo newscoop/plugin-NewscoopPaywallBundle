@@ -1,0 +1,225 @@
+
+{% import 'NewscoopPaywallBundle:Macros:buttons.html.twig' as buttons %}
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.toolbar.label.discounts'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('admin-style/table.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+<link rel="stylesheet" type="text/css" href="{{ asset('/js/select2/select2.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+{% endblock %}
+{% block admin_content %}
+<div class="plugin-container">
+  {% for flashMessage in app.session.flashbag.get('success') %}
+  <div class="alert alert-success alert-dismissible font-fix" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{{ 'aes.btn.close'|trans}}</span></button>
+    <center>{{ flashMessage }}</center>
+  </div>
+  {% endfor %}
+{% for flashMessage in app.session.flashbag.get('error') %}
+<div class="alert alert-danger alert-dismissible font-fix" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{{ 'aes.btn.close'|trans}}</span></button>
+  <center>{{ flashMessage }}</center>
+</div>
+  {% endfor %}
+  {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 3} %}
+  <div id="configure-paywall" class="box_table">
+  <div class="pull-right" style="display: inline-flex;">
+            {{ buttons.show(path('paywall_plugin_userorder_show', {'id': order.id})) }}
+            {{ buttons.create(path('paywall_plugin_userorder_createitem', {'id': order.id}), 'paywall.btn.createorderitem'|trans) }}
+        </div>
+<br>
+<hr>
+      <div class="table">
+      {% if order.items|length > 0 %}
+          <div id="users-subscriptions" style="padding: 10px 10px 30px 10px;">
+        <table cellpadding="0" cellspacing="0" border="0" class="display" style="width: 100%" id="users-subscriptionsTable">
+            <thead>
+                <tr>
+                    <th>{{ 'paywall.step1.form.select.type.publication'|trans }}</th>
+                    <th>{{ 'paywall.step1.form.label.subscription'|trans }}</th>
+                    <th>{{ 'paywall.label.unitprice'|trans }}</th>
+                    <th>{{ 'paywall.label.period'|trans }}</th>
+                    <th>{{ 'paywall.label.total'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.firstNotify'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.secondNotify'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.expiresAt'|trans }}</th>
+                    <th>{{ 'paywall.step2.label.active'|trans }}</th>
+                    <th>{{ 'paywall.manage.label.options'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+        </table>
+    </div>
+          {% else %}
+            <center>No order items.</center>
+            <hr>
+            <div class="form-actions">
+              <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> {{ 'paywall.btn.back'|trans }}</a>
+          </div>
+          {% endif %}
+        </div>
+
+    </div>
+  </div>
+  <script src="{{ asset('/js/select2/select2.js') }}"></script>
+<script type="text/javascript">
+function format(item) { return item.name; };
+function formatDiv(item) { return "<div class='select2-results'>" + item.name + "</div>"; }
+
+$(document).ready(function(){
+    var translations = {'btn.deactivate': 'Deactivate',
+        'label.active': 'Active',
+        'label.deactivated': 'Deactivated',
+        'btn.activate': 'Activate',
+        'label.addsubscription': 'Add user subscription'
+    };
+    var typeDetails = $('#typeDetails span');
+    var durationDetails = $('#durationDetails span');
+    var priceDetails = $('#priceDetails span');
+    var currencyDetails = $('#currencyDetails span');
+    $('#users-subscriptionsTable').css('font-size', '13px');
+
+    var oTable = $('#users-subscriptionsTable').dataTable( {
+        'oLanguage': {
+            'oPaginate': {
+                'sFirst': '{{ 'paywall.datatable.label.first'|trans }}',
+                'sNext': '{{ 'paywall.datatable.label.next'|trans }}',
+                'sPrevious': '{{ 'paywall.datatable.label.previous'|trans }}',
+                'sLast': '{{ 'paywall.datatable.label.last'|trans }}',
+            },
+            'sZeroRecords': '{{ 'paywall.datatable.label.norecords'|trans }}',
+            'sSearch': '',
+            'sInfo': '{{ 'paywall.datatable.table.info'|trans }}',
+            'sEmpty': '{{ 'paywall.datatable.table.noentries'|trans }}',
+            'sInfoFiltered': '{{ 'paywall.datatable.table.filtering'|trans }}',
+            'sLengthMenu': '{{ 'paywall.datatable.table.menu'|trans }}',
+            'sInfoEmpty': '',
+        },
+        "bProcessing": true,
+        "bAutoWidth": true,
+        "bPaging": true,
+        "sDom": 'RCf<"clear">rtilp',
+        "bJQueryUI": true,
+        "sPaginationType": "full_numbers",
+        "bServerSide": true,
+        "sAjaxSource": Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: {{ order.id }}}),
+        "aoColumnDefs": [
+            { 'bSortable': false, 'aTargets': [ 8 ] }
+        ],
+        "aoColumns" : [
+            { "mData": "publication" },
+            { "mData": "subscription" },
+            { "mData": "topay" },
+            { "mData": "period" },
+            { "mData": "total" },
+            { "mData": "firstNotify" },
+            { "mData": "secondNotify" },
+            { "mData": "expiresAt" },
+            { "mData": "active", "sClass": "status"},
+            { "mData": null, "sWidth": "28%"},
+        ],
+        fnRowCallback: function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+                $('td:eq(0)', nRow).parent().attr('id', aData['id']);
+                if (aData['active'])
+                {
+                    $('td:eq(8)', nRow).attr('id','active');
+                    $('td:eq(8)', nRow).html("{{ 'paywall.manage.label.active'|trans }}");
+                } else {
+                    $('td:eq(8)', nRow).attr('id','deactivated');
+                    $('td:eq(8)', nRow).html("{{ 'paywall.manage.label.deactivated'|trans }}");
+                }
+                if (aData['firstNotify']) {
+                    $('td:eq(5)', nRow).html(aData['firstNotify']['date']);
+                } else {
+                    $('td:eq(5)', nRow).html('-');
+                }
+
+                if (aData['secondNotify']) {
+                    $('td:eq(6)', nRow).html(aData['secondNotify']['date']);
+                } else {
+                    $('td:eq(6)', nRow).html('-');
+                }
+
+                if (aData['expiresAt']) {
+                    $('td:eq(7)', nRow).html(aData['expiresAt']['date']);
+                } else {
+                    $('td:eq(7)', nRow).html('-');
+                }
+
+                $('td:eq(9)', nRow).empty();
+                $('td:eq(9)', nRow).append("<a class='details-subscription btn btn-xs btn-default' href='"+Routing.generate('newscoop_paywall_userssubscriptions_editsubscription', {'id': aData['id']})+"'><span class=\"glyphicon glyphicon-edit\"></span> {{ 'paywall.btn.edit'|trans }}</a>");
+                $('td:eq(9)', nRow).append("<a class='delete-action btn btn-xs btn-default' id="+aData['id']+" href='"+Routing.generate('newscoop_paywall_userssubscriptions_delete', {'id': aData['id']})+"'><span class=\"glyphicon glyphicon-trash\"></span> {{ 'paywall.btn.delete'|trans }}</a>");
+                if (aData['active']) {
+                    $('td:eq(9)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_deactivate', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-remove-circle\"></span> {{ 'paywall.btn.deactivate'|trans }}</a>");
+                } else {
+                    $('td:eq(9)', nRow).append(" <a class='change-status btn btn-xs btn-default' id="+aData['id']+" href="+Routing.generate('newscoop_paywall_userssubscriptions_activate', {'id': aData['id']})+"><span class=\"glyphicon glyphicon-ok-circle\"></span> {{ 'paywall.btn.activate'|trans }}</a>");
+                }
+        },
+    });
+
+    function refreshTable(tableId, urlData)
+    {
+      $.getJSON(urlData, null, function( json )
+      {
+        table = $(tableId).dataTable();
+        oSettings = table.fnSettings();
+
+        table.fnClearTable(this);
+
+        for (var i=0; i<json.aaData.length; i++)
+        {
+          table.oApi._fnAddData(oSettings, json.aaData[i]);
+        }
+
+        oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+        table.fnDraw();
+      });
+    }
+
+    $('#users-subscriptionsTable').on('click', '.change-status', function(event){
+        var id = $(this).attr('id');
+        var obj = $("#"+id);
+        event.preventDefault();
+        $.post($(this).attr('href'),
+         function(data) {
+            if (data.status) {
+              console.log(obj.find('td.status').attr('id'));
+                if (obj.find('td.status').attr('id') === 'deactivated') {
+                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: {{ order.id }}}));
+                    flashMessage('{{ 'paywall.flash.message.subscription.activated'|trans }}');
+                } else {
+                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: {{ order.id }}}));
+                    flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
+                }
+            } else {
+                flashMessage('{{ 'paywall.flash.message.error'|trans }}', 'error');
+            }
+        });
+    });
+
+    $('#users-subscriptionsTable').on('click', '.delete-action', function(event){
+        var id = $(this).attr('id');
+        var obj = $("tr#"+id);
+        event.preventDefault();
+        $.post($(this).attr('href'),
+         function(data) {
+            if (data.status) {
+                flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
+                obj.remove();
+            } else {
+                flashMessage('{{ 'paywall.flash.message.error'|trans }}', 'error');
+            }
+        });
+    });
+
+    $('.dataTables_filter label input').addClass('form-control input-sm');
+    $('.dataTables_filter label input').attr('placeholder', '{{ 'paywall.search'|trans }}');
+});
+</script>
+  {% endblock %}

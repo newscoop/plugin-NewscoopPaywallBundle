@@ -80,9 +80,6 @@ div.td {
 .user-details .user-info-block {width: 100%; position: absolute; top: 55px; background: rgb(255, 255, 255); z-index: 0; padding-top: 35px;}
 .user-info-block .user-heading {width: 100%; text-align: center; margin: 10px 0 0;}
 .user-info-block .navigation {float: left; width: 100%; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid #428BCA; border-top: 1px solid #428BCA;}
-.navigation li {float: left; margin: 0; padding: 0;}
-.navigation li a {padding: 20px 30px; float: left;}
-.navigation li.active a {background: #428BCA; color: #fff;}
 .user-info-block .user-body {float: left; padding: 5%; width: 90%;}
 .user-body .tab-content > div {float: left; width: 100%;}
 .user-body .tab-content h4 {width: 100%; margin: 10px 0; color: #333;}
@@ -97,4 +94,8 @@ div.td {
 #users-subscriptionsTable_length label select {
     display: inline;
     width: 68px;
+}
+
+.label, thead tr th  {
+    text-transform: uppercase;
 }

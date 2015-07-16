@@ -1,13 +1,13 @@
 <?php
+
 /**
- * @package Newscoop
  * @author Paweł Mikołajczuk <pawel.mikolajczuk@sourcefabric.org>
  * @copyright 2012 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
 
 /**
- * Newscoop subscribe_form block plugin
+ * Newscoop subscribe_form block plugin.
  *
  * Type:     block
  * Name:     subscribe_form
@@ -21,7 +21,6 @@
  *     $p_content
  *
  * @return
- *
  */
 function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat)
 {
@@ -67,10 +66,10 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
 
     $matched = array();
     $types = array(
-        'publication'   => 4,
-        'issue'         => 3,
-        'section'       => 2,
-        'article'       => 1,
+        'publication' => 4,
+        'issue' => 3,
+        'section' => 2,
+        'article' => 1,
     );
     asort($types);
 
@@ -118,7 +117,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/subscriptions/get'.$anchor.'" method="post" '.$p_params['html_code'].'>'."\n";
 
     if (isset($template)) {
-        $html .= "<input type=\"hidden\" name=\"tpl\" value=\"".$template->identifier."\" />\n";
+        $html .= '<input type="hidden" name="tpl" value="'.$template->identifier."\" />\n";
     }
 
     foreach ($context->url->form_parameters as $param) {
@@ -158,15 +157,15 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
                         str_replace('%type%', $definition['type'], $optionText)
             ))).'</option>'."\n";
         }
-        $html  .= "<select name=\"subscription_name\">".$options."</select>";
+        $html  .= '<select name="subscription_name">'.$options.'</select>';
     }
 
     $html .= $p_content;
 
-    $html .= "<input type=\"submit\" name=\"submit_comment\" "
-    ."id=\"subscribe_content_submit\" value=\""
+    $html .= '<input type="submit" name="submit_comment" '
+    .'id="subscribe_content_submit" value="'
     .smarty_function_escape_special_chars($p_params['submit_button'])
-    ."\" ".$p_params['button_html_code']." />\n";
+    .'" '.$p_params['button_html_code']." />\n";
     $html .= "</form>\n";
 
     return $html;

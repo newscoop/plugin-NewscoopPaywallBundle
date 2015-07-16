@@ -1,58 +1,30 @@
-NewscoopPaywallBundle
+Newscoop Paywall Bundle
 =====================
 
-NewscoopPaywallBundle is a simple, powerful plugin that allows online publishers to sell access to their content of the publications, issues, sections, articles.
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/newscoop/plugin-NewscoopPaywallBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/newscoop/plugin-NewscoopPaywallBundle/?branch=master)
+[![Code Climate](https://codeclimate.com/github/newscoop/plugin-NewscoopPaywallBundle/badges/gpa.svg)](https://codeclimate.com/github/newscoop/plugin-NewscoopPaywallBundle)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/b86606ea-4910-4f65-bef0-32a0efc07b30/mini.png)](https://insight.sensiolabs.com/projects/b86606ea-4910-4f65-bef0-32a0efc07b30)
+
+Newscoop Paywall Bundle is a simple and powerful plugin that allows online publishers to monetize their content.
 
 Features:
 =====================
-###Define and add new subscriptions by:
-- type (`Publication`, `Issue`, `Section`, `Article`)
-- price
-- duration
-- currency
 
-###Add subscription specification by defined subscription type
+- creating publication, issue, section, article aware subscriptions,
+- email notifications,
+- ordered subscription management,
+- discounts (supports percentage discounts at the moment),
+- possibility to define subscription duration/period (supports `months` option at the moment),
+- supports diffrent currencies
+- renewals
+- imports live exchange rates from Central European Bank and Central Bank of Azerbaijan
+- partial support for subscriptions' translations (subscription name and description is translatable)
+- API
+- smarty functions (see `Samples` section below)
 
-###Manage defined subscriptions
- * delete subscriptions
- * edit subscriptions
-- search defined subscriptions by:
-    - user
-    - subscription type (publication, issue, section, article)
-    - duration in days
-    - price
-    - currency
+This plugin realizes only "offline" payments, there is no payment gateways implementation yet, which can be used at the moment. However, there is a PayPal integration built-in.
 
-###Management of existing user subscriptions
- * assignee existing subscriptions to individual users
- * activate/deactivate user subscriptions
- * edit defined user subscription
- * view subscription details while adding a user subscription
-- search user subscriptions by:
-    - username
-    - publication name
-    - to pay amount
-    - currency
-    - status (`Active`/`Deactivated`)
-    - payment type (`Paid`, `Paid now`, `Trial`)
-
-###Specification management of the user subscription
-- add Issues, Sections, Articles to each user-defined subscriptions by:
-    - Individual languages (show all `Issues`|`Sections`|`Articles` by publication language)
-    - Regardless of the languages (show all `Issues`|`Sections`|`Articles` diffrent than publication language)
-    - start date
-    - paid days
-    - days
-- edit all the specifications (`Issues`/`Sections`/`Articles`) of the user subscriptions by:
-    - start date
-    - paid days
-    - days
-- edit single specification
-- delete specifications
-
-###Paywall configuration
-- choose one of available payment service providers:
-    - Paypal is supported only at the moment (we will add more providers soon)
+In the future, this plugin will integrate a framework agnostic, multi-gateway payment processing library called [Omnipay](https://github.com/thephpleague/omnipay).
 
 Installing Newscoop Paywall Plugin Guide
 -------------
@@ -65,7 +37,8 @@ Installation is a quick process:
 ### Step 1: Installing plugin through our Newscoop Plugin System
 Run the command:
 ``` bash
-$ php application/console plugins:install "newscoop/newscoop-paywall-bundle" --env=prod
+$ php application/console plugins:install "newscoop/newscoop-paywall-bundle"
+$ php application/console assets:install public/
 ```
 Plugin will be installed to your project's `newscoop/plugins/Newscoop` directory.
 
@@ -74,7 +47,7 @@ Plugin will be installed to your project's `newscoop/plugins/Newscoop` directory
 Go to Newscoop Admin panel and then hit `Plugins` tab. Newscoop Paywall Plugin will show up there.
 
 
-Sample:
+Samples:
 -------
 ```
 Resources/doc/
@@ -89,4 +62,4 @@ This bundle is under the GNU General Public License v3. See the complete license
 
 About
 -------
-NewscoopPaywallBundle is a [Sourcefabric o.p.s](https://github.com/sourcefabric) initiative.
+Newscoop Paywall Bundle is a [Sourcefabric z.ú.](https://github.com/sourcefabric) initiative.

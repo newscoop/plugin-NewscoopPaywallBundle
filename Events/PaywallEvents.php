@@ -1,15 +1,15 @@
 <?php
 
 /**
- * @package Newscoop\PaywallBundle
  * @author Rafał Muszyński <rafal.muszynski@sourcefabric.org>
  * @copyright 2014 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Events;
 
 /**
- * Paywall events definitions
+ * Paywall events definitions.
  */
 class PaywallEvents
 {
