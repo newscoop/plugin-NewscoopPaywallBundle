@@ -1,5 +1,7 @@
 Plugins: Plug-iny
 paywall:
+    alert:
+        notexists: null
     title: Paywall
     search: Hledání...
     toolbar:
@@ -70,7 +72,7 @@ paywall:
             currency: 'Neplatný formát měny.'
             topay: 'Políčko s cenou je ve špatném formátu.'
             exists:
-                subscription: 'Zvolené předplatné pro tohoto uživatele již existuje.'
+                subscription: null
             select:
                 empty: 'Pole výběru nemůže zůstat prázdné!'
                 choose: 'Prosím vyberte provozovatele!'
@@ -84,7 +86,7 @@ paywall:
             deactivated: Deaktivovat
             users: Uživatelé
             subscriptions: Předplatné
-            paymenttype: 'Způsob platby'
+            paymenttype: null
             paid: Zaplaceno
             paidnow: Zaplaceno
             trial: Zkušební
@@ -113,6 +115,9 @@ paywall:
             adapters: 'Dostupní provozovatelé:'
             current: 'Aktuální provozovatel:'
             goback: 'Zpět k předplatným uživatelů'
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'Přidat nové předplatné'
@@ -144,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: 'Vyberte Paywall dodavatele'
         providername: Dodavatel
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

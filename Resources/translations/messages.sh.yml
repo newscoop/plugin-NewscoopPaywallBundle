@@ -1,5 +1,7 @@
 Plugins: Pluginovi
 paywall:
+    alert:
+        notexists: null
     title: null
     search: null
     toolbar:
@@ -113,6 +115,9 @@ paywall:
             adapters: null
             current: null
             goback: null
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'Dodaj novu pretplatu'
@@ -144,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: null
         providername: null
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

@@ -1,5 +1,7 @@
 Plugins: Wtyczki
 paywall:
+    alert:
+        notexists: null
     title: 'Newscoop Paywall Plugin'
     search: null
     toolbar:
@@ -70,7 +72,7 @@ paywall:
             currency: 'Waluta jest w nieprawidłowym formacie.'
             topay: 'Wartość pola "Do zapłaty" jest w złym formacie.'
             exists:
-                subscription: 'Wybrana subskrypcja już istnieje dla tego użytkownika.'
+                subscription: null
             select:
                 empty: 'Pole wyboru nie może być puste!'
                 choose: 'Proszę wybrać dostawcę!'
@@ -84,7 +86,7 @@ paywall:
             deactivated: Dezaktywowana
             users: Użytkownicy
             subscriptions: Subskrypcje
-            paymenttype: Typ
+            paymenttype: null
             paid: Płatne
             paidnow: 'Płatne teraz'
             trial: Próbne
@@ -113,6 +115,9 @@ paywall:
             adapters: 'Dostępni dostawcy płatności:'
             current: 'Obecny dostawca płatności:'
             goback: 'Wróć do subskrypcji użytkowników'
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'Dodaj nową subskrypcję'
@@ -144,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: null
         providername: null
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

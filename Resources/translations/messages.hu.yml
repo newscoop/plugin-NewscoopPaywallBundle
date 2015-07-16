@@ -1,5 +1,7 @@
 Plugins: Bővítmények
 paywall:
+    alert:
+        notexists: null
     title: 'Fizetési fal'
     search: Keresés...
     toolbar:
@@ -70,7 +72,7 @@ paywall:
             currency: 'A pénznem érvénytelen formátumú.'
             topay: 'A Fizetendő mező értékének rossz a formátuma.'
             exists:
-                subscription: 'A kiválasztott előfizetés már létezik ezen felhasználó számára.'
+                subscription: null
             select:
                 empty: 'Nem lehet üres a mező!'
                 choose: 'Válassz szolgáltatót!'
@@ -84,7 +86,7 @@ paywall:
             deactivated: Inaktiválva
             users: Felhasználók
             subscriptions: Előfizetések
-            paymenttype: 'Fizetés típusa'
+            paymenttype: null
             paid: Fizetett
             paidnow: 'Fizetve most'
             trial: Próbaolvasás
@@ -113,6 +115,9 @@ paywall:
             adapters: 'Létező szolgáltatók:'
             current: 'Jelenlegi szolgáltató:'
             goback: 'Vissza a felhasználói előfizetésekhez'
+            firstNotify: null
+            secondNotify: null
+            expiresAt: null
     menu:
         label:
             addsubscription: 'Új előfizetés hozzáadása'
@@ -144,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: 'Válassz fizetési fal szolgáltatót'
         providername: Szolgáltató
+        enableNotify: null
+        enableNotifydesc: null
+        fromemaillabel: null
+        fromemail: null

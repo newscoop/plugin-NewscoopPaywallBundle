@@ -1,5 +1,7 @@
 Plugins: Plugins
 paywall:
+    alert:
+        notexists: 'Selected subscription does not exist.'
     title: Paywall
     search: Search...
     toolbar:
@@ -84,7 +86,7 @@ paywall:
             deactivated: Deactivated
             users: Users
             subscriptions: Subscriptions
-            paymenttype: 'Payment type'
+            paymenttype: Type
             paid: Paid
             paidnow: 'Paid now'
             trial: Trial
@@ -113,6 +115,9 @@ paywall:
             adapters: 'Available providers:'
             current: 'Current provider:'
             goback: 'Go back to users subscriptions'
+            firstNotify: 'First reminder sent at'
+            secondNotify: 'Second reminder sent at'
+            expiresAt: 'Expires at'
     menu:
         label:
             addsubscription: 'Add new subscription'
@@ -144,3 +149,7 @@ paywall:
         membershipemaillabel: 'Notifications email'
         providersmall: 'Select Paywall provider'
         providername: Provider
+        enableNotify: 'Enable email notifications'
+        enableNotifydesc: 'Enables/disables email notifications'
+        fromemaillabel: 'Sender email'
+        fromemail: 'All notifications will be sent from this email.'

@@ -1,5 +1,7 @@
 Plugins: null
 paywall:
+    alert:
+        notexists: 'Selected subscription does not exist.'
     title: null
     search: null
     toolbar:
@@ -113,6 +115,9 @@ paywall:
             adapters: null
             current: null
             goback: null
+            firstNotify: 'First reminder sent at'
+            secondNotify: 'Second reminder sent at'
+            expiresAt: 'Expires at'
     menu:
         label:
             addsubscription: null
@@ -144,3 +149,7 @@ paywall:
         membershipemaillabel: null
         providersmall: null
         providername: null
+        enableNotify: 'Enable email notifications'
+        enableNotifydesc: 'Enables/disables email notifications'
+        fromemaillabel: 'Sender email'
+        fromemail: 'All notifications will be sent from this email.'
