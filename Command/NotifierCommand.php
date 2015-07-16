@@ -19,6 +19,9 @@ use Newscoop\PaywallBundle\Notifications\Emails;
  */
 class NotifierCommand extends ContainerAwareCommand
 {
+    private $input;
+    private $ouutput;
+
     protected function configure()
     {
         $this
@@ -30,7 +33,8 @@ class NotifierCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $notificationService = $this->getContainer()->getService('newscoop_paywall.notifications_service');
+            $this->input = $input;
+            $this->output = $output;
             $now = new \DateTime();
             $this->runProcessing($now, 7, Emails::NOTIFY_LEVEL_ONE);
             $this->runProcessing($now, 3, Emails::NOTIFY_LEVEL_TWO);
@@ -46,7 +50,7 @@ class NotifierCommand extends ContainerAwareCommand
         $notificationService = $this->getContainer()->getService('newscoop_paywall.notifications_service');
         $subscriptionsCount = $notificationService->getExpiringSubscriptionsCount(
             $now,
-            $subscriptionsCount,
+            $level,
             $daysBefore
         );
 
@@ -58,12 +62,12 @@ class NotifierCommand extends ContainerAwareCommand
                 $daysBefore
             );
 
-            if ($input->getOption('verbose')) {
-                $output->writeln('<info>'.$subscriptionsCount.' notifications sent... (which expire in '.$daysBefore.' days)</info>');
+            if ($this->input->getOption('verbose')) {
+                $this->output->writeln('<info>'.$subscriptionsCount.' notifications sent... (which expire in '.$daysBefore.' days)</info>');
             }
         } else {
-            if ($input->getOption('verbose')) {
-                $output->writeln('<info>There are no subscriptions expiring within '.$daysBefore.' day(s).<info>');
+            if ($this->input->getOption('verbose')) {
+                $this->output->writeln('<info>There are no subscriptions expiring within '.$daysBefore.' day(s).<info>');
             }
         }
     }

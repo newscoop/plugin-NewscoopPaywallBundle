@@ -70,12 +70,11 @@ class OrderController extends BaseController
      */
     public function calculateAction(Request $request, $currency)
     {
-        $em = $this->get('em');
         $items = $request->request->get('batchorder', array());
         $userService = $this->get('user');
         $response = new JsonResponse();
         try {
-            $user = $userService->getCurrentUser();
+            $userService->getCurrentUser();
         } catch (\Exception $e) {
             $response->setStatusCode(401);
 

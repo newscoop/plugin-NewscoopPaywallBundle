@@ -74,7 +74,6 @@ class CurrencyController extends BaseController
      */
     public function editAction(Request $request, Currency $currency)
     {
-        $isDefault = $currency->getDefault();
         $form = $this->createForm(new CurrencyType(), $currency);
         $em = $this->get('em');
         $translator = $this->get('translator');

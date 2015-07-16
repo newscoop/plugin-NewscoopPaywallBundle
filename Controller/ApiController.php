@@ -28,7 +28,6 @@ class ApiController extends FOSRestController
      */
     public function listAction(Request $request, $currency, $locale = null)
     {
-        $em = $this->get('em');
         $criteria = new SubscriptionCriteria();
         $criteria->locale = $locale;
         $paywallService = $this->get('paywall.subscription.service');
@@ -56,7 +55,6 @@ class ApiController extends FOSRestController
      */
     public function myAction(Request $request, $locale = null)
     {
-        $em = $this->get('em');
         $userService = $this->get('user');
         $user = $userService->getCurrentUser();
         $criteria = new SubscriptionCriteria();
