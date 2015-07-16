@@ -20,7 +20,7 @@ use Newscoop\PaywallBundle\Notifications\Emails;
 class NotifierCommand extends ContainerAwareCommand
 {
     private $input;
-    private $ouutput;
+    private $output;
 
     protected function configure()
     {
@@ -39,7 +39,7 @@ class NotifierCommand extends ContainerAwareCommand
             $this->runProcessing($now, 7, Emails::NOTIFY_LEVEL_ONE);
             $this->runProcessing($now, 3, Emails::NOTIFY_LEVEL_TWO);
         } catch (\Exception $e) {
-            $output->writeln('<error>Error occured: '.$e->getMessage().'</error>');
+            $this->output->writeln('<error>Error occured: '.$e->getMessage().'</error>');
 
             return false;
         }
