@@ -29,7 +29,6 @@ class NotifierCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // TODO spool email notifications
         try {
             $notificationService = $this->getContainer()->getService('newscoop_paywall.notifications_service');
             $now = new \DateTime();

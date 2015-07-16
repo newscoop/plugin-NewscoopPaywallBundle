@@ -126,11 +126,6 @@ class SubscriptionData
             }
         }
 
-        // fill paidDays with days value
-        /*if (!$this->paidDays) {
-            $this->paidDays = $this->days;
-        }*/
-
         if (!$subscription) {
             $this->subscription = new UserSubscription();
         } else {

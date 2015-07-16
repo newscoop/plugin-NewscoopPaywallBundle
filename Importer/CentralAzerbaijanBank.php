@@ -34,7 +34,7 @@ class CentralAzerbaijanBank extends AbstractImporter
     {
         $now = new \DateTime('now');
         $this->url = $this->url.$now->format('d.m.Y').'.xml';
-        $xml = @simplexml_load_file($this->url);
+        $xml = simplexml_load_file($this->url);
         if ($xml instanceof \SimpleXMLElement) {
             // base currency: AZN
             $this->updateOrCreate($managedCurrencies, $this->baseCurrency, 1.00);

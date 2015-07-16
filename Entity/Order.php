@@ -172,14 +172,6 @@ class Order implements OrderInterface
             return $this;
         }
 
-        /*foreach ($this->items as $existingItem) {
-            if ($item->equals($existingItem)) {
-                $existingItem->merge($item, false);
-
-                return $this;
-            }
-        }*/
-
         $this->items->add($item);
 
         return $this;

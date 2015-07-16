@@ -32,7 +32,7 @@ class EuropeanCentralBankImporter extends AbstractImporter
      */
     public function import(array $managedCurrencies = array())
     {
-        $xml = @simplexml_load_file($this->url);
+        $xml = simplexml_load_file($this->url);
         if ($xml instanceof \SimpleXMLElement) {
             // base currency: euro
             $this->updateOrCreate($managedCurrencies, $this->baseCurrency, 1.00);

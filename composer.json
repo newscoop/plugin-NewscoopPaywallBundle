@@ -14,8 +14,8 @@
     "require": {
         "php": ">=5.3.3",
         "ext-curl": "*",
-        "sylius/currency": "*",
-        "newscoop/plugins-installer": ">=v0.2",
+        "sylius/currency": "^0.14.0",
+        "newscoop/plugins-installer": ">=0.2",
         "mike182uk/paypal-ipn-listener": "*"
     },
     "autoload": {
