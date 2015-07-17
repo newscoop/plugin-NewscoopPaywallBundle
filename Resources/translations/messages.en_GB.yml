@@ -71,9 +71,9 @@ paywall:
             active: Status
     btn:
         create: Create
-        creatediscount: null
-        createorder: null
-        createorderitem: null
+        creatediscount: 'Create discount'
+        createorder: 'Create order'
+        createorderitem: 'Create order item'
         skip: Skip
         save: Save
         edit: Edit
@@ -86,8 +86,8 @@ paywall:
         add: Add
         deactivate: Deactivate
         activate: Activate
-        cancel: null
-        close: null
+        cancel: Cancel
+        close: Close
         createcurrency: null
     flash:
         message:
@@ -104,13 +104,13 @@ paywall:
             currency: 'Currency is in invalid format.'
             topay: 'To pay field value is in the wrong format.'
             exists:
-                subscription: null
+                subscription: 'Subscription already exists!'
             select:
                 empty: 'Select box can not be empty!'
                 choose: 'Please choose provider!'
         label:
             name: Name
-            description: null
+            description: Description
             duration: null
             options: Options
             username: Username
@@ -158,8 +158,8 @@ paywall:
             subscriptions.user: 'Manage User Subscriptions'
             configure.paywall: 'Configure Paywall'
             discounts: null
-            orders: null
-            currencies: null
+            orders: Orders
+            currencies: Currencies
     datatable:
         table:
             info: 'Showing _START_ to _END_ of _TOTAL_ entries'
@@ -178,12 +178,12 @@ paywall:
     error:
         fatal: 'An unexpected error occurred!'
         settingserror: 'An error occurred. Cannot save these settings.'
-        notadded: null
-        exists: null
-        notexists: null
+        notadded: 'Could not render added entry.'
+        exists: 'Resource named %resource% already exists.'
+        notexists: 'No item exists with this identifier.'
     success:
         settingssaved: 'Settings saved successfully.'
-        added: null
+        added: 'Added successfully.'
         removed: null
         saved: null
         created: null
