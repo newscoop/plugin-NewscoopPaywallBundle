@@ -1,5 +1,26 @@
 Plugins: Plugins
 paywall:
+    label:
+        defineduration: null
+        months: null
+        discount: null
+        unitprice: null
+        period: null
+        total: null
+        number: null
+        createdat: null
+        user: null
+        countbased: null
+        updatedat: null
+        discounttype: null
+        exchangerate: null
+        isactive: null
+        showing: null
+        code: null
+        isdefault: null
+        editcurrency: null
+        removeitem: null
+        confirmation: null
     alert:
         notexists: 'Selected subscription does not exist.'
     title: Paywall
@@ -10,13 +31,17 @@ paywall:
             manage: 'Manage Subscriptions'
             manageusers: 'Manage User Subscriptions'
             configure: 'Configure Paywall'
+            discounts: null
+            creatediscount: null
+            orders: null
+            createcurrency: null
     step1:
         header: 'Please specify the name and value for your new subscription. You can set up various different types of subscriptions, but just one after the other.'
         form:
             label:
                 name: 'Name of subscription:'
                 type: 'Type of subscription:'
-                duration: 'Duration of subscription in days:'
+                duration: null
                 price: 'Price:'
                 currency: 'Currency:'
                 description: 'Description:'
@@ -30,7 +55,7 @@ paywall:
                     article: Article
             error:
                 name: 'Subscription name can not be empty.'
-                duration: 'Duration field is invalid.'
+                duration: null
                 price: 'Price field is invalid.'
                 currency: 'Type currency.'
                 description: 'Type description.'
@@ -40,11 +65,15 @@ paywall:
             article: Articles
             publication: Publications
             type: Type
-            durationbox: Duration
+            durationbox: null
             price: Price
             currency: Currency
             active: Status
     btn:
+        create: null
+        creatediscount: null
+        createorder: null
+        createorderitem: null
         skip: Skip
         save: Save
         edit: Edit
@@ -57,6 +86,9 @@ paywall:
         add: Add
         deactivate: Deactivate
         activate: Activate
+        cancel: null
+        close: null
+        createcurrency: null
     flash:
         message:
             error: 'Something went wrong.'
@@ -72,13 +104,14 @@ paywall:
             currency: 'Currency is in invalid format.'
             topay: 'To pay field value is in the wrong format.'
             exists:
-                subscription: 'Chosen subscription already exists for this user.'
+                subscription: null
             select:
                 empty: 'Select box can not be empty!'
                 choose: 'Please choose provider!'
         label:
             name: Name
-            duration: 'Duration in days'
+            description: null
+            duration: null
             options: Options
             username: Username
             topay: 'To pay'
@@ -124,6 +157,9 @@ paywall:
             managesubscriptions: 'Manage Subscriptions'
             subscriptions.user: 'Manage User Subscriptions'
             configure.paywall: 'Configure Paywall'
+            discounts: null
+            orders: null
+            currencies: null
     datatable:
         table:
             info: 'Showing _START_ to _END_ of _TOTAL_ entries'
@@ -142,8 +178,15 @@ paywall:
     error:
         fatal: 'An unexpected error occurred!'
         settingserror: 'An error occurred. Cannot save these settings.'
+        notadded: null
+        exists: null
+        notexists: null
     success:
         settingssaved: 'Settings saved successfully.'
+        added: null
+        removed: null
+        saved: null
+        created: null
     msg:
         membershipemail: 'Provide email for notifications'
         membershipemaillabel: 'Notifications email'
@@ -153,3 +196,6 @@ paywall:
         enableNotifydesc: 'Enables/disables email notifications'
         fromemaillabel: 'Sender email'
         fromemail: 'All notifications will be sent from this email.'
+        exists: null
+        defaultcurrency: null
+        defaultcurrencysmall: null

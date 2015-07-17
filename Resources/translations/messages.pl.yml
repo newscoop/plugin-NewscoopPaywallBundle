@@ -1,5 +1,26 @@
 Plugins: Wtyczki
 paywall:
+    label:
+        defineduration: null
+        months: null
+        discount: null
+        unitprice: null
+        period: null
+        total: null
+        number: null
+        createdat: null
+        user: null
+        countbased: null
+        updatedat: null
+        discounttype: null
+        exchangerate: null
+        isactive: null
+        showing: null
+        code: null
+        isdefault: null
+        editcurrency: null
+        removeitem: null
+        confirmation: null
     alert:
         notexists: null
     title: 'Newscoop Paywall Plugin'
@@ -10,13 +31,17 @@ paywall:
             manage: 'Zarządzaj subskrypcjami'
             manageusers: 'Zarządzanie subskrypcjami użytkowników'
             configure: 'Skonfiguruj Paywall'
+            discounts: null
+            creatediscount: null
+            orders: null
+            createcurrency: null
     step1:
         header: 'Proszę podać nazwę i wartość dla nowej subskrypcji. Można skonfigurować różne rozróżnianie rodzaje subskrypcji, ale tylko jeden po drugim.'
         form:
             label:
                 name: 'Nazwa subskrypcji:'
                 type: 'Rodzaj subskrypcji:'
-                duration: 'Czas trwania subskrypcji w dniach:'
+                duration: null
                 price: 'Cena:'
                 currency: 'Waluta:'
                 description: 'Opis:'
@@ -30,7 +55,7 @@ paywall:
                     article: Artykuł
             error:
                 name: 'Nazwa subskrypcji nie może być pusta.'
-                duration: 'Pole "Czas trwania" jest nieprawidłowe.'
+                duration: null
                 price: 'Pole "Cena" jest nieprawidłowe.'
                 currency: 'Wpisz walutę.'
                 description: null
@@ -40,11 +65,15 @@ paywall:
             article: Artykuły
             publication: Publikacje
             type: Typ
-            durationbox: 'Czas trwania'
+            durationbox: null
             price: Cena
             currency: Waluta
             active: Status
     btn:
+        create: null
+        creatediscount: null
+        createorder: null
+        createorderitem: null
         skip: Pomiń
         save: Zapisz
         edit: Edycja
@@ -57,6 +86,9 @@ paywall:
         add: Dodaj
         deactivate: Dezaktywuj
         activate: Aktywuj
+        cancel: null
+        close: null
+        createcurrency: null
     flash:
         message:
             error: null
@@ -78,7 +110,8 @@ paywall:
                 choose: 'Proszę wybrać dostawcę!'
         label:
             name: Nazwa
-            duration: 'Czas trwania w dniach'
+            description: null
+            duration: null
             options: Opcje
             username: 'Nazwa użytkownika'
             topay: 'Do zapłaty'
@@ -124,6 +157,9 @@ paywall:
             managesubscriptions: 'Zarządzanie subskrypcjami'
             subscriptions.user: 'Zarządzanie subskrypcjami użytkowników'
             configure.paywall: 'Skonfiguruj Paywall'
+            discounts: null
+            orders: null
+            currencies: null
     datatable:
         table:
             info: 'Widoczne _START_ do _END_ z _TOTAL_ rekordów'
@@ -142,8 +178,15 @@ paywall:
     error:
         fatal: null
         settingserror: null
+        notadded: null
+        exists: null
+        notexists: null
     success:
         settingssaved: null
+        added: null
+        removed: null
+        saved: null
+        created: null
     msg:
         membershipemail: null
         membershipemaillabel: null
@@ -153,3 +196,6 @@ paywall:
         enableNotifydesc: null
         fromemaillabel: null
         fromemail: null
+        exists: null
+        defaultcurrency: null
+        defaultcurrencysmall: null

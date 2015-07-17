@@ -1,5 +1,26 @@
 Plugins: Plug-iny
 paywall:
+    label:
+        defineduration: null
+        months: null
+        discount: null
+        unitprice: null
+        period: null
+        total: null
+        number: null
+        createdat: null
+        user: null
+        countbased: null
+        updatedat: null
+        discounttype: null
+        exchangerate: null
+        isactive: null
+        showing: null
+        code: null
+        isdefault: null
+        editcurrency: null
+        removeitem: null
+        confirmation: null
     alert:
         notexists: null
     title: Paywall
@@ -10,13 +31,17 @@ paywall:
             manage: 'Spravovat předplatné'
             manageusers: 'Řídit uživatelů předplatného'
             configure: 'Konfigurovat Paywall'
+            discounts: null
+            creatediscount: null
+            orders: null
+            createcurrency: null
     step1:
         header: 'Prosím specifikujte název a hodnotu vašeho nového předplatného. Můžete nastavit různé typy předplatného, ale pouze jednotlivě.'
         form:
             label:
                 name: 'Název předplatného:'
                 type: 'Typ předplatného:'
-                duration: 'Délka předplatného ve dnech:'
+                duration: null
                 price: 'Cena:'
                 currency: 'Měna:'
                 description: 'Popis:'
@@ -30,7 +55,7 @@ paywall:
                     article: Článek
             error:
                 name: 'Název předplatného nemůže zůstat prázdné.'
-                duration: 'Pole s délkou trvání je neplatné.'
+                duration: null
                 price: 'Políčko s cenou je neplatné.'
                 currency: 'Typ měny.'
                 description: 'Napiš popis.'
@@ -40,11 +65,15 @@ paywall:
             article: Články
             publication: Publikace
             type: Typ
-            durationbox: 'Doba trvání'
+            durationbox: null
             price: Cena
             currency: Měna
             active: Status
     btn:
+        create: null
+        creatediscount: null
+        createorder: null
+        createorderitem: null
         skip: Přeskočit
         save: Uložit
         edit: Upravit
@@ -57,6 +86,9 @@ paywall:
         add: Přidat
         deactivate: Vypnout
         activate: Aktivovat
+        cancel: null
+        close: null
+        createcurrency: null
     flash:
         message:
             error: 'Něco se nezdařilo.'
@@ -78,7 +110,8 @@ paywall:
                 choose: 'Prosím vyberte provozovatele!'
         label:
             name: Název
-            duration: 'Délka ve dnech'
+            description: null
+            duration: null
             options: Možnosti
             username: 'Uživatelské jméno'
             topay: Zaplatit
@@ -124,6 +157,9 @@ paywall:
             managesubscriptions: 'Spravovat předplatné'
             subscriptions.user: 'Spravovat uživatelké předplatné'
             configure.paywall: 'Konfigurovat Paywall'
+            discounts: null
+            orders: null
+            currencies: null
     datatable:
         table:
             info: 'Ukázat _START_ až do _END_ z _TOTAL_ záznamů'
@@ -142,8 +178,15 @@ paywall:
     error:
         fatal: 'Vyskytla se neočekávaná chyba!'
         settingserror: 'Objevila se chyba. Nelze uložit nastavení.'
+        notadded: null
+        exists: null
+        notexists: null
     success:
         settingssaved: 'Nastavení bylo úspěšně uloženo.'
+        added: null
+        removed: null
+        saved: null
+        created: null
     msg:
         membershipemail: null
         membershipemaillabel: null
@@ -153,3 +196,6 @@ paywall:
         enableNotifydesc: null
         fromemaillabel: null
         fromemail: null
+        exists: null
+        defaultcurrency: null
+        defaultcurrencysmall: null

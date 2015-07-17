@@ -1,5 +1,26 @@
 Plugins: null
 paywall:
+    label:
+        defineduration: null
+        months: null
+        discount: null
+        unitprice: null
+        period: null
+        total: null
+        number: null
+        createdat: null
+        user: null
+        countbased: null
+        updatedat: null
+        discounttype: null
+        exchangerate: null
+        isactive: null
+        showing: null
+        code: null
+        isdefault: null
+        editcurrency: null
+        removeitem: null
+        confirmation: null
     alert:
         notexists: null
     title: null
@@ -10,6 +31,10 @@ paywall:
             manage: null
             manageusers: null
             configure: null
+            discounts: null
+            creatediscount: null
+            orders: null
+            createcurrency: null
     step1:
         header: null
         form:
@@ -45,6 +70,10 @@ paywall:
             currency: null
             active: null
     btn:
+        create: null
+        creatediscount: null
+        createorder: null
+        createorderitem: null
         skip: null
         save: null
         edit: null
@@ -57,6 +86,9 @@ paywall:
         add: null
         deactivate: null
         activate: null
+        cancel: null
+        close: null
+        createcurrency: null
     flash:
         message:
             error: null
@@ -78,6 +110,7 @@ paywall:
                 choose: null
         label:
             name: null
+            description: null
             duration: null
             options: null
             username: null
@@ -124,6 +157,9 @@ paywall:
             managesubscriptions: null
             subscriptions.user: null
             configure.paywall: null
+            discounts: null
+            orders: null
+            currencies: null
     datatable:
         table:
             info: null
@@ -142,8 +178,15 @@ paywall:
     error:
         fatal: null
         settingserror: null
+        notadded: null
+        exists: null
+        notexists: null
     success:
         settingssaved: null
+        added: null
+        removed: null
+        saved: null
+        created: null
     msg:
         membershipemail: null
         membershipemaillabel: null
@@ -153,3 +196,6 @@ paywall:
         enableNotifydesc: null
         fromemaillabel: null
         fromemail: null
+        exists: null
+        defaultcurrency: null
+        defaultcurrencysmall: null
