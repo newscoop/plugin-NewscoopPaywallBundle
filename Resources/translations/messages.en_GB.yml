@@ -1,26 +1,26 @@
 Plugins: Plugins
 paywall:
     label:
-        defineduration: null
-        months: null
-        discount: null
-        unitprice: null
-        period: null
-        total: null
-        number: null
-        createdat: null
-        user: null
-        countbased: null
-        updatedat: null
-        discounttype: null
-        exchangerate: null
-        isactive: null
-        showing: null
-        code: null
-        isdefault: null
-        editcurrency: null
-        removeitem: null
-        confirmation: null
+        defineduration: 'Define periods & discounts'
+        months: month(s)
+        discount: Discount
+        unitprice: 'Unit Price'
+        period: Period
+        total: Total
+        number: Number
+        createdat: 'Created at'
+        user: User
+        countbased: 'Count based?'
+        updatedat: 'Updated at'
+        discounttype: 'Discount type'
+        exchangerate: 'Exchange rate'
+        isactive: 'Enabled?'
+        showing: 'Showing %from% to %to% of %total% records.'
+        code: Code
+        isdefault: 'Is default?'
+        editcurrency: 'Edit currency'
+        removeitem: 'Are you sure you want to delete this item?'
+        confirmation: Confirmation
     alert:
         notexists: 'Selected subscription does not exist.'
     title: Paywall
@@ -31,17 +31,17 @@ paywall:
             manage: 'Manage Subscriptions'
             manageusers: 'Manage User Subscriptions'
             configure: 'Configure Paywall'
-            discounts: null
-            creatediscount: null
-            orders: null
-            createcurrency: null
+            discounts: Discounts
+            creatediscount: 'Create new discount'
+            orders: 'Manage Orders'
+            createcurrency: 'Create currency'
     step1:
         header: 'Please specify the name and value for your new subscription. You can set up various different types of subscriptions, but just one after the other.'
         form:
             label:
                 name: 'Name of subscription:'
                 type: 'Type of subscription:'
-                duration: null
+                duration: 'Period of subscription in days:'
                 price: 'Price:'
                 currency: 'Currency:'
                 description: 'Description:'
@@ -55,7 +55,7 @@ paywall:
                     article: Article
             error:
                 name: 'Subscription name can not be empty.'
-                duration: null
+                duration: 'Period field is invalid.'
                 price: 'Price field is invalid.'
                 currency: 'Type currency.'
                 description: 'Type description.'
@@ -70,7 +70,7 @@ paywall:
             currency: Currency
             active: Status
     btn:
-        create: null
+        create: Create
         creatediscount: null
         createorder: null
         createorderitem: null
