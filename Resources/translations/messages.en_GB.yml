@@ -65,7 +65,7 @@ paywall:
             article: Articles
             publication: Publications
             type: Type
-            durationbox: null
+            durationbox: Period
             price: Price
             currency: Currency
             active: Status
@@ -88,7 +88,7 @@ paywall:
         activate: Activate
         cancel: Cancel
         close: Close
-        createcurrency: null
+        createcurrency: 'Create currency'
     flash:
         message:
             error: 'Something went wrong.'
@@ -111,7 +111,7 @@ paywall:
         label:
             name: Name
             description: Description
-            duration: null
+            duration: Period
             options: Options
             username: Username
             topay: 'To pay'
@@ -157,7 +157,7 @@ paywall:
             managesubscriptions: 'Manage Subscriptions'
             subscriptions.user: 'Manage User Subscriptions'
             configure.paywall: 'Configure Paywall'
-            discounts: null
+            discounts: Discounts
             orders: Orders
             currencies: Currencies
     datatable:
@@ -184,9 +184,9 @@ paywall:
     success:
         settingssaved: 'Settings saved successfully.'
         added: 'Added successfully.'
-        removed: null
-        saved: null
-        created: null
+        removed: 'Removed successfully.'
+        saved: 'Saved successfully.'
+        created: 'Created successfully.'
     msg:
         membershipemail: 'Provide email for notifications'
         membershipemaillabel: 'Notifications email'
@@ -196,6 +196,6 @@ paywall:
         enableNotifydesc: 'Enables/disables email notifications'
         fromemaillabel: 'Sender email'
         fromemail: 'All notifications will be sent from this email.'
-        exists: null
-        defaultcurrency: null
-        defaultcurrencysmall: null
+        exists: 'A period with the same value is already defined!'
+        defaultcurrency: 'Default currency'
+        defaultcurrencysmall: 'Choose default currency for the subscriptions.'
