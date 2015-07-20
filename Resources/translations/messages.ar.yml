@@ -1,5 +1,26 @@
 Plugins: 'وحدات قابسة'
 paywall:
+    label:
+        defineduration: null
+        months: null
+        discount: null
+        unitprice: null
+        period: null
+        total: null
+        number: null
+        createdat: null
+        user: null
+        countbased: null
+        updatedat: null
+        discounttype: null
+        exchangerate: null
+        isactive: null
+        showing: null
+        code: null
+        isdefault: null
+        editcurrency: null
+        removeitem: null
+        confirmation: null
     alert:
         notexists: null
     title: 'صفحة الدفع.'
@@ -10,13 +31,17 @@ paywall:
             manage: 'إدارة الإشتراكات'
             manageusers: 'إدارة إشتراكات المستخدمين'
             configure: 'إعداد صفحة الدفع.'
+            discounts: null
+            creatediscount: null
+            orders: null
+            createcurrency: null
     step1:
         header: 'من فضلك عيّن اسم وقيمه لإشتراكك الجديد. يمكن تعيين أنواع مختلفة متعددة من إشتراكات، واحداً تلو الآخر.'
         form:
             label:
                 name: 'اسم الإشتراك:'
                 type: 'نوع الإشتراك:'
-                duration: 'مدة الإشتراك بالأيام:'
+                duration: null
                 price: 'السعر:'
                 currency: 'العملة:'
                 description: 'الوصف:'
@@ -30,7 +55,7 @@ paywall:
                     article: المقال
             error:
                 name: 'اسم الإشتراك لا يمكن أن يكون فارغا.'
-                duration: 'حقل المدة غير صالح.'
+                duration: null
                 price: 'حقل السعر غير صالح.'
                 currency: 'نوع العملة.'
                 description: 'أكتب الوصف.'
@@ -40,11 +65,15 @@ paywall:
             article: المقالات
             publication: المنشورات
             type: النوع
-            durationbox: المدة
+            durationbox: null
             price: السعر
             currency: العملة
             active: الحالة
     btn:
+        create: null
+        creatediscount: null
+        createorder: null
+        createorderitem: null
         skip: تخطي.
         save: حفظ
         edit: تعديل
@@ -57,6 +86,9 @@ paywall:
         add: إضافة
         deactivate: تعطيل
         activate: تمكين
+        cancel: null
+        close: null
+        createcurrency: null
     flash:
         message:
             error: 'حدث خطأ ما.'
@@ -78,7 +110,8 @@ paywall:
                 choose: 'من فضلك، إختر المزود!'
         label:
             name: اسم
-            duration: 'المدة بالأيام.'
+            description: null
+            duration: null
             options: إختيارات
             username: 'اسم المستخدم'
             topay: للدفع
@@ -124,6 +157,9 @@ paywall:
             managesubscriptions: 'إدارة الإشتراكات'
             subscriptions.user: 'إدارة إشتراكات المستخدمين'
             configure.paywall: 'قم بإعداد صفحة الدفع.'
+            discounts: null
+            orders: null
+            currencies: null
     datatable:
         table:
             info: 'عرض _START_ ل_END_ من _TOTAL_ إدخالات'
@@ -142,8 +178,15 @@ paywall:
     error:
         fatal: 'حدث خطأ غير متوقع!'
         settingserror: 'حدث خطأ. لا يمكن حفظ الإعدادات.'
+        notadded: null
+        exists: null
+        notexists: null
     success:
         settingssaved: 'تم حفظ الإعدادات بنجاح.'
+        added: null
+        removed: null
+        saved: null
+        created: null
     msg:
         membershipemail: null
         membershipemaillabel: null
@@ -153,3 +196,6 @@ paywall:
         enableNotifydesc: null
         fromemaillabel: null
         fromemail: null
+        exists: null
+        defaultcurrency: null
+        defaultcurrencysmall: null

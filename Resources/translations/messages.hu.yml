@@ -1,5 +1,26 @@
 Plugins: Bővítmények
 paywall:
+    label:
+        defineduration: null
+        months: null
+        discount: null
+        unitprice: null
+        period: null
+        total: null
+        number: null
+        createdat: null
+        user: null
+        countbased: null
+        updatedat: null
+        discounttype: null
+        exchangerate: null
+        isactive: null
+        showing: null
+        code: null
+        isdefault: null
+        editcurrency: null
+        removeitem: null
+        confirmation: null
     alert:
         notexists: null
     title: 'Fizetési fal'
@@ -10,13 +31,17 @@ paywall:
             manage: 'Előfizetések kezelése'
             manageusers: 'Felhasználói előfizetések kezelése'
             configure: 'A fizetési fal beállítása'
+            discounts: null
+            creatediscount: null
+            orders: null
+            createcurrency: null
     step1:
         header: 'Add meg az új előfizetés nevét és értékét. Különféle típusú előfizetéseket állíthatsz be, de csak egymás után.'
         form:
             label:
                 name: 'Előfizetés neve:'
                 type: 'Előfizetés típusa:'
-                duration: 'Az előfizetés időtartama napokban:'
+                duration: null
                 price: 'Ár:'
                 currency: 'Pénznem:'
                 description: 'Leírás:'
@@ -30,7 +55,7 @@ paywall:
                     article: Cikk
             error:
                 name: 'Az előfizetés neve nem lehet üres.'
-                duration: 'Az Időtartam mező érvénytelen.'
+                duration: null
                 price: 'Az Ár mező érvénytelen.'
                 currency: 'Add meg a pénznemet.'
                 description: 'Add meg a leírást.'
@@ -40,11 +65,15 @@ paywall:
             article: Cikkek
             publication: Kiadványok
             type: Típus
-            durationbox: Időtartam
+            durationbox: null
             price: Ár
             currency: Pénznem
             active: Állapot
     btn:
+        create: null
+        creatediscount: null
+        createorder: null
+        createorderitem: null
         skip: Kihagyás
         save: Mentés
         edit: Szerkesztés
@@ -57,6 +86,9 @@ paywall:
         add: Hozzáadás
         deactivate: Inaktiválás
         activate: Aktiválás
+        cancel: null
+        close: null
+        createcurrency: null
     flash:
         message:
             error: 'Valami elromlott.'
@@ -78,7 +110,8 @@ paywall:
                 choose: 'Válassz szolgáltatót!'
         label:
             name: Név
-            duration: 'Időtartam napokban'
+            description: null
+            duration: null
             options: Beállítások
             username: Felhasználónév
             topay: Fizetendő
@@ -124,6 +157,9 @@ paywall:
             managesubscriptions: 'Előfizetések kezelése'
             subscriptions.user: 'Felhasználói előfizetések kezelése'
             configure.paywall: 'A fizetési fal beállítása'
+            discounts: null
+            orders: null
+            currencies: null
     datatable:
         table:
             info: '_START_ - _END_. bejegyzés / _TOTAL_ megjelenítése'
@@ -142,8 +178,15 @@ paywall:
     error:
         fatal: 'Váratlan hiba történt!'
         settingserror: 'Hiba történt. Nem menthetők a beállítások.'
+        notadded: null
+        exists: null
+        notexists: null
     success:
         settingssaved: 'A beállítások mentése sikerült.'
+        added: null
+        removed: null
+        saved: null
+        created: null
     msg:
         membershipemail: 'Add meg az értesítési e-mail címedet.'
         membershipemaillabel: null
@@ -153,3 +196,6 @@ paywall:
         enableNotifydesc: null
         fromemaillabel: null
         fromemail: null
+        exists: null
+        defaultcurrency: null
+        defaultcurrencysmall: null

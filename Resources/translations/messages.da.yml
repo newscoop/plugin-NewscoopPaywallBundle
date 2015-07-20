@@ -1,5 +1,26 @@
 Plugins: Plugins
 paywall:
+    label:
+        defineduration: null
+        months: null
+        discount: null
+        unitprice: null
+        period: null
+        total: null
+        number: null
+        createdat: null
+        user: null
+        countbased: null
+        updatedat: null
+        discounttype: null
+        exchangerate: null
+        isactive: null
+        showing: null
+        code: null
+        isdefault: null
+        editcurrency: null
+        removeitem: null
+        confirmation: null
     alert:
         notexists: 'Det valgte abonnement findes ikke.'
     title: Betalingsmur
@@ -10,13 +31,17 @@ paywall:
             manage: 'Administrer abonnementer'
             manageusers: 'Administrer bruger abonnementer'
             configure: 'Indstil betalingsmur'
+            discounts: null
+            creatediscount: null
+            orders: null
+            createcurrency: null
     step1:
         header: 'Angiv navn og værdi for dit abonnement. Du kan oprette flere abonnementer, men kun et ad gangen.'
         form:
             label:
                 name: 'Navn på abonnement:'
                 type: 'Abonnements type:'
-                duration: 'Abonnements periode i dage:'
+                duration: null
                 price: 'Pris:'
                 currency: 'Valuta:'
                 description: 'Beskrivelse:'
@@ -30,7 +55,7 @@ paywall:
                     article: Artikel
             error:
                 name: 'Abonnementets navn skal udfyldes.'
-                duration: 'Ugyldig periode.'
+                duration: null
                 price: 'Ugyldig pris.'
                 currency: 'Indtast valuta.'
                 description: 'Type beskrivelse.'
@@ -40,11 +65,15 @@ paywall:
             article: Artikler
             publication: Publikationer
             type: Type
-            durationbox: Periode
+            durationbox: null
             price: Pris
             currency: Valuta
             active: Status
     btn:
+        create: null
+        creatediscount: null
+        createorder: null
+        createorderitem: null
         skip: 'Spring over'
         save: Gem
         edit: Rediger
@@ -57,6 +86,9 @@ paywall:
         add: Tilføj
         deactivate: Deaktiver
         activate: Aktiver
+        cancel: null
+        close: null
+        createcurrency: null
     flash:
         message:
             error: 'Der gik noget galt.'
@@ -72,13 +104,14 @@ paywall:
             currency: 'Valutaformatet er ugyldigt.'
             topay: 'At betale værdien er ugyldig.'
             exists:
-                subscription: 'Denne bruger har allerede det valgte abonnement.'
+                subscription: null
             select:
                 empty: 'Feltet kan ikke være tomt!'
                 choose: 'Vælg udbyder!'
         label:
             name: Navn
-            duration: 'Periode i dage'
+            description: null
+            duration: null
             options: Indstillinger
             username: Brugernavn
             topay: 'At betale'
@@ -124,6 +157,9 @@ paywall:
             managesubscriptions: 'Administrer abonnementer'
             subscriptions.user: 'Administrer bruger abonnementer'
             configure.paywall: 'Indstil betalingsmur'
+            discounts: null
+            orders: null
+            currencies: null
     datatable:
         table:
             info: 'Viser _START_ til _END_ af _TOTAL_'
@@ -142,8 +178,15 @@ paywall:
     error:
         fatal: 'Uventet fejl!'
         settingserror: 'Der skete en fejl. Indstillingerne kan ikke gemmes.'
+        notadded: null
+        exists: null
+        notexists: null
     success:
         settingssaved: 'Indstillingerne blev gemt.'
+        added: null
+        removed: null
+        saved: null
+        created: null
     msg:
         membershipemail: 'Angiv email til medlemsbeskeder'
         membershipemaillabel: 'Email til medlemsbeskeder'
@@ -153,3 +196,6 @@ paywall:
         enableNotifydesc: 'Aktiver/deaktiver email beskeder'
         fromemaillabel: 'Sender email'
         fromemail: 'Alle beskeder bliver sendt fra denne email.'
+        exists: null
+        defaultcurrency: null
+        defaultcurrencysmall: null
