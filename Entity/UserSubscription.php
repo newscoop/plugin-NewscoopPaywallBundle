@@ -902,7 +902,6 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     public function calculateModificationsAndToPay()
     {
         $this->discountTotal = 0;
-        $unitPrice = 0;
         foreach ($this->modifications as $modification) {
             $this->toPay -= $modification->getAmount();
             $this->discountTotal -= $modification->getAmount() * $this->duration['value'] * 100;

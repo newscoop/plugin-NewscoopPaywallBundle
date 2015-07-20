@@ -59,6 +59,7 @@ class DiscountProcessor implements DiscountProcessorInterface
      */
     protected function isEligibleForDiscount(DiscountableInterface $object, Discount $discount)
     {
+        $selectedDiscount = $object->getDiscount();
         if ($object instanceof UserSubscription) {
             if ($object->getProlonged() && $selectedDiscount['id'] === $discount->getId()) {
                 return true;
@@ -72,7 +73,6 @@ class DiscountProcessor implements DiscountProcessorInterface
                 return true;
             }
 
-            $selectedDiscount = $object->getDiscount();
             if (!$discount->getCountBased() && $selectedDiscount['id'] === $discount->getId()) {
                 return true;
             }
