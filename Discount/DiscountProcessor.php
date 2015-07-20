@@ -38,26 +38,8 @@ class DiscountProcessor implements DiscountProcessorInterface
 
             $eligibleDiscounts[] = $discount;
         }
-        //ladybug_dump($eligibleDiscounts);
 
-
-        // we add here count based
-        foreach ($this->getAllDiscounts() as $discount) {
-            if ($discount->getCountBased()) {
-                $discountTempValue = $discount->getValue();
-                $discount->setValue($discountTempValue * ($object->getOrder()->getItems()->count() - 1));
-                    //ladybug_dump($discount->getValue());
-                $this->container->get('newscoop_paywall.discounts.'.$discount->getType())
-                    ->applyTo($object, $discount);
-
-                $discount->setValue($discountTempValue);
-                //$sum = $object->getToPay() * $discount->getValue() * ($object->getOrder()->getItems()->count());
-                //ladybug_dump($sum);
-                //die;
-                //$object->setDiscountTotal($sum);
-            }
-        }
-
+        $this->processCountBasedDiscounts($object);
         foreach ($eligibleDiscounts as $discount) {
             $this->container->get('newscoop_paywall.discounts.'.$discount->getType())
                 ->applyTo($object, $discount);
@@ -66,14 +48,22 @@ class DiscountProcessor implements DiscountProcessorInterface
         return $object;
     }
 
+    /**
+     * Checks if the order or the order item is
+     * eligible for discount.
+     *
+     * @param DiscountableInterface $object
+     * @param Discount              $discount
+     *
+     * @return bool
+     */
     protected function isEligibleForDiscount(DiscountableInterface $object, Discount $discount)
     {
         if ($object instanceof UserSubscription) {
-            if ($object->getProlonged()) {
-                return $this->isEligibleWhenProlonged($object, $discount);
+            if ($object->getProlonged() && $selectedDiscount['id'] === $discount->getId()) {
+                return true;
             }
 
-            // skip count based discounts here, we will add them in Order entity at the end
             $duration = $object->getDuration();
             if ($object->getOrder()->countItems() == 1 &&
                 !$discount->getCountBased() &&
@@ -83,29 +73,9 @@ class DiscountProcessor implements DiscountProcessorInterface
             }
 
             $selectedDiscount = $object->getDiscount();
-            /*if ($discount->getCountBased()) {
-                return false;
-            }*/
-
             if (!$discount->getCountBased() && $selectedDiscount['id'] === $discount->getId()) {
                 return true;
             }
-
-            /*if ($object->getOrder()->countItems() > 1 && $discount->getCountBased()) {
-                return true;
-            }*/
-
-            //if (!$object->hasDiscount($discount)) {
-                //return false;
-            //}
-
-            /*if ($object->getOrder()->countItems() > 1 && $discount->getCountBased()) {
-                return true;
-            }*/
-
-            /*if ($object->getOrder()->countItems() > 1 && $duration['value'] > 1) {
-                return true;
-            }*/
         }
 
         if ($object instanceof OrderInterface) {
@@ -117,17 +87,19 @@ class DiscountProcessor implements DiscountProcessorInterface
         return false;
     }
 
-    public function isEligibleWhenProlonged(DiscountableInterface $object, Discount $discount)
+    private function processCountBasedDiscounts(DiscountableInterface $object)
     {
-        if ($object->getOrder()->countItems() > 1 && $discount->getCountBased()) {
-            return true;
-        }
+        foreach ($this->getAllDiscounts() as $discount) {
+            if ($discount->getCountBased()) {
+                $discountTempValue = $discount->getValue();
+                $discount->setValue($discountTempValue * ($object->getOrder()->getItems()->count() - 1));
 
-        if (!$object->hasDiscount($discount)) {
-            return false;
-        }
+                $this->container->get('newscoop_paywall.discounts.'.$discount->getType())
+                    ->applyTo($object, $discount);
 
-        return true;
+                $discount->setValue($discountTempValue);
+            }
+        }
     }
 
     private function getAllDiscounts()

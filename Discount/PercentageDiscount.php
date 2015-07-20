@@ -23,8 +23,7 @@ class PercentageDiscount extends Discount
         $modification = $this->createModification($discount);
         $discountAmount = $discount->getValue() * $object->getToPay();
         $modificationAmount = (float) ($object->getToPay() * $discount->getValue());
-        $object->setToPay($object->getToPay() - $discountAmount);
-
+        $object->setToPay(round($object->getToPay() - $discountAmount, 2));
         $modification->setAmount(-$modificationAmount);
         $object->addModification($modification);
         $object->addDiscount($discount);

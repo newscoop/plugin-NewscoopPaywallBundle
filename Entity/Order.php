@@ -382,6 +382,12 @@ class Order implements OrderInterface
         return $this;
     }
 
+    /**
+     * Calculates total order price including
+     * all discounts.
+     *
+     * @return self
+     */
     public function calculateTotal()
     {
         $this->calculateItemsTotal();
@@ -393,6 +399,11 @@ class Order implements OrderInterface
         return $this;
     }
 
+    /**
+     * Calculates all items discounts and unit prices.
+     *
+     * @return self
+     */
     public function calculateItemsTotal()
     {
         $itemsTotal = 0;

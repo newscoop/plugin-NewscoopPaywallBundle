@@ -893,34 +893,22 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
         return $this;
     }
 
+    /**
+     * Calculates all the modifications together with
+     * the total discount and unit price for single item.
+     *
+     * @return self
+     */
     public function calculateModificationsAndToPay()
     {
         $this->discountTotal = 0;
         $unitPrice = 0;
-
         foreach ($this->modifications as $modification) {
-            //ladybug_dump($modification->getAmount().'-----');
             $this->toPay -= $modification->getAmount();
-            $this->discountTotal -= (float) round($modification->getAmount(), 2) * $this->duration['value'] * 100;
+            $this->discountTotal -= $modification->getAmount() * $this->duration['value'] * 100;
         }
 
         $this->toPay = (float) $this->toPay * $this->duration['value'];
-        //$totalWithoutDiscount = (float) $this->toPay * $this->duration['value'];
-        //$this->discountTotal = $totalWithoutDiscount - $this->discountTotal;
-        //ladybug_dump($this->discountTotal);
-        //ladybug_dump($totalWithoutDiscount - $this->discountTotal);
-        //die;
-        /*foreach ($this->discounts as $discount) {
-            if ($discount->getCountBased() && $this->duration['value'] > 1) {
-                $unitPrice -= $unitPrice * $discount->getValue();
-            }
-        }*/
-
-        //$this->toPay = $totalWithoutDiscount;
-        //if (!$this->modifications->isEmpty()) {
-            //$this->discountTotal = ($totalWithoutDiscount - (round($this->toPay, 2) * $this->duration['value'])) * 100;
-        //}
-
         if ($this->toPay < 0) {
             $this->toPay = 0;
         }
