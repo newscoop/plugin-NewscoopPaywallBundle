@@ -52,40 +52,4 @@ class MetaSubscriptions
 
         return $subscriptions;
     }
-
-    public function has_section($sectionNumber)
-    {
-        foreach ($this->subscriptions as $subscription) {
-            $subscription = new MetaSubscription($subscription['id']);
-            if ($subscription->has_section($sectionNumber) && $subscription->is_active) {
-                return $subscription;
-            }
-        }
-
-        return false;
-    }
-
-    public function has_article($articleNumber)
-    {
-        foreach ($this->subscriptions as $subscription) {
-            $subscription = new MetaSubscription($subscription['id']);
-            if ($subscription->has_article($articleNumber) && $subscription->is_active) {
-                return $subscription;
-            }
-        }
-
-        return false;
-    }
-
-    public function has_issue($issueNumber)
-    {
-        foreach ($this->subscriptions as $subscription) {
-            $subscription = new MetaSubscription($subscription['id']);
-            if ($subscription->has_issue($issueNumber) && $subscription->is_active) {
-                return $subscription;
-            }
-        }
-
-        return false;
-    }
 }

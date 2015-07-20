@@ -20,9 +20,11 @@ class PercentageDiscount extends Discount
      */
     public function applyTo(DiscountableInterface $object, DiscountInterface $discount)
     {
-        $duration = $object->getDuration();
         $modification = $this->createModification($discount);
+        $discountAmount = $discount->getValue() * $object->getToPay();
         $modificationAmount = (float) ($object->getToPay() * $discount->getValue());
+        $object->setToPay($object->getToPay() - $discountAmount);
+
         $modification->setAmount(-$modificationAmount);
         $object->addModification($modification);
         $object->addDiscount($discount);

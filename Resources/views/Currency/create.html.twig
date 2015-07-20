@@ -21,7 +21,8 @@
 </div>
   {% endfor %}
   {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 6} %}
-  {{ form_errors(form) }}
+  {{ form_errors(form) }}<br>
+  {{ renderTip('paywall.label.currency.create'|trans) }}<br>
   <form action="{{ path('paywall_plugin_currency_create') }}" method="post" class="form-horizontal" novalidate>
       <div class="row">
         <br>

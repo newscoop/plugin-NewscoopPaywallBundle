@@ -98,6 +98,10 @@ class OrderService
                     ->getReference($subscriptionId);
 
                 $newlySelectedPeriod = $this->subscriptionService->filterRanges($subscription, $periodId);
+                if (!$newlySelectedPeriod) {
+                    return new Order();
+                }
+
                 $item = $this->subscriptionService->getOrderItemBy(
                     $subscription->getId()
                 );
@@ -125,9 +129,9 @@ class OrderService
                     $userSubscription = $this->instantiateOrderItem($subscription, $newlySelectedPeriod);
                 }
 
-                if ($newlySelectedPeriod->getDiscount()) {
-                    $userSubscription->addDiscount($newlySelectedPeriod->getDiscount());
-                }
+                //if ($newlySelectedPeriod->getDiscount()) {
+                //    $userSubscription->addDiscount($newlySelectedPeriod->getDiscount());
+                //}
 
                 $userSubscription->setOrder($order);
                 $order->addItem($userSubscription); // if has item, then merge it else add
@@ -149,6 +153,7 @@ class OrderService
             'publicationId' => $specification->getPublication(),
             'toPay' => $this->converter->convert($subscription->getPrice(), $this->context->getCurrency()),
             'duration' => $this->createPeriodArray($period),
+            'discount' => $this->createDiscountArray($period),
             'currency' => $this->context->getCurrency(),
             'type' => 'T',
             'active' => false,
@@ -161,6 +166,7 @@ class OrderService
     {
         $discount = array();
         if ($period->getDiscount()) {
+            $discount['id'] = $period->getDiscount()->getId();
             $discount['value'] = $period->getDiscount()->getValue();
             $discount['type'] = $period->getDiscount()->getType();
         }
@@ -168,7 +174,7 @@ class OrderService
         return $discount;
     }
 
-    private function createPeriodArray($period)
+    private function createPeriodArray(Duration $period)
     {
         $periodArray = array(
             'id' => $period->getId(),

@@ -175,10 +175,6 @@
 											<td id="typeBox"></td>
 										</tr>
 										<tr>
-											<td align="left">{{ 'paywall.step2.label.durationbox'|trans }}:</td>
-											<td id="durationBox"></td>
-										</tr>
-										<tr>
 											<td align="left">{{ 'paywall.step2.label.price'|trans }}:</td>
 											<td id="valueBox"></td>
 										</tr>
@@ -200,8 +196,8 @@
 							<td colspan="2"><hr></td>
 						</tr>
 						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="button" id="skip" value="{{ 'paywall.btn.skip'|trans }}" class="button">
-							<input type="submit" id="save" value="{{ 'paywall.btn.save'|trans }}" class="save-button">
+							<input type="button" id="skip" value="{{ 'paywall.btn.skip'|trans }}" class="btn btn-default">
+							<input type="submit" id="save" value="{{ 'paywall.btn.save'|trans }}" class="btn btn-primary">
 						</td>
 					</tr>
 				</tbody>
@@ -222,7 +218,7 @@
 									{{ form_widget(formDuration.attribute) }}
 									{{ form_widget(formDuration.discount) }}
 									<button style="margin-left: 20px;" type="submit" class="btn btn-xs btn-success">
-										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ 'paywall.btn.add'|trans }}
 									</button>
 
 								{{ form_widget(formDuration._token) }}
@@ -242,7 +238,7 @@
 											<td>{{ range.value }}{% if range.attribute == 'month' %} {{ 'paywall.label.months'|trans }} {% endif %}</td>
 											<td>{% if range.discount %} {{ range.discount.name}} ({{ range.discount.value * 100 }}%){% else %} - {% endif %}</td>
 											<td><button type="button" id="remove-duration" data-path="{{ path('newscoop_paywall_admin_duration_remove', {'id': range.id }) }}" class="btn btn-xs btn-danger">
-												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> {{ 'paywall.btn.delete'|trans }}
 											</button></td>
 										</tr>
 										{% endfor %}
@@ -256,7 +252,7 @@
 							<td colspan="2"><hr></td>
 						</tr>
 						<td colspan="2" align="right" style="padding-top: 10px;">
-							<input type="button" id="next-last" value="{{ 'paywall.btn.next'|trans }}" class="save-button">
+							<input type="button" id="next-last" value="{{ 'paywall.btn.next'|trans }}" class="btn btn-primary">
 						</td>
 					</tr>
 				</tbody>
@@ -279,6 +275,7 @@
 						flashMessage("{{ 'paywall.success.added'|trans }}");
 						if (data.duration) {
 							var discount = "-";
+
 							if (Object.keys(data.duration.discount).length > 0) {
 								discount = data.duration.discount.name+' ('+(data.duration.discount.value * 100)+'%)';
 							}
@@ -296,7 +293,7 @@
 							flashMessage("{{ 'paywall.error.notadded'|trans }}");
 						}
 					} else {
-						if (data.errors.length > 0) {
+						if (data.errors.hasOwnProperty('value')) {
 							flashMessage(data.errors.value[0], "error");
 						} else {
 							flashMessage("{{ 'paywall.msg.exists'|trans }}", "error");

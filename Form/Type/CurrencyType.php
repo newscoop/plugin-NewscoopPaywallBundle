@@ -36,9 +36,14 @@ class CurrencyType extends AbstractType
             ))
             ->add('exchangeRate', 'number', array(
                 'label' => 'paywall.label.exchangerate',
+                'precision' => 5,
                 'constraints' => array(
                     new Assert\NotBlank(),
                     new Assert\Type(array('type' => 'numeric')),
+                    new Assert\Range(array(
+                        'min' => '0.00001',
+                        'max' => '99999.99999',
+                    )),
                 ),
             ));
     }

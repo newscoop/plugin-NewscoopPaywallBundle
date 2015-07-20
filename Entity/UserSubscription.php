@@ -190,6 +190,8 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
      */
     protected $duration;
 
+    protected $discount;
+
     /**
      * @ORM\OneToMany(targetEntity="Modification", mappedBy="orderItem", orphanRemoval=true, cascade={"all"})
      *
@@ -894,23 +896,30 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     public function calculateModificationsAndToPay()
     {
         $this->discountTotal = 0;
-        $temp = 0;
-        $totalWithoutDiscount = (float) $this->toPay * $this->duration['value'];
+        $unitPrice = 0;
 
         foreach ($this->modifications as $modification) {
-            $temp = $this->toPay + $modification->getAmount();
+            //ladybug_dump($modification->getAmount().'-----');
+            $this->toPay -= $modification->getAmount();
+            $this->discountTotal -= (float) round($modification->getAmount(), 2) * $this->duration['value'] * 100;
         }
 
-        foreach ($this->discounts as $discount) {
+        $this->toPay = (float) $this->toPay * $this->duration['value'];
+        //$totalWithoutDiscount = (float) $this->toPay * $this->duration['value'];
+        //$this->discountTotal = $totalWithoutDiscount - $this->discountTotal;
+        //ladybug_dump($this->discountTotal);
+        //ladybug_dump($totalWithoutDiscount - $this->discountTotal);
+        //die;
+        /*foreach ($this->discounts as $discount) {
             if ($discount->getCountBased() && $this->duration['value'] > 1) {
-                $temp -= $temp * $discount->getValue();
+                $unitPrice -= $unitPrice * $discount->getValue();
             }
-        }
+        }*/
 
-        $this->toPay = $totalWithoutDiscount;
-        if ($temp !== 0) {
-            $this->discountTotal = ($totalWithoutDiscount - (round($temp, 2) * $this->duration['value'])) * 100;
-        }
+        //$this->toPay = $totalWithoutDiscount;
+        //if (!$this->modifications->isEmpty()) {
+            //$this->discountTotal = ($totalWithoutDiscount - (round($this->toPay, 2) * $this->duration['value'])) * 100;
+        //}
 
         if ($this->toPay < 0) {
             $this->toPay = 0;

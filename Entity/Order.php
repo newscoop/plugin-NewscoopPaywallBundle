@@ -385,7 +385,6 @@ class Order implements OrderInterface
     public function calculateTotal()
     {
         $this->calculateItemsTotal();
-        $this->calculateModifications();
         $this->total = ($this->itemsTotal / 100 + $this->discountTotal / 100) * 100;
         if ($this->total < 0) {
             $this->total = 0;
@@ -406,15 +405,6 @@ class Order implements OrderInterface
         }
 
         $this->itemsTotal = $itemsTotal * 100;
-
-        return $this;
-    }
-
-    public function calculateModifications()
-    {
-        foreach ($this->modifications as $modifications) {
-            $this->discountTotal += $modifications->getAmount();
-        }
 
         return $this;
     }

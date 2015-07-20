@@ -8,7 +8,6 @@
 
 namespace Newscoop\PaywallBundle\Entity\Repository;
 
-use Doctrine\ORM\Query\Expr;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Newscoop\ListResult;
 use Newscoop\PaywallBundle\Notifications\Emails;
@@ -283,14 +282,12 @@ class UserSubscriptionRepository extends TranslationRepository
                 $qb->expr()->eq('i.active', $qb->expr()->literal('Y')),
                 $qb->expr()->eq('i.active', $qb->expr()->literal('N'))
             ))
-            //->andWhere('i.prolonged = true') /// to add?
-            //->andWhere($qb->expr()->eq('i.duration', $qb->expr()->literal(serialize($period))))
             ->setParameters(array(
                 'user' => $user,
                 'id' => $id,
             ))
-            ->setMaxResults(1)//
-            ->orderBy('i.created_at', 'desc')//
+            ->setMaxResults(1)
+            ->orderBy('i.created_at', 'desc')
             ->getQuery();
 
         return $query

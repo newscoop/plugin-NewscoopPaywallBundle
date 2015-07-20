@@ -10,7 +10,6 @@ namespace Newscoop\PaywallBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class SettingsFormType extends AbstractType
 {
@@ -33,13 +32,6 @@ class SettingsFormType extends AbstractType
             'required' => true,
             'error_bubbling' => true,
         ));
-        /*->add('currency', 'paywall_currency_choice', array(
-            'label' => 'paywall.label.currency',
-            'constraints' => array(
-                new Assert\NotBlank(),
-                new Assert\Currency(),
-            ),
-        ));*/
     }
 
     public function getName()
