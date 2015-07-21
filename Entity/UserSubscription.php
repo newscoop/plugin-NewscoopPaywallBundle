@@ -720,7 +720,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     /**
      * Gets the value of duration.
      *
-     * @return Duration
+     * @return array
      */
     public function getDuration()
     {

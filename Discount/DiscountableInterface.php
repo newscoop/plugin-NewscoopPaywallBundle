@@ -26,4 +26,11 @@ interface DiscountableInterface
      * @param int $discountTotal the discounts total
      */
     public function setDiscountTotal($discountTotal);
+
+    /**
+     * Gets the selected discount.
+     *
+     * @return array
+     */
+    public function getDiscount();
 }
