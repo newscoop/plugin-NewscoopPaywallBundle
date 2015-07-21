@@ -336,6 +336,7 @@ class AdminController extends Controller
             ->createQueryBuilder('p')
             ->select('p.id', 'p.name', 'l.code')
             ->leftJoin('p.language', 'l')
+            ->groupBy('p.id')
             ->getQuery()
             ->getArrayResult();
 
@@ -358,6 +359,7 @@ class AdminController extends Controller
             ->leftJoin('i.language', 'l')
             ->where('i.publication = ?1')
             ->setParameter(1, $request->get('publicationId'))
+            ->groupBy('i.number')
             ->getQuery()
             ->getArrayResult();
 
@@ -382,6 +384,7 @@ class AdminController extends Controller
             ->where('s.publication = ?1')
             ->setParameter(1, $request->get('publicationId'))
             ->setParameter(2, $request->get('issueId'))
+            ->groupBy('s.number')
             ->getQuery()
             ->getArrayResult();
 
@@ -411,6 +414,7 @@ class AdminController extends Controller
                 'issueId' => $request->get('issueId'),
                 'sectionId' => $request->get('sectionId'),
             ))
+            ->groupBy('s.number')
             ->getQuery()
             ->getArrayResult();
 

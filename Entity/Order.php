@@ -198,6 +198,24 @@ class Order implements OrderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getToPay()
+    {
+        return $this->getTotal();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setToPay($total)
+    {
+        $this->setTotal($total);
+
+        return $this;
+    }
+
+    /**
      * Gets the value of total.
      *
      * @return int

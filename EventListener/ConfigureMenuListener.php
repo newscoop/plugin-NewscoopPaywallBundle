@@ -39,28 +39,29 @@ class ConfigureMenuListener
 
         $menu[$labelPlugins][$labelPluginName]->addChild(
             $this->translator->trans('Manage subscriptions'),
-            array('uri' => $event->getRouter()->generate('newscoop_paywall_managesubscriptions_manage'),
-        ));
+            array('uri' => $event->getRouter()->generate('newscoop_paywall_managesubscriptions_manage'))
+        );
+
         $menu[$labelPlugins][$labelPluginName][$this->translator->trans('Manage subscriptions')]->setDisplay(false);
 
         $menu[$labelPlugins][$labelPluginName]->addChild(
             $this->translator->trans('Configure Paywall'),
-            array('uri' => $event->getRouter()->generate('newscoop_paywall_configurepaywall_index'),
-        ));
+            array('uri' => $event->getRouter()->generate('newscoop_paywall_configurepaywall_index'))
+        )->setDisplay(false);
 
         $menu[$labelPlugins][$labelPluginName]->addChild(
             $this->translator->trans('paywall.menu.label.discounts'),
-            array('uri' => $event->getRouter()->generate('newscoop_paywall_discount_index'),
-        ));
+            array('uri' => $event->getRouter()->generate('newscoop_paywall_discount_index'))
+        )->setDisplay(false);
 
         $menu[$labelPlugins][$labelPluginName]->addChild(
             $this->translator->trans('paywall.menu.label.currencies'),
-            array('uri' => $event->getRouter()->generate('paywall_plugin_currency_index'),
-        ));
+            array('uri' => $event->getRouter()->generate('paywall_plugin_currency_index'))
+        )->setDisplay(false);
 
         $menu[$labelPlugins][$labelPluginName]->addChild(
             $this->translator->trans('paywall.menu.label.orders'),
-            array('uri' => $event->getRouter()->generate('paywall_plugin_userorder_index'),
-        ));
+            array('uri' => $event->getRouter()->generate('paywall_plugin_userorder_index'))
+        )->setDisplay(false);
     }
 }
