@@ -22,6 +22,8 @@ class LifecycleSubscriber implements EventSubscriberInterface
     private $dispatcher;
     private $scheduler;
     private $systemPreferences;
+    private $classDir;
+    private $pluginDir = '/../../../../';
 
     public function __construct($em, $dispatcher, $scheduler, $systemPreferences)
     {
@@ -29,8 +31,11 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $this->dispatcher = $dispatcher;
         $this->scheduler = $scheduler;
         $this->systemPreferences = $systemPreferences;
+        $reflection = new \ReflectionClass($this);
+        $this->classDir = $reflection->getFileName();
+        $this->pluginDir = dirname($this->classDir).$this->pluginDir;
 
-        $appDirectory = realpath(__DIR__.'/../../../../application/console');
+        $appDirectory = realpath($this->pluginDir.'application/console');
         $this->cronjobs = array(
             'Sends email notifications for expiring subscriptions' => array(
                 'command' => $appDirectory.' paywall:notifier:expiring',
@@ -43,7 +48,10 @@ class LifecycleSubscriber implements EventSubscriberInterface
     {
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->updateSchema($this->getClasses(), true);
-        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__.'/../../../../library/Proxy');
+        $this->em->getProxyFactory()->generateProxyClasses(
+            $this->getClasses(),
+            $this->pluginDir.'library/Proxy'
+        );
         $adapter = new Settings();
         $adapter->setName('Paypal');
         $adapter->setValue('PaypalAdapter');
@@ -52,8 +60,6 @@ class LifecycleSubscriber implements EventSubscriberInterface
 
         $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
 
-        // Generate proxies for entities
-        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__.'/../../../../library/Proxy');
         $this->addJobs();
         $this->systemPreferences->PaywallMembershipNotifyEmail = $this->systemPreferences->EmailFromAddress;
         $this->systemPreferences->PaywallMembershipNotifyFromEmail = $this->systemPreferences->EmailFromAddress;
@@ -68,7 +74,10 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
 
         // Generate proxies for entities
-        $this->em->getProxyFactory()->generateProxyClasses($this->getClasses(), __DIR__.'/../../../../library/Proxy');
+        $this->em->getProxyFactory()->generateProxyClasses(
+            $this->getClasses(),
+            $this->pluginDir.'library/Proxy'
+        );
     }
 
     public function remove(GenericEvent $event)

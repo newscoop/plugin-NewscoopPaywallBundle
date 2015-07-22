@@ -19,10 +19,14 @@ class DurationType extends AbstractType
         $builder
         ->add('value', 'integer', array(
             'constraints' => array(
-                new Assert\NotBlank(),
+                new Assert\NotBlank(array(
+                    'message' => 'paywall.errors.period.blank',
+                )),
                 new Assert\Range(array(
                     'min' => 1,
                     'max' => 9999,
+                    'minMessage' => 'paywall.errors.period.max',
+                    'maxMessage' => 'paywall.errors.period.min',
                 )),
             ),
             'required' => true,

@@ -198,6 +198,24 @@ class Order implements OrderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getToPay()
+    {
+        return $this->getTotal();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setToPay($total)
+    {
+        $this->setTotal($total);
+
+        return $this;
+    }
+
+    /**
      * Gets the value of total.
      *
      * @return int
@@ -382,10 +400,15 @@ class Order implements OrderInterface
         return $this;
     }
 
+    /**
+     * Calculates total order price including
+     * all discounts.
+     *
+     * @return self
+     */
     public function calculateTotal()
     {
         $this->calculateItemsTotal();
-        $this->calculateModifications();
         $this->total = ($this->itemsTotal / 100 + $this->discountTotal / 100) * 100;
         if ($this->total < 0) {
             $this->total = 0;
@@ -394,6 +417,11 @@ class Order implements OrderInterface
         return $this;
     }
 
+    /**
+     * Calculates all items discounts and unit prices.
+     *
+     * @return self
+     */
     public function calculateItemsTotal()
     {
         $itemsTotal = 0;
@@ -406,15 +434,6 @@ class Order implements OrderInterface
         }
 
         $this->itemsTotal = $itemsTotal * 100;
-
-        return $this;
-    }
-
-    public function calculateModifications()
-    {
-        foreach ($this->modifications as $modifications) {
-            $this->discountTotal += $modifications->getAmount();
-        }
 
         return $this;
     }

@@ -26,4 +26,18 @@ interface DiscountableInterface
      * @param int $discountTotal the discounts total
      */
     public function setDiscountTotal($discountTotal);
+
+    /**
+     * Gets the total amount to pay.
+     *
+     * @return int
+     */
+    public function getToPay();
+
+    /**
+     * Sets the total amount to pay.
+     *
+     * @param int $total the total amount
+     */
+    public function setToPay($total);
 }

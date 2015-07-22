@@ -4,8 +4,8 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-function format(item) { return item.name; };
-function formatDiv(item) { return "<div class='select2-results'>" + item.name + "</div>"; }
+function format(item) { return item.name+ " ("+item.code+")"; };
+function formatDiv(item) { return "<div class='select2-results'>" + item.name + " ("+item.code+")</div>"; }
 <!--
 $(document).ready(function() {
     var translations = {'name.error': 'Name of subscription already exists or field is empty!', 
@@ -54,7 +54,6 @@ $(document).ready(function() {
                         $('#step3').show();
                         $('#titleBox').append(subscription_name.val());
                         $('#typeBox').append($('#subscriptionconf_type').val());
-                        $('#durationBox').append($('#subscriptionconf_range').val() == 1 ? $('#subscriptionconf_range').val()+' '+translations['day']: $('#subscriptionconf_range').val()+' '+translations['days']);
                         $('#valueBox').append($('#subscriptionconf_price').val());
                         $('#currencyBox').append($('#subscriptionconf_currency').val());
                         
@@ -185,6 +184,8 @@ $(document).ready(function() {
                                     var data = {id: element.val(), text: element.val()};
                                     callback(data);
                                 },
+                                formatResult: formatDiv,
+                                formatSelection: format,
                                 escapeMarkup: function (m) { return m; }
                             }).on("change", function (e) {
                                 $('#specificationForm_article').attr('value', $("#selectArticles").select2("val"));
@@ -197,15 +198,32 @@ $(document).ready(function() {
                                 'sectionId': $("#specificationForm_section").val(),
                                 'articleId': $("#specificationForm_article").val()
                             }, function (data) {
-                                $("#s2id_selectPublications .select2-choice .select2-chosen").empty();
-                                $("#s2id_selectPublications .select2-choice .select2-chosen").append(data.Publications[0].name);
-                                $("#s2id_selectIssues .select2-choice .select2-chosen").empty();
-                                $("#s2id_selectIssues .select2-choice .select2-chosen").append(data.Issues[0].name);
-                                $("#s2id_selectSections .select2-choice .select2-chosen").empty();
-                                $("#s2id_selectSections .select2-choice .select2-chosen").append(data.Sections[0].name);
-                                $("#s2id_selectArticles .select2-choice .select2-chosen").empty();
-                                if (data.Articles) {
-                                    $("#s2id_selectArticles .select2-choice .select2-chosen").append(data.Articles[0].text);
+                                 if (data.Publications.length > 0) {
+                                    $("#s2id_selectPublications .select2-choice .select2-chosen").empty();
+                                    $("#s2id_selectPublications .select2-choice .select2-chosen").append(
+                                        data.Publications[0].name + " ("+data.Publications[0].code+")"
+                                    );
+                                }
+
+                                if (data.Issues.length > 0) {
+                                    $("#s2id_selectIssues .select2-choice .select2-chosen").empty();
+                                    $("#s2id_selectIssues .select2-choice .select2-chosen").append(
+                                        data.Issues[0].name + " ("+data.Issues[0].code+")"
+                                    );
+                                }
+
+                                if (data.Sections.length > 0) {
+                                    $("#s2id_selectSections .select2-choice .select2-chosen").empty();
+                                    $("#s2id_selectSections .select2-choice .select2-chosen").append(
+                                        data.Sections[0].name + " ("+data.Sections[0].code+")"
+                                    );
+                                }
+
+                                if (data.Articles.length > 0) {
+                                    $("#s2id_selectArticles .select2-choice .select2-chosen").empty();
+                                    $("#s2id_selectArticles .select2-choice .select2-chosen").append(
+                                        data.Articles[0].name + " ("+data.Articles[0].code+")"
+                                    );
                                 }
                             }, 'json');
                         }
@@ -213,7 +231,7 @@ $(document).ready(function() {
                         $('#next').prop("disabled", false);
                         var ul = $('<ul></ul>');
                         ul.appendTo($('.alert.error'));
-                        $.each($.parseJSON(msg.errors), function (i, obj) {
+                        $.each(msg.errors, function (i, obj) {
                             ul.append('<li>'+obj+'</li>');
                         });
                         $('.alert.error').show();

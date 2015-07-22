@@ -13,7 +13,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
-use Newscoop\Entity\User;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
 use Newscoop\PaywallBundle\Entity\Order;
 use Newscoop\PaywallBundle\Form\Type\OrderItemType;

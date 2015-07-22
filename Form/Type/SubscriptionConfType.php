@@ -11,6 +11,7 @@ namespace Newscoop\PaywallBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class SubscriptionConfType extends AbstractType
 {
@@ -40,7 +41,16 @@ class SubscriptionConfType extends AbstractType
             'label' => 'paywall.step1.form.label.price',
             'error_bubbling' => true,
             'required' => true,
+            'precision' => 2,
             'invalid_message' => 'paywall.step1.form.error.price',
+            'constraints' => array(
+                new Assert\Range(array(
+                    'min' => '0.01',
+                    'max' => '99999999.99',
+                    'minMessage' => 'paywall.errors.price.min',
+                    'maxMessage' => 'paywall.errors.price.max',
+                )),
+            ),
         ));
     }
 

@@ -334,7 +334,9 @@ class AdminController extends Controller
     {
         $publications = $em->getRepository('Newscoop\Entity\Publication')
             ->createQueryBuilder('p')
-            ->select('p.id', 'p.name')
+            ->select('p.id', 'p.name', 'l.code')
+            ->leftJoin('p.language', 'l')
+            ->groupBy('p.id')
             ->getQuery()
             ->getArrayResult();
 
@@ -353,9 +355,11 @@ class AdminController extends Controller
     {
         $issues = $em->getRepository('Newscoop\Entity\Issue')
             ->createQueryBuilder('i')
-            ->select('i.number as id', 'i.name')
+            ->select('i.number as id', 'i.name', 'l.code')
+            ->leftJoin('i.language', 'l')
             ->where('i.publication = ?1')
             ->setParameter(1, $request->get('publicationId'))
+            ->groupBy('i.number')
             ->getQuery()
             ->getArrayResult();
 
@@ -374,11 +378,13 @@ class AdminController extends Controller
     {
         $sections = $em->getRepository('Newscoop\Entity\Section')
             ->createQueryBuilder('s')
-            ->select('s.id', 's.name')
+            ->select('s.id', 's.name', 'l.code')
             ->innerJoin('s.issue', 'i', 'WITH', 'i.number = ?2')
+            ->leftJoin('s.language', 'l')
             ->where('s.publication = ?1')
             ->setParameter(1, $request->get('publicationId'))
             ->setParameter(2, $request->get('issueId'))
+            ->groupBy('s.number')
             ->getQuery()
             ->getArrayResult();
 
@@ -395,32 +401,24 @@ class AdminController extends Controller
      */
     private function getArticle($request, $em)
     {
-        $number = $em->getRepository('Newscoop\Entity\Section')
+        $articles = $em->getRepository('Newscoop\Entity\Article')
             ->createQueryBuilder('s')
-            ->select('s.number')
-            ->innerJoin('s.issue', 'i', 'WITH', 'i.number = :issueId')
-            ->where('s.publication = :publicationId AND s.id = :sectionId')
+            ->select('s.number as id', 's.name', 'l.code')
+            ->leftJoin('s.issue', 'i')
+            ->leftJoin('s.publication', 'p')
+            ->leftJoin('s.section', 'ss')
+            ->leftJoin('s.language', 'l')
+            ->where('s.publication = :publicationId AND ss.id = :sectionId AND i.number = :issueId')
             ->setParameters(array(
                 'publicationId' => $request->get('publicationId'),
                 'issueId' => $request->get('issueId'),
                 'sectionId' => $request->get('sectionId'),
             ))
+            ->groupBy('s.number')
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getArrayResult();
 
-        $articles = $em->getRepository('Newscoop\Entity\Article')
-            ->getArticlesForSection($request->get('publicationId'), reset($number))
-            ->getResult();
-
-        $articlesArray = array();
-        foreach ($articles as $article) {
-            $articlesArray[] = array(
-                'id' => $article->getNumber(),
-                'text' => $article->getName(),
-            );
-        }
-
-        return $articlesArray;
+        return $articles;
     }
 
     /**

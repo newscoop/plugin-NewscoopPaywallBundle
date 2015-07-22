@@ -86,18 +86,21 @@ class OrderService
             $order = new Order();
             $order->setCurrency($this->context->getCurrency());
             $order->setUser($this->subscriptionService->getCurrentUser());
-            $orderItem = null;
-
             foreach ($items as $subscriptionId => $periodId) {
                 if (!$periodId) {
                     continue;
                 }
 
+                $orderItem = null;
                 $subscription = $this->subscriptionService
                     ->getSubscriptionRepository()
                     ->getReference($subscriptionId);
 
                 $newlySelectedPeriod = $this->subscriptionService->filterRanges($subscription, $periodId);
+                if (!$newlySelectedPeriod) {
+                    return new Order();
+                }
+
                 $item = $this->subscriptionService->getOrderItemBy(
                     $subscription->getId()
                 );
@@ -108,7 +111,7 @@ class OrderService
                     }
 
                     $currentItemPeriod = $item->getDuration();
-                        // e.g month === month
+                    // e.g month === month
                     if ($currentItemPeriod['attribute'] === $newlySelectedPeriod->getAttribute()) {
                         $orderItem = $this->instantiateOrderItem($subscription, $newlySelectedPeriod);
                         $orderItem->setProlonged(true);
@@ -120,17 +123,12 @@ class OrderService
                     }
                 }
 
-                $userSubscription = $orderItem;
                 if (!$orderItem) {
-                    $userSubscription = $this->instantiateOrderItem($subscription, $newlySelectedPeriod);
+                    $orderItem = $this->instantiateOrderItem($subscription, $newlySelectedPeriod);
                 }
 
-                if ($newlySelectedPeriod->getDiscount()) {
-                    $userSubscription->addDiscount($newlySelectedPeriod->getDiscount());
-                }
-
-                $userSubscription->setOrder($order);
-                $order->addItem($userSubscription); // if has item, then merge it else add
+                $orderItem->setOrder($order);
+                $order->addItem($orderItem);
             }
 
             return $order;
@@ -142,25 +140,27 @@ class OrderService
     private function instantiateOrderItem(Subscription $subscription, $period)
     {
         $specification = $subscription->getSpecification()->first();
-        $userSubscription = $this->subscriptionService->create();
+        $orderItem = $this->subscriptionService->create();
         $subscriptionData = new SubscriptionData(array(
             'userId' => $this->subscriptionService->getCurrentUser(),
             'subscriptionId' => $subscription,
             'publicationId' => $specification->getPublication(),
             'toPay' => $this->converter->convert($subscription->getPrice(), $this->context->getCurrency()),
             'duration' => $this->createPeriodArray($period),
+            'discount' => $this->createDiscountArray($period),
             'currency' => $this->context->getCurrency(),
             'type' => 'T',
             'active' => false,
-        ), $userSubscription);
+        ), $orderItem);
 
-        return $this->subscriptionService->update($userSubscription, $subscriptionData);
+        return $this->subscriptionService->update($orderItem, $subscriptionData);
     }
 
     private function createDiscountArray(Duration $period)
     {
         $discount = array();
         if ($period->getDiscount()) {
+            $discount['id'] = $period->getDiscount()->getId();
             $discount['value'] = $period->getDiscount()->getValue();
             $discount['type'] = $period->getDiscount()->getType();
         }
@@ -168,7 +168,7 @@ class OrderService
         return $discount;
     }
 
-    private function createPeriodArray($period)
+    private function createPeriodArray(Duration $period)
     {
         $periodArray = array(
             'id' => $period->getId(),

@@ -11,7 +11,6 @@ namespace Newscoop\PaywallBundle\EventListener;
 use Newscoop\EventDispatcher\Events\GenericEvent;
 use Newscoop\PaywallBundle\Services\NotificationsService;
 use Newscoop\PaywallBundle\Notifications\Emails;
-use Newscoop\Entity\User;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 

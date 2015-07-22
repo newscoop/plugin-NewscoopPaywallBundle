@@ -44,16 +44,17 @@ class AdaptersListener
     {
         $fs = new Filesystem();
         $finder = new Finder();
+        $reflection = new \ReflectionClass($this);
 
         try {
-            $pluginsDir = __DIR__.'/../../../';
+            $pluginsDir = dirname($reflection->getFileName()).'/../../../';
 
             $iterator = $finder
                 ->ignoreUnreadableDirs()
                 ->files()
                 ->name('*Adapter.php')
                 ->in($pluginsDir.'*/*/Adapter/PaywallAdapters/')
-                ->in(__DIR__.'/../Adapter/');
+                ->in(dirname($reflection->getFileName()).'/../Adapter/');
 
             foreach ($iterator as $file) {
                 $classNamespace = str_replace(realpath($pluginsDir), '', substr($file->getRealPath(), 0, -4));

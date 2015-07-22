@@ -81,8 +81,14 @@ class OrderController extends BaseController
             return $response;
         }
 
-        $orderService = $this->get('newscoop_paywall.services.order');
-        $order = $orderService->processAndCalculateOrderItems($items, $currency);
+        try {
+            $orderService = $this->get('newscoop_paywall.services.order');
+            $order = $orderService->processAndCalculateOrderItems($items, $currency);
+        } catch (\Exception $e) {
+            $response->setStatusCode(422);
+
+            return $response;
+        }
 
         return new JsonResponse(array(
             'itemsCount' => $order->countItems(),

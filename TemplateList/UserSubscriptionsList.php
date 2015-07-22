@@ -10,7 +10,6 @@ namespace Newscoop\PaywallBundle\TemplateList;
 
 use Newscoop\TemplateList\BaseList;
 use Newscoop\PaywallBundle\Meta\MetaSubscription;
-use Doctrine\Common\Collections\Criteria;
 
 /**
  * User Subscriptions List.

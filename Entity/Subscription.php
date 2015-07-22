@@ -63,7 +63,7 @@ class Subscription implements Translatable, PriceableInterface
 
     /**
      * @PaywallValidators\ContainsDecimal(entity="Subscription", property="price")
-     * @ORM\Column(type="decimal", name="price")
+     * @ORM\Column(type="decimal", name="price", precision=10, scale=2)
      *
      * @var decimal
      */

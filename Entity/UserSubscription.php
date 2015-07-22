@@ -190,6 +190,8 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
      */
     protected $duration;
 
+    protected $discount;
+
     /**
      * @ORM\OneToMany(targetEntity="Modification", mappedBy="orderItem", orphanRemoval=true, cascade={"all"})
      *
@@ -718,7 +720,7 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
     /**
      * Gets the value of duration.
      *
-     * @return Duration
+     * @return array
      */
     public function getDuration()
     {
@@ -891,27 +893,21 @@ class UserSubscription implements DiscountableInterface, ProlongableItemInterfac
         return $this;
     }
 
+    /**
+     * Calculates all the modifications together with
+     * the total discount and unit price for single item.
+     *
+     * @return self
+     */
     public function calculateModificationsAndToPay()
     {
         $this->discountTotal = 0;
-        $temp = 0;
-        $totalWithoutDiscount = (float) $this->toPay * $this->duration['value'];
-
         foreach ($this->modifications as $modification) {
-            $temp = $this->toPay + $modification->getAmount();
+            $this->toPay -= $modification->getAmount();
+            $this->discountTotal -= $modification->getAmount() * $this->duration['value'] * 100;
         }
 
-        foreach ($this->discounts as $discount) {
-            if ($discount->getCountBased() && $this->duration['value'] > 1) {
-                $temp -= $temp * $discount->getValue();
-            }
-        }
-
-        $this->toPay = $totalWithoutDiscount;
-        if ($temp !== 0) {
-            $this->discountTotal = ($totalWithoutDiscount - (round($temp, 2) * $this->duration['value'])) * 100;
-        }
-
+        $this->toPay = (float) $this->toPay * $this->duration['value'];
         if ($this->toPay < 0) {
             $this->toPay = 0;
         }
