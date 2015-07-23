@@ -1,18 +1,18 @@
 paywall:
     errors:
         period:
-            max: null
-            min: null
-            blank: null
+            max: 'Period field value should be {{ limit }} or more.'
+            min: 'Period field value should be {{ limit }} or less.'
+            blank: 'Period field value should not be empty.'
         price:
-            min: null
-            max: null
+            min: 'Price field value should be {{ limit }} or more.'
+            max: 'Price field value should be {{ limit }} or less.'
     step1:
         form:
             error:
                 price:
                     decimal: 'Price field must be greater than or equal to 1.'
-                    custom: null
+                    custom: 'The price field contains an illegal character or is empty.'
                     blank: 'Price field can not be empty.'
                 range:
                     blank: 'Range field can not be empty.'
