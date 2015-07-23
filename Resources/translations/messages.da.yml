@@ -21,6 +21,8 @@ paywall:
         editcurrency: null
         removeitem: null
         confirmation: null
+        currency:
+            create: null
     alert:
         notexists: 'Det valgte abonnement findes ikke.'
     title: Betalingsmur

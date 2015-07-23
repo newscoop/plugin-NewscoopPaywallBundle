@@ -1,4 +1,12 @@
 paywall:
+    errors:
+        period:
+            max: null
+            min: null
+            blank: null
+        price:
+            min: null
+            max: null
     step1:
         form:
             error:

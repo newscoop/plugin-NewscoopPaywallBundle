@@ -1,10 +1,18 @@
 paywall:
+    errors:
+        period:
+            max: null
+            min: null
+            blank: null
+        price:
+            min: null
+            max: null
     step1:
         form:
             error:
                 price:
                     decimal: 'Prisen skal være mindst 1.'
-                    custom: 'Prisfeltet må kun indeholde tal.'
+                    custom: null
                     blank: 'Prisfeltet må ikke være tomt.'
                 range:
                     blank: 'Periodefeltet må ikke være tomt.'

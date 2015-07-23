@@ -21,6 +21,8 @@ paywall:
         editcurrency: 'Edit currency'
         removeitem: 'Are you sure you want to delete this item?'
         confirmation: Confirmation
+        currency:
+            create: 'You can choose whatever currency you wish and add it to you system. Exchange rates must be numeric (positive only) values, both comma and period operators can be used as a decimal separators. By default 5 decimals will be allowed until the field rounds the submitted value: e.g. submitted value of 20.123453 will be rounded to, for example, 20.12345'
     alert:
         notexists: 'Selected subscription does not exist.'
     title: null

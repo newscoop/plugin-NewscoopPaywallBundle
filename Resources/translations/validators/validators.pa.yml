@@ -1,4 +1,12 @@
 paywall:
+    errors:
+        period:
+            max: 'Period field value should be {{ limit }} or more.'
+            min: 'Period field value should be {{ limit }} or less.'
+            blank: 'Period field value should should not be blank.'
+        price:
+            min: 'Price filed value should be {{ limit }} or more.'
+            max: 'Price filed value should be {{ limit }} or less.'
     step1:
         form:
             error:
