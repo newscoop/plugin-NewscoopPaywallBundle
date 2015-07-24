@@ -22,7 +22,7 @@ paywall:
         removeitem: 'Are you sure you want to delete this item?'
         confirmation: Confirmation
         currency:
-            create: null
+            create: 'You can add any currency you wish to the system. Exchange rates must be positive numbers and will be rounded to five decimal places by default. Both the comma and period can be used as decimal separators.'
     alert:
         notexists: 'Selected subscription does not exist.'
     title: Paywall
