@@ -11,7 +11,7 @@ paywall:
         form:
             error:
                 price:
-                    decimal: 'Prisen skal være mindst 1.'
+                    decimal: null
                     custom: null
                     blank: 'Prisfeltet må ikke være tomt.'
                 range:
