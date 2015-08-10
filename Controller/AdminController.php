@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -378,7 +377,7 @@ class AdminController extends Controller
     {
         $sections = $em->getRepository('Newscoop\Entity\Section')
             ->createQueryBuilder('s')
-            ->select('s.id', 's.name', 'l.code')
+            ->select('s.number as id', 's.name', 'l.code')
             ->innerJoin('s.issue', 'i', 'WITH', 'i.number = ?2')
             ->leftJoin('s.language', 'l')
             ->where('s.publication = ?1')

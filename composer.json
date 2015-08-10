@@ -2,7 +2,7 @@
     "name": "newscoop/newscoop-paywall-bundle",
     "description": "Newscoop Paywall Bundle is a simple and powerful plugin that allows online publishers to monetize their content.",
     "keywords": ["newscoop", "paywall", "cms", "integration", "payment", "subscription", "monetization", "content"],
-    "version": "0.6",
+    "version": "0.7",
     "type": "newscoop-plugin",
     "license": "GPL-3.0",
     "authors": [
