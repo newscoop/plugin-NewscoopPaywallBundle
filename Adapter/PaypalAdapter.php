@@ -5,33 +5,18 @@
  * @copyright 2012 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Adapter;
 
 use Newscoop\Services\SubscriptionService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class PaypalAdapter implements PaywallAdapterInterface
+class PaypalAdapter extends AbstractAdapter
 {
-    private $subscriptionService;
-
-    private $request;
-
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
-    }
-
-    public function __construct(SubscriptionService $subscriptionService)
-    {
-        $this->subscriptionService = $subscriptionService;
-    }
-
-    public function proccess()
+    public function process()
     {
         $request = new \PayPal\Ipn\Request\Curl();
-        $listener = new \PayPal\Ipn\Listener($request);
+        $listener = new \PayPal\Ipn\Listener($this->request);
         $listener->setMode('sandbox');
 
         try {
