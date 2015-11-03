@@ -5,12 +5,10 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Newscoop\PaywallBundle\Events\AdaptersEvent;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Filesystem\Filesystem;
 use Newscoop\PaywallBundle\Entity\Settings;
 
 /**
@@ -37,12 +35,9 @@ class AdaptersListener
 
     /**
      * Install external adapters.
-     *
-     * @throws Exception
      */
     private function installAdapters(AdaptersEvent $event)
     {
-        $fs = new Filesystem();
         $finder = new Finder();
         $reflection = new \ReflectionClass($this);
 

@@ -84,6 +84,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->dropSchema($this->getClasses(), true);
         $this->removeJobs();
+        $this->removeSettings();
     }
 
     /**

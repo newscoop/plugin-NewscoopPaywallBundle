@@ -121,8 +121,9 @@ class PurchaseController extends BaseController
     {
         $entityManager = $this->get('em');
         $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $order->getItems()->toArray());
-        // dispatch paymentNotificationEvent
+        $this->get('newscoop_paywall.services.payment')->createPayment($order);
+
         $entityManager->persist($order);
-        $entityManager > flush();
+        $entityManager->flush();
     }
 }

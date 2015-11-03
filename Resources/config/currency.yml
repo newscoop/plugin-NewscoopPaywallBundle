@@ -1,0 +1,57 @@
+services:
+    newscoop_paywall.currency_context:
+        class: Newscoop\PaywallBundle\Currency\Context\CurrencyContext
+        arguments:
+            - @session
+
+    newscoop_paywall.currency.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Newscoop\PaywallBundle\Entity\Currency
+
+    newscoop_paywall.currency_provider:
+        class: Newscoop\PaywallBundle\Provider\CurrencyProvider
+        arguments:
+            - @newscoop_paywall.currency.repository
+            - @preferences
+
+    newscoop_paywall.currency_converter:
+        class: Newscoop\PaywallBundle\Converter\CurrencyConverter
+        arguments:
+            - @newscoop_paywall.currency.repository
+
+    newscoop_paywall.form.type.currency_code:
+        class: Newscoop\PaywallBundle\Form\Type\CurrencyCodeType
+        arguments:
+            - "@newscoop_paywall.currency_provider"
+        tags:
+            - { name: form.type, alias: paywall_currency_code }
+
+    newscoop_paywall.form.type.currency_choice:
+        class: Newscoop\PaywallBundle\Form\Type\CurrencyChoiceType
+        arguments:
+            - "@newscoop_paywall.currency_provider"
+        tags:
+            - { name: form.type, alias: paywall_currency_choice }
+
+    newscoop_paywall.currency_importer.ecb:
+        class: Newscoop\PaywallBundle\Importer\EuropeanCentralBankImporter
+        arguments: ['@em', '@newscoop_paywall.currency.repository', { base_currency: 'EUR' }]
+
+    newscoop_paywall.currency_importer.cbar:
+        class: Newscoop\PaywallBundle\Importer\CentralAzerbaijanBank
+        arguments: ['@em', '@newscoop_paywall.currency.repository', { base_currency: 'AZN' }]
+
+    newscoop_paywall.serializer.currency_handler:
+        class: Newscoop\PaywallBundle\Serializer\CurrencyConverterHandler
+        arguments: ["@newscoop_paywall.currency_converter", "@newscoop_paywall.currency_context"]
+        tags:
+            - { name: jms_serializer.handler, type: converter, direction: serialization, format: json, method: serializeToJson }
+
+    newscoop_paywall.serializer.currency_context_handler:
+        class: Newscoop\PaywallBundle\Serializer\CurrencyContextHandler
+        arguments: ["@newscoop_paywall.currency_context"]
+        tags:
+            - { name: jms_serializer.handler, type: currency, direction: serialization, format: json, method: serializeToJson }

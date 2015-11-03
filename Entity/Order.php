@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -80,6 +79,13 @@ class Order implements OrderInterface
     protected $modifications;
 
     /**
+     * @ORM\OneToMany(targetEntity="Payment", mappedBy="order", orphanRemoval=true, cascade={"all"})
+     *
+     * @var ArrayCollection
+     */
+    protected $payments;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Discount", cascade={"persist"})
      * @ORM\JoinTable(name="plugin_paywall_order_discount",
      *      joinColumns={
@@ -93,6 +99,13 @@ class Order implements OrderInterface
      * @var ArrayCollection
      */
     protected $discounts;
+
+    /**
+     * @ORM\Column(type="string", name="payment_state")
+     *
+     * @var string
+     */
+    protected $paymentState = PaymentInterface::STATE_NEW;
 
     /**
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
@@ -115,6 +128,7 @@ class Order implements OrderInterface
     {
         $this->items = new ArrayCollection();
         $this->modifications = new ArrayCollection();
+        $this->payments = new ArrayCollection();
         $this->discounts = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
@@ -460,5 +474,47 @@ class Order implements OrderInterface
         $this->itemsTotal = $itemsTotal * 100;
 
         return $this;
+    }
+
+    /**
+     * Gets the payments.
+     *
+     * @return Payment
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    public function getPaymentState()
+    {
+        return $this->paymentState;
+    }
+
+    public function setPaymentState($paymentState)
+    {
+        $this->paymentState = $paymentState;
+    }
+
+    public function addPayment(PaymentInterface $payment)
+    {
+        if (!$this->hasPayment($payment)) {
+            $this->payments->add($payment);
+            $payment->setOrder($this);
+            $this->setPaymentState($payment->getState());
+        }
+    }
+
+    public function removePayment(PaymentInterface $payment)
+    {
+        if ($this->hasPayment($payment)) {
+            $this->payments->removeElement($payment);
+            $payment->setOrder(null);
+        }
+    }
+
+    public function hasPayment(PaymentInterface $payment)
+    {
+        return $this->payments->contains($payment);
     }
 }

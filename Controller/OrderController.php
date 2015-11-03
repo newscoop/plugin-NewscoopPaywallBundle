@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
-use Newscoop\PaywallBundle\Entity\Order;
 
 class OrderController extends BaseController
 {
@@ -22,7 +21,7 @@ class OrderController extends BaseController
      *
      * @Method("GET")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         $response = new Response();
         $templatesService = $this->get('newscoop.templates.service');
@@ -46,15 +45,15 @@ class OrderController extends BaseController
             return $response;
         }
 
-        $em = $this->get('em');
+        $entityManager = $this->get('em');
         $orderService = $this->get('newscoop_paywall.services.order');
         $order = $orderService->processAndCalculateOrderItems($items);
 
         $response->setStatusCode(404);
         if (!$order->getItems()->isEmpty()) {
             $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $order->getItems()->toArray());
-            $em->persist($order);
-            $em->flush();
+            $entityManager->persist($order);
+            $entityManager->flush();
 
             $response->setStatusCode(204);
         }

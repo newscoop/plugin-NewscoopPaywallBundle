@@ -1,3 +1,8 @@
+imports:
+    - { resource: 'currency.yml' }
+    - { resource: 'notification.yml' }
+    - { resource: 'discount.yml'}
+
 parameters:
     subscriptions.service.class: "Newscoop\\PaywallBundle\\Services\\PaywallService"
     newscoop.paywall.listener.notification.class: "Newscoop\\PaywallBundle\\EventListener\\NotificationListener"
@@ -71,81 +76,6 @@ services:
         arguments:  ["@newscoop_paywall.criteria.subscriptions_criteria"]
         tags:
             -  { name: newscoop.template_lists }
-    newscoop_paywall.notifications_service:
-        class: Newscoop\PaywallBundle\Services\NotificationsService
-        arguments:
-            - @email
-            - @preferences
-            - @newscoop.templates.service
-            - @newscoop.placeholders.service
-            - @em
-            - @event_dispatcher
-
-    newscoop_paywall.currency_context:
-        class: Newscoop\PaywallBundle\Currency\Context\CurrencyContext
-        arguments:
-            - @session
-
-    newscoop_paywall.currency.repository:
-        class: Doctrine\ORM\EntityRepository
-        factory_service: doctrine.orm.default_entity_manager
-        factory_method: getRepository
-        arguments:
-            - Newscoop\PaywallBundle\Entity\Currency
-
-    newscoop_paywall.currency_provider:
-        class: Newscoop\PaywallBundle\Provider\CurrencyProvider
-        arguments:
-            - @newscoop_paywall.currency.repository
-            - @preferences
-
-    newscoop_paywall.currency_converter:
-        class: Newscoop\PaywallBundle\Converter\CurrencyConverter
-        arguments:
-            - @newscoop_paywall.currency.repository
-
-    newscoop_paywall.form.type.currency_code:
-        class: Newscoop\PaywallBundle\Form\Type\CurrencyCodeType
-        arguments:
-            - "@newscoop_paywall.currency_provider"
-        tags:
-            - { name: form.type, alias: paywall_currency_code }
-
-    newscoop_paywall.form.type.currency_choice:
-        class: Newscoop\PaywallBundle\Form\Type\CurrencyChoiceType
-        arguments:
-            - "@newscoop_paywall.currency_provider"
-        tags:
-            - { name: form.type, alias: paywall_currency_choice }
-
-    newscoop_paywall.discounts.percentage_discount:
-        class: Newscoop\PaywallBundle\Discount\PercentageDiscount
-        tags:
-            - { name: newscoop_paywall.discount_type, type: percentage_discount, label: Percentage discount}
-
-    newscoop_paywall.processor.discounts:
-        class: Newscoop\PaywallBundle\Discount\DiscountProcessor
-        arguments:  ["@service_container"]
-
-    newscoop_paywall.currency_importer.ecb:
-        class: Newscoop\PaywallBundle\Importer\EuropeanCentralBankImporter
-        arguments: ['@em', '@newscoop_paywall.currency.repository', { base_currency: 'EUR' }]
-
-    newscoop_paywall.currency_importer.cbar:
-        class: Newscoop\PaywallBundle\Importer\CentralAzerbaijanBank
-        arguments: ['@em', '@newscoop_paywall.currency.repository', { base_currency: 'AZN' }]
-
-    newscoop_paywall.serializer.currency_handler:
-        class: Newscoop\PaywallBundle\Serializer\CurrencyConverterHandler
-        arguments: ["@newscoop_paywall.currency_converter", "@newscoop_paywall.currency_context"]
-        tags:
-            - { name: jms_serializer.handler, type: converter, direction: serialization, format: json, method: serializeToJson }
-
-    newscoop_paywall.serializer.currency_context_handler:
-        class: Newscoop\PaywallBundle\Serializer\CurrencyContextHandler
-        arguments: ["@newscoop_paywall.currency_context"]
-        tags:
-            - { name: jms_serializer.handler, type: currency, direction: serialization, format: json, method: serializeToJson }
 
     newscoop_paywall.services.order:
         class: Newscoop\PaywallBundle\Services\OrderService
@@ -155,13 +85,7 @@ services:
             - @paywall.subscription.service
             - @newscoop_paywall.processor.discounts
 
-    newscoop_paywall.notification_listener:
-        class: %newscoop.paywall.listener.notification.class%
+    newscoop_paywall.services.payment:
+        class: Newscoop\PaywallBundle\Services\PaymentService
         arguments:
-            - @newscoop_paywall.notifications_service
-        tags:
-            - { name: kernel.event_listener, event: paywall.subscription.order, method: sendAdminNotificationEmail }
-            - { name: kernel.event_listener, event: paywall.subscription.order, method: sendUserNotificationEmail }
-            - { name: kernel.event_listener, event: paywall.subscription.status_change, method: sendUserSubscriptionStatusChangeEmail }
-            - { name: kernel.event_listener, event: paywall.subscription.expiration, method: sendSubscriptionExpirationEmail }
-            - { name: kernel.event_listener, event: paywall.subscription.admin_order, method: sendAdminCreatedNotification }
+            - @em

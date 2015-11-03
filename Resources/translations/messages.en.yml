@@ -1,5 +1,13 @@
 Plugins: Plugins
 paywall:
+    form:
+      payment:
+        state:
+          failed: "Failed"
+          cancelled: "Cancelled"
+          completed: "Completed"
+          new: "New"
+          unknown: "Unknown"
     label:
       defineduration: "Define periods & discounts"
       months: "month(s)"
@@ -21,6 +29,9 @@ paywall:
       editcurrency: "Edit currency"
       removeitem: "Are you sure you want to delete this item?"
       confirmation: "Confirmation"
+      method: "Method"
+      order: "Order"
+      paymentstate: "Payment state"
       currency:
         create: "You can add any currency you wish to the system. Exchange rates must be positive numbers and will be rounded to five decimal places by default. Both the comma and period can be used as decimal separators."
     alert:
@@ -90,6 +101,7 @@ paywall:
       activate: "Activate"
       cancel: "Cancel"
       close: "Close"
+      createpayment: "Create payment"
       createcurrency: "Create currency"
     flash:
       message:
@@ -159,6 +171,7 @@ paywall:
         managesubscriptions: "Manage Subscriptions"
         subscriptions.user: "Manage User Subscriptions"
         configure.paywall: "Configure Paywall"
+        payments: "Payments"
         discounts: "Discounts"
         orders: "Orders"
         currencies: "Currencies"

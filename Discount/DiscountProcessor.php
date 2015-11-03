@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Discount;
 
 use Newscoop\PaywallBundle\Entity\UserSubscription;
@@ -65,7 +64,6 @@ class DiscountProcessor implements DiscountProcessorInterface
                 return true;
             }
 
-            $duration = $object->getDuration();
             if ($object->getOrder()->countItems() == 1 &&
                 !$discount->getCountBased() &&
                 $object->hasDiscount($discount)

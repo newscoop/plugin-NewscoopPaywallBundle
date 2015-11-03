@@ -1,0 +1,9 @@
+services:
+    newscoop_paywall.discounts.percentage_discount:
+        class: Newscoop\PaywallBundle\Discount\PercentageDiscount
+        tags:
+            - { name: newscoop_paywall.discount_type, type: percentage_discount, label: Percentage discount}
+
+    newscoop_paywall.processor.discounts:
+        class: Newscoop\PaywallBundle\Discount\DiscountProcessor
+        arguments:  ["@service_container"]

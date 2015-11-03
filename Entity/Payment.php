@@ -27,6 +27,14 @@ class Payment implements PaymentInterface
     protected $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Order", inversedBy="payments")
+     * @ORM\JoinColumn(name="order_id", referencedColumnName="id", nullable=false)
+     *
+     * @var Order
+     */
+    protected $order;
+
+    /**
      * @ORM\Column(type="string", name="method")
      *
      * @var string
@@ -81,6 +89,7 @@ class Payment implements PaymentInterface
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     /**
@@ -128,7 +137,7 @@ class Payment implements PaymentInterface
      */
     public function getAmount()
     {
-        return $this->amount;
+        return $this->amount / 100;
     }
 
     /**
@@ -136,10 +145,7 @@ class Payment implements PaymentInterface
      */
     public function setAmount($amount)
     {
-        if (!is_int($amount)) {
-            throw new \InvalidArgumentException('Amount must be an integer.');
-        }
-        $this->amount = $amount;
+        $this->amount = $amount * 100;
     }
 
     /**
@@ -193,30 +199,6 @@ class Payment implements PaymentInterface
     /**
      * {@inheritdoc}
      */
-    public function isDeleted()
-    {
-        return null !== $this->deletedAt && new \DateTime() >= $this->deletedAt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setDeletedAt(\DateTime $deletedAt = null)
-    {
-        $this->deletedAt = $deletedAt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setDetails($details)
     {
         if ($details instanceof \Traversable) {
@@ -236,5 +218,25 @@ class Payment implements PaymentInterface
     public function getDetails()
     {
         return $this->details;
+    }
+
+    /**
+     * Gets the order.
+     *
+     * @return OrderInterface Order
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * Sets the order.
+     *
+     * @param OrderInterface Order
+     */
+    public function setOrder(OrderInterface $order)
+    {
+        $this->order = $order;
     }
 }
