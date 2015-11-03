@@ -77,9 +77,10 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
     foreach ($subscriptionsConfig as $subscription) {
         $availableSubscriptions[$subscription->getName()] = array(
             'type' => $subscription->getType(),
-            'range' => $subscription->getRange(),
+            'range' => $subscription->getRanges()->first(),
             'currency' => $subscription->getCurrency(),
             'price' => $subscription->getPrice(),
+            'id' => $subscription->getId(),
         );
     }
 
@@ -114,7 +115,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
         }
     }
 
-    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/subscriptions/get'.$anchor.'" method="post" '.$p_params['html_code'].'>'."\n";
+    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/purchase'.$anchor.'" method="post" '.$p_params['html_code'].'>'."\n";
 
     if (isset($template)) {
         $html .= '<input type="hidden" name="tpl" value="'.$template->identifier."\" />\n";
@@ -157,7 +158,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
                         str_replace('%type%', $definition['type'], $optionText)
             ))).'</option>'."\n";
         }
-        $html  .= '<select name="subscription_name">'.$options.'</select>';
+        $html  .= '<select name="batchorder['.$definition['id'].']">'.$options.'</select>';
     }
 
     $html .= $p_content;

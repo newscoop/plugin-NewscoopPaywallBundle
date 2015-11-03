@@ -35,7 +35,7 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
     $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
     $url = $context->url;
 
-    $choosenSubscription = $subscriptionService->getOneById($params['subscriptionId']);
+    $choosenSubscription = $subscriptionsConfig[0];
 
     if (!$choosenSubscription) {
         throw new Exception("Subscription don't exists", 1);
@@ -45,7 +45,7 @@ function smarty_block_paypal_payment_form($params, $content, &$smarty, &$repeat)
         'seller_email' => $subscriptionsConfig['paypal_config']['seller_email'],
         'paypal_url' => 'https://www.paypal.com/cgi-bin/webscr',
         'subscription_id' => $choosenSubscription->getId(),
-        'subscription_amount' => $choosenSubscription->getToPay(),
+        'subscription_amount' => $choosenSubscription->getPrice(),
         'subscription_currency' => $choosenSubscription->getCurrency(),
         'subscription_item_name' => str_replace('%publication_name%', $context->publication->name, $subscriptionsConfig['paypal_config']['item_name_format']),
         'language_code' => $context->language->code,

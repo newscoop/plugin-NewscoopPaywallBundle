@@ -1,5 +1,4 @@
 parameters:
-    newscoop.paywall.adapter.class: "Newscoop\\PaywallBundle\\Adapter\\PaypalAdapter"
     subscriptions.service.class: "Newscoop\\PaywallBundle\\Services\\PaywallService"
     newscoop.paywall.listener.notification.class: "Newscoop\\PaywallBundle\\EventListener\\NotificationListener"
 
@@ -9,7 +8,7 @@ services:
         arguments:  ["@em", "@user"]
     newscoop.paywall.adapter.manager:
       class: Newscoop\PaywallBundle\Services\PaywallManager
-      arguments: ["@em", "@paywall.subscription.service", "@dispatcher"]
+      arguments: ["@em", "@paywall.subscription.service", "@dispatcher", "@router", "%paywall_gateways%"]
 
     newscoop.paywall.adapter:
       class: Newscoop\PaywallBundle\Adapter\PaywallAdapterInterface

@@ -1,0 +1,72 @@
+
+{% import 'NewscoopPaywallBundle:Macros:buttons.html.twig' as buttons %}
+{% from 'NewscoopPaywallBundle:Macros:pagination.html.twig' import pagination %}
+{% import 'NewscoopPaywallBundle:Macros:modals.html.twig' as modals %}
+{% extends 'NewscoopNewscoopBundle::admin_layout.html.twig' %}
+
+{% block admin_title %}{{ parent() }} - {{ 'paywall.title'|trans }}{% endblock %}
+{% block admin_page_title_content %}{{ 'paywall.menu.label.currencies'|trans }}{% endblock %}
+
+{% block admin_stylesheets %}
+<link rel="stylesheet" type="text/css" href="{{ asset('public/bundles/newscooppaywall/css/admin_paywall.css') }}" />
+{% endblock %}
+
+{% block admin_scripts %}
+{% endblock %}
+{% block admin_content %}
+<div class="plugin-container">
+{% for flashMessage in app.session.flashbag.get('success') %}
+<div class="alert alert-success alert-dismissible font-fix" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{{ 'paywall.btn.close'|trans}}</span></button>
+  <center>{{ flashMessage }}</center>
+</div>
+{% for flashMessage in app.session.flashbag.get('error') %}
+<div class="alert alert-danger alert-dismissible font-fix" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{{ 'paywall.btn.close'|trans}}</span></button>
+  <center>{{ flashMessage }}</center>
+</div>
+  {% endfor %}
+{% endfor %}
+    {% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 7} %}
+    <div id="configure-paywall" class="box_table">
+        <div class="pull-right">
+            {{ buttons.create(path('paywall_plugin_payment_create'), 'paywall.btn.createpayment'|trans) }}
+        </div>
+            {% if payments|length > 0 %}
+            <div class="table">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>{{ knp_pagination_sortable(payments, 'paywall.label.method'|trans, 'd.code') }}</th>
+                      <th>{{ knp_pagination_sortable(payments, 'paywall.label.total'|trans, 'd.code') }}</th>
+                      <th>{{ knp_pagination_sortable(payments, 'paywall.label.exchangerate'|trans, 'd.exchangeRate') }}</th>
+                      <th>{{ knp_pagination_sortable(payments, 'paywall.label.createdAt'|trans, 'd.createdAt') }}</th>
+                      <th></th>
+                  </tr>
+              </thead>
+              <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.method }}</td>
+                    <td>{{ payment.amount }}</td>
+                    <td><span class="label label-success">{{ payment.state }}</span></td>
+                    <td>
+                      {{ payment.createdAt|date('Y-m-d H:i:s') }} 
+                    </td>
+                    <td>
+                        {{ buttons.edit(path('paywall_plugin_payment_edit', {'id': payment.id})) }}
+                        {{ buttons.delete(path('paywall_plugin_payment_delete', {'id': payment.id})) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <center><span class="alert alert-info">{{'paywall.datatable.label.norecords'|trans}}</span></center>
+        {% endif %}
+        {{ pagination(payments) }}
+    </div>
+</div>
+</div>
+{{ modals.confirm('paywall.label.confirmation'|trans, 'paywall.label.removeitem'|trans, 'paywall.btn.delete'|trans)}}
+{% endblock %}

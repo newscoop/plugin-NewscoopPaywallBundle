@@ -5,12 +5,12 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Services;
 
 use Doctrine\ORM\EntityManager;
 use Newscoop\PaywallBundle\Events\AdaptersEvent;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpKernel\Debug\TraceableEventDispatcher;
+use Newscoop\PaywallBundle\Adapter\Adapter;
 
 /**
  * PaywallManager class manages paywall adapters.
@@ -23,8 +23,12 @@ class PaywallManager
     /** @var PaywallService */
     private $subscriptionService;
 
-    /** @var EventDispatcher */
+    /** @var TraceableEventDispatcher */
     private $dispatcher;
+
+    private $router;
+
+    private $config;
 
     /**
      * Apply entity manager and injected services.
@@ -32,11 +36,18 @@ class PaywallManager
      * @param EntityManager  $em
      * @param PaywallService $subscriptionService
      */
-    public function __construct(EntityManager $em, PaywallService $subscriptionService, EventDispatcher $dispatcher)
-    {
+    public function __construct(
+        EntityManager $em,
+        PaywallService $subscriptionService,
+        TraceableEventDispatcher $dispatcher,
+        $router,
+        array $config
+    ) {
         $this->em = $em;
         $this->subscriptionService = $subscriptionService;
         $this->dispatcher = $dispatcher;
+        $this->router = $router;
+        $this->config = $config;
     }
 
     /**
@@ -51,15 +62,15 @@ class PaywallManager
             'is_active' => true,
         ));
 
-        $adapter = null;
+        /*$adapter = null;
         if (array_key_exists($settings->getValue(), $adaptersEvent->adapters)) {
             $adapter = $adaptersEvent->adapters[$settings->getValue()]['class'];
         }
 
         if (!class_exists($adapter)) {
-            return new \Newscoop\PaywallBundle\Adapter\PaypalAdapter($this->subscriptionService);
-        }
+            return new \Newscoop\PaywallBundle\Adapter\PaypalAdapter($this->subscriptionService, $this->config);
+        }*/
 
-        return new $adapter($this->subscriptionService);
+        return new Adapter($this->subscriptionService, $this->router, $this->config);
     }
 }

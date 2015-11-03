@@ -1,0 +1,1 @@
+Purchase has been canceled!

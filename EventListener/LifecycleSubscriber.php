@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -140,6 +139,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Modification'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Currency'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionTranslation'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Payment'),
         );
     }
 }

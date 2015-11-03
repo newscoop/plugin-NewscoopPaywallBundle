@@ -43,11 +43,19 @@ class DefaultController extends BaseController
     /**
      * Get callback response from paywall/payment provider and proccess it.
      *
-     * @Route("/paywall/subscriptions/add/{item}/{number}")
+     * @Route("/paywall/subscriptions/add/")
      */
-    public function createSubscriptionAction(Request $request, $item, $number)
+    public function createSubscriptionAction(Request $request)
     {
         $adapter = $this->container->getService('newscoop.paywall.adapter');
+        //$adapter->setRequest($request);
+
+        $response = $adapter->purchase(array(
+            'amount' => '10.00',
+            'currency' => 'PLN',
+        ));
+
+        $response->redirect();
     }
 
     /**
