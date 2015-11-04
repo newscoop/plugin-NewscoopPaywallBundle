@@ -7,7 +7,7 @@
  */
 namespace Newscoop\PaywallBundle\Adapter;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Component\Routing\RouterInterface;
 use Omnipay\Omnipay;
 
@@ -21,19 +21,16 @@ class AdapterFactory
     /**
      * Get current adapter.
      *
-     * @param EntityManager   $entityManager
-     * @param RouterInterface $router
-     * @param array           $config
+     * @param ObjectRepository $gatewayRepository
+     * @param RouterInterface  $router
+     * @param array            $config
      *
      * @return Omnipay
      */
-    public function getAdapter(EntityManager $entityManager, RouterInterface $router, array $config)
+    public function getAdapter(ObjectRepository $gatewayRepository, RouterInterface $router, array $config)
     {
-        $enabledAdapter = $entityManager->getRepository('Newscoop\PaywallBundle\Entity\Gateway')->findOneBy(array(
-            'isActive' => true,
-        ));
-
         $gateway = null;
+        $enabledAdapter = $gatewayRepository->findOneByIsActive(true);
         if ($enabledAdapter->getValue() !== static::OFFLINE) {
             $gateway = $this->initializeGateway($config, $enabledAdapter->getValue());
         }

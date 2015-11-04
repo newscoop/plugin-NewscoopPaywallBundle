@@ -12,6 +12,13 @@ services:
         class:      %subscriptions.service.class%
         arguments:  ["@em", "@user"]
 
+    newscoop_paywall.gateway.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Newscoop\PaywallBundle\Entity\Gateway
+
     newscoop.paywall.adapter.factory:
       class: Newscoop\PaywallBundle\Adapter\AdapterFactory
 
@@ -19,7 +26,7 @@ services:
       class: Newscoop\PaywallBundle\Adpater\GatewayAdapter
       factory_service: newscoop.paywall.adapter.factory
       factory_method: getAdapter
-      arguments: ["@em", "@router", "%paywall_gateways%"]
+      arguments: ["@newscoop_paywall.gateway.repository", "@router", "%paywall_gateways%"]
 
     newscoop_paywall.lifecyclesubscriber:
         class: Newscoop\PaywallBundle\EventListener\LifecycleSubscriber
