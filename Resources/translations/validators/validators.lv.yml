@@ -1,0 +1,22 @@
+paywall:
+    errors:
+        period:
+            max: null
+            min: null
+            blank: null
+        price:
+            min: null
+            max: null
+    step1:
+        form:
+            error:
+                price:
+                    decimal: null
+                    custom: null
+                    blank: null
+                range:
+                    blank: null
+                currency:
+                    blank: null
+                name:
+                    blank: null
