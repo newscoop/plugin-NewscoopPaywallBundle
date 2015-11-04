@@ -11,14 +11,15 @@ services:
     paywall.subscription.service:
         class:      %subscriptions.service.class%
         arguments:  ["@em", "@user"]
-    newscoop.paywall.adapter.manager:
-      class: Newscoop\PaywallBundle\Services\PaywallManager
-      arguments: ["@em", "@paywall.subscription.service", "@dispatcher", "@router", "%paywall_gateways%"]
+
+    newscoop.paywall.adapter.factory:
+      class: Newscoop\PaywallBundle\Adapter\AdapterFactory
 
     newscoop.paywall.adapter:
-      class: Newscoop\PaywallBundle\Adapter\PaywallAdapterInterface
-      factory_service: newscoop.paywall.adapter.manager
+      class: Newscoop\PaywallBundle\Adpater\GatewayAdapter
+      factory_service: newscoop.paywall.adapter.factory
       factory_method: getAdapter
+      arguments: ["@em", "@router", "%paywall_gateways%"]
 
     newscoop_paywall.lifecyclesubscriber:
         class: Newscoop\PaywallBundle\EventListener\LifecycleSubscriber
@@ -59,7 +60,7 @@ services:
 
     newscoop_paywall.adapters.listener:
         class: Newscoop\PaywallBundle\EventListener\AdaptersListener
-        arguments: ["@em"]
+        arguments: ["@em", "%paywall_gateways%"]
         tags:
           - { name: kernel.event_listener, event: newscoop_paywall.adapters.register, method: registerExternalAdapters }
 

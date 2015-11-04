@@ -8,19 +8,37 @@
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Newscoop\PaywallBundle\Events\AdaptersEvent;
-use Symfony\Component\Finder\Finder;
-use Newscoop\PaywallBundle\Entity\Settings;
+use Newscoop\PaywallBundle\Entity\Gateway;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Adapters listener.
  */
 class AdaptersListener
 {
-    private $em;
+    /**
+     * Entity Manager.
+     *
+     * @var EntityManager
+     */
+    private $entityManager;
 
-    public function __construct($em)
+    /**
+     * Paywall gateways.
+     *
+     * @var array
+     */
+    private $gateways;
+
+    /**
+     * Construct.
+     *
+     * @param EntityManager $entityManager
+     */
+    public function __construct(EntityManager $entityManager, array $gateways)
     {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
+        $this->gateways = $gateways;
     }
 
     /**
@@ -28,55 +46,36 @@ class AdaptersListener
      *
      * @param AdaptersEvent $event
      */
-    public function registerExternalAdapters(AdaptersEvent $event)
+    public function registerExternalAdapters()
     {
-        $this->installAdapters($event);
+        $this->installAdapters();
     }
 
     /**
      * Install external adapters.
      */
-    private function installAdapters(AdaptersEvent $event)
+    private function installAdapters()
     {
-        $finder = new Finder();
-        $reflection = new \ReflectionClass($this);
+        $activeAdapter = $this->entityManager->getRepository('Newscoop\PaywallBundle\Entity\Gateway')
+                ->findOneByisActive(true);
 
-        try {
-            $pluginsDir = dirname($reflection->getFileName()).'/../../../';
+        foreach ((array) $this->gateways as $name => $gateway) {
+            $adapter = $this->entityManager->getRepository('Newscoop\PaywallBundle\Entity\Gateway')
+                ->findOneByValue($name);
 
-            $iterator = $finder
-                ->ignoreUnreadableDirs()
-                ->files()
-                ->name('*Adapter.php')
-                ->in($pluginsDir.'*/*/Adapter/PaywallAdapters/')
-                ->in(dirname($reflection->getFileName()).'/../Adapter/');
+            if (!$adapter) {
+                $adapter = new Gateway();
+                $adapter->setName($name);
+                $adapter->setValue($name);
 
-            foreach ($iterator as $file) {
-                $classNamespace = str_replace(realpath($pluginsDir), '', substr($file->getRealPath(), 0, -4));
-                $namespace = str_replace('/', '\\', $classNamespace);
-                $adapterName = substr($file->getFilename(), 0, -4);
-
-                $oneAdapter = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
-                    ->findOneBy(array('value' => $adapterName));
-
-                $event->registerAdapter($adapterName, array(
-                    'class' => $namespace,
-                ));
-
-                if (!$oneAdapter) {
-                    $adapter = new Settings();
-                    $adapter->setName(str_replace('Adapter.php', '', $file->getFilename()));
-                    $adapter->setValue($adapterName);
-                    if ($adapterName !== 'PaypalAdapter') {
-                        $adapter->setIsActive(false);
-                    }
-
-                    $this->em->persist($adapter);
+                if ($activeAdapter && $name !== $activeAdapter->getValue()) {
+                    $adapter->setActive(false);
                 }
-            }
 
-            $this->em->flush();
-        } catch (\Exception $e) {
+                $this->entityManager->persist($adapter);
+            }
         }
+
+        $this->entityManager->flush();
     }
 }

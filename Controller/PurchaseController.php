@@ -11,12 +11,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Newscoop\PaywallBundle\Entity\Payment;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
 use Newscoop\PaywallBundle\Entity\OrderInterface;
 
 /**
- * It handles actions after payment redirects.
+ * It handles purchase actions.
  */
 class PurchaseController extends BaseController
 {
@@ -29,6 +30,7 @@ class PurchaseController extends BaseController
     {
         $currencyProvider = $this->get('newscoop_paywall.currency_provider');
         $currencyContext = $this->get('newscoop_paywall.currency_context');
+        $templatesService = $this->get('newscoop.templates.service');
         $currencyContext->setCurrency($currencyProvider->getDefaultCurrency()->getCode());
         $items = $request->request->get('batchorder', array());
 
@@ -40,32 +42,16 @@ class PurchaseController extends BaseController
         }
 
         $request->getSession()->set('paywall_purchase', $items);
-
+        $request->getSession()->set('paywall_referer', $request->headers->get('referer'));
         $orderService = $this->get('newscoop_paywall.services.order');
         $order = $orderService->processAndCalculateOrderItems($items);
-
         if (!$order->getItems()->isEmpty()) {
             $adapter = $this->get('newscoop.paywall.adapter');
-
             $response = $adapter->purchase($order);
-
-            if ($response->isSuccessful()) {
-                $this->completePurchase($order);
-            } elseif ($response->isRedirect()) {
-                // redirect to offsite payment gateway
-                  $response->redirect();
-            } else {
-                // payment failed: display message to customer
-                return new Response($templatesService->fetchTemplate(
-                    '_paywall/error.tpl',
-                    array('msg' => $response->getMessage())
-                ), 200, array('Content-Type' => 'text/html'));
-            }
+            $this->processPurchase($order, $response);
         }
 
-        return new Response($templatesService->fetchTemplate(
-            '_paywall/success.tpl'
-        ), 200, array('Content-Type' => 'text/html'));
+        return $this->refererRedirect($request);
     }
 
     /**
@@ -76,20 +62,31 @@ class PurchaseController extends BaseController
     public function returnAction(Request $request)
     {
         $items = $request->getSession()->get('paywall_purchase', array());
-        $templatesService = $this->get('newscoop.templates.service');
-
+        $request->getSession()->get('paywall_referer', '/');
         $orderService = $this->get('newscoop_paywall.services.order');
+        $adapter = $this->get('newscoop.paywall.adapter');
+
         $order = $orderService->processAndCalculateOrderItems($items);
-
-        $adapter = $this->container->getService('newscoop.paywall.adapter');
-
         $response = $adapter->completePurchase($order);
+        $this->processPurchase($order, $response);
 
+        return $this->refererRedirect($request);
+    }
+
+    private function processPurchase($order, $response = null)
+    {
+        if (!$response) {
+            $this->completePurchase($order);
+
+            return;
+        }
+
+        $templatesService = $this->get('newscoop.templates.service');
         if ($response->isSuccessful()) {
             $this->completePurchase($order);
         } elseif ($response->isRedirect()) {
             // redirect to offsite payment gateway
-            $response->redirect();
+                $response->redirect();
         } else {
             // payment failed: display message to customer
             return new Response($templatesService->fetchTemplate(
@@ -97,10 +94,6 @@ class PurchaseController extends BaseController
                 array('msg' => $response->getMessage())
             ), 200, array('Content-Type' => 'text/html'));
         }
-
-        return new Response($templatesService->fetchTemplate(
-            '_paywall/success.tpl'
-        ), 200, array('Content-Type' => 'text/html'));
     }
 
     /**
@@ -115,6 +108,13 @@ class PurchaseController extends BaseController
         return new Response($templatesService->fetchTemplate(
             '_paywall/cancel.tpl'
         ), 200, array('Content-Type' => 'text/html'));
+    }
+
+    private function refererRedirect(Request $request)
+    {
+        $referer = $request->getSession()->get('paywall_referer', '/');
+
+        return new RedirectResponse($referer);
     }
 
     private function completePurchase(OrderInterface $order)

@@ -9,8 +9,7 @@ namespace Newscoop\PaywallBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Newscoop\EventDispatcher\Events\GenericEvent;
-use Newscoop\PaywallBundle\Entity\Settings;
-use Newscoop\PaywallBundle\Events\AdaptersEvent;
+use Newscoop\PaywallBundle\Entity\Gateway;
 
 /**
  * Event lifecycle management.
@@ -51,13 +50,13 @@ class LifecycleSubscriber implements EventSubscriberInterface
             $this->getClasses(),
             $this->pluginDir.'library/Proxy'
         );
-        $adapter = new Settings();
-        $adapter->setName('Paypal');
-        $adapter->setValue('PaypalAdapter');
+        $adapter = new Gateway();
+        $adapter->setName('PayPal_Express');
+        $adapter->setValue('PayPal_Express');
         $this->em->persist($adapter);
         $this->em->flush();
 
-        $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
+        $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new GenericEvent());
 
         $this->addJobs();
         $this->systemPreferences->PaywallMembershipNotifyEmail = $this->systemPreferences->EmailFromAddress;
@@ -70,7 +69,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->updateSchema($this->getClasses(), true);
 
-        $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
+        $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new GenericEvent());
 
         // Generate proxies for entities
         $this->em->getProxyFactory()->generateProxyClasses(
@@ -131,7 +130,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
         return array(
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Subscription'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionSpecification'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Settings'),
+          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Gateway'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\UserSubscription'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Trial'),
           $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Discount'),

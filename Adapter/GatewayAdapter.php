@@ -7,44 +7,53 @@
  */
 namespace Newscoop\PaywallBundle\Adapter;
 
-use Newscoop\PaywallBundle\Services\PaywallService;
 use Newscoop\PaywallBundle\Entity\OrderInterface;
-use Omnipay\Omnipay;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Omnipay adapter.
  */
-class Adapter
+class GatewayAdapter
 {
-    protected $subscriptionService;
-
-    protected $request;
-
-    protected $gateway;
-
+    /**
+     * Router.
+     *
+     * @var RouterInterface
+     */
     protected $router;
 
-    public function __construct(PaywallService $subscriptionService, $router, array $config = array())
+    /**
+     * Gateway.
+     *
+     * @var Omnipay\Omnipay|null
+     */
+    protected $gateway;
+
+    /**
+     * Construct.
+     *
+     * @param RouterInterface      $router
+     * @param Omnipay\Omnipay|null $gateway
+     */
+    public function __construct(RouterInterface $router, $gateway = null)
     {
-        $this->subscriptionService = $subscriptionService;
-        $this->config = $config;
         $this->router = $router;
-        $this->initializeGateway();
+        $this->gateway = $gateway;
     }
 
-    private function initializeGateway()
-    {
-        if (!isset($this->config['PayPal_Express'])) {
-            throw new \InvalidArgumentException('Gateway "'.'PayPal_Express'.'" is not configured!');
-        }
-
-        // TODO get name from db
-        $this->gateway = Omnipay::create('PayPal_Express');
-        $this->gateway->initialize($this->config['PayPal_Express']);
-    }
-
+    /**
+     * Purchase action.
+     *
+     * @param OrderInterface $order Order
+     *
+     * @return Omnipay\Common\Message\ResponseInterface
+     */
     public function purchase(OrderInterface $order)
     {
+        if ($this->gateway === null) {
+            return;
+        }
+
         return $this->gateway->purchase(array_merge(
             array(
                 'amount' => $order->getTotal(),
@@ -54,8 +63,19 @@ class Adapter
         ))->send();
     }
 
+    /**
+     * Cplete purchase action.
+     *
+     * @param OrderInterface $order Order
+     *
+     * @return Omnipay\Common\Message\ResponseInterface
+     */
     public function completePurchase(OrderInterface $order)
     {
+        if ($this->gateway === null) {
+            return;
+        }
+
         return $this->gateway->completePurchase(array_merge(
             array(
                 'amount' => $order->getTotal(),
@@ -71,10 +91,5 @@ class Adapter
             'cancelUrl' => $this->router->generate('paywall_plugin_purchase_cancel', array(), true),
             'returnUrl' => $this->router->generate('paywall_plugin_purchase_return', array(), true),
         );
-    }
-
-    protected function getConfig()
-    {
-        return $this->config;
     }
 }

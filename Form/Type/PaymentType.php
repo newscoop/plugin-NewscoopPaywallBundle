@@ -33,6 +33,7 @@ class PaymentType extends AbstractType
                     PaymentInterface::STATE_FAILED => 'paywall.form.payment.state.failed',
                     PaymentInterface::STATE_COMPLETED => 'paywall.form.payment.state.completed',
                     PaymentInterface::STATE_NEW => 'paywall.form.payment.state.new',
+                    PaymentInterface::STATE_PENDING => 'paywall.form.payment.state.pending',
                     PaymentInterface::STATE_CANCELLED => 'paywall.form.payment.state.cancelled',
                     PaymentInterface::STATE_UNKNOWN => 'paywall.form.payment.state.unknown',
                 ),

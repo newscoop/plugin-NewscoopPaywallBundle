@@ -5,18 +5,17 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Settings entity.
+ * Gateway entity.
  *
  * @ORM\Entity()
- * @ORM\Table(name="plugin_paywall_settings")
+ * @ORM\Table(name="plugin_paywall_gateways")
  */
-class Settings
+class Gateway
 {
     /**
      * @ORM\Id()
@@ -46,19 +45,21 @@ class Settings
      *
      * @var string
      */
-    protected $created_at;
+    protected $createdAt;
 
     /**
      * @ORM\Column(type="boolean", name="is_active")
      *
      * @var bool
      */
-    protected $is_active;
+    protected $isActive = true;
 
+    /**
+     * Construct.
+     */
     public function __construct()
     {
-        $this->setCreatedAt(new \DateTime());
-        $this->setIsActive(true);
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -124,46 +125,38 @@ class Settings
      *
      * @return bool
      */
-    public function getIsActive()
+    public function isActive()
     {
-        return $this->is_active;
+        return $this->isActive;
     }
 
     /**
      * Set status.
      *
-     * @param bool $is_active
-     *
-     * @return bool
+     * @param bool $isActive
      */
-    public function setIsActive($is_active)
+    public function setActive($isActive)
     {
-        $this->is_active = $is_active;
-
-        return $this;
+        $this->isActive = $isActive;
     }
 
     /**
-     * Get create date.
+     * Get creation date.
      *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     /**
-     * Set create date.
+     * Set creation date.
      *
-     * @param datetime $created_at
-     *
-     * @return datetime
+     * @param \DateTime $createdAt
      */
-    public function setCreatedAt(\DateTime $created_at)
+    public function setCreatedAt(\DateTime $createdAt)
     {
-        $this->created_at = $created_at;
-
-        return $this;
+        $this->createdAt = $createdAt;
     }
 }
