@@ -12,7 +12,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Newscoop\PaywallBundle\Entity\Payment;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
 use Newscoop\PaywallBundle\Entity\OrderInterface;
 
