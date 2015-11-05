@@ -71,7 +71,7 @@ class DiscountProcessor implements DiscountProcessorInterface
         return false;
     }
 
-    private function processOrderItem()
+    private function processOrderItem(DiscountableInterface $object, DiscountEntity $discount)
     {
         $selectedDiscount = $object->getDiscount();
         if ($object->getProlonged() && $selectedDiscount['id'] === $discount->getId()) {
