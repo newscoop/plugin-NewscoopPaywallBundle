@@ -30,7 +30,10 @@ class AdapterFactory
     public function getAdapter(ObjectRepository $gatewayRepository, RouterInterface $router, array $config)
     {
         $gateway = null;
-        $enabledAdapter = $gatewayRepository->findOneByIsActive(true);
+        $enabledAdapter = $gatewayRepository->findOneBy(array(
+            'isActive' => true,
+        ));
+
         if ($enabledAdapter->getValue() !== static::OFFLINE) {
             $gateway = $this->initializeGateway($config, $enabledAdapter->getValue());
         }

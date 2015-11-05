@@ -9,7 +9,7 @@ namespace Newscoop\PaywallBundle\Discount;
 
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 use Newscoop\PaywallBundle\Entity\OrderInterface;
-use Newscoop\PaywallBundle\Entity\Discount;
+use Newscoop\PaywallBundle\Entity\Discount as DiscountEntity;
 
 /**
  * Process all discounts for order items.
@@ -52,34 +52,41 @@ class DiscountProcessor implements DiscountProcessorInterface
      * eligible for discount.
      *
      * @param DiscountableInterface $object
-     * @param Discount              $discount
+     * @param DiscountEntity        $discount
      *
      * @return bool
      */
-    protected function isEligibleForDiscount(DiscountableInterface $object, Discount $discount)
+    protected function isEligibleForDiscount(DiscountableInterface $object, DiscountEntity $discount)
     {
         if ($object instanceof UserSubscription) {
-            $selectedDiscount = $object->getDiscount();
-            if ($object->getProlonged() && $selectedDiscount['id'] === $discount->getId()) {
-                return true;
-            }
-
-            if ($object->getOrder()->countItems() == 1 &&
-                !$discount->getCountBased() &&
-                $object->hasDiscount($discount)
-            ) {
-                return true;
-            }
-
-            if (!$discount->getCountBased() && $selectedDiscount['id'] === $discount->getId()) {
-                return true;
-            }
+            return $this->processOrderItem($object, $discount);
         }
 
         if ($object instanceof OrderInterface) {
             if ($object->countItems() > 1 && $discount->getCountBased()) {
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    private function processOrderItem()
+    {
+        $selectedDiscount = $object->getDiscount();
+        if ($object->getProlonged() && $selectedDiscount['id'] === $discount->getId()) {
+            return true;
+        }
+
+        if ($object->getOrder()->countItems() == 1 &&
+                !$discount->getCountBased() &&
+                $object->hasDiscount($discount)
+            ) {
+            return true;
+        }
+
+        if (!$discount->getCountBased() && $selectedDiscount['id'] === $discount->getId()) {
+            return true;
         }
 
         return false;

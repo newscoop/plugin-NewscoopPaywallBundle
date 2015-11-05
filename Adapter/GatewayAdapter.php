@@ -25,7 +25,7 @@ class GatewayAdapter
     /**
      * Gateway.
      *
-     * @var Omnipay\Omnipay|null
+     * @var Omnipay\Common\GatewayInterface|null
      */
     protected $gateway;
 
