@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
-use Newscoop\PaywallBundle\Entity\OrderInterface;
 
 /**
  * It handles purchase actions.
@@ -44,13 +43,10 @@ class PurchaseController extends BaseController
 
         $request->getSession()->set('paywall_purchase', $items);
         $request->getSession()->set('paywall_referer', $request->headers->get('referer'));
-        $orderService = $this->get('newscoop_paywall.services.order');
-        $order = $orderService->processAndCalculateOrderItems($items);
-        if (!$order->getItems()->isEmpty()) {
-            $adapter = $this->get('newscoop.paywall.adapter');
-            $response = $adapter->purchase($order);
-
-            $this->processPurchase($order, $response);
+        $purchaseService = $this->get('newscoop_paywall.services.purchase');
+        $response = $purchaseService->startPurchase($items);
+        if ($response && $response->isRedirect()) {
+            $response->redirect();
         }
 
         return $this->refererRedirect($request);
@@ -71,21 +67,13 @@ class PurchaseController extends BaseController
             return $response;
         }
 
-        $orderService = $this->get('newscoop_paywall.services.order');
-        $order = $orderService->processAndCalculateOrderItems($items);
-
-        $response->setStatusCode(404);
-        if (!$order->getItems()->isEmpty()) {
-            $adapter = $this->get('newscoop.paywall.adapter');
-            $result = $adapter->purchase($order);
-            if ($result && $result->isSuccessful()) {
-                $this->completePurchase($order);
-            } elseif ($result && $result->isRedirect()) {
-                $response->headers->set('X-Location', $result->getRedirectUrl());
-                $response->setStatusCode(302);
-            } else {
-                $response->setStatusCode(502);
-            }
+        $purchaseService = $this->get('newscoop_paywall.services.purchase');
+        $result = $purchaseService->startPurchase($items, true);
+        if ($result && $request->isXmlHttpRequest()) {
+            $response->headers->set('X-Location', $result);
+            $response->setStatusCode(302);
+        } else {
+            $response->setStatusCode(502);
         }
 
         return $response;
@@ -98,39 +86,26 @@ class PurchaseController extends BaseController
      */
     public function returnAction(Request $request)
     {
+        $templatesService = $this->get('newscoop.templates.service');
         $items = $request->getSession()->get('paywall_purchase', array());
-        $request->getSession()->get('paywall_referer', '/');
-        $orderService = $this->get('newscoop_paywall.services.order');
-        $adapter = $this->get('newscoop.paywall.adapter');
+        $purchaseService = $this->get('newscoop_paywall.services.purchase');
+        $response = $purchaseService->finishPurchase($items);
+        $request->getSession()->remove('paywall_purchase');
 
-        $order = $orderService->processAndCalculateOrderItems($items);
-        $response = $adapter->completePurchase($order);
-        $this->processPurchase($order, $response);
-
-        return $this->refererRedirect($request);
-    }
-
-    private function processPurchase($order, $response = null)
-    {
-        if (!$response) {
-            $this->completePurchase($order);
-
-            return;
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse(array('message' => $response->getMessage()));
         }
 
-        $templatesService = $this->get('newscoop.templates.service');
-        if ($response->isSuccessful()) {
-            $this->completePurchase($order);
-        } elseif ($response->isRedirect()) {
-            // redirect to offsite payment gateway
-                $response->redirect();
-        } else {
-            // payment failed: display message to customer
+        if (!$response->isSuccessful() && !$response->isRedirect()) {
             return new Response($templatesService->fetchTemplate(
                 '_paywall/error.tpl',
                 array('msg' => $response->getMessage())
             ), 200, array('Content-Type' => 'text/html'));
         }
+
+        //$this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $order->getItems()->toArray());
+
+        return $this->refererRedirect($request);
     }
 
     /**
@@ -152,19 +127,5 @@ class PurchaseController extends BaseController
         $referer = $request->getSession()->get('paywall_referer', '/');
 
         return new RedirectResponse($referer);
-    }
-
-    private function completePurchase(OrderInterface $order)
-    {
-        $entityManager = $this->get('em');
-        $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $order->getItems()->toArray());
-        $this->get('newscoop_paywall.services.payment')->createPayment($order);
-
-        foreach ($order->getItems() as $key => $item) {
-            $item->setActive(true);
-        }
-
-        $entityManager->persist($order);
-        $entityManager->flush();
     }
 }

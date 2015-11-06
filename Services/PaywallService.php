@@ -496,24 +496,33 @@ class PaywallService
         ));
 
         if ($subscription) {
-            $subscription->setActive(true);
-            $subscription->setType('P');
-            $subscription->setProlonged(false);
-            $now = new \DateTime('now');
-            if (!$subscription->getExpireAt()) {
-                $subscription->setExpireAt($this->getExpirationDate($subscription));
-                $subscription->setCreatedAt($now);
-            }
-
-            if ($subscription->getParent()) {
-                $subscription->getParent()->setActive(false);
-                $subscription->getParent()->setExpireAt($now);
-            }
-
+            $this->activateUserSubscription($subscription);
             $this->em->flush();
         }
 
         return $subscription;
+    }
+
+    /**
+     * Activates user subscription.
+     *
+     * @param UserSubscription $subscription
+     */
+    public function activateUserSubscription(UserSubscription $subscription)
+    {
+        $subscription->setActive(true);
+        $subscription->setType('P');
+        $subscription->setProlonged(false);
+        $now = new \DateTime('now');
+        if (!$subscription->getExpireAt()) {
+            $subscription->setExpireAt($this->getExpirationDate($subscription));
+            $subscription->setCreatedAt($now);
+        }
+
+        if ($subscription->getParent()) {
+            $subscription->getParent()->setActive(false);
+            $subscription->getParent()->setExpireAt($now);
+        }
     }
 
     /**

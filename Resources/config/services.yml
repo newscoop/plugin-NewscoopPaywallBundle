@@ -97,3 +97,13 @@ services:
         class: Newscoop\PaywallBundle\Services\PaymentService
         arguments:
             - @em
+
+    newscoop_paywall.services.purchase:
+        class: Newscoop\PaywallBundle\Services\PurchaseService
+        arguments:
+            - @newscoop_paywall.services.order
+            - @newscoop_paywall.services.payment
+            - @newscoop.paywall.adapter
+            - @em
+            - @dispatcher
+
