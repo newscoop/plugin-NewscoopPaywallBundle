@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
 use Newscoop\PaywallBundle\Entity\OrderInterface;
@@ -27,6 +28,7 @@ class PurchaseController extends BaseController
      */
     public function purchaseAction(Request $request)
     {
+        $translator = $this->get('translator');
         $currencyProvider = $this->get('newscoop_paywall.currency_provider');
         $currencyContext = $this->get('newscoop_paywall.currency_context');
         $templatesService = $this->get('newscoop.templates.service');
@@ -36,7 +38,7 @@ class PurchaseController extends BaseController
         if (empty($items)) {
             return new Response($templatesService->fetchTemplate(
                 '_paywall/error.tpl',
-                array('msg' => 'no items')
+                array('msg' => $translator->trans('paywall.error.noitems'))
             ), 200, array('Content-Type' => 'text/html'));
         }
 
@@ -47,10 +49,46 @@ class PurchaseController extends BaseController
         if (!$order->getItems()->isEmpty()) {
             $adapter = $this->get('newscoop.paywall.adapter');
             $response = $adapter->purchase($order);
+
             $this->processPurchase($order, $response);
         }
 
         return $this->refererRedirect($request);
+    }
+
+    /**
+     * @Route("/paywall/subscriptions/order-batch", name="paywall_subscribe_order_batch", options={"expose"=true})
+     *
+     * @Method("POST")
+     */
+    public function batchOrderAction(Request $request)
+    {
+        $items = $request->request->get('batchorder', array());
+        $response = new JsonResponse();
+        if (empty($items)) {
+            $response->setStatusCode(404);
+
+            return $response;
+        }
+
+        $orderService = $this->get('newscoop_paywall.services.order');
+        $order = $orderService->processAndCalculateOrderItems($items);
+
+        $response->setStatusCode(404);
+        if (!$order->getItems()->isEmpty()) {
+            $adapter = $this->get('newscoop.paywall.adapter');
+            $result = $adapter->purchase($order);
+            if ($result && $result->isSuccessful()) {
+                $this->completePurchase($order);
+            } elseif ($result && $result->isRedirect()) {
+                $response->headers->set('X-Location', $result->getRedirectUrl());
+                $response->setStatusCode(302);
+            } else {
+                $response->setStatusCode(502);
+            }
+        }
+
+        return $response;
     }
 
     /**

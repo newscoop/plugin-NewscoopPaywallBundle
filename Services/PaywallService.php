@@ -572,19 +572,6 @@ class PaywallService
     }
 
     /**
-     * Gets active Subscriptions.
-     *
-     * @return array
-     */
-    public function getSubscriptionsConfig()
-    {
-        $subscriptions = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
-            ->findBy(array('is_active' => true));
-
-        return $subscriptions;
-    }
-
-    /**
      * Checks if Subscription by given User Id and Subscription Id exists.
      *
      * @param int    $userId         User id

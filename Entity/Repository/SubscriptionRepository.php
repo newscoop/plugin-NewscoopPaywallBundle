@@ -74,6 +74,43 @@ class SubscriptionRepository extends TranslationRepository
         return $list;
     }
 
+    /**
+     * Gets active Subscriptions by the specification and type.
+     *
+     * @param string $locale Current language code (e.g. "en")
+     * @param array  $specs  Subscription specification
+     *                       (e.g. publication id, section number etc.)
+     *
+     * @return array
+     */
+    public function findActiveBy($locale = null, $specs = array())
+    {
+        $queryBuilder = $this
+            ->createQueryBuilder('s')
+            ->select('s', 'r')
+            ->leftJoin('s.ranges', 'r')
+            ->join('s.specification', 'sp')
+            ->where('s.is_active = true');
+
+        if (!empty($specs)) {
+            foreach ($specs as $key => $value) {
+                if (!$value) {
+                    $queryBuilder
+                        ->andWhere('sp.'.$key.' IS NULL');
+                } else {
+                    $queryBuilder
+                        ->andWhere('sp.'.$key.' = :'.$key)
+                        ->setParameter($key, $value);
+                }
+            }
+        }
+
+        $query = $queryBuilder->getQuery();
+
+        return $this->setTranslatableHints($query, $locale)
+            ->getArrayResult();
+    }
+
     public function findActiveOneBy($id, $locale = null)
     {
         $query = $this

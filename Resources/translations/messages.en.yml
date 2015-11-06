@@ -197,6 +197,7 @@ paywall:
       notadded: "Could not render added entry."
       exists: "Resource named %resource% already exists."
       notexists: "Item with such identifier does not exist."
+      noitems: "No items selected."
     success:
       settingssaved: "Settings successfully saved."
       added: "Successfully added."

@@ -12,7 +12,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Newscoop\PaywallBundle\Events\PaywallEvents;
 
 class OrderController extends BaseController
 {
@@ -26,37 +25,6 @@ class OrderController extends BaseController
         $response = new Response();
         $templatesService = $this->get('newscoop.templates.service');
         $response->setContent($templatesService->fetchTemplate('_paywall/index.tpl'));
-
-        return $response;
-    }
-
-    /**
-     * @Route("/paywall/subscriptions/order-batch", name="paywall_subscribe_order_batch", options={"expose"=true})
-     *
-     * @Method("POST")
-     */
-    public function batchOrderAction(Request $request)
-    {
-        $items = $request->request->get('batchorder', array());
-        $response = new JsonResponse();
-        if (empty($items)) {
-            $response->setStatusCode(404);
-
-            return $response;
-        }
-
-        $entityManager = $this->get('em');
-        $orderService = $this->get('newscoop_paywall.services.order');
-        $order = $orderService->processAndCalculateOrderItems($items);
-
-        $response->setStatusCode(404);
-        if (!$order->getItems()->isEmpty()) {
-            $this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $order->getItems()->toArray());
-            $entityManager->persist($order);
-            $entityManager->flush();
-
-            $response->setStatusCode(204);
-        }
 
         return $response;
     }

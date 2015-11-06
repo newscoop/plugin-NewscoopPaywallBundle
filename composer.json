@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "sylius/currency": "^0.14.0",
+        "sylius/currency": "^0.15.0",
         "newscoop/plugins-installer": ">=0.2",
         "omnipay/paypal": "~2.0"
     },

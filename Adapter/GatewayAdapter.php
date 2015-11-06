@@ -32,8 +32,8 @@ class GatewayAdapter
     /**
      * Construct.
      *
-     * @param RouterInterface      $router
-     * @param Omnipay\Omnipay|null $gateway
+     * @param RouterInterface                      $router
+     * @param Omnipay\Common\GatewayInterface|null $gateway
      */
     public function __construct(RouterInterface $router, $gateway = null)
     {
