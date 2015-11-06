@@ -518,31 +518,6 @@ class Order implements OrderInterface
         return $this->payments->contains($payment);
     }
 
-    public function addModification(Modification $modification)
-    {
-        if (!$this->hasModification($modification)) {
-            $modification->setOrder($this);
-            $this->modifications->add($modification);
-        }
-
-        return $this;
-    }
-
-    public function hasModification(Modification $modification)
-    {
-        return $this->modifications->contains($modification);
-    }
-
-    public function removeModification(Modification $modification)
-    {
-        if ($this->hasModification($modification)) {
-            $modification->setOrder(null);
-            $this->modifications->removeElement($modification);
-        }
-
-        return $this;
-    }
-
     public function getOrder()
     {
         return $this;
