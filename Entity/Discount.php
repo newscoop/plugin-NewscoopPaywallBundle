@@ -5,11 +5,9 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -46,7 +44,7 @@ class Discount implements DiscountInterface
     /**
      * @ORM\OneToMany(targetEntity="Duration", mappedBy="discount")
      *
-     * @var Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $durations;
 
@@ -167,30 +165,6 @@ class Discount implements DiscountInterface
     }
 
     /**
-     * Gets the Associated rules.
-     *
-     * @return Collection|RuleInterface[]
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
-     * Sets the Associated rules.
-     *
-     * @param Collection|RuleInterface[] $duration the duration
-     *
-     * @return self
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    /**
      * Gets the value of updatedAt.
      *
      * @return \DateTime
@@ -279,7 +253,7 @@ class Discount implements DiscountInterface
      *
      * @return bool
      */
-    public function getCountBased()
+    public function isCountBased()
     {
         return $this->countBased;
     }
@@ -301,7 +275,7 @@ class Discount implements DiscountInterface
     /**
      * Gets the value of durations.
      *
-     * @return Doctrine\Common\Collections\ArrayCollection
+     * @return ArrayCollection
      */
     public function getDurations()
     {

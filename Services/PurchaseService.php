@@ -39,6 +39,9 @@ class PurchaseService
      */
     protected $entityManager;
 
+    /**
+     * @var EventDispatcherInterface
+     */
     protected $dispatcher;
 
     /**

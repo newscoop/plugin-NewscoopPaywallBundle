@@ -63,7 +63,7 @@ class DiscountProcessor implements DiscountProcessorInterface
         }
 
         if ($object instanceof OrderInterface) {
-            if ($object->countItems() > 1 && $discount->getCountBased()) {
+            if ($object->countItems() > 1 && $discount->isCountBased()) {
                 return true;
             }
         }
@@ -79,13 +79,13 @@ class DiscountProcessor implements DiscountProcessorInterface
         }
 
         if ($object->getOrder()->countItems() == 1 &&
-                !$discount->getCountBased() &&
+                !$discount->isCountBased() &&
                 $object->hasDiscount($discount)
             ) {
             return true;
         }
 
-        if (!$discount->getCountBased() && $selectedDiscount['id'] === $discount->getId()) {
+        if (!$discount->isCountBased() && $selectedDiscount['id'] === $discount->getId()) {
             return true;
         }
 
@@ -95,7 +95,7 @@ class DiscountProcessor implements DiscountProcessorInterface
     private function processCountBasedDiscounts(DiscountableInterface $object)
     {
         foreach ($this->getAllDiscounts() as $discount) {
-            if ($discount->getCountBased()) {
+            if ($discount->isCountBased()) {
                 $discountTempValue = $discount->getValue();
                 $discount->setValue($discountTempValue * ($object->getOrder()->getItems()->count() - 1));
 

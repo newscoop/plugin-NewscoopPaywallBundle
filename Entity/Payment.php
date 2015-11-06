@@ -30,7 +30,7 @@ class Payment implements PaymentInterface
      * @ORM\ManyToOne(targetEntity="Order", inversedBy="payments")
      * @ORM\JoinColumn(name="order_id", referencedColumnName="id", nullable=false)
      *
-     * @var Order
+     * @var OrderInterface
      */
     protected $order;
 

@@ -10,6 +10,7 @@ namespace Newscoop\PaywallBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Newscoop\Entity\User;
 
 /**
  * Order entity.
@@ -67,21 +68,21 @@ class Order implements OrderInterface
      * @ORM\ManyToOne(targetEntity="Newscoop\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="Id")
      *
-     * @var Newscoop\Entity\User
+     * @var User
      */
     protected $user;
 
     /**
      * @ORM\OneToMany(targetEntity="Modification", mappedBy="order", orphanRemoval=true, cascade={"all"})
      *
-     * @var ArrayCollection
+     * @var Collection
      */
     protected $modifications;
 
     /**
      * @ORM\OneToMany(targetEntity="Payment", mappedBy="order", orphanRemoval=true, cascade={"all"})
      *
-     * @var ArrayCollection
+     * @var Collection
      */
     protected $payments;
 
@@ -96,7 +97,7 @@ class Order implements OrderInterface
      *      }
      *  )
      *
-     * @var ArrayCollection
+     * @var Collection
      */
     protected $discounts;
 
@@ -170,7 +171,7 @@ class Order implements OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function setUser(\Newscoop\Entity\User $user)
+    public function setUser(User $user)
     {
         $this->user = $user;
 
@@ -393,7 +394,7 @@ class Order implements OrderInterface
     /**
      * Gets the discounts.
      *
-     * @return Discount
+     * @return Collection
      */
     public function getDiscounts()
     {
@@ -403,11 +404,11 @@ class Order implements OrderInterface
     /**
      * Sets the discounts.
      *
-     * @param Discount $discounts the discounts
+     * @param Collection $discounts the discounts
      *
      * @return self
      */
-    public function setDiscounts(Discount $discounts)
+    public function setDiscounts(Collection $discounts)
     {
         $this->discounts = $discounts;
 

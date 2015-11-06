@@ -16,6 +16,9 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
  */
 class PaymentRepository extends EntityRepository implements RepositoryInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function createNew()
     {
         return new Payment();
@@ -26,11 +29,11 @@ class PaymentRepository extends EntityRepository implements RepositoryInterface
      */
     public function findAllAvailable()
     {
-        $qb = $this
+        $queryBuilder = $this
             ->createQueryBuilder('d')
         ;
 
-        return $qb
+        return $queryBuilder
             ->getQuery()
         ;
     }

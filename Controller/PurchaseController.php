@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Newscoop\PaywallBundle\Events\PaywallEvents;
 
 /**
  * It handles purchase actions.
@@ -102,8 +101,6 @@ class PurchaseController extends BaseController
                 array('msg' => $response->getMessage())
             ), 200, array('Content-Type' => 'text/html'));
         }
-
-        //$this->dispatchNotificationEvent(PaywallEvents::ORDER_SUBSCRIPTION, $order->getItems()->toArray());
 
         return $this->refererRedirect($request);
     }

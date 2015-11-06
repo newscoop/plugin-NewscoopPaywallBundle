@@ -43,7 +43,7 @@ class Gateway
     /**
      * @ORM\Column(type="datetime", name="created_at")
      *
-     * @var string
+     * @var \DateTime
      */
     protected $createdAt;
 

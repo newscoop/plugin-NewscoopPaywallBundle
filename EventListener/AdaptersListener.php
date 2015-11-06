@@ -7,7 +7,6 @@
  */
 namespace Newscoop\PaywallBundle\EventListener;
 
-use Newscoop\PaywallBundle\Events\AdaptersEvent;
 use Newscoop\PaywallBundle\Entity\Gateway;
 use Doctrine\ORM\EntityManager;
 
@@ -34,6 +33,7 @@ class AdaptersListener
      * Construct.
      *
      * @param EntityManager $entityManager
+     * @param array         $gateways
      */
     public function __construct(EntityManager $entityManager, array $gateways)
     {
@@ -43,8 +43,6 @@ class AdaptersListener
 
     /**
      * Register external adapters.
-     *
-     * @param AdaptersEvent $event
      */
     public function registerExternalAdapters()
     {

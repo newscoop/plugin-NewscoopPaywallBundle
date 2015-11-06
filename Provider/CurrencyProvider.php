@@ -5,11 +5,10 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Provider;
 
 use Sylius\Component\Currency\Provider\CurrencyProvider as BaseProvider;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Newscoop\PaywallBundle\Entity\Repository\CurrencyRepository;
 
 /**
  * Currency Provider class.
@@ -17,9 +16,9 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
 class CurrencyProvider extends BaseProvider
 {
     /**
-     * @param RepositoryInterface $currencyRepository
+     * @param CurrencyRepository $currencyRepository
      */
-    public function __construct(RepositoryInterface $currencyRepository)
+    public function __construct(CurrencyRepository $currencyRepository)
     {
         parent::__construct($currencyRepository);
     }
