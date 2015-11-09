@@ -25,7 +25,7 @@ class GatewayAdapter
     /**
      * Gateway.
      *
-     * @var Omnipay\Common\GatewayInterface|null
+     * @var \Omnipay\Common\GatewayInterface|null
      */
     protected $gateway;
 
@@ -46,7 +46,7 @@ class GatewayAdapter
      *
      * @param OrderInterface $order Order
      *
-     * @return Omnipay\Common\Message\ResponseInterface
+     * @return \Omnipay\Common\Message\ResponseInterface
      */
     public function purchase(OrderInterface $order)
     {
@@ -68,7 +68,7 @@ class GatewayAdapter
      *
      * @param OrderInterface $order Order
      *
-     * @return Omnipay\Common\Message\ResponseInterface
+     * @return \Omnipay\Common\Message\ResponseInterface
      */
     public function completePurchase(OrderInterface $order)
     {
