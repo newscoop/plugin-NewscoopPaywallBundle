@@ -204,6 +204,7 @@ paywall:
       removed: Successfully removed.
       saved: "Successfully saved."
       created: "Successfully created."
+      exists: "This item already exists!"
     msg:
       membershipemail: "Provide email for notifications"
       membershipemaillabel: "Notifications email"

@@ -22,20 +22,6 @@ services:
         arguments:
             - @newscoop_paywall.currency.repository
 
-    newscoop_paywall.form.type.currency_code:
-        class: Newscoop\PaywallBundle\Form\Type\CurrencyCodeType
-        arguments:
-            - "@newscoop_paywall.currency_provider"
-        tags:
-            - { name: form.type, alias: paywall_currency_code }
-
-    newscoop_paywall.form.type.currency_choice:
-        class: Newscoop\PaywallBundle\Form\Type\CurrencyChoiceType
-        arguments:
-            - "@newscoop_paywall.currency_provider"
-        tags:
-            - { name: form.type, alias: paywall_currency_choice }
-
     newscoop_paywall.currency_importer.ecb:
         class: Newscoop\PaywallBundle\Importer\EuropeanCentralBankImporter
         arguments: ['@em', '@newscoop_paywall.currency.repository', { base_currency: 'EUR' }]

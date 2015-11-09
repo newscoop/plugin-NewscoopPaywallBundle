@@ -55,6 +55,6 @@ class CurrencyProvider extends BaseProvider
     public function getEnabledCurrencies()
     {
         return $this->currencyRepository
-            ->findBy(array('isActive = true'));
+            ->findBy(array('isActive' => true));
     }
 }
