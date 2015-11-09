@@ -46,7 +46,7 @@ class GatewayAdapter
      *
      * @param OrderInterface $order Order
      *
-     * @return \Omnipay\Common\Message\ResponseInterface
+     * @return object
      */
     public function purchase(OrderInterface $order)
     {
@@ -68,7 +68,7 @@ class GatewayAdapter
      *
      * @param OrderInterface $order Order
      *
-     * @return \Omnipay\Common\Message\ResponseInterface
+     * @return object
      */
     public function completePurchase(OrderInterface $order)
     {

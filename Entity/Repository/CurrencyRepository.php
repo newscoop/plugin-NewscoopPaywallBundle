@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
@@ -36,7 +35,7 @@ class CurrencyRepository extends EntityRepository implements RepositoryInterface
     /**
      * Finds the default currency.
      *
-     * @return null|Sylius\Component\Currency\Model\CurrencyInterface
+     * @return null|Currency
      */
     public function findDefaultOne()
     {

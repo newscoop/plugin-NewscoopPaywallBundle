@@ -40,7 +40,11 @@ class CurrencyProvider extends BaseProvider
      */
     public function getDefaultCurrency()
     {
-        return $this->currencyRepository->findDefaultOne();
+        return $this->currencyRepository
+            ->findOneBy(array(
+                'isActive' => true,
+                'default' => true,
+            ));
     }
 
     /**
@@ -51,7 +55,6 @@ class CurrencyProvider extends BaseProvider
     public function getEnabledCurrencies()
     {
         return $this->currencyRepository
-            ->findActive()
-            ->getResult();
+            ->findBy(array('isActive = true'));
     }
 }
