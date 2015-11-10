@@ -7,9 +7,9 @@
  */
 namespace Newscoop\PaywallBundle\Adapter;
 
-use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Component\Routing\RouterInterface;
 use Newscoop\PaywallBundle\Services\PaymentMethodInterface;
+use Newscoop\PaywallBundle\Provider\MethodProviderInterface;
 use Omnipay\Omnipay;
 
 /**
@@ -22,23 +22,21 @@ class AdapterFactory
     /**
      * Get current adapter.
      *
-     * @param ObjectRepository       $gatewayRepository
-     * @param RouterInterface        $router
-     * @param array                  $config
-     * @param PaymentMethodInterface $paymentMethodContext
+     * @param MethodProviderInterface $paymentMethodProvider
+     * @param RouterInterface         $router
+     * @param array                   $config
+     * @param PaymentMethodInterface  $paymentMethodContext
      *
      * @return Omnipay
      */
     public function getAdapter(
-        ObjectRepository $gatewayRepository,
+        MethodProviderInterface $paymentMethodProvider,
         RouterInterface $router,
         PaymentMethodInterface $paymentMethodContext,
         array $config
     ) {
         $gateway = null;
-        $enabledAdapter = $gatewayRepository->findOneBy(array(
-            'isActive' => true,
-        ));
+        $enabledAdapter = $paymentMethodProvider->getActiveMethod();
 
         $gatewayName = $enabledAdapter->getValue();
         if ($paymentMethodContext->getMethod() === static::OFFLINE) {
@@ -46,8 +44,8 @@ class AdapterFactory
         }
 
         $paymentMethodContext->setMethod($gatewayName);
-        if ($gatewayName !== static::OFFLINE) {
-            $gateway = $this->initializeGateway($config, $enabledAdapter->getValue());
+        if ($paymentMethodContext->getMethod() !== static::OFFLINE) {
+            $gateway = $this->initializeGateway($config, $paymentMethodContext->getMethod());
         }
 
         return new GatewayAdapter($router, $gateway);

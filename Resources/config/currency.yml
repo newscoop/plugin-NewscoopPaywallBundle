@@ -15,7 +15,6 @@ services:
         class: Newscoop\PaywallBundle\Provider\CurrencyProvider
         arguments:
             - @newscoop_paywall.currency.repository
-            - @preferences
 
     newscoop_paywall.currency_converter:
         class: Newscoop\PaywallBundle\Converter\CurrencyConverter

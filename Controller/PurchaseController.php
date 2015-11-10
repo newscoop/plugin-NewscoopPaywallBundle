@@ -20,31 +20,25 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class PurchaseController extends BaseController
 {
     /**
-     * @Route("/paywall/purchase/{method}", name="paywall_plugin_purchase_purchase", options={"expose"=true})
+     * @Route("/paywall/purchase/", name="paywall_plugin_purchase_purchase", options={"expose"=true})
      *
      * @Method("POST")
      */
-    public function purchaseAction(Request $request, $method = null)
+    public function purchaseAction(Request $request)
     {
         $translator = $this->get('translator');
         $currencyProvider = $this->get('newscoop_paywall.currency_provider');
         $currencyContext = $this->get('newscoop_paywall.currency_context');
-        $templatesService = $this->get('newscoop.templates.service');
         $currencyContext->setCurrency($currencyProvider->getDefaultCurrency()->getCode());
-        $items = $request->request->get('batchorder', array());
+        $items = $request->getSession()->get('paywall_purchase', array());
 
         if (empty($items)) {
-            return new Response($templatesService->fetchTemplate(
-                '_paywall/error.tpl',
-                array('msg' => $translator->trans('paywall.error.noitems'))
-            ), 200, array('Content-Type' => 'text/html'));
+            return $this->loadErrorTemplate($translator->trans('paywall.error.noitems'));
         }
 
+        $method = $request->request->get('paymentMethod');
         $paymentMethodContext = $this->get('newscoop_paywall.payment_method_context');
         $paymentMethodContext->setMethod($method);
-
-        $request->getSession()->set('paywall_purchase', $items);
-        $request->getSession()->set('paywall_referer', $request->headers->get('referer'));
         $purchaseService = $this->get('newscoop_paywall.services.purchase');
         $response = $purchaseService->startPurchase($items);
         if ($response && $response->isRedirect()) {
@@ -52,10 +46,7 @@ class PurchaseController extends BaseController
         }
 
         if ($response && !$response->isSuccessful()) {
-            return new Response($templatesService->fetchTemplate(
-                '_paywall/error.tpl',
-                array('msg' => $response->getMessage())
-            ), 200, array('Content-Type' => 'text/html'));
+            return $this->loadErrorTemplate($response->getMessage());
         }
 
         return $this->refererRedirect($request);
@@ -89,13 +80,39 @@ class PurchaseController extends BaseController
     }
 
     /**
+     * @Route("/paywall/purchase/methods/", name="paywall_plugin_purchase_methods", options={"expose"=true})
+     */
+    public function methodsAction(Request $request)
+    {
+        $templatesService = $this->get('newscoop.templates.service');
+        $translator = $this->get('translator');
+
+        $items = $request->query->get('batchorder', array());
+        if (empty($items)) {
+            return $this->loadErrorTemplate($translator->trans('paywall.error.noitems'));
+        }
+
+        $request->getSession()->set('paywall_referer', $request->headers->get('referer'));
+        $request->getSession()->set('paywall_purchase', $items);
+
+        $order = $this->get('newscoop_paywall.services.order')->processAndCalculateOrderItems($items);
+
+        return new Response($templatesService->fetchTemplate(
+            '_paywall/payment_methods.tpl',
+            array(
+                'amount' => $order->getTotal(),
+                'currency' => $order->getCurrency(),
+            )
+        ), 200, array('Content-Type' => 'text/html'));
+    }
+
+    /**
      * @Route("/paywall/success/", name="paywall_plugin_purchase_return", options={"expose"=true})
      *
      * @Method("GET")
      */
     public function returnAction(Request $request)
     {
-        $templatesService = $this->get('newscoop.templates.service');
         $items = $request->getSession()->get('paywall_purchase', array());
         $purchaseService = $this->get('newscoop_paywall.services.purchase');
         $response = $purchaseService->finishPurchase($items);
@@ -106,10 +123,7 @@ class PurchaseController extends BaseController
         }
 
         if (!$response->isSuccessful() && !$response->isRedirect()) {
-            return new Response($templatesService->fetchTemplate(
-                '_paywall/error.tpl',
-                array('msg' => $response->getMessage())
-            ), 200, array('Content-Type' => 'text/html'));
+            return $this->loadErrorTemplate($response->getMessage());
         }
 
         return $this->refererRedirect($request);
@@ -126,6 +140,16 @@ class PurchaseController extends BaseController
 
         return new Response($templatesService->fetchTemplate(
             '_paywall/cancel.tpl'
+        ), 200, array('Content-Type' => 'text/html'));
+    }
+
+    private function loadErrorTemplate($message = '')
+    {
+        $templatesService = $this->get('newscoop.templates.service');
+
+        return new Response($templatesService->fetchTemplate(
+            '_paywall/error.tpl',
+            array('msg' => $message)
         ), 200, array('Content-Type' => 'text/html'));
     }
 

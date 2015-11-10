@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Gateway entity.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\GatewayRepository")
  * @ORM\Table(name="plugin_paywall_gateways")
  */
 class Gateway

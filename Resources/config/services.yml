@@ -19,6 +19,11 @@ services:
         arguments:
             - Newscoop\PaywallBundle\Entity\Gateway
 
+    newscoop_paywall.method_provider:
+        class: Newscoop\PaywallBundle\Provider\PaymentMethodProvider
+        arguments:
+            - @newscoop_paywall.gateway.repository
+
     newscoop.paywall.adapter.factory:
       class: Newscoop\PaywallBundle\Adapter\AdapterFactory
 
@@ -27,7 +32,7 @@ services:
       factory_service: newscoop.paywall.adapter.factory
       factory_method: getAdapter
       arguments:
-            - @newscoop_paywall.gateway.repository
+            - @newscoop_paywall.method_provider
             - @router
             - @newscoop_paywall.payment_method_context
             - %paywall_omnipay%
@@ -102,6 +107,7 @@ services:
         arguments:
             - @em
             - @newscoop.paywall.adapter
+            - @newscoop_paywall.method_provider
 
     newscoop_paywall.payment_method_context:
         class: Newscoop\PaywallBundle\Services\PaymentMethodContext
@@ -116,4 +122,3 @@ services:
             - @newscoop.paywall.adapter
             - @em
             - @dispatcher
-

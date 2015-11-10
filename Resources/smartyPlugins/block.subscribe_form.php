@@ -63,7 +63,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty)
     $subscriptions = $entityManager->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
         ->findActiveBy($context->language->code, $meta);
 
-    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/purchase'.$p_params['payment'].'" method="post" '.$p_params['html_code'].'>'."\n";
+    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/purchase/methods'.$p_params['payment'].'" method="get" '.$p_params['html_code'].'>'."\n";
 
     $options = '';
     if (array_key_exists('option_text', $p_params)) {

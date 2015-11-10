@@ -119,4 +119,27 @@ class ApiController extends FOSRestController
 
         return $currencies;
     }
+
+    /**
+     * @Route("/api/paywall/gateways.{_format}", defaults={"_format"="json"}, name="newscoop_gimme_paywall_gateways")
+     *
+     * @Method("GET")
+     * @View()
+     */
+    public function gatewaysAction(Request $request)
+    {
+        $provider = $this->get('newscoop_paywall.method_provider');
+        $query = $provider->getEnabledMethods();
+        $paginator = $this->get('newscoop.paginator.paginator_service');
+        $gateways = $paginator->paginate(
+            $query,
+            array(
+                'distinct' => false,
+            )
+        );
+
+        $gateways['items'][] = $provider->getDefaultMethod();
+
+        return $gateways;
+    }
 }
