@@ -24,7 +24,7 @@ interface PaymentMethodInterface
     /**
      * Sets current payment method in session.
      *
-     * @param string $method|null Payment method
+     * @param string|null $method Payment method
      */
     public function setMethod($method = null);
 }

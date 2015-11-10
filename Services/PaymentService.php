@@ -24,7 +24,7 @@ class PaymentService
     protected $entityManager;
 
     /**
-     * @var AdapterGate
+     * @var GatewayAdapter
      */
     protected $adapter;
 
