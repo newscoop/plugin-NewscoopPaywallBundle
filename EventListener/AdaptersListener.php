@@ -23,22 +23,22 @@ class AdaptersListener
     private $entityManager;
 
     /**
-     * Paywall gateways.
+     * Paywall Omnipay config.
      *
      * @var array
      */
-    private $gateways;
+    private $config;
 
     /**
      * Construct.
      *
      * @param EntityManager $entityManager
-     * @param array         $gateways
+     * @param array         $config
      */
-    public function __construct(EntityManager $entityManager, array $gateways)
+    public function __construct(EntityManager $entityManager, array $config)
     {
         $this->entityManager = $entityManager;
-        $this->gateways = $gateways;
+        $this->config = $config;
     }
 
     /**
@@ -57,7 +57,7 @@ class AdaptersListener
         $activeAdapter = $this->entityManager->getRepository('Newscoop\PaywallBundle\Entity\Gateway')
                 ->findOneByisActive(true);
 
-        foreach ((array) $this->gateways as $name => $gateway) {
+        foreach ((array) $this->config['gateways'] as $name => $gateway) {
             $adapter = $this->entityManager->getRepository('Newscoop\PaywallBundle\Entity\Gateway')
                 ->findOneByValue($name);
 

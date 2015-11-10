@@ -92,4 +92,14 @@ class GatewayAdapter
             'returnUrl' => $this->router->generate('paywall_plugin_purchase_return', array(), true),
         );
     }
+
+    /**
+     * Whether offline gateway is set or not.
+     *
+     * @return bool
+     */
+    public function isOfflineGateway()
+    {
+        return $this->gateway ? false : true;
+    }
 }

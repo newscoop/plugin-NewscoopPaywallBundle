@@ -9,6 +9,7 @@ namespace Newscoop\PaywallBundle\Adapter;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Symfony\Component\Routing\RouterInterface;
+use Newscoop\PaywallBundle\Services\PaymentMethodInterface;
 use Omnipay\Omnipay;
 
 /**
@@ -21,20 +22,31 @@ class AdapterFactory
     /**
      * Get current adapter.
      *
-     * @param ObjectRepository $gatewayRepository
-     * @param RouterInterface  $router
-     * @param array            $config
+     * @param ObjectRepository       $gatewayRepository
+     * @param RouterInterface        $router
+     * @param array                  $config
+     * @param PaymentMethodInterface $paymentMethodContext
      *
      * @return Omnipay
      */
-    public function getAdapter(ObjectRepository $gatewayRepository, RouterInterface $router, array $config)
-    {
+    public function getAdapter(
+        ObjectRepository $gatewayRepository,
+        RouterInterface $router,
+        PaymentMethodInterface $paymentMethodContext,
+        array $config
+    ) {
         $gateway = null;
         $enabledAdapter = $gatewayRepository->findOneBy(array(
             'isActive' => true,
         ));
 
-        if ($enabledAdapter->getValue() !== static::OFFLINE) {
+        $gatewayName = $enabledAdapter->getValue();
+        if ($paymentMethodContext->getMethod() === static::OFFLINE) {
+            $gatewayName = $paymentMethodContext->getMethod();
+        }
+
+        $paymentMethodContext->setMethod($gatewayName);
+        if ($gatewayName !== static::OFFLINE) {
             $gateway = $this->initializeGateway($config, $enabledAdapter->getValue());
         }
 
@@ -43,7 +55,7 @@ class AdapterFactory
 
     private function initializeGateway(array $config, $name)
     {
-        if (!isset($config[$name])) {
+        if (!isset($config['gateways'][$name])) {
             throw new \InvalidArgumentException(
                 '"'.$name.'" gateway is not configured! Make sure it is '.
                 'installed via Composer and that you added it to custom_parameters.yml'
@@ -51,7 +63,12 @@ class AdapterFactory
         }
 
         $gateway = Omnipay::create($name);
-        $gateway->initialize($config[$name]);
+        $gateway->initialize(array_merge(
+            $config['gateways'][$name],
+            array(
+                'brandName' => $config['brandName'],
+            )
+        ));
 
         return $gateway;
     }

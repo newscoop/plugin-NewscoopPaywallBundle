@@ -50,6 +50,10 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty)
         $p_params['choose_text'] = 'Choose...';
     }
 
+    if (isset($p_params['payment']) && $p_params['payment'] === 'offline') {
+        $p_params['payment'] = '/'.$p_params['payment'];
+    }
+
     $meta = array();
     $meta['publication'] = $context->publication->identifier;
     $meta['issue'] = $context->issue->number;
@@ -59,7 +63,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty)
     $subscriptions = $entityManager->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
         ->findActiveBy($context->language->code, $meta);
 
-    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/purchase/" method="post" '.$p_params['html_code'].'>'."\n";
+    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/purchase'.$p_params['payment'].'" method="post" '.$p_params['html_code'].'>'."\n";
 
     $options = '';
     if (array_key_exists('option_text', $p_params)) {
@@ -101,7 +105,7 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty)
 
     $html .= $p_content;
 
-    $html .= '<input type="submit" name="submit_comment" '
+    $html .= '<input type="submit" '
     .'id="subscribe_content_submit" value="'
     .smarty_function_escape_special_chars($p_params['submit_button'])
     .'" '.$p_params['button_html_code']." />\n";

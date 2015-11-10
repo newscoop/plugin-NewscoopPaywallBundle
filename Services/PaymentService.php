@@ -11,6 +11,7 @@ use Newscoop\PaywallBundle\Entity\PaymentInterface;
 use Newscoop\PaywallBundle\Entity\OrderInterface;
 use Newscoop\PaywallBundle\Adapter\AdapterFactory;
 use Doctrine\ORM\EntityManager;
+use Newscoop\PaywallBundle\Adapter\GatewayAdapter;
 
 /**
  * Payment service.
@@ -23,13 +24,20 @@ class PaymentService
     protected $entityManager;
 
     /**
+     * @var AdapterGate
+     */
+    protected $adapter;
+
+    /**
      * Construct.
      *
-     * @param EntityManager $entityManager
+     * @param EntityManager  $entityManager
+     * @param GatewayAdapter $adapter
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, GatewayAdapter $adapter)
     {
         $this->entityManager = $entityManager;
+        $this->adapter = $adapter;
     }
 
     /**
@@ -46,11 +54,11 @@ class PaymentService
 
         $payment = $this->getRepository()->createNew();
         $payment->setOrder($order);
-        $payment->setMethod($enabledAdapter->getValue());
+        $payment->setMethod($this->adapter->isOfflineGateway() ? AdapterFactory::OFFLINE : $enabledAdapter->getValue());
         $payment->setAmount($order->getTotal());
         $payment->setCurrency($order->getCurrency());
         $payment->setState(PaymentInterface::STATE_COMPLETED);
-        if ($enabledAdapter->getValue() === AdapterFactory::OFFLINE) {
+        if ($this->adapter->isOfflineGateway()) {
             $payment->setState(PaymentInterface::STATE_PENDING);
         }
 

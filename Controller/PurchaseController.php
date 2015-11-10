@@ -20,11 +20,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class PurchaseController extends BaseController
 {
     /**
-     * @Route("/paywall/purchase/", name="paywall_plugin_purchase_purchase", options={"expose"=true})
+     * @Route("/paywall/purchase/{method}", name="paywall_plugin_purchase_purchase", options={"expose"=true})
      *
      * @Method("POST")
      */
-    public function purchaseAction(Request $request)
+    public function purchaseAction(Request $request, $method = null)
     {
         $translator = $this->get('translator');
         $currencyProvider = $this->get('newscoop_paywall.currency_provider');
@@ -40,12 +40,22 @@ class PurchaseController extends BaseController
             ), 200, array('Content-Type' => 'text/html'));
         }
 
+        $paymentMethodContext = $this->get('newscoop_paywall.payment_method_context');
+        $paymentMethodContext->setMethod($method);
+
         $request->getSession()->set('paywall_purchase', $items);
         $request->getSession()->set('paywall_referer', $request->headers->get('referer'));
         $purchaseService = $this->get('newscoop_paywall.services.purchase');
         $response = $purchaseService->startPurchase($items);
         if ($response && $response->isRedirect()) {
             $response->redirect();
+        }
+
+        if ($response && !$response->isSuccessful()) {
+            return new Response($templatesService->fetchTemplate(
+                '_paywall/error.tpl',
+                array('msg' => $response->getMessage())
+            ), 200, array('Content-Type' => 'text/html'));
         }
 
         return $this->refererRedirect($request);

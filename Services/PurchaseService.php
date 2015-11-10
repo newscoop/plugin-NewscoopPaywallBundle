@@ -77,6 +77,9 @@ class PurchaseService
         $order = $this->orderService->processAndCalculateOrderItems($items);
         if (!$order->getItems()->isEmpty()) {
             $response = $this->adapter->purchase($order);
+            if (!$response) {
+                $this->completePurchase($order);
+            }
 
             return $response;
         }
@@ -94,10 +97,6 @@ class PurchaseService
         $order = $this->orderService->processAndCalculateOrderItems($items);
         $response = $this->adapter->completePurchase($order);
         $this->completePurchase($order);
-        $this->dispatcher->dispatch(
-            PaywallEvents::ORDER_SUBSCRIPTION,
-            new GenericEvent($order->getItems()->toArray())
-        );
 
         return $response;
     }
@@ -106,10 +105,22 @@ class PurchaseService
     {
         $this->paymentService->createPayment($order);
         $this->entityManager->persist($order);
+        $this->activateOrderItems($order);
+        $this->entityManager->flush();
+        $this->dispatcher->dispatch(
+            PaywallEvents::ORDER_SUBSCRIPTION,
+            new GenericEvent($order->getItems()->toArray())
+        );
+    }
+
+    private function activateOrderItems(OrderInterface $order)
+    {
+        if ($this->adapter->isOfflineGateway()) {
+            return;
+        }
+
         foreach ($order->getItems() as $item) {
             $this->orderService->activateItem($item);
         }
-
-        $this->entityManager->flush();
     }
 }

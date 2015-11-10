@@ -26,7 +26,11 @@ services:
       class: Newscoop\PaywallBundle\Adpater\GatewayAdapter
       factory_service: newscoop.paywall.adapter.factory
       factory_method: getAdapter
-      arguments: ["@newscoop_paywall.gateway.repository", "@router", "%paywall_gateways%"]
+      arguments:
+            - @newscoop_paywall.gateway.repository
+            - @router
+            - @newscoop_paywall.payment_method_context
+            - %paywall_omnipay%
 
     newscoop_paywall.lifecyclesubscriber:
         class: Newscoop\PaywallBundle\EventListener\LifecycleSubscriber
@@ -67,7 +71,7 @@ services:
 
     newscoop_paywall.adapters.listener:
         class: Newscoop\PaywallBundle\EventListener\AdaptersListener
-        arguments: ["@em", "%paywall_gateways%"]
+        arguments: ["@em", "%paywall_omnipay%"]
         tags:
           - { name: kernel.event_listener, event: newscoop_paywall.adapters.register, method: registerExternalAdapters }
 
@@ -97,6 +101,12 @@ services:
         class: Newscoop\PaywallBundle\Services\PaymentService
         arguments:
             - @em
+            - @newscoop.paywall.adapter
+
+    newscoop_paywall.payment_method_context:
+        class: Newscoop\PaywallBundle\Services\PaymentMethodContext
+        arguments:
+            - @session
 
     newscoop_paywall.services.purchase:
         class: Newscoop\PaywallBundle\Services\PurchaseService
