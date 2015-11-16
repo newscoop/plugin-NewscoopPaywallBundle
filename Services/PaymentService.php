@@ -12,7 +12,7 @@ use Newscoop\PaywallBundle\Entity\OrderInterface;
 use Newscoop\PaywallBundle\Adapter\AdapterFactory;
 use Doctrine\ORM\EntityManager;
 use Newscoop\PaywallBundle\Adapter\GatewayAdapter;
-use Newscoop\PaywallBundle\Provider\MethodPaymentInterface;
+use Newscoop\PaywallBundle\Provider\MethodProviderInterface;
 
 /**
  * Payment service.
@@ -30,21 +30,21 @@ class PaymentService
     protected $adapter;
 
     /**
-     * @var MethodPaymentInterface
+     * @var MethodProviderInterface
      */
     protected $paymentMethodProvider;
 
     /**
      * Construct.
      *
-     * @param EntityManager          $entityManager
-     * @param GatewayAdapter         $adapter
-     * @param MethodPaymentInterface $paymentMethodProvider
+     * @param EntityManager           $entityManager
+     * @param GatewayAdapter          $adapter
+     * @param MethodProviderInterface $paymentMethodProvider
      */
     public function __construct(
         EntityManager $entityManager,
         GatewayAdapter $adapter,
-        MethodPaymentInterface $paymentMethodProvider
+        MethodProviderInterface $paymentMethodProvider
     ) {
         $this->entityManager = $entityManager;
         $this->adapter = $adapter;
@@ -58,7 +58,7 @@ class PaymentService
      */
     public function createPayment(OrderInterface $order)
     {
-        $enabledAdapter = $this->paymentMethodProvider->findActiveMethod();
+        $enabledAdapter = $this->paymentMethodProvider->getActiveMethod();
         $payment = $this->getRepository()->createNew();
         $payment->setOrder($order);
         $payment->setMethod($this->adapter->isOfflineGateway() ? AdapterFactory::OFFLINE : $enabledAdapter->getValue());
