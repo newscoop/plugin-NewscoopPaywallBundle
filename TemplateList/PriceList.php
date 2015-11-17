@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\TemplateList;
 
 use Newscoop\TemplateList\BaseList;
@@ -36,6 +35,10 @@ class PriceList extends BaseList
 
         if (array_key_exists('locale', $parameters)) {
             $this->criteria->locale = $parameters['locale'];
+        }
+
+        if (array_key_exists('type', $parameters)) {
+            $this->criteria->type = $parameters['type'];
         }
     }
 }

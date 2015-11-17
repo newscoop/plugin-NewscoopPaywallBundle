@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -58,6 +57,8 @@ class CurrencyController extends BaseController
                     $this->get('session')->getFlashBag()->add('success', $translator->trans('paywall.success.created'));
                 } else {
                     $this->get('session')->getFlashBag()->add('error', $translator->trans('paywall.success.exists'));
+
+                    return $this->redirect($this->generateUrl('paywall_plugin_currency_create'));
                 }
 
                 return $this->redirect($this->generateUrl('paywall_plugin_currency_index'));

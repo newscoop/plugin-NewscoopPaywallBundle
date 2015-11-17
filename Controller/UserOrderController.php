@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -29,9 +28,11 @@ class UserOrderController extends BaseController
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
-            $request->query->getInt('page', 1),
+            $request->query->getInt('knp_page', 1),
             10
         );
+
+        $pagination->setTemplate('NewscoopNewscoopBundle:Pagination:pagination_bootstrap3.html.twig');
 
         return $this->render('NewscoopPaywallBundle:UserOrder:index.html.twig', array(
             'pagination' => $pagination,

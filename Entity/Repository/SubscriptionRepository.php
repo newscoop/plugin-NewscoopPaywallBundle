@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity\Repository;
 
 use Newscoop\ListResult;
@@ -41,6 +40,11 @@ class SubscriptionRepository extends TranslationRepository
         if ($criteria->currency) {
             $qb->andWhere('s.currency = :currency')
                 ->setParameter('currency', $criteria->currency);
+        }
+
+        if ($criteria->type) {
+            $qb->andWhere('s.type = :type')
+                ->setParameter('type', $criteria->type);
         }
 
         foreach ($criteria->perametersOperators as $key => $operator) {

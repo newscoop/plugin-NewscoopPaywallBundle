@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Services;
 
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
@@ -100,7 +99,6 @@ class PaywallService
                     $parent  == $value
                 ) {
                     $value->setProlonged(true);
-                    $expiresAt = $this->getExpirationDate($item);
                     $value->setToPay($parent->getToPay());
                     $value->setExpireAt($parent->getExpireAt());
                     $value->setDuration($parent->getDuration());
@@ -249,7 +247,7 @@ class PaywallService
         $sections = $this->em->getRepository('Newscoop\PaywallBundle\Entity\Section')
             ->findBy(array(
                 'language' => $language,
-                'subscription' => $subscription_id,
+                'subscription' => $subscriptionId,
         ));
 
         return $sections;
@@ -367,7 +365,7 @@ class PaywallService
     {
         $sections = $this->em->getRepository('Newscoop\Entity\Section')
             ->findBy(array(
-                'language' => $language_id,
+                'language' => $languageId,
             ));
 
         return $sections;
@@ -395,15 +393,15 @@ class PaywallService
     /**
      * Gets all available Issues by given language Id.
      *
-     * @param int $language Language Id to search for
+     * @param int $languageId Language Id to search for
      *
      * @return array
      */
-    public function getIssuesByLanguageId($language_id)
+    public function getIssuesByLanguageId($languageId)
     {
         $issues = $this->em->getRepository('Newscoop\Entity\Issue')
             ->findBy(array(
-                'language' => $language_id,
+                'language' => $languageId,
             ));
 
         return $issues;
@@ -431,15 +429,15 @@ class PaywallService
     /**
      * Gets all available Articles by given language Id.
      *
-     * @param int $language Language Id to search for
+     * @param int $languageId Language Id to search for
      *
      * @return array
      */
-    public function getArticlesByLanguageId($language_id)
+    public function getArticlesByLanguageId($languageId)
     {
         $articles = $this->em->getRepository('Newscoop\Entity\Article')
             ->findBy(array(
-                'language' => $language_id,
+                'language' => $languageId,
             ));
 
         return $articles;
