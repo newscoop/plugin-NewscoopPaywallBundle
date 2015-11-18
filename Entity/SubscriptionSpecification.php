@@ -107,11 +107,11 @@ class SubscriptionSpecification
     /**
      * Get subscription.
      *
-     * @param Newscoop\PaywallBundle\Entity\Subscription $subscription
+     * @param Subscription $subscription
      *
-     * @return Newscoop\PaywallBundle\Entity\Subscriptions
+     * @return Subscription
      */
-    public function setSubscription($subscription)
+    public function setSubscription(Subscription $subscription)
     {
         $this->subscription = $subscription;
 
