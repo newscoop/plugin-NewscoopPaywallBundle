@@ -102,10 +102,7 @@ class UserOrderController extends BaseController
      */
     public function periodsAction(Request $request, Order $order)
     {
-        $em = $this->get('em');
-        $activeOnes = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
-            ->findActive($request->getLocale())
-            ->getResult();
+        $activeOnes = $this->getActiveSubscriptions($request->getLocale());
         $orderItem = new UserSubscription();
         $form = $this->createForm(new OrderItemType(), $orderItem, array('items' => $activeOnes));
         $form->handleRequest($request);
@@ -125,10 +122,7 @@ class UserOrderController extends BaseController
     public function createItemAction(Request $request, Order $order)
     {
         $em = $this->get('em');
-        $activeOnes = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
-            ->findActive($request->getLocale())
-            ->getResult();
-
+        $activeOnes = $this->getActiveSubscriptions($request->getLocale());
         $orderItem = new UserSubscription();
         $form = $this->createForm(new OrderItemType(), $orderItem, array('items' => $activeOnes));
 
@@ -215,5 +209,14 @@ class UserOrderController extends BaseController
         $em = $this->get('em');
 
         return $em->getRepository('Newscoop\PaywallBundle\Entity\Order');
+    }
+
+    private function getActiveSubscriptions($locale)
+    {
+        $em = $this->get('em');
+
+        return $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
+            ->findActive($locale)
+            ->getResult();
     }
 }
