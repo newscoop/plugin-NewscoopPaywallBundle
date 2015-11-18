@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -15,6 +14,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints as Assert;
 use Newscoop\PaywallBundle\Entity\Subscription;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class OrderItemType extends AbstractType
 {
@@ -30,6 +30,7 @@ class OrderItemType extends AbstractType
             'constraints' => array(
                 new Assert\NotBlank(),
             ),
+            'choices' => isset($options['items']) ? $options['items'] : array(),
         ))
         ->add('type', 'choice', array(
             'label' => 'paywall.manage.label.paymenttype',
@@ -57,6 +58,7 @@ class OrderItemType extends AbstractType
 
         $formModifier = function (FormInterface $form, Subscription $subscription = null) {
             $periods = null === $subscription ? array() : $subscription->getRanges();
+
             $form->add('duration', 'entity', array(
                 'label' => 'paywall.label.period',
                 'class' => 'Newscoop\PaywallBundle\Entity\Duration',
@@ -88,6 +90,13 @@ class OrderItemType extends AbstractType
                 $formModifier($event->getForm()->getParent(), $subscription);
             }
         );
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setOptional(array(
+            'items',
+        ));
     }
 
     public function getName()

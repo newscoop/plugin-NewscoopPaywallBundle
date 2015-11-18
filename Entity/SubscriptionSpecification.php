@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -32,7 +31,7 @@ class SubscriptionSpecification
      * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscription", inversedBy="specification")
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id")
      *
-     * @var Newscoop\PaywallBundle\Entity\Subscriptions
+     * @var \Newscoop\PaywallBundle\Entity\Subscription
      */
     protected $subscription;
 

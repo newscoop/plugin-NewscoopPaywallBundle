@@ -89,6 +89,17 @@ class SubscriptionRepository extends TranslationRepository
         ;
     }
 
+    public function findActive($locale = null)
+    {
+        $query = $this
+            ->createQueryBuilder('s')
+            ->andWhere('s.is_active = true')
+            ->getQuery()
+        ;
+
+        return $this->setTranslatableHints($query, $locale);
+    }
+
     public function getReference($id)
     {
         return $this->getEntityManager()->getReference($this->getEntityName(), $id);
