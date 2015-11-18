@@ -203,7 +203,7 @@
 				</tbody>
 			</table>
 		</form>
-		<form id="step3Form" class="form-inline" action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(formSpecification) }}>
+		<form id="step3Form" class="form-inline" novalidate action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(formSpecification) }}>
 			<table id="step3" border="0" cellspacing="0" cellpadding="0" class="box_table">
 				<tbody>
 					<tr>
