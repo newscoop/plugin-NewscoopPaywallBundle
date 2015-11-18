@@ -56,7 +56,7 @@ $(document).ready(function() {
                         $('#typeBox').append($('#subscriptionconf_type').val());
                         $('#valueBox').append($('#subscriptionconf_price').val());
                         $('#currencyBox').append($('#subscriptionconf_currency').val());
-                        
+                        $('#subscriptionName').attr('value', $('#subscriptionconf_name').val());
                         if (type == 'publication' || type == 'issue' || type == 'section' || type == 'article') {
                             titleIssue.empty();
                             titleSection.empty();
@@ -79,15 +79,14 @@ $(document).ready(function() {
                                 formatSelection: format,
                                 escapeMarkup: function (m) { return m; }
 
-                            }).on("change", function (e) {
+                            }).on("select2-selecting", function (e) {
                                 $("#selectIssues").select2('data', null);
                                 $("#selectSections").select2('data', null);
                                 $("#selectArticles").select2('data', null);
                                 $("#selectIssues").select2("enable", true);
                                 $('#selectSections').select2("enable", false);
                                 $('#selectArticles').select2("enable", false);
-                                $('#subscriptionName').attr('value', $('#subscriptionconf_name').val());
-                                $('#specificationForm_publication').attr('value', $("#selectPublications").select2("val"));         
+                                $('#specificationForm_publication').attr('value', e.object.id);
                             });
                         }
 
@@ -192,37 +191,47 @@ $(document).ready(function() {
                             });
                         }
                         if (window.location.pathname === $('#confForm').attr('action')) {
-                            $.post(Routing.generate('newscoop_paywall_admin_getall'), {
+                            $.get(Routing.generate('newscoop_paywall_admin_getall'), {
                                 'publicationId': $("#specificationForm_publication").val(),
                                 'issueId': $("#specificationForm_issue").val(),
                                 'sectionId': $("#specificationForm_section").val(),
                                 'articleId': $("#specificationForm_article").val()
                             }, function (data) {
-                                 if (data.Publications.length > 0) {
-                                    $("#s2id_selectPublications .select2-choice .select2-chosen").empty();
-                                    $("#s2id_selectPublications .select2-choice .select2-chosen").append(
-                                        data.Publications[0].name + " ("+data.Publications[0].code+")"
+                                var tempArray = {};
+                                if (data.Publications.length > 0) {
+                                    var id = $("#specificationForm_publication").val();
+                                    tempArray = createTempLookupArray(data.Publications);
+
+                                    $('#selectPublications').select2(
+                                        'data',
+                                        {id: tempArray[id].id, name: tempArray[id].name, code: tempArray[id].code}
                                     );
                                 }
 
                                 if (data.Issues.length > 0) {
-                                    $("#s2id_selectIssues .select2-choice .select2-chosen").empty();
-                                    $("#s2id_selectIssues .select2-choice .select2-chosen").append(
-                                        data.Issues[0].name + " ("+data.Issues[0].code+")"
+                                    var id = $("#specificationForm_issue").val();
+                                    tempArray = createTempLookupArray(data.Issues);
+                                    $('#selectIssues').select2(
+                                        'data',
+                                        {id: tempArray[id].id, name: tempArray[id].name, code: tempArray[id].code}
                                     );
                                 }
 
                                 if (data.Sections.length > 0) {
-                                    $("#s2id_selectSections .select2-choice .select2-chosen").empty();
-                                    $("#s2id_selectSections .select2-choice .select2-chosen").append(
-                                        data.Sections[0].name + " ("+data.Sections[0].code+")"
+                                    var id = $("#specificationForm_section").val();
+                                    tempArray = createTempLookupArray(data.Sections);
+                                    $('#selectSections').select2(
+                                        'data',
+                                        {id: tempArray[id].id, name: tempArray[id].name, code: tempArray[id].code}
                                     );
                                 }
 
                                 if (data.Articles.length > 0) {
-                                    $("#s2id_selectArticles .select2-choice .select2-chosen").empty();
-                                    $("#s2id_selectArticles .select2-choice .select2-chosen").append(
-                                        data.Articles[0].name + " ("+data.Articles[0].code+")"
+                                    var id = $("#specificationForm_article").val();
+                                    tempArray = createTempLookupArray(data.Articles);
+                                    $('#selectArticles').select2(
+                                        'data',
+                                        {id: tempArray[id].id, name: tempArray[id].name, code: tempArray[id].code}
                                     );
                                 }
                             }, 'json');
@@ -299,5 +308,15 @@ $(document).ready(function() {
             $('#subscriptionconf_name').change();
         }, 1000 );
     });
+
+    function createTempLookupArray(dataArray)
+    {
+        var tempArray = {};
+        for (var i = 0, length = dataArray.length; i < length; i++) {
+            tempArray[dataArray[i].id] = dataArray[i];
+        }
+
+        return tempArray;
+    }
 });
 //-->
