@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -121,6 +120,13 @@ class Subscription implements Translatable, PriceableInterface
      */
     public $locale;
 
+    /**
+     * @ORM\Column(type="boolean", name="is_template", nullable=true)
+     *
+     * @var bool
+     */
+    protected $isTemplate;
+
     public function __construct()
     {
         $this->specification = new ArrayCollection();
@@ -128,6 +134,7 @@ class Subscription implements Translatable, PriceableInterface
         $this->setIsActive(true);
         $this->ranges = new ArrayCollection();
         $this->translations = new ArrayCollection();
+        $this->isTemplate = false;
     }
 
     /**
@@ -406,5 +413,25 @@ class Subscription implements Translatable, PriceableInterface
             $this->translations[] = $translation;
             $translation->setObject($this);
         }
+    }
+
+    /**
+     * Gets the value of isTemplate.
+     *
+     * @return bool
+     */
+    public function isTemplate()
+    {
+        return $this->isTemplate;
+    }
+
+    /**
+     * Sets the value of isTemplate.
+     *
+     * @param bool $isTemplate the is template
+     */
+    public function setIsTemplate($isTemplate)
+    {
+        $this->isTemplate = $isTemplate;
     }
 }

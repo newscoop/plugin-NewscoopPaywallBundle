@@ -49,6 +49,7 @@ paywall:
           description: "Description:"
           optional: "optional"
           subscription: "Subscription"
+          istemplate: "Should be marked as a template?"
         select:
           type:
             publication: "Publication"
