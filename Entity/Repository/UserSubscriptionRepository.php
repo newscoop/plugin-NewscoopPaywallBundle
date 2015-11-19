@@ -5,7 +5,6 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity\Repository;
 
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
@@ -293,5 +292,21 @@ class UserSubscriptionRepository extends TranslationRepository
         return $query
             ->getOneOrNullResult()
         ;
+    }
+
+    public function findOneBy(array $params, $locale = null)
+    {
+        $queryBuilder = $this->createQueryBuilder('i')
+            ->select('i', 's')
+            ->leftJoin('i.subscription', 's');
+
+        foreach ($params as $key => $value) {
+            $queryBuilder->where('i.'.$key.' = :'.$key);
+        }
+
+        $queryBuilder->setParameters($params);
+        $query = $this->setTranslatableHints($queryBuilder->getQuery(), $locale);
+
+        return $query->getOneOrNullResult();
     }
 }
