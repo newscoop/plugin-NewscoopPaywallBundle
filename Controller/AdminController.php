@@ -407,7 +407,7 @@ class AdminController extends Controller
             ->leftJoin('s.publication', 'p')
             ->leftJoin('s.section', 'ss')
             ->leftJoin('s.language', 'l')
-            ->where('s.publication = :publicationId AND ss.id = :sectionId AND i.number = :issueId')
+            ->where('p.id = :publicationId AND ss.number = :sectionId AND i.number = :issueId')
             ->setParameters(array(
                 'publicationId' => $request->get('publicationId'),
                 'issueId' => $request->get('issueId'),

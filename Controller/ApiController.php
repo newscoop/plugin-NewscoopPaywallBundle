@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -33,6 +32,7 @@ class ApiController extends FOSRestController
         $paywallService = $this->get('paywall.subscription.service');
         $currencyContext = $this->get('newscoop_paywall.currency_context');
         $paginator = $this->get('newscoop.paginator.paginator_service');
+        $criteria->type = $request->query->get('type');
         $list = $paywallService->getSubscriptionsByCriteria($criteria);
         $paginator->setUsedRouteParams(array('currency' => $currency));
         $currencyContext->setCurrency($currency);

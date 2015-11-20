@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -25,8 +24,6 @@ class UsersSubscriptionsController extends BaseController
      */
     public function loadSubscriptionsAction(Request $request, $id)
     {
-        $cacheService = $this->get('newscoop.cache');
-        $subscriptionService = $this->get('paywall.subscription.service');
         $criteria = $this->processRequest($request);
         $criteria->order = $id;
         $userSubscriptions = $this->get('paywall.subscription.service')
@@ -153,7 +150,6 @@ class UsersSubscriptionsController extends BaseController
     {
         $subscriptionService = $this->container->get('paywall.subscription.service');
         $subscription = $subscriptionService->create();
-        $em = $this->get('em');
         $form = $this->createForm(new OrderItemType());
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
