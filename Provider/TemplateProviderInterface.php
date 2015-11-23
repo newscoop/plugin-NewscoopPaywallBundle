@@ -18,11 +18,19 @@ interface TemplateProviderInterface
      * Gets all the available subscriptions marked as a template.
      *
      * @param string $type   Subscription type (e.g. article, issue etc.)
-     * @param string $locale Current locale
+     * @param string $locale Locale
      *
      * @return PriceableInterface[]
      */
     public function getAvailableTemplates($type, $locale);
 
+    /**
+     * Gets one of the subscription which is marked as a template by id and/or locale.
+     *
+     * @param string $id     Subscription id
+     * @param string $locale Locale
+     *
+     * @return PriceableInterface[]
+     */
     public function getOneTemplate($id, $locale = null);
 }
