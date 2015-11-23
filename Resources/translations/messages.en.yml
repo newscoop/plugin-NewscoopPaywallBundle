@@ -3,8 +3,10 @@ paywall:
     label:
       defineduration: "Define periods & discounts"
       months: "month(s)"
+      days: "days(s)"
       discount: "Discount"
       unitprice: "Unit Price"
+      markedpaid: "Marked as a paid article?"
       period: "Period"
       total: "Total"
       number: "Number"
@@ -21,6 +23,7 @@ paywall:
       editcurrency: "Edit currency"
       removeitem: "Are you sure you want to delete this item?"
       confirmation: "Confirmation"
+      paid: "Mark this article as a paid?"
       currency:
         create: "You can add any currency you wish to the system. Exchange rates must be positive numbers and will be rounded to five decimal places by default. Both the comma and period can be used as decimal separators."
     alert:
@@ -72,6 +75,7 @@ paywall:
         price: "Price"
         currency: "Currency"
         active: "Status"
+        isTemplate: "Is template?"
     btn:
       create: "Create"
       creatediscount: "Create discount"
@@ -92,6 +96,7 @@ paywall:
       cancel: "Cancel"
       close: "Close"
       createcurrency: "Create currency"
+      unmark: "Unmark"
     flash:
       message:
         error: "Something went wrong."
