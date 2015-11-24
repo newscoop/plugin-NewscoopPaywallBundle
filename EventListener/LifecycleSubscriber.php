@@ -18,6 +18,8 @@ use Newscoop\PaywallBundle\Events\AdaptersEvent;
  */
 class LifecycleSubscriber implements EventSubscriberInterface
 {
+    const PLUGIN_NAME = 'newscoop/newscoop-paywall-bundle';
+
     private $em;
     private $dispatcher;
     private $scheduler;

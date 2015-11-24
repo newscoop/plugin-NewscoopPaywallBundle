@@ -7,6 +7,7 @@
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Newscoop\EventDispatcher\Events\PluginHooksEvent;
+use Newscoop\PaywallBundle\EventListener\LifecycleSubscriber;
 
 /**
  * Hook listener.
@@ -16,17 +17,27 @@ class HookListener
     private $templating;
     private $entityManager;
     private $templatesProvider;
+    private $pluginsService;
+    private $userService;
 
-    public function __construct($templating, $entityManager, $templatesProvider)
-    {
+    public function __construct(
+        $templating,
+        $entityManager,
+        $templatesProvider,
+        $pluginsService,
+        $userService
+    ) {
         $this->templating = $templating;
         $this->entityManager = $entityManager;
         $this->templatesProvider = $templatesProvider;
+        $this->pluginsService = $pluginsService;
+        $this->userService = $userService;
     }
 
     public function sidebar(PluginHooksEvent $event)
     {
         $article = $event->getArgument('article');
+        $user = $this->userService->getCurrentUser();
         $specification = $this->entityManager
             ->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
             ->findSpecification(
@@ -46,6 +57,9 @@ class HookListener
                 'status' => $specification ? true : false,
                 'articleNumber' => $article->getArticleNumber(),
                 'articleLanguage' => $article->getLanguageId(),
+                'publicSwitch' => $this->pluginsService->isEnabled(LifecycleSubscriber::PLUGIN_NAME),
+                'isPublic' => $article->isPublic(),
+                'isDisabled' => (!$article->userCanModify($user) || !$user->hasPermission('Publish'))
             )
         );
 

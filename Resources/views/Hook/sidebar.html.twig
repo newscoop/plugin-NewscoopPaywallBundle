@@ -34,6 +34,11 @@
         {% endfor %}{% endif %}</span></span>
         </div>
         {% endif %}
+        {% if publicSwitch %}
+        <hr>
+            <input type="checkbox" name="paywall_is_public" id="paywall_is_public" class="input_checkbox" {% if isPublic %}checked{% endif %} {% if isDisabled %}disabled{% endif %} />
+            <label for="paywall_is_public">{{ 'Visible to non-subscribers'|trans({}, 'article') }}</label>
+        {% endif %}
         <hr>
         <form action="{{ path('newscoop_paywall_hook_sidebar', {articleNumber: articleNumber, articleLanguage: articleLanguage}) }}" method="post">
             <select name="paywallTemplateSubscriptionId" class="input_select">
@@ -47,6 +52,20 @@
     </div>
 </div>
 <script>
+    $('input[name=paywall_is_public]').change(function() {
+        if ($(this).attr('disabled')) {
+            return false;
+        }
+
+        callServer(['Article', 'setIsPublic'], [
+            {{ articleLanguage }},
+            {{ articleNumber }},
+            Number($(this).is(':checked'))
+        ], function(json) {
+            flashMessage("{{ 'paywall.label.switchsaved'|trans }}");
+        });
+    });
+
     $('.paywall-button').on('click', function(e){
         e.preventDefault();
         var button = $(this).prop('disabled', true);

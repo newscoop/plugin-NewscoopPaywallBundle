@@ -180,6 +180,6 @@ services:
 
     newscoop_paywall.hooks.listener:
         class: Newscoop\PaywallBundle\EventListener\HookListener
-        arguments: ["@templating", "@em", "@newscoop_paywall.subscription_template_provider"]
+        arguments: ["@templating", "@em", "@newscoop_paywall.subscription_template_provider", "@newscoop.plugins.service", "@user"]
         tags:
           - { name: kernel.event_listener, event: newscoop_admin.interface.article.edit.sidebar, method: sidebar }
