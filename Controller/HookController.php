@@ -20,10 +20,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 class HookController extends BaseController
 {
     /**
-     * @Route("/admin/paywall_plugin/sidebar/{articleNumber}/{articleLanguage}", options={"expose"=true})
+     * @Route("/admin/paywall_plugin/sidebar/{articleNumber}/{articleLanguage}/{allowed}", options={"expose"=true})
      * @Method("POST")
      */
-    public function sidebarAction(Request $request, $articleNumber, $articleLanguage)
+    public function sidebarAction(Request $request, $articleNumber, $articleLanguage, $allowed = false)
     {
         $entityManager = $this->get('em');
         $templateId = $request->request->get('paywallTemplateSubscriptionId');
@@ -47,6 +47,9 @@ class HookController extends BaseController
         if ($specification) {
             $specification->getSubscription()->setIsActive(false);
             $specification->setIsActive(false);
+        } else {
+            // make switch unchecked when subscription exists for given article
+            $article->setPublic('N');
         }
 
         $specification = $this->buildSubscription($subscription, $article);
@@ -56,6 +59,8 @@ class HookController extends BaseController
             'templates' => $templates,
             'articleNumber' => $article->getNumber(),
             'articleLanguage' => $article->getLanguageId(),
+            'isPublic' => $article->getPublic() === 'Y' ? true : false,
+            'hasPermission' => $allowed,
         ));
     }
 

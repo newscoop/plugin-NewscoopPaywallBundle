@@ -34,13 +34,20 @@
         {% endfor %}{% endif %}</span></span>
         </div>
         {% endif %}
-        {% if publicSwitch %}
+
+        <div id="paywall-subscriber-switch">
         <hr>
-            <input type="checkbox" name="paywall_is_public" id="paywall_is_public" class="input_checkbox" {% if isPublic %}checked{% endif %} {% if isDisabled %}disabled{% endif %} />
-            <label for="paywall_is_public">{{ 'Visible to non-subscribers'|trans({}, 'article') }}</label>
-        {% endif %}
+            <input type="checkbox" name="paywall_is_public" id="paywall_is_public" class="input_checkbox" {% if isPublic %}checked{% endif %} {% if hasPermission %}disabled{% endif %} />
+            <label for="paywall_is_public">{{ 'Visible to non-subscribers'|trans({}, 'article') }}</label>   <span title="{{ 'paywall.label.publicswitch'|trans}}" class="paywall-hint glyphicon glyphicon-question-sign"></span>
+            <p id="paywall-hint-msg" style="display:none;">{{'paywall.label.publicswitch'|trans }}</p>
+        </div>
+
         <hr>
-        <form action="{{ path('newscoop_paywall_hook_sidebar', {articleNumber: articleNumber, articleLanguage: articleLanguage}) }}" method="post">
+        <form action="{{ path('newscoop_paywall_hook_sidebar', {
+            articleNumber: articleNumber,
+            articleLanguage: articleLanguage,
+            allowed: hasPermission
+        }) }}" method="post">
             <select name="paywallTemplateSubscriptionId" class="input_select">
                 <option value="">{{ 'paywall.manage.label.choose'|trans }}</option>
                 {% for template in templates %}
@@ -52,6 +59,14 @@
     </div>
 </div>
 <script>
+    $('.paywall-hint').click(function() {
+        if ($('#paywall-hint-msg').is(":visible")) {
+            $('#paywall-hint-msg').hide();
+        } else {
+            $('#paywall-hint-msg').show();
+        }
+    })
+
     $('input[name=paywall_is_public]').change(function() {
         if ($(this).attr('disabled')) {
             return false;

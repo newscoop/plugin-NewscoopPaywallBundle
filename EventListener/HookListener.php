@@ -7,7 +7,6 @@
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Newscoop\EventDispatcher\Events\PluginHooksEvent;
-use Newscoop\PaywallBundle\EventListener\LifecycleSubscriber;
 
 /**
  * Hook listener.
@@ -36,6 +35,10 @@ class HookListener
 
     public function sidebar(PluginHooksEvent $event)
     {
+        if (!$this->pluginsService->isEnabled(LifecycleSubscriber::PLUGIN_NAME)) {
+            return;
+        }
+
         $article = $event->getArgument('article');
         $user = $this->userService->getCurrentUser();
         $specification = $this->entityManager
@@ -57,9 +60,8 @@ class HookListener
                 'status' => $specification ? true : false,
                 'articleNumber' => $article->getArticleNumber(),
                 'articleLanguage' => $article->getLanguageId(),
-                'publicSwitch' => $this->pluginsService->isEnabled(LifecycleSubscriber::PLUGIN_NAME),
                 'isPublic' => $article->isPublic(),
-                'isDisabled' => (!$article->userCanModify($user) || !$user->hasPermission('Publish'))
+                'hasPermission' => (!$article->userCanModify($user) || !$user->hasPermission('Publish')),
             )
         );
 

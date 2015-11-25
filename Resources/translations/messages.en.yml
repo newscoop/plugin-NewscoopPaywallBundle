@@ -25,6 +25,7 @@ paywall:
       confirmation: "Confirmation"
       switchsaved: "Switch saved."
       paid: "Mark this article as a paid?"
+      publicswitch: "This switch let's you make an article visible to non subscribers. If checked, an article will be public, even if the sbscription is set for this article, else article content will be viewable only by the subscribers."
       currency:
         create: "You can add any currency you wish to the system. Exchange rates must be positive numbers and will be rounded to five decimal places by default. Both the comma and period can be used as decimal separators."
     alert:
