@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Subscription Specification entity.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\SubscriptionSpecificationRepository")
  * @ORM\Table(name="plugin_paywall_subscription_specification")
  */
 class SubscriptionSpecification

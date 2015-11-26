@@ -79,6 +79,16 @@
 					</tr>
 					<tr>
 						<td align="left">
+							{{ form_label(form.isTemplate) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left" valign="top">
+							{{ form_widget(form.isTemplate) }}
+						</td>
+					</tr>
+					<tr>
+						<td align="left">
 							{{ form_label(form.description) }} ({{ 'paywall.step1.form.label.optional'|trans }})
 						</td>
 					</tr>

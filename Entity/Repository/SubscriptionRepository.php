@@ -104,4 +104,23 @@ class SubscriptionRepository extends TranslationRepository
     {
         return $this->getEntityManager()->getReference($this->getEntityName(), $id);
     }
+
+    public function findTemplates($type = null, $locale = null)
+    {
+        $queryBuilder = $this
+            ->createQueryBuilder('s')
+            ->where('s.isTemplate = true')
+            ->andWhere('s.is_active = true')
+        ;
+
+        if ($type) {
+            $queryBuilder
+                ->andWhere('s.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        $query = $queryBuilder->getQuery();
+
+        return $this->setTranslatableHints($query, $locale);
+    }
 }

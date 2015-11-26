@@ -68,6 +68,7 @@ $(document).ready(function(){
                     <th>{{ 'paywall.manage.label.duration'|trans }}</th>
                     <th>{{ 'paywall.step2.label.price'|trans }}</th>
                     <th>{{ 'paywall.step2.label.currency'|trans }}</th>
+                    <th>{{ 'paywall.step2.label.isTemplate'|trans }}</th>
                     <th>{{ 'paywall.manage.label.options'|trans }}</th>
                 </tr>
             </thead>
@@ -87,6 +88,7 @@ $(document).ready(function(){
                     </td>
                     <td align="center">{{ subscription.price }}</td>
                     <td align="center">{{ subscription.currency }}</td>
+                    <td align="center"><label class="label {% if subscription.isTemplate %}label-success{% else %}label-default{% endif %}">{% if subscription.isTemplate %}{{ 'paywall.manage.label.yes'|trans}}{% else %}{{ 'paywall.manage.label.no'|trans}}{% endif %}</label></td>
                     <td>
                         <a class="delete-subscription" href="{{ path('newscoop_paywall_managesubscriptions_delete', {'id': subscription.id}) }}">{{ 'paywall.btn.delete'|trans }}</a> |
                         <a class="edit-subscription" href="{{ path('newscoop_paywall_admin_update', {'id': subscription.id}) }}">{{ 'paywall.btn.edit'|trans }}</a>

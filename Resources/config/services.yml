@@ -94,11 +94,17 @@ services:
         arguments:
             - Newscoop\PaywallBundle\Entity\Currency
 
+    newscoop_paywall.subscription.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Newscoop\PaywallBundle\Entity\Subscription
+
     newscoop_paywall.currency_provider:
         class: Newscoop\PaywallBundle\Provider\CurrencyProvider
         arguments:
             - @newscoop_paywall.currency.repository
-            - @preferences
 
     newscoop_paywall.currency_converter:
         class: Newscoop\PaywallBundle\Converter\CurrencyConverter
@@ -166,3 +172,14 @@ services:
             - { name: kernel.event_listener, event: paywall.subscription.status_change, method: sendUserSubscriptionStatusChangeEmail }
             - { name: kernel.event_listener, event: paywall.subscription.expiration, method: sendSubscriptionExpirationEmail }
             - { name: kernel.event_listener, event: paywall.subscription.admin_order, method: sendAdminCreatedNotification }
+
+    newscoop_paywall.subscription_template_provider:
+        class: Newscoop\PaywallBundle\Provider\TemplateProvider
+        arguments:
+            - @newscoop_paywall.subscription.repository
+
+    newscoop_paywall.hooks.listener:
+        class: Newscoop\PaywallBundle\EventListener\HookListener
+        arguments: ["@templating", "@em", "@newscoop_paywall.subscription_template_provider", "@newscoop.plugins.service", "@user"]
+        tags:
+          - { name: kernel.event_listener, event: newscoop_admin.interface.article.edit.sidebar, method: sidebar }

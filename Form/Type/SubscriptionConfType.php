@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -36,6 +35,10 @@ class SubscriptionConfType extends AbstractType
                 'section' => 'paywall.step1.form.select.type.section',
                 'article' => 'paywall.step1.form.select.type.article',
             ),
+        ))
+        ->add('isTemplate', 'checkbox', array(
+            'label' => 'paywall.step1.form.label.istemplate',
+            'required' => false,
         ))
         ->add('price', null, array(
             'label' => 'paywall.step1.form.label.price',

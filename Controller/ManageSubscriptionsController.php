@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -47,6 +46,11 @@ class ManageSubscriptionsController extends Controller
             $em = $this->getDoctrine()->getManager();
             $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                 ->findOneBy(array('id' => $id));
+
+            foreach ($subscription->getSpecification() as $value) {
+                $value->setIsActive(false);
+            }
+
             $subscription->setIsActive(false);
             $em->flush();
 
