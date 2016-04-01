@@ -235,7 +235,7 @@
 									<tbody>
 										{% for range in ranges %}
 										<tr id="{{ range.id }}">
-											<td>{{ range.value }}{% if range.attribute == 'month' %} {{ 'paywall.label.months'|trans }} {% endif %}</td>
+											<td>{{ range.value }}{% if range.attribute == 'month' %} {{ 'paywall.label.months'|trans }} {% endif %}{% if range.attribute == 'day' %} {{ 'paywall.label.days'|trans }} {% endif %}</td>
 											<td>{% if range.discount %} {{ range.discount.name}} ({{ range.discount.value * 100 }}%){% else %} - {% endif %}</td>
 											<td><button type="button" id="remove-duration" data-path="{{ path('newscoop_paywall_admin_duration_remove', {'id': range.id }) }}" class="btn btn-xs btn-danger">
 												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> {{ 'paywall.btn.delete'|trans }}
@@ -279,14 +279,20 @@
 							if (Object.keys(data.duration.discount).length > 0) {
 								discount = data.duration.discount.name+' ('+(data.duration.discount.value * 100)+'%)';
 							}
+
+							var durationAttribute = '{{ 'paywall.label.months'|trans }}';
+							if (data.duration.attribute === 'day') {
+								durationAttribute = '{{ 'paywall.label.days'|trans }}';
+							}
+
 							$('#duration-table tbody').append(
 								'<tr id="'+data.duration.id+'">'+
 									'<td>'+data.duration.value+
-									' {{ 'paywall.label.months'|trans }}</td>'+
+									' '+durationAttribute+'</td>'+
 									'<td>'+discount+'</td>'+
 									'<td><button type="button" id="remove-duration" data-path="{{ path('newscoop_paywall_admin_duration_remove') }}/'+data.duration.id+'" class="btn btn-xs btn-danger">'+
-										'<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>'+
-									'</button></td>'+
+										'<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> '+
+									'{{ 'paywall.btn.delete'|trans }}</button></td>'+
 								'</tr>'
 							);
 						} else {

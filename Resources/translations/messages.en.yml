@@ -12,6 +12,7 @@ paywall:
     label:
       defineduration: "Define periods & discounts"
       months: "month(s)"
+      days: "day(s)"
       discount: "Discount"
       unitprice: "Unit Price"
       period: "Period"

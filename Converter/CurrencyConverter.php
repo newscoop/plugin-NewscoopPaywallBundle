@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Converter;
 
 use Sylius\Component\Currency\Converter\CurrencyConverterInterface;
@@ -39,7 +38,7 @@ class CurrencyConverter implements CurrencyConverterInterface
             throw new UnavailableCurrencyException($code);
         }
 
-        return (int) round($value * $currency->getExchangeRate());
+        return (float) ($value * $currency->getExchangeRate());
     }
 
     private function getCurrency($code)

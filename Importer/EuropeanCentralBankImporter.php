@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Importer;
 
 /**
@@ -44,5 +43,10 @@ class EuropeanCentralBankImporter extends AbstractImporter
 
             $this->manager->flush();
         }
+    }
+
+    public function setBaseCurrency($baseCurrency = null)
+    {
+        $this->baseCurrency = $baseCurrency;
     }
 }

@@ -72,9 +72,9 @@ class PurchaseService
      *
      * @param array $items
      */
-    public function startPurchase(array $items = array())
+    public function startPurchase(array $items = array(), $currency = null)
     {
-        $order = $this->orderService->processAndCalculateOrderItems($items);
+        $order = $this->orderService->processAndCalculateOrderItems($items, $currency);
         if (!$order->getItems()->isEmpty()) {
             $response = $this->adapter->purchase($order);
             if (!$response) {

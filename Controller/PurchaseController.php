@@ -49,15 +49,15 @@ class PurchaseController extends BaseController
             return $this->loadErrorTemplate($response->getMessage());
         }
 
-        return $this->refererRedirect($request);
+        return $this->redirectToThankYou();
     }
 
     /**
-     * @Route("/paywall/subscriptions/order-batch", name="paywall_subscribe_order_batch", options={"expose"=true})
+     * @Route("/paywall/subscriptions/order-batch/{currency}", name="paywall_subscribe_order_batch", options={"expose"=true})
      *
      * @Method("POST")
      */
-    public function batchOrderAction(Request $request)
+    public function batchOrderAction(Request $request, $currency)
     {
         $items = $request->request->get('batchorder', array());
         $response = new JsonResponse();
@@ -67,10 +67,14 @@ class PurchaseController extends BaseController
             return $response;
         }
 
+        $request->getSession()->set('paywall_purchase', $items);
+
         $purchaseService = $this->get('newscoop_paywall.services.purchase');
-        $result = $purchaseService->startPurchase($items, true);
-        if ($result && $request->isXmlHttpRequest()) {
-            $response->headers->set('X-Location', $result);
+        $result = $purchaseService->startPurchase($items, $currency);
+
+        $data = $result->getData();
+        if (isset($data['ACK']) && 'Success' === $data['ACK']) {
+            $response->headers->set('X-Location', $result->getRedirectUrl());
             $response->setStatusCode(302);
         } else {
             $response->setStatusCode(502);
@@ -92,7 +96,6 @@ class PurchaseController extends BaseController
             return $this->loadErrorTemplate($translator->trans('paywall.error.noitems'));
         }
 
-        $request->getSession()->set('paywall_referer', $request->headers->get('referer'));
         $request->getSession()->set('paywall_purchase', $items);
 
         $order = $this->get('newscoop_paywall.services.order')->processAndCalculateOrderItems($items);
@@ -118,15 +121,11 @@ class PurchaseController extends BaseController
         $response = $purchaseService->finishPurchase($items);
         $request->getSession()->remove('paywall_purchase');
 
-        if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(array('message' => $response->getMessage()));
-        }
-
         if (!$response->isSuccessful() && !$response->isRedirect()) {
             return $this->loadErrorTemplate($response->getMessage());
         }
 
-        return $this->refererRedirect($request);
+        return $this->redirectToThankYou();
     }
 
     /**
@@ -143,6 +142,20 @@ class PurchaseController extends BaseController
         ), 200, array('Content-Type' => 'text/html'));
     }
 
+    /**
+     * @Route("/paywall/thank-you/", name="paywall_plugin_purchase_thank_you", options={"expose"=true})
+     *
+     * @Method("GET")
+     */
+    public function thankYouAction()
+    {
+        $templatesService = $this->get('newscoop.templates.service');
+
+        return new Response($templatesService->fetchTemplate(
+            '_paywall/thankyou.tpl'
+        ), 200, array('Content-Type' => 'text/html'));
+    }
+
     private function loadErrorTemplate($message = '')
     {
         $templatesService = $this->get('newscoop.templates.service');
@@ -153,10 +166,8 @@ class PurchaseController extends BaseController
         ), 200, array('Content-Type' => 'text/html'));
     }
 
-    private function refererRedirect(Request $request)
+    private function redirectToThankYou()
     {
-        $referer = $request->getSession()->get('paywall_referer', '/');
-
-        return new RedirectResponse($referer);
+        return new RedirectResponse($this->get('router')->generate('paywall_plugin_purchase_thank_you'));
     }
 }

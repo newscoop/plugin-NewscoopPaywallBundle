@@ -82,6 +82,9 @@ $(document).ready(function(){
                         {% if range.attribute == 'month' %}
                             {{ 'paywall.label.months'|trans }}
                         {% endif %}
+                        {% if range.attribute == 'day' %}
+                            {{ 'paywall.label.days'|trans }}
+                        {% endif %}
                         {% if loop.last == false %}<br> {% endif %}
                     {% endfor %}
                     </td>
