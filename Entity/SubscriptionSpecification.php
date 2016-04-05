@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Subscription Specification entity.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Newscoop\PaywallBundle\Entity\Repository\SubscriptionSpecificationRepository")
  * @ORM\Table(name="plugin_paywall_subscription_specification")
  */
 class SubscriptionSpecification
@@ -29,10 +28,10 @@ class SubscriptionSpecification
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Newscoop\PaywallBundle\Entity\Subscription", inversedBy="specification")
+     * @ORM\ManyToOne(targetEntity="Subscription", inversedBy="specification")
      * @ORM\JoinColumn(name="subscription_id", referencedColumnName="id")
      *
-     * @var Newscoop\PaywallBundle\Entity\Subscriptions
+     * @var \Newscoop\PaywallBundle\Entity\Subscription
      */
     protected $subscription;
 
@@ -108,11 +107,11 @@ class SubscriptionSpecification
     /**
      * Get subscription.
      *
-     * @param Newscoop\PaywallBundle\Entity\Subscription $subscription
+     * @param Subscription $subscription
      *
-     * @return Newscoop\PaywallBundle\Entity\Subscriptions
+     * @return Subscription
      */
-    public function setSubscription($subscription)
+    public function setSubscription(Subscription $subscription)
     {
         $this->subscription = $subscription;
 

@@ -393,15 +393,15 @@ class PaywallService
     /**
      * Gets all available Issues by given language Id.
      *
-     * @param int $language Language Id to search for
+     * @param int $languageId Language Id to search for
      *
      * @return array
      */
-    public function getIssuesByLanguageId($language_id)
+    public function getIssuesByLanguageId($languageId)
     {
         $issues = $this->em->getRepository('Newscoop\Entity\Issue')
             ->findBy(array(
-                'language' => $language_id,
+                'language' => $languageId,
             ));
 
         return $issues;
@@ -429,15 +429,15 @@ class PaywallService
     /**
      * Gets all available Articles by given language Id.
      *
-     * @param int $language Language Id to search for
+     * @param int $languageId Language Id to search for
      *
      * @return array
      */
-    public function getArticlesByLanguageId($language_id)
+    public function getArticlesByLanguageId($languageId)
     {
         $articles = $this->em->getRepository('Newscoop\Entity\Article')
             ->findBy(array(
-                'language' => $language_id,
+                'language' => $languageId,
             ));
 
         return $articles;

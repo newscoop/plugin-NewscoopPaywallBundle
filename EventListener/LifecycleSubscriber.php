@@ -16,6 +16,8 @@ use Newscoop\PaywallBundle\Entity\Gateway;
  */
 class LifecycleSubscriber implements EventSubscriberInterface
 {
+    const PLUGIN_NAME = 'newscoop/newscoop-paywall-bundle';
+
     private $em;
     private $dispatcher;
     private $scheduler;

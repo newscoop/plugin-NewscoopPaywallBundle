@@ -1,0 +1,154 @@
+<style type="text/css" media="screen">
+    .hook-content {font-size: 12px;}
+    .hook-content .save-button {display: block;float: right;}
+    .hook-content h4{margin-bottom: 0px; padding: 5px 0;margin-top: 15px;}
+    .form-group label {font-weight: bold;}
+    .hook-content .hook-currency { line-height: 25px; padding-left: 5px;}
+    .js-paywall-status {padding: 5px 0;}
+    .js-paywall-status-yes {color: #468847;}
+    .js-paywall-status-no {color: #b94a48;}
+    .hook-content #paywallpluginForm .input_text {width: 50%;}
+</style>
+<div class="articlebox paywallplugin" title="Paywall - {{ 'paywall.label.paid'|trans}}">
+    <div class="hook-content">
+        <br>
+        <div id="alert-container" style="display: none; padding: 15px;" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="msg-text"></span>
+        </div>
+        <div class="js-paywall-status"><strong>{{ 'paywall.label.markedpaid'|trans}} </strong>
+            {% if specification %}
+            <span class="js-paywall-status-yes">{{ 'paywall.manage.label.yes'|trans }}</span>
+            {% else %}
+            <span class="js-paywall-status-no">{{ 'paywall.manage.label.no'|trans }}</span>
+            {% endif %}
+        </div>
+        {% if specification %}
+        <button type="button" class="paywall-unmark-btn ui-state-default right-floated">{{ 'paywall.btn.unmark'|trans}}</button>
+        <div class="subscription-details">
+        <br>
+        <span>{{ 'paywall.manage.label.name'|trans }}: <span id="paywall-name">{{ specification.subscription.name }}</span></span><br>
+        <span>{{ 'paywall.label.unitprice'|trans }}: <span id="paywall-price">{{ specification.subscription.price }}</span> <span id="paywall-price">{{ specification.subscription.currency }}</span></span><br>
+        <span>{{ 'paywall.manage.label.duration'|trans }}: <span id="paywall-ranges">{% if specification.subscription.ranges|length == 0 %}-{% else %}{% for range in specification.subscription.ranges %}
+            {{ range.value }} {% if range.attribute == 'month' %}{{ 'paywall.label.months'|trans }}{% elseif range.attribute == 'day' %}{{ 'paywall.label.days'|trans }}{% endif %}{% if loop.last == false %},{% endif %}<br>
+        {% endfor %}{% endif %}</span></span>
+        </div>
+        {% endif %}
+
+        <div id="paywall-subscriber-switch">
+        <hr>
+            <input type="checkbox" name="paywall_is_public" id="paywall_is_public" class="input_checkbox" {% if isPublic %}checked{% endif %} {% if hasPermission %}disabled{% endif %} />
+            <label for="paywall_is_public">{{ 'Visible to non-subscribers'|trans({}, 'article') }}</label>   <span title="{{ 'paywall.label.publicswitch'|trans}}" class="paywall-hint glyphicon glyphicon-question-sign"></span>
+            <p id="paywall-hint-msg" style="display:none;">{{'paywall.label.publicswitch'|trans }}</p>
+        </div>
+
+        <hr>
+        <form action="{{ path('newscoop_paywall_hook_sidebar', {
+            articleNumber: articleNumber,
+            articleLanguage: articleLanguage,
+            allowed: hasPermission
+        }) }}" method="post">
+            <select name="paywallTemplateSubscriptionId" class="input_select">
+                <option value="">{{ 'paywall.manage.label.choose'|trans }}</option>
+                {% for template in templates %}
+                <option value="{{template.id}}">{{ template.name }} ({{ template.price }} {{ template.currency }})</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="paywall-button save-button">{{ 'paywall.btn.save'|trans}}</button>
+        </form>
+    </div>
+</div>
+<script>
+    $('.paywall-hint').click(function() {
+        if ($('#paywall-hint-msg').is(":visible")) {
+            $('#paywall-hint-msg').hide();
+        } else {
+            $('#paywall-hint-msg').show();
+        }
+    })
+
+    $('input[name=paywall_is_public]').change(function() {
+        if ($(this).attr('disabled')) {
+            return false;
+        }
+
+        callServer(['Article', 'setIsPublic'], [
+            {{ articleLanguage }},
+            {{ articleNumber }},
+            Number($(this).is(':checked'))
+        ], function(json) {
+            flashMessage("{{ 'paywall.label.switchsaved'|trans }}");
+        });
+    });
+
+    $('.paywall-button').on('click', function(e){
+        e.preventDefault();
+        var button = $(this).prop('disabled', true);
+        var form = $(this).parent();
+        var data = form.serialize();
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: data,
+            dataType: "html",
+            success: function(msg) {
+                button.prop('disabled', false);
+                $('.paywallplugin .hook-content').html(msg);
+
+                $('#alert-container .msg-text').html('');
+                $('#alert-container .msg-text').append('<span class="sr-only">Success:</span> {{ "paywall.success.saved"|trans }}');
+                $('#alert-container').addClass('alert-success');
+                $('#alert-container').show();
+                setTimeout(function() {
+                    $('#alert-container').fadeOut('fast');
+                }, 3000);
+            }, error: function() {
+                $('#alert-container .msg-text').html('');
+                $('#alert-container').addClass('alert-danger');
+                $('#alert-container .msg-text').append('<span class="sr-only">Error:</span> {{ "paywall.error.fatal"|trans }}');
+                $('#alert-container').show();
+                button.prop('disabled', false);
+                setTimeout(function() {
+                    $('#alert-container').fadeOut('fast');
+                }, 3000);
+            }
+        });
+    });
+
+    $('.paywall-unmark-btn').on('click', function(e){
+        e.preventDefault();
+        var button = $(this).prop('disabled', true);
+        $.ajax({
+            type: 'PATCH',
+            url: "{{ path('newscoop_paywall_hook_unmark', {articleNumber: articleNumber, articleLanguage: articleLanguage}) }}",
+            success: function(msg) {
+                button.prop('disabled', false);
+                var element = $('.paywallplugin .hook-content .js-paywall-status span');
+                if (msg.status) {
+                    element.removeClass('js-paywall-status-yes');
+                    element.text('{{ 'paywall.manage.label.no'|trans }}');
+                    element.addClass('js-paywall-status-no');
+                    $('.subscription-details').remove();
+                    button.hide();
+                }
+
+                $('#alert-container .msg-text').html('');
+                $('#alert-container .msg-text').append('<span class="sr-only">Success:</span> {{ "paywall.success.saved"|trans }}');
+                $('#alert-container').addClass('alert-success');
+                $('#alert-container').show();
+                setTimeout(function() {
+                    $('#alert-container').fadeOut('fast');
+                }, 3000);
+            }, error: function() {
+                $('#alert-container .msg-text').html('');
+                $('#alert-container').addClass('alert-danger');
+                $('#alert-container .msg-text').append('<span class="sr-only">Error:</span> {{ "paywall.error.fatal"|trans }}');
+                $('#alert-container').show();
+                button.prop('disabled', false);
+                setTimeout(function() {
+                    $('#alert-container').fadeOut('fast');
+                }, 3000);
+            }
+        });
+    });
+</script>
