@@ -7,7 +7,6 @@
  */
 namespace Newscoop\PaywallBundle\Provider;
 
-use Newscoop\PaywallBundle\Entity\Repository\GatewayRepository;
 use Newscoop\PaywallBundle\Adapter\AdapterFactory;
 use Doctrine\Common\Persistence\ObjectRepository;
 
