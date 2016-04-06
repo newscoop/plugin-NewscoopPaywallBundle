@@ -34,14 +34,6 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $reflection = new \ReflectionClass($this);
         $this->classDir = $reflection->getFileName();
         $this->pluginDir = dirname($this->classDir).$this->pluginDir;
-
-        $appDirectory = realpath($this->pluginDir.'application/console');
-        $this->cronjobs = array(
-            'Sends email notifications for expiring subscriptions' => array(
-                'command' => $appDirectory.' paywall:notifier:expiring',
-                'schedule' => '0 2 * * *',
-            ),
-        );
     }
 
     public function install(GenericEvent $event)
@@ -103,6 +95,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
      */
     private function addJobs()
     {
+        $this->setCronJobs();
         foreach ($this->cronjobs as $jobName => $jobConfig) {
             $this->scheduler->registerJob($jobName, $jobConfig);
         }
@@ -113,9 +106,42 @@ class LifecycleSubscriber implements EventSubscriberInterface
      */
     private function removeJobs()
     {
+        $this->setCronJobs();
         foreach ($this->cronjobs as $jobName => $jobConfig) {
             $this->scheduler->removeJob($jobName, $jobConfig);
         }
+    }
+
+    private function setCronJobs()
+    {
+        $qb = $this->em->getRepository('Newscoop\Entity\Aliases')
+            ->createQueryBuilder('a');
+
+        $qb->select(
+                'a.id as aliasId',
+                'p.id as publicationId'
+            )
+            ->leftJoin('a.publication', 'p')
+            ->setMaxResults(1);
+
+        $alias = $qb->getQuery()->getArrayResult();
+
+        if (empty($alias)) {
+            throw new \RuntimeException('There is no alias defined! At least one alias needs to be defined.');
+        }
+
+        $this->cronjobs = array(
+            'Sends email notifications for expiring subscriptions' => array(
+                'command' => sprintf(
+                    "%s paywall:notifier:expiring %s",
+                    realpath($this->pluginDir.'application/console'),
+                    $alias[0]['publicationId']
+                ),
+                'schedule' => '0 2 * * *',
+            ),
+        );
+
+        return $alias[0]['publicationId'];
     }
 
     public static function getSubscribedEvents()

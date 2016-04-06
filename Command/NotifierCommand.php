@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Newscoop\PaywallBundle\Notifications\Emails;
+use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Console command responsible for sending email
@@ -26,15 +27,19 @@ class NotifierCommand extends ContainerAwareCommand
     {
         $this
             ->setName('paywall:notifier:expiring')
+            ->addArgument('publication', InputArgument::REQUIRED, 'Publication id')
             ->setDescription('Sends email notifications for expiring subscriptions')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->input = $input;
+        $this->output = $output;
+
+        $this->setCurrentPublication();
+
         try {
-            $this->input = $input;
-            $this->output = $output;
             $now = new \DateTime();
             $this->runProcessing($now, 7, Emails::NOTIFY_LEVEL_ONE);
             $this->runProcessing($now, 3, Emails::NOTIFY_LEVEL_TWO);
@@ -43,6 +48,14 @@ class NotifierCommand extends ContainerAwareCommand
 
             return false;
         }
+    }
+
+    private function setCurrentPublication()
+    {
+        $publicationService = $this->getContainer()->getService('newscoop.publication_service');
+        $entityManager = $this->getContainer()->getService('em');
+        $publication = $entityManager->getReference('Newscoop\Entity\Publication', $this->input->getArgument('publication'));
+        $publicationService->setPublication($publication);
     }
 
     private function runProcessing($now, $daysBefore, $level)

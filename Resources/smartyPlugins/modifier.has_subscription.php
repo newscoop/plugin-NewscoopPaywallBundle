@@ -12,7 +12,7 @@
  *
  * @return string
  */
-function smarty_modifier_has_subscription($user, $smarty)
+function smarty_modifier_has_subscription($user)
 {
     $context = \CampTemplate::singleton()->context();
     $user = $context->user;
