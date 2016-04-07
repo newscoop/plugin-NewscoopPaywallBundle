@@ -5,6 +5,7 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -24,6 +25,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
     private $systemPreferences;
     private $classDir;
     private $pluginDir = '/../../../../';
+    private $cronjobs;
 
     public function __construct($em, $dispatcher, $scheduler, $systemPreferences)
     {
@@ -114,34 +116,28 @@ class LifecycleSubscriber implements EventSubscriberInterface
 
     private function setCronJobs()
     {
-        $qb = $this->em->getRepository('Newscoop\Entity\Aliases')
-            ->createQueryBuilder('a');
-
-        $qb->select(
-                'a.id as aliasId',
-                'p.id as publicationId'
-            )
-            ->leftJoin('a.publication', 'p')
+        $queryBuilder = $this->em->getRepository('Newscoop\Entity\Publication')
+            ->createQueryBuilder('p')
+            ->select('a.name')
+            ->leftJoin('p.defaultAlias', 'a')
             ->setMaxResults(1);
 
-        $alias = $qb->getQuery()->getArrayResult();
+        $alias = $queryBuilder->getQuery()->getOneOrNullResult();
 
-        if (empty($alias)) {
+        if (!isset($alias['name'])) {
             throw new \RuntimeException('There is no alias defined! At least one alias needs to be defined.');
         }
 
         $this->cronjobs = array(
             'Sends email notifications for expiring subscriptions' => array(
                 'command' => sprintf(
-                    "%s paywall:notifier:expiring %s",
+                    '%s paywall:notifier:expiring %s',
                     realpath($this->pluginDir.'application/console'),
-                    $alias[0]['publicationId']
+                    $alias['name']
                 ),
                 'schedule' => '0 2 * * *',
             ),
         );
-
-        return $alias[0]['publicationId'];
     }
 
     public static function getSubscribedEvents()

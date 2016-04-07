@@ -27,7 +27,7 @@ class NotifierCommand extends ContainerAwareCommand
     {
         $this
             ->setName('paywall:notifier:expiring')
-            ->addArgument('publication', InputArgument::REQUIRED, 'Publication id')
+            ->addArgument('alias', InputArgument::REQUIRED, 'Publication alias')
             ->setDescription('Sends email notifications for expiring subscriptions')
         ;
     }
@@ -52,9 +52,20 @@ class NotifierCommand extends ContainerAwareCommand
 
     private function setCurrentPublication()
     {
-        $publicationService = $this->getContainer()->getService('newscoop.publication_service');
         $entityManager = $this->getContainer()->getService('em');
-        $publication = $entityManager->getReference('Newscoop\Entity\Publication', $this->input->getArgument('publication'));
+        $queryBuilder = $entityManager->getRepository('Newscoop\Entity\Publication')
+            ->createQueryBuilder('p')
+            ->leftJoin('p.defaultAlias', 'a')
+            ->where('a.name = :alias')
+            ->setParameter('alias', $this->input->getArgument('alias'));
+
+        $publication = $queryBuilder->getQuery()->getOneOrNullResult();
+
+        if (null === $publication) {
+            throw new \RuntimeException('Publication does not exist for given alias!');
+        }
+
+        $publicationService = $this->getContainer()->getService('newscoop.publication_service');
         $publicationService->setPublication($publication);
     }
 
