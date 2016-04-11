@@ -9,6 +9,7 @@ namespace Newscoop\PaywallBundle\Serializer;
 
 use JMS\Serializer\JsonSerializationVisitor;
 use Newscoop\PaywallBundle\Currency\Context\CurrencyContextInterface;
+use Newscoop\PaywallBundle\Entity\PriceableInterface;
 use Sylius\Component\Currency\Converter\CurrencyConverterInterface;
 
 /**
@@ -31,7 +32,7 @@ class CurrencyConverterHandler
         $this->context = $context;
     }
 
-    public function serializeToJson(JsonSerializationVisitor $visitor, $subscription, $type)
+    public function serializeToJson(JsonSerializationVisitor $visitor, PriceableInterface $subscription)
     {
         if (!$subscription) {
             return;

@@ -10,8 +10,7 @@ namespace Newscoop\PaywallBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Newscoop\EventDispatcher\Events\GenericEvent;
-use Newscoop\PaywallBundle\Entity\Settings;
-use Newscoop\PaywallBundle\Events\AdaptersEvent;
+use Newscoop\PaywallBundle\Entity\Gateway;
 
 /**
  * Event lifecycle management.
@@ -26,6 +25,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
     private $systemPreferences;
     private $classDir;
     private $pluginDir = '/../../../../';
+    private $cronjobs;
 
     public function __construct($em, $dispatcher, $scheduler, $systemPreferences)
     {
@@ -36,14 +36,6 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $reflection = new \ReflectionClass($this);
         $this->classDir = $reflection->getFileName();
         $this->pluginDir = dirname($this->classDir).$this->pluginDir;
-
-        $appDirectory = realpath($this->pluginDir.'application/console');
-        $this->cronjobs = array(
-            'Sends email notifications for expiring subscriptions' => array(
-                'command' => $appDirectory.' paywall:notifier:expiring',
-                'schedule' => '0 2 * * *',
-            ),
-        );
     }
 
     public function install(GenericEvent $event)
@@ -54,13 +46,13 @@ class LifecycleSubscriber implements EventSubscriberInterface
             $this->getClasses(),
             $this->pluginDir.'library/Proxy'
         );
-        $adapter = new Settings();
-        $adapter->setName('Paypal');
-        $adapter->setValue('PaypalAdapter');
+        $adapter = new Gateway();
+        $adapter->setName('PayPal_Express');
+        $adapter->setValue('PayPal_Express');
         $this->em->persist($adapter);
         $this->em->flush();
 
-        $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
+        $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new GenericEvent());
 
         $this->addJobs();
         $this->systemPreferences->PaywallMembershipNotifyEmail = $this->systemPreferences->EmailFromAddress;
@@ -73,7 +65,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->updateSchema($this->getClasses(), true);
 
-        $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new AdaptersEvent($this, array()));
+        $this->dispatcher->dispatch('newscoop_paywall.adapters.register', new GenericEvent());
 
         // Generate proxies for entities
         $this->em->getProxyFactory()->generateProxyClasses(
@@ -87,6 +79,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $tool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $tool->dropSchema($this->getClasses(), true);
         $this->removeJobs();
+        $this->removeSettings();
     }
 
     /**
@@ -104,6 +97,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
      */
     private function addJobs()
     {
+        $this->setCronJobs();
         foreach ($this->cronjobs as $jobName => $jobConfig) {
             $this->scheduler->registerJob($jobName, $jobConfig);
         }
@@ -114,9 +108,36 @@ class LifecycleSubscriber implements EventSubscriberInterface
      */
     private function removeJobs()
     {
+        $this->setCronJobs();
         foreach ($this->cronjobs as $jobName => $jobConfig) {
             $this->scheduler->removeJob($jobName, $jobConfig);
         }
+    }
+
+    private function setCronJobs()
+    {
+        $queryBuilder = $this->em->getRepository('Newscoop\Entity\Publication')
+            ->createQueryBuilder('p')
+            ->select('a.name')
+            ->leftJoin('p.defaultAlias', 'a')
+            ->setMaxResults(1);
+
+        $alias = $queryBuilder->getQuery()->getOneOrNullResult();
+
+        if (!isset($alias['name'])) {
+            throw new \RuntimeException('There is no alias defined! At least one alias needs to be defined.');
+        }
+
+        $this->cronjobs = array(
+            'Sends email notifications for expiring subscriptions' => array(
+                'command' => sprintf(
+                    '%s paywall:notifier:expiring %s',
+                    realpath($this->pluginDir.'application/console'),
+                    $alias['name']
+                ),
+                'schedule' => '0 2 * * *',
+            ),
+        );
     }
 
     public static function getSubscribedEvents()
@@ -131,17 +152,18 @@ class LifecycleSubscriber implements EventSubscriberInterface
     private function getClasses()
     {
         return array(
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Subscription'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionSpecification'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Settings'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\UserSubscription'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Trial'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Discount'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Duration'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Order'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Modification'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Currency'),
-          $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionTranslation'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Subscription'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionSpecification'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Gateway'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\UserSubscription'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Trial'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Discount'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Duration'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Order'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Modification'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Currency'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\SubscriptionTranslation'),
+            $this->em->getClassMetadata('Newscoop\PaywallBundle\Entity\Payment'),
         );
     }
 }

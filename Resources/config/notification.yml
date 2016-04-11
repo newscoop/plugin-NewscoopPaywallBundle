@@ -1,0 +1,20 @@
+services:
+    newscoop_paywall.notifications_service:
+        class: Newscoop\PaywallBundle\Services\NotificationsService
+        arguments:
+            - @email
+            - @preferences
+            - @newscoop.templates.service
+            - @newscoop.placeholders.service
+            - @em
+            - @event_dispatcher
+    newscoop_paywall.notification_listener:
+        class: %newscoop.paywall.listener.notification.class%
+        arguments:
+            - @newscoop_paywall.notifications_service
+        tags:
+            - { name: kernel.event_listener, event: paywall.subscription.order, method: sendAdminNotificationEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.order, method: sendUserNotificationEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.status_change, method: sendUserSubscriptionStatusChangeEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.expiration, method: sendSubscriptionExpirationEmail }
+            - { name: kernel.event_listener, event: paywall.subscription.admin_order, method: sendAdminCreatedNotification }

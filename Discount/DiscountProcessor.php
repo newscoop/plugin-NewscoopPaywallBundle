@@ -5,12 +5,11 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Discount;
 
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 use Newscoop\PaywallBundle\Entity\OrderInterface;
-use Newscoop\PaywallBundle\Entity\Discount;
+use Newscoop\PaywallBundle\Entity\Discount as DiscountEntity;
 
 /**
  * Process all discounts for order items.
@@ -53,35 +52,41 @@ class DiscountProcessor implements DiscountProcessorInterface
      * eligible for discount.
      *
      * @param DiscountableInterface $object
-     * @param Discount              $discount
+     * @param DiscountEntity        $discount
      *
      * @return bool
      */
-    protected function isEligibleForDiscount(DiscountableInterface $object, Discount $discount)
+    protected function isEligibleForDiscount(DiscountableInterface $object, DiscountEntity $discount)
     {
         if ($object instanceof UserSubscription) {
-            $selectedDiscount = $object->getDiscount();
-            if ($object->getProlonged() && $selectedDiscount['id'] === $discount->getId()) {
-                return true;
-            }
+            return $this->processOrderItem($object, $discount);
+        }
 
-            $duration = $object->getDuration();
-            if ($object->getOrder()->countItems() == 1 &&
-                !$discount->getCountBased() &&
-                $object->hasDiscount($discount)
-            ) {
-                return true;
-            }
-
-            if (!$discount->getCountBased() && $selectedDiscount['id'] === $discount->getId()) {
+        if ($object instanceof OrderInterface) {
+            if ($object->countItems() > 1 && $discount->isCountBased()) {
                 return true;
             }
         }
 
-        if ($object instanceof OrderInterface) {
-            if ($object->countItems() > 1 && $discount->getCountBased()) {
-                return true;
-            }
+        return false;
+    }
+
+    private function processOrderItem(DiscountableInterface $object, DiscountEntity $discount)
+    {
+        $selectedDiscount = $object->getDiscount();
+        if ($object->getProlonged() && $selectedDiscount['id'] === $discount->getId()) {
+            return true;
+        }
+
+        if ($object->getOrder()->countItems() == 1 &&
+                !$discount->isCountBased() &&
+                $object->hasDiscount($discount)
+            ) {
+            return true;
+        }
+
+        if (!$discount->isCountBased() && $selectedDiscount['id'] === $discount->getId()) {
+            return true;
         }
 
         return false;
@@ -90,7 +95,7 @@ class DiscountProcessor implements DiscountProcessorInterface
     private function processCountBasedDiscounts(DiscountableInterface $object)
     {
         foreach ($this->getAllDiscounts() as $discount) {
-            if ($discount->getCountBased()) {
+            if ($discount->isCountBased()) {
                 $discountTempValue = $discount->getValue();
                 $discount->setValue($discountTempValue * ($object->getOrder()->getItems()->count() - 1));
 

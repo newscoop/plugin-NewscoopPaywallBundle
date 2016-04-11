@@ -1,5 +1,9 @@
+imports:
+    - { resource: 'currency.yml' }
+    - { resource: 'notification.yml' }
+    - { resource: 'discount.yml'}
+
 parameters:
-    newscoop.paywall.adapter.class: "Newscoop\\PaywallBundle\\Adapter\\PaypalAdapter"
     subscriptions.service.class: "Newscoop\\PaywallBundle\\Services\\PaywallService"
     newscoop.paywall.listener.notification.class: "Newscoop\\PaywallBundle\\EventListener\\NotificationListener"
 
@@ -7,14 +11,31 @@ services:
     paywall.subscription.service:
         class:      %subscriptions.service.class%
         arguments:  ["@em", "@user"]
-    newscoop.paywall.adapter.manager:
-      class: Newscoop\PaywallBundle\Services\PaywallManager
-      arguments: ["@em", "@paywall.subscription.service", "@dispatcher"]
+
+    newscoop_paywall.gateway.repository:
+        class: Doctrine\ORM\EntityRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Newscoop\PaywallBundle\Entity\Gateway
+
+    newscoop_paywall.method_provider:
+        class: Newscoop\PaywallBundle\Provider\PaymentMethodProvider
+        arguments:
+            - @newscoop_paywall.gateway.repository
+
+    newscoop.paywall.adapter.factory:
+      class: Newscoop\PaywallBundle\Adapter\AdapterFactory
 
     newscoop.paywall.adapter:
-      class: Newscoop\PaywallBundle\Adapter\PaywallAdapterInterface
-      factory_service: newscoop.paywall.adapter.manager
+      class: Newscoop\PaywallBundle\Adpater\GatewayAdapter
+      factory_service: newscoop.paywall.adapter.factory
       factory_method: getAdapter
+      arguments:
+            - @newscoop_paywall.method_provider
+            - @router
+            - @newscoop_paywall.payment_method_context
+            - %paywall_omnipay%
 
     newscoop_paywall.lifecyclesubscriber:
         class: Newscoop\PaywallBundle\EventListener\LifecycleSubscriber
@@ -55,7 +76,7 @@ services:
 
     newscoop_paywall.adapters.listener:
         class: Newscoop\PaywallBundle\EventListener\AdaptersListener
-        arguments: ["@em"]
+        arguments: ["@em", "%paywall_omnipay%"]
         tags:
           - { name: kernel.event_listener, event: newscoop_paywall.adapters.register, method: registerExternalAdapters }
 
@@ -72,6 +93,7 @@ services:
         arguments:  ["@newscoop_paywall.criteria.subscriptions_criteria"]
         tags:
             -  { name: newscoop.template_lists }
+
     newscoop_paywall.notifications_service:
         class: Newscoop\PaywallBundle\Services\NotificationsService
         arguments:
@@ -161,6 +183,27 @@ services:
             - @newscoop_paywall.currency_converter
             - @paywall.subscription.service
             - @newscoop_paywall.processor.discounts
+
+    newscoop_paywall.services.payment:
+        class: Newscoop\PaywallBundle\Services\PaymentService
+        arguments:
+            - @em
+            - @newscoop.paywall.adapter
+            - @newscoop_paywall.method_provider
+
+    newscoop_paywall.payment_method_context:
+        class: Newscoop\PaywallBundle\Services\PaymentMethodContext
+        arguments:
+            - @session
+
+    newscoop_paywall.services.purchase:
+        class: Newscoop\PaywallBundle\Services\PurchaseService
+        arguments:
+            - @newscoop_paywall.services.order
+            - @newscoop_paywall.services.payment
+            - @newscoop.paywall.adapter
+            - @em
+            - @dispatcher
 
     newscoop_paywall.notification_listener:
         class: %newscoop.paywall.listener.notification.class%

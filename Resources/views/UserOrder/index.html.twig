@@ -29,9 +29,10 @@
                 <table class="table">
                   <thead>
                     <tr>
-                    <th>{{ knp_pagination_sortable(pagination, 'paywall.label.number'|trans, 'o.id') }}</th>
+                      <th>{{ knp_pagination_sortable(pagination, 'paywall.label.number'|trans, 'o.id') }}</th>
                       <th>{{ knp_pagination_sortable(pagination, 'paywall.label.createdat'|trans, 'o.createdAt') }}</th>
                       <th>{{ knp_pagination_sortable(pagination, 'paywall.label.total'|trans, 'o.total') }}</th>
+                      <th>{{ knp_pagination_sortable(pagination, 'paywall.label.paymentstate'|trans, 'o.paymentState') }}</th>
                       <th>{{ knp_pagination_sortable(pagination, 'paywall.label.user'|trans, 'o.user') }}</th>
                       <th></th>
                   </tr>
@@ -42,6 +43,9 @@
                     <td><a href="{{ path('paywall_plugin_userorder_show', {'id': item.id}) }}">#{{ '%09d'|format(item.id) }}</a></td>
                     <td>{{ item.createdAt|date('Y-m-d H:i:s') }}</td>
                     <td>{{ item.total }} {{ item.currency }}</td>
+                    <td>
+                      <span class="label label-{% if item.paymentState == 'cancelled' or item.paymentState == 'unknown' %}danger{% else %}success{% endif %}">{{ item.paymentState }}</span>
+                    </td>
                     <td>{{ item.user.firstName }} {{ item.user.lastName }} ({{item.user.email}})</td>
                     <td>
                         {{ buttons.show(path('paywall_plugin_userorder_show', {'id': item.id})) }}

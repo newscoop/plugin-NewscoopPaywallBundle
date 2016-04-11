@@ -88,7 +88,6 @@ class NotificationsService
             return;
         }
 
-        $now = new \DateTime('now');
         $smarty = $this->templatesService->getSmarty();
         $smarty->assign('user', new \MetaUser($data['user']));
         $subscriptions = array();

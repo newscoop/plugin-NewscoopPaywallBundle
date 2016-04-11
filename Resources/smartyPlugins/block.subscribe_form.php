@@ -11,7 +11,7 @@
  *
  * Type:     block
  * Name:     subscribe_form
- * Purpose:  Displays a form for subscribe button
+ * Purpose:  Displays a subscribe form
  *
  * @param string
  *     $p_params
@@ -20,9 +20,9 @@
  * @param string
  *     $p_content
  *
- * @return
+ * @return string
  */
-function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat)
+function smarty_block_subscribe_form($p_params, $p_content, &$smarty)
 {
     if (!isset($p_content)) {
         return '';
@@ -30,139 +30,82 @@ function smarty_block_subscribe_form($p_params, $p_content, &$smarty, &$p_repeat
 
     $smarty->smarty->loadPlugin('smarty_shared_escape_special_chars');
     $context = $smarty->getTemplateVars('gimme');
-    $subscriptionService = \Zend_Registry::get('container')->getService('paywall.subscription.service');
+    $entityManager = \Zend_Registry::get('container')->getService('em');
+    $orderService = \Zend_Registry::get('container')->getService('newscoop_paywall.services.order');
     $url = $context->url;
 
     if (!isset($p_params['submit_button'])) {
         $p_params['submit_button'] = 'Subscribe';
     }
-    $anchor = isset($p_params['anchor']) ? '#'.$p_params['anchor'] : null;
+
     if (!isset($p_params['html_code']) || empty($p_params['html_code'])) {
         $p_params['html_code'] = '';
     }
+
     if (!isset($p_params['button_html_code']) || empty($p_params['button_html_code'])) {
         $p_params['button_html_code'] = '';
     }
 
+    if (!isset($p_params['choose_text']) || empty($p_params['choose_text'])) {
+        $p_params['choose_text'] = 'Choose...';
+    }
+
+    if (isset($p_params['payment']) && $p_params['payment'] === 'offline') {
+        $p_params['payment'] = '/'.$p_params['payment'];
+    }
+
     $meta = array();
+    $meta['publication'] = $context->publication->identifier;
+    $meta['issue'] = $context->issue->number;
+    $meta['section'] = $context->section->number;
+    $meta['article'] = $context->article->number;
 
-    if ($context->publication->identifier) {
-        $meta['publication'] = $context->publication->identifier;
-    }
+    $subscriptions = $entityManager->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
+        ->findActiveBy($context->language->code, $meta);
 
-    if ($context->issue->number) {
-        $meta['issue'] = $context->issue->number;
-    }
-
-    if ($context->section->number) {
-        $meta['section'] = $context->section->number;
-    }
-
-    if ($context->article->number) {
-        $meta['article'] = $context->article->number;
-    }
-
-    $subscriptionsConfig = $subscriptionService->getSubscriptionsConfig();
-
-    $matched = array();
-    $types = array(
-        'publication' => 4,
-        'issue' => 3,
-        'section' => 2,
-        'article' => 1,
-    );
-    asort($types);
-
-    $availableSubscriptions = array();
-    foreach ($subscriptionsConfig as $subscription) {
-        $availableSubscriptions[$subscription->getName()] = array(
-            'type' => $subscription->getType(),
-            'range' => $subscription->getRange(),
-            'currency' => $subscription->getCurrency(),
-            'price' => $subscription->getPrice(),
-        );
-    }
-
-    // find specific type
-    $specificType = false;
-    foreach ($availableSubscriptions as $name => $definition) {
-        $specificElement = false;
-        if (array_key_exists('specify', $definition)) {
-            $parts = true;
-            foreach ($definition['specify'] as $contentName => $value) {
-                if (array_key_exists($contentName, $meta) && $meta[$contentName] != $value) {
-                    $parts = false;
-                }
-            }
-
-            if ($parts === true) {
-                $specificElement = true;
-            }
-        }
-
-        if (array_key_exists($definition['type'], $meta)) {
-            if (
-                !array_key_exists($definition['type'], $matched) ||
-                $specificElement === true ||
-                (!array_key_exists('specify', $definition) && !$specificType)
-            ) {
-                $matched[$name] = $definition + array('definition_name' => $name);
-                if ($specificElement) {
-                    $specificType = $definition['type'];
-                }
-            }
-        }
-    }
-
-    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/subscriptions/get'.$anchor.'" method="post" '.$p_params['html_code'].'>'."\n";
-
-    if (isset($template)) {
-        $html .= '<input type="hidden" name="tpl" value="'.$template->identifier."\" />\n";
-    }
-
-    foreach ($context->url->form_parameters as $param) {
-        if ($param['name'] == 'tpl') {
-            continue;
-        }
-        $html .= '<input type="hidden" name="'.$param['name']
-        .'" value="'.htmlentities($param['value'])."\" />\n";
-    }
+    $html = '<form name="subscribe_content" action="'.$url->base.'/paywall/purchase/methods'.$p_params['payment'].'" method="get" '.$p_params['html_code'].'>'."\n";
 
     $options = '';
     if (array_key_exists('option_text', $p_params)) {
         $optionText = smarty_function_escape_special_chars($p_params['option_text']);
     } else {
-        $optionText = 'This %type% - %price% %currency% for %range% days';
+        $optionText = 'This %type% for %range% month(s) - %price% %currency%';
     }
 
-    foreach ($meta as $type => $value) {
-        $html .= '<input type="hidden" name="'.$type.'_id" value="'.$value.'" />'."\n";
-    }
-
-    $html .= '<input type="hidden" name="language_id" value="'.$context->language->number.'" />'."\n";
-
-    if (array_key_exists('type', $p_params) && $p_params['type'] == 'radio') {
-        foreach ($matched as $type => $definition) {
-            $html .= '<p><input type="radio" name="subscription_name" value="'.$definition['definition_name'].'">'.str_replace('%currency%', $definition['currency'],
-                    str_replace('%price%', $definition['price'],
-                        str_replace('%range%', $definition['range'],
-                            str_replace('%type%', $definition['type'], $optionText)
-                ))).'</p>';
+    if (array_key_exists('type', $p_params) && $p_params['type'] === 'radio') {
+        foreach ($subscriptions as $subscription) {
+            foreach ($subscription['ranges'] as $range) {
+                $order = $orderService->processAndCalculateOrderItems(array($subscription['id'] => $range['id']), $subscription['currency']);
+                $html .= '<p><input type="radio" name="batchorder['.$subscription['id'].']" value="'.$range['id'].'"><span>'.str_replace('%currency%', $subscription['currency'],
+                        str_replace('%price%', $order->getTotal(),
+                            str_replace('%name%', $subscription['name'],
+                            str_replace('%range%', $range['value'],
+                                str_replace('%type%', $subscription['type'], $optionText)
+                )))).'</span></p>';
+            }
         }
     } else {
-        foreach ($matched as $type => $definition) {
-            $options .= '<option value="'.$definition['definition_name'].'">'.str_replace('%currency%', $definition['currency'],
-                str_replace('%price%', $definition['price'],
-                    str_replace('%range%', $definition['range'],
-                        str_replace('%type%', $definition['type'], $optionText)
-            ))).'</option>'."\n";
+        foreach ($subscriptions as $subscription) {
+            $options = '';
+            foreach ($subscription['ranges'] as $range) {
+                $order = $orderService->processAndCalculateOrderItems(array($subscription['id'] => $range['id']), $subscription['currency']);
+                $options .= '<option value="'.$range['id'].'">'.str_replace('%currency%', $subscription['currency'],
+                        str_replace('%price%', $order->getTotal(),
+                            str_replace('%name%', $subscription['name'],
+                            str_replace('%range%', $range['value'],
+                                str_replace('%type%', $subscription['type'], $optionText)
+                    )))).'</option>'."\n";
+            }
+
+            if ($options !== '') {
+                $html  .= '<select name="batchorder['.$subscription['id'].']"><option value="">'.$p_params['choose_text'].'</option>'.$options.'</select><br>';
+            }
         }
-        $html  .= '<select name="subscription_name">'.$options.'</select>';
     }
 
     $html .= $p_content;
 
-    $html .= '<input type="submit" name="submit_comment" '
+    $html .= '<input type="submit" '
     .'id="subscribe_content_submit" value="'
     .smarty_function_escape_special_chars($p_params['submit_button'])
     .'" '.$p_params['button_html_code']." />\n";

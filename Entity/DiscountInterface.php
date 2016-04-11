@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 /**
@@ -23,21 +22,21 @@ interface DiscountInterface
     /**
      * Sets discount type.
      *
-     * @param string$type
+     * @param string $type
      */
     public function setType($type);
 
     /**
      * Gets the discount value.
      *
-     * @return decimal
+     * @return float
      */
     public function getValue();
 
     /**
      * Sets the value of value.
      *
-     * @param decimal $value
+     * @param float $value
      */
     public function setValue($value);
 }

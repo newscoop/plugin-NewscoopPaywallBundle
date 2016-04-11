@@ -15,6 +15,7 @@ use Newscoop\PaywallBundle\Entity\Subscription;
 use Newscoop\PaywallBundle\Subscription\SubscriptionData;
 use Newscoop\PaywallBundle\Discount\DiscountProcessorInterface;
 use Newscoop\PaywallBundle\Entity\Duration;
+use Newscoop\PaywallBundle\Entity\UserSubscription;
 
 /**
  * Order service.
@@ -176,5 +177,15 @@ class OrderService
         );
 
         return $periodArray;
+    }
+
+    /**
+     * Activate order item.
+     *
+     * @param UserSubscription $item
+     */
+    public function activateItem(UserSubscription $item)
+    {
+        $this->subscriptionService->activateUserSubscription($item);
     }
 }

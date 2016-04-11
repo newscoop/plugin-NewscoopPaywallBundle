@@ -6,7 +6,6 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Meta;
 
 /**
@@ -16,9 +15,12 @@ class MetaSubscriptions
 {
     protected $subscriptions;
 
-    public function __construct($publicationId, $userId)
+    public function __construct()
     {
-        $this->subscriptions = $this->getSubscriptions(\CampTemplate::singleton()->context()->publication->identifier, \CampTemplate::singleton()->context()->user->identifier);
+        $this->subscriptions = $this->getSubscriptions(
+            \CampTemplate::singleton()->context()->publication->identifier,
+            \CampTemplate::singleton()->context()->user->identifier
+        );
 
         if (count($this->subscriptions) == 0) {
             $this->subscriptions = array();

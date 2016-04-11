@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
@@ -71,7 +70,7 @@ interface OrderInterface extends DiscountableInterface
     /**
      * Gets User.
      *
-     * @return \Newscoop\Entity\User
+     * @return User
      */
     public function getUser();
 }

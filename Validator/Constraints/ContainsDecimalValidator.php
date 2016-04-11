@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -16,7 +15,7 @@ class ContainsDecimalValidator extends ConstraintValidator
     /**
      * Add violations to the validator's context property.
      *
-     * @param $string $value
+     * @param string                                 $value
      * @param Symfony\Component\Validator\Constraint $constraint
      */
     public function validate($value, Constraint $constraint)

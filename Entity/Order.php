@@ -5,12 +5,12 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Newscoop\Entity\User;
 
 /**
  * Order entity.
@@ -68,16 +68,23 @@ class Order implements OrderInterface
      * @ORM\ManyToOne(targetEntity="Newscoop\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="Id")
      *
-     * @var Newscoop\Entity\User
+     * @var User
      */
     protected $user;
 
     /**
      * @ORM\OneToMany(targetEntity="Modification", mappedBy="order", orphanRemoval=true, cascade={"all"})
      *
-     * @var ArrayCollection
+     * @var Collection
      */
     protected $modifications;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Payment", mappedBy="order", orphanRemoval=true, cascade={"all"})
+     *
+     * @var Collection
+     */
+    protected $payments;
 
     /**
      * @ORM\ManyToMany(targetEntity="Discount", cascade={"persist"})
@@ -90,9 +97,16 @@ class Order implements OrderInterface
      *      }
      *  )
      *
-     * @var ArrayCollection
+     * @var Collection
      */
     protected $discounts;
+
+    /**
+     * @ORM\Column(type="string", name="payment_state")
+     *
+     * @var string
+     */
+    protected $paymentState = PaymentInterface::STATE_NEW;
 
     /**
      * @ORM\Column(type="datetime", name="updated_at", nullable=true)
@@ -115,6 +129,7 @@ class Order implements OrderInterface
     {
         $this->items = new ArrayCollection();
         $this->modifications = new ArrayCollection();
+        $this->payments = new ArrayCollection();
         $this->discounts = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
@@ -156,7 +171,7 @@ class Order implements OrderInterface
     /**
      * {@inheritdoc}
      */
-    public function setUser(\Newscoop\Entity\User $user)
+    public function setUser(User $user)
     {
         $this->user = $user;
 
@@ -379,7 +394,7 @@ class Order implements OrderInterface
     /**
      * Gets the discounts.
      *
-     * @return Discount
+     * @return Collection
      */
     public function getDiscounts()
     {
@@ -389,11 +404,11 @@ class Order implements OrderInterface
     /**
      * Sets the discounts.
      *
-     * @param Discount $discounts the discounts
+     * @param Collection $discounts the discounts
      *
      * @return self
      */
-    public function setDiscounts(Discount $discounts)
+    public function setDiscounts(Collection $discounts)
     {
         $this->discounts = $discounts;
 
@@ -459,6 +474,53 @@ class Order implements OrderInterface
     {
         $this->itemsTotal = $itemsTotal * 100;
 
+        return $this;
+    }
+
+    /**
+     * Gets the payments.
+     *
+     * @return Payment
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    public function getPaymentState()
+    {
+        return $this->paymentState;
+    }
+
+    public function setPaymentState($paymentState)
+    {
+        $this->paymentState = $paymentState;
+    }
+
+    public function addPayment(PaymentInterface $payment)
+    {
+        if (!$this->hasPayment($payment)) {
+            $this->payments->add($payment);
+            $payment->setOrder($this);
+            $this->setPaymentState($payment->getState());
+        }
+    }
+
+    public function removePayment(PaymentInterface $payment)
+    {
+        if ($this->hasPayment($payment)) {
+            $this->payments->removeElement($payment);
+            $payment->setOrder(null);
+        }
+    }
+
+    public function hasPayment(PaymentInterface $payment)
+    {
+        return $this->payments->contains($payment);
+    }
+
+    public function getOrder()
+    {
         return $this;
     }
 }

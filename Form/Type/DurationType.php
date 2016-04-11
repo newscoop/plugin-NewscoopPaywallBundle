@@ -5,7 +5,6 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -37,6 +36,7 @@ class DurationType extends AbstractType
             'invalid_message' => 'paywall.step1.form.error.duration',
             'choices' => array(
                 'month' => 'paywall.label.months',
+                'day' => 'paywall.label.days',
             ),
             'required' => true,
         ))

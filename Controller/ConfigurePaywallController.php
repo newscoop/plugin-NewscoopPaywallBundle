@@ -5,7 +5,6 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
-
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -26,9 +25,9 @@ class ConfigurePaywallController extends Controller
         $em = $this->getDoctrine()->getManager();
         $preferencesService = $this->container->get('system_preferences_service');
         $translator = $this->container->get('translator');
-        $active = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
+        $active = $em->getRepository('Newscoop\PaywallBundle\Entity\Gateway')
             ->findOneBy(array(
-                'is_active' => true,
+                'isActive' => true,
             ));
 
         $form = $this->container->get('form.factory')->create(new SettingsFormType(), array(
@@ -48,19 +47,19 @@ class ConfigurePaywallController extends Controller
                 $preferencesService->set('PaywallDefaultCurrency', $data['currency']);
 
                 if (is_numeric($data['adapter'])) {
-                    $settings = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
+                    $settings = $em->getRepository('Newscoop\PaywallBundle\Entity\Gateway')
                         ->findOneBy(array(
                             'id' => $data['adapter'],
                         ));
 
-                    $all = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
+                    $all = $em->getRepository('Newscoop\PaywallBundle\Entity\Gateway')
                         ->findAll();
 
                     foreach ($all as $value) {
-                        $value->setIsActive(false);
+                        $value->setActive(false);
                     }
 
-                    $settings->setIsActive(true);
+                    $settings->setActive(true);
                     $em->flush();
                 }
 
@@ -75,9 +74,9 @@ class ConfigurePaywallController extends Controller
         }
 
         if ($request->isXmlHttpRequest()) {
-            $inactive = $em->getRepository('Newscoop\PaywallBundle\Entity\Settings')
+            $inactive = $em->getRepository('Newscoop\PaywallBundle\Entity\Gateway')
                 ->findBy(array(
-                    'is_active' => false,
+                    'isActive' => false,
                 ));
 
             $adapters = array();

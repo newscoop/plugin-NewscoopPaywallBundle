@@ -1,0 +1,26 @@
+Newscoop\PaywallBundle\Entity\Gateway:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            read_only: true
+            type: integer
+            groups: ["list", "details"]
+            serialized_name: id
+        value:
+            expose: true
+            read_only: true
+            type: string
+            groups: ["list", "details"]
+            serialized_name: value
+        name:
+            expose: true
+            type: string
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: name
+        createdAt:
+            expose: true
+            read_only: true
+            groups: ["list", "details"]
+            serialized_name: created_at
