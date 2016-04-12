@@ -5,6 +5,7 @@
  * @copyright 2014 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Newscoop\PaywallBundle\Entity\Gateway;
@@ -54,6 +55,10 @@ class AdaptersListener
      */
     private function installAdapters()
     {
+        if (!isset($this->config['gateways'])) {
+            return;
+        }
+
         $activeAdapter = $this->entityManager->getRepository('Newscoop\PaywallBundle\Entity\Gateway')
                 ->findOneByisActive(true);
 

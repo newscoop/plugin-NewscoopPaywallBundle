@@ -46,9 +46,10 @@ class LifecycleSubscriber implements EventSubscriberInterface
             $this->getClasses(),
             $this->pluginDir.'library/Proxy'
         );
+
         $adapter = new Gateway();
-        $adapter->setName('PayPal_Express');
-        $adapter->setValue('PayPal_Express');
+        $adapter->setName('Offline');
+        $adapter->setValue('offline');
         $this->em->persist($adapter);
         $this->em->flush();
 
