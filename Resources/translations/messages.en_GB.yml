@@ -1,9 +1,18 @@
 Plugins: Plugins
 paywall:
+    form:
+        payment:
+            state:
+                failed: null
+                cancelled: null
+                completed: null
+                new: null
+                unknown: null
+                pending: null
     label:
         defineduration: 'Define periods & discounts'
         months: month(s)
-        days: days(s)
+        days: null
         discount: Discount
         unitprice: 'Unit Price'
         markedpaid: 'Marked as a paid article?'
@@ -23,6 +32,9 @@ paywall:
         editcurrency: 'Edit currency'
         removeitem: 'Are you sure you want to delete this item?'
         confirmation: Confirmation
+        method: null
+        order: null
+        paymentstate: null
         switchsaved: 'Switch saved.'
         paid: 'Mark this article as paid?'
         publicswitch: 'This switch lets you make an article visible to non-subscribers. If checked, an article will be public, even if the subscription is set for this article, otherwise the article content will be viewable only by the subscribers.'
@@ -97,6 +109,7 @@ paywall:
         activate: Activate
         cancel: Cancel
         close: Close
+        createpayment: null
         createcurrency: 'Create currency'
         unmark: Unmark
     flash:
@@ -155,8 +168,8 @@ paywall:
             nocontent: 'There is no content added yet.'
             content: Content
             choose: Choose...
-            adapters: 'Available providers:'
-            current: 'Current provider:'
+            adapters: null
+            current: null
             goback: 'Go back to users subscriptions'
             firstNotify: 'First reminder sent at'
             secondNotify: 'Second reminder sent at'
@@ -167,6 +180,7 @@ paywall:
             managesubscriptions: 'Manage Subscriptions'
             subscriptions.user: 'Manage User Subscriptions'
             configure.paywall: 'Configure Paywall'
+            payments: null
             discounts: Discounts
             orders: Orders
             currencies: Currencies
@@ -191,17 +205,19 @@ paywall:
         notadded: 'Could not render added entry.'
         exists: 'Resource named %resource% already exists.'
         notexists: 'No item exists with this identifier.'
+        noitems: null
     success:
         settingssaved: 'Settings saved successfully.'
         added: 'Added successfully.'
         removed: 'Removed successfully.'
         saved: 'Saved successfully.'
         created: 'Created successfully.'
+        exists: null
     msg:
         membershipemail: 'Provide email for notifications'
         membershipemaillabel: 'Notifications email'
-        providersmall: 'Select Paywall provider'
-        providername: Provider
+        providersmall: null
+        providername: null
         enableNotify: 'Enable email notifications'
         enableNotifydesc: 'Enables/disables email notifications'
         fromemaillabel: 'Sender email'

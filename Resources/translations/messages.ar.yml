@@ -1,5 +1,14 @@
 Plugins: 'وحدات قابسة'
 paywall:
+    form:
+        payment:
+            state:
+                failed: null
+                cancelled: null
+                completed: null
+                new: null
+                unknown: null
+                pending: null
     label:
         defineduration: null
         months: null
@@ -23,6 +32,9 @@ paywall:
         editcurrency: null
         removeitem: null
         confirmation: null
+        method: null
+        order: null
+        paymentstate: null
         switchsaved: null
         paid: null
         publicswitch: null
@@ -97,6 +109,7 @@ paywall:
         activate: تمكين
         cancel: null
         close: null
+        createpayment: null
         createcurrency: null
         unmark: null
     flash:
@@ -155,8 +168,8 @@ paywall:
             nocontent: 'لم يتم إضافه أي محتوى بعد.'
             content: المحتوى
             choose: إختر...
-            adapters: 'مزودون متوفرون:'
-            current: 'المزود الحالي:'
+            adapters: null
+            current: null
             goback: 'الرجوع إلى إشتراكات المستخدمين'
             firstNotify: null
             secondNotify: null
@@ -167,6 +180,7 @@ paywall:
             managesubscriptions: 'إدارة الإشتراكات'
             subscriptions.user: 'إدارة إشتراكات المستخدمين'
             configure.paywall: 'قم بإعداد صفحة الدفع.'
+            payments: null
             discounts: null
             orders: null
             currencies: null
@@ -191,17 +205,19 @@ paywall:
         notadded: null
         exists: null
         notexists: null
+        noitems: null
     success:
         settingssaved: 'تم حفظ الإعدادات بنجاح.'
         added: null
         removed: null
         saved: null
         created: null
+        exists: null
     msg:
         membershipemail: null
         membershipemaillabel: null
-        providersmall: 'إختر مزود صفحة الدفع.'
-        providername: المزوّد
+        providersmall: null
+        providername: null
         enableNotify: null
         enableNotifydesc: null
         fromemaillabel: null
