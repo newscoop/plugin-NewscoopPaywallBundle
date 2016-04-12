@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Loader;
 class NewscoopPaywallExtension extends Extension
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -23,6 +23,12 @@ class NewscoopPaywallExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+
+        // to not break the container initialization because of missing param
+        if (!$container->hasParameter('paywall_omnipay')) {
+            $container->setParameter('paywall_omnipay', array());
+        }
+
         $loader->load('services.yml');
     }
 }

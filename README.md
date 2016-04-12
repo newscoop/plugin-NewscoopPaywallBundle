@@ -87,6 +87,15 @@ parameters:
                 # test_mode: true #used for testing purposes when using PayPal sandbox
 ```
 
+Update the plugin so it can add PayPal gateway to Paywall plugin, execute the command:
+
+``` bash
+$ php application/console plugins:update "newscoop/newscoop-paywall-bundle"
+```
+
+Go to `Newscoop backend -> Plugins -> Paywall -> Configure Paywall` and choose PayPal gateway from `Payment Gateway` select box.
+Click "Save". PayPal with provided credentials will be used now as a default payment gateway.
+
 Check [here](https://developer.paypal.com/docs/classic/api/apiCredentials/#creating-an-api-signature) how to obtain PayPal credentials for your account.
 
 
