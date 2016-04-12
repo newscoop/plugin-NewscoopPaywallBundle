@@ -1,5 +1,14 @@
 Plugins: Plaqinlər
 paywall:
+    form:
+        payment:
+            state:
+                failed: null
+                cancelled: null
+                completed: null
+                new: null
+                unknown: null
+                pending: null
     label:
         defineduration: null
         months: null
@@ -23,6 +32,9 @@ paywall:
         editcurrency: null
         removeitem: null
         confirmation: null
+        method: null
+        order: null
+        paymentstate: null
         switchsaved: null
         paid: null
         publicswitch: null
@@ -97,6 +109,7 @@ paywall:
         activate: null
         cancel: null
         close: null
+        createpayment: null
         createcurrency: null
         unmark: null
     flash:
@@ -167,6 +180,7 @@ paywall:
             managesubscriptions: null
             subscriptions.user: null
             configure.paywall: null
+            payments: null
             discounts: null
             orders: null
             currencies: null
@@ -191,12 +205,14 @@ paywall:
         notadded: null
         exists: null
         notexists: null
+        noitems: null
     success:
         settingssaved: null
         added: null
         removed: null
         saved: null
         created: null
+        exists: null
     msg:
         membershipemail: null
         membershipemaillabel: null

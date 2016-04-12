@@ -1,5 +1,14 @@
 Plugins: Plugins
 paywall:
+    form:
+        payment:
+            state:
+                failed: null
+                cancelled: null
+                completed: null
+                new: null
+                unknown: null
+                pending: null
     label:
         defineduration: null
         months: null
@@ -23,6 +32,9 @@ paywall:
         editcurrency: null
         removeitem: null
         confirmation: null
+        method: null
+        order: null
+        paymentstate: null
         switchsaved: null
         paid: null
         publicswitch: null
@@ -97,6 +109,7 @@ paywall:
         activate: Aktiver
         cancel: null
         close: null
+        createpayment: null
         createcurrency: null
         unmark: null
     flash:
@@ -155,8 +168,8 @@ paywall:
             nocontent: 'Der er ikke tilføjet noget indhold.'
             content: Indhold
             choose: Vælg...
-            adapters: 'Tilgængelige udbydere:'
-            current: 'Nuværende udbyder:'
+            adapters: null
+            current: null
             goback: 'Tilbage til brugerens abonnementer'
             firstNotify: 'Første påmindelse sendes'
             secondNotify: 'Anden påmindelse sendes'
@@ -167,6 +180,7 @@ paywall:
             managesubscriptions: 'Administrer abonnementer'
             subscriptions.user: 'Administrer bruger abonnementer'
             configure.paywall: 'Indstil betalingsmur'
+            payments: null
             discounts: null
             orders: null
             currencies: null
@@ -191,17 +205,19 @@ paywall:
         notadded: null
         exists: null
         notexists: null
+        noitems: null
     success:
         settingssaved: 'Indstillingerne blev gemt.'
         added: null
         removed: null
         saved: null
         created: null
+        exists: null
     msg:
         membershipemail: 'Angiv email til medlemsbeskeder'
         membershipemaillabel: 'Email til medlemsbeskeder'
-        providersmall: 'Vælg udbyder til betalingsmur'
-        providername: Udbyder
+        providersmall: null
+        providername: null
         enableNotify: 'Aktiver email beskeder'
         enableNotifydesc: 'Aktiver/deaktiver email beskeder'
         fromemaillabel: 'Sender email'

@@ -1,5 +1,14 @@
 Plugins: Bővítmények
 paywall:
+    form:
+        payment:
+            state:
+                failed: null
+                cancelled: null
+                completed: null
+                new: null
+                unknown: null
+                pending: null
     label:
         defineduration: null
         months: null
@@ -23,6 +32,9 @@ paywall:
         editcurrency: null
         removeitem: null
         confirmation: null
+        method: null
+        order: null
+        paymentstate: null
         switchsaved: null
         paid: null
         publicswitch: null
@@ -97,6 +109,7 @@ paywall:
         activate: Aktiválás
         cancel: null
         close: null
+        createpayment: null
         createcurrency: null
         unmark: null
     flash:
@@ -155,8 +168,8 @@ paywall:
             nocontent: 'Még nincs hozzáadott tartalom.'
             content: Tartalom
             choose: Válassz...
-            adapters: 'Létező szolgáltatók:'
-            current: 'Jelenlegi szolgáltató:'
+            adapters: null
+            current: null
             goback: 'Vissza a felhasználói előfizetésekhez'
             firstNotify: null
             secondNotify: null
@@ -167,6 +180,7 @@ paywall:
             managesubscriptions: 'Előfizetések kezelése'
             subscriptions.user: 'Felhasználói előfizetések kezelése'
             configure.paywall: 'A fizetési fal beállítása'
+            payments: null
             discounts: null
             orders: null
             currencies: null
@@ -191,17 +205,19 @@ paywall:
         notadded: null
         exists: null
         notexists: null
+        noitems: null
     success:
         settingssaved: 'A beállítások mentése sikerült.'
         added: null
         removed: null
         saved: null
         created: null
+        exists: null
     msg:
         membershipemail: 'Add meg az értesítési e-mail címedet.'
         membershipemaillabel: null
-        providersmall: 'Válassz fizetési fal szolgáltatót'
-        providername: Szolgáltató
+        providersmall: null
+        providername: null
         enableNotify: null
         enableNotifydesc: null
         fromemaillabel: null
