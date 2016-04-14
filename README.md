@@ -44,10 +44,10 @@ $ php application/console assets:install public/
 ```
 Plugin will be installed to your project's `newscoop/plugins/Newscoop` directory.
 
-### Step 2: Import currencies
+### Step 2: Import currencies (optional)
 
 To make use of the paywall and to be able to create new subscriptions, currencies needs to be defined.
-This can be done manually as well as automatically, we recommend the second option.
+This can be done manually (in the plugin backend) as well as automatically, we recommend the second option.
 
 Run command:
 
@@ -87,10 +87,10 @@ parameters:
                 # test_mode: true #used for testing purposes when using PayPal sandbox
 ```
 
-Update the plugin so it can add PayPal gateway to Paywall plugin, execute the command:
+Dispatch the plugin `update` event so it can add PayPal gateway to Paywall plugin, execute the command:
 
 ``` bash
-$ php application/console plugins:update "newscoop/newscoop-paywall-bundle"
+$ php application/console plugins:dispatch "newscoop/newscoop-paywall-bundle" update
 ```
 
 Go to `Newscoop backend -> Plugins -> Paywall -> Configure Paywall` and choose PayPal gateway from `Payment Gateway` select box.
