@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity\Repository;
 
 use Gedmo\Translatable\Entity\Repository\TranslationRepository as BaseRepository;
@@ -19,13 +20,18 @@ class TranslationRepository extends BaseRepository
     /**
      * Add hints to the query.
      *
-     * @param Query       $query  Query
-     * @param string|null $locale Lecale to which fallback
+     * @param Query  $query  Query
+     * @param string|null $locale Locale to which it should fallback
      *
      * @return Query
      */
     public function setTranslatableHints(Query $query, $locale = null)
     {
+        // fallback to english by default
+        if (null === $locale) {
+            $locale = 'en';
+        }
+
         $query->setHint(
             Query::HINT_CUSTOM_OUTPUT_WALKER,
             'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
