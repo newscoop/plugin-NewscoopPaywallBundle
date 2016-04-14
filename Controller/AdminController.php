@@ -222,9 +222,10 @@ class AdminController extends Controller
             if ($formSpecification->isValid()) {
                 $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                     ->findOneBy(array(
-                        'name' => strtolower($request->request->get('subscriptionTitle')),
+                        'id' => $id,
                         'is_active' => true,
                     ));
+
                 $specification->setSubscription($subscription);
                 if (!$id || $create) {
                     $em->persist($specification);
