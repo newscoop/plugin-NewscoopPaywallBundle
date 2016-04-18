@@ -5,6 +5,7 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -225,6 +226,14 @@ class AdminController extends Controller
                         'id' => $id,
                         'is_active' => true,
                     ));
+
+                if (null === $subscription) {
+                    $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
+                        ->findOneBy(array(
+                            'name' => strtolower($request->request->get('subscriptionTitle')),
+                            'is_active' => true,
+                        ));
+                }
 
                 $specification->setSubscription($subscription);
                 if (!$id || $create) {
