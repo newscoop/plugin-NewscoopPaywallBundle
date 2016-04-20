@@ -186,20 +186,25 @@ $(document).ready(function(){
         var id = $(this).attr('id');
         var obj = $("#"+id);
         event.preventDefault();
-        $.post($(this).attr('href'),
-         function(data) {
-            if (data.status) {
-              console.log(obj.find('td.status').attr('id'));
-                if (obj.find('td.status').attr('id') === 'deactivated') {
-                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: {{ order.id }}}));
-                    flashMessage('{{ 'paywall.flash.message.subscription.activated'|trans }}');
+        $.ajax($(this).attr('href'), {
+           type: "POST",
+           statusCode: {
+              403: function (response) {
+                 flashMessage('{{ 'paywall.permissions.alert.flash'|trans }}', 'error');
+              }
+           }, success: function (data) {
+                if (data.status) {
+                    if (obj.find('td.status').attr('id') === 'deactivated') {
+                        refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: {{ order.id }}}));
+                        flashMessage('{{ 'paywall.flash.message.subscription.activated'|trans }}');
+                    } else {
+                        refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: {{ order.id }}}));
+                        flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
+                    }
                 } else {
-                    refreshTable('#users-subscriptionsTable', Routing.generate('newscoop_paywall_userssubscriptions_loadsubscriptions', {id: {{ order.id }}}));
-                    flashMessage('{{ 'paywall.flash.message.subscription.deactivated'|trans }}');
+                    flashMessage('{{ 'paywall.flash.message.error'|trans }}', 'error');
                 }
-            } else {
-                flashMessage('{{ 'paywall.flash.message.error'|trans }}', 'error');
-            }
+           },
         });
     });
 
@@ -207,14 +212,20 @@ $(document).ready(function(){
         var id = $(this).attr('id');
         var obj = $("tr#"+id);
         event.preventDefault();
-        $.post($(this).attr('href'),
-         function(data) {
-            if (data.status) {
-                flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
-                obj.remove();
-            } else {
-                flashMessage('{{ 'paywall.flash.message.error'|trans }}', 'error');
-            }
+        $.ajax($(this).attr('href'), {
+           type: "POST",
+           statusCode: {
+              403: function (response) {
+                 flashMessage('{{ 'paywall.permissions.alert.flash'|trans }}', 'error');
+              }
+           }, success: function (data) {
+                if (data.status) {
+                    flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
+                    obj.remove();
+                } else {
+                    flashMessage('{{ 'paywall.flash.message.error'|trans }}', 'error');
+                }
+           },
         });
     });
 

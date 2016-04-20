@@ -4,9 +4,11 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\EventListener;
 
 use Newscoop\EventDispatcher\Events\PluginHooksEvent;
+use Newscoop\PaywallBundle\Permissions;
 
 /**
  * Hook listener.
@@ -35,7 +37,8 @@ class HookListener
 
     public function sidebar(PluginHooksEvent $event)
     {
-        if (!$this->pluginsService->isEnabled(LifecycleSubscriber::PLUGIN_NAME)) {
+        $user = $this->userService->getCurrentUser();
+        if (!$this->pluginsService->isEnabled(LifecycleSubscriber::PLUGIN_NAME) || !$user->hasPermission(Permissions::SIDEBAR)) {
             return;
         }
 

@@ -16,6 +16,7 @@
 {% block admin_content %}
 <div class="plugin-container">
 	{% include "NewscoopPaywallBundle::admin_menu.html.twig" with {active: 1} %}
+	{% if hasPermission('plugin_paywall_subscription-add') or hasPermission('plugin_paywall_subscriptions-manage') %}
 	<div id="add-subscription" style="padding: 10px 10px 30px 10px;">
 		<form id="confForm" action="{{ path('newscoop_paywall_admin_update', {'id': subscription_id }) }}" method="post" {{ form_enctype(form) }} >
 			<table id="step1" border="0" cellspacing="0" cellpadding="0" class="box_table">
@@ -269,6 +270,9 @@
 			</table>
 		</form>
 	</div>
+	{% else %}
+		<div class="alert alert-danger" style="font-size: 14px"><center>{{ 'paywall.permissions.alert.add'|trans }}</center></div>
+	{% endif %}
 </div>
 <script>
 	$('form#step3Form').live('submit', function () {
@@ -280,7 +284,11 @@
 				type: 'POST',
 				url: "{{ path('newscoop_paywall_admin_duration', {'id': subscription_id }) }}",
 				data: data,
-				success: function (data) {
+				statusCode: {
+	               403: function (response) {
+	                  flashMessage('{{ 'paywall.permissions.alert.flash'|trans }}', 'error');
+	               }
+	            }, success: function (data) {
 					if (data.status) {
 						flashMessage("{{ 'paywall.success.added'|trans }}");
 						if (data.duration) {
@@ -332,7 +340,11 @@
 			$.ajax({
 				type: 'POST',
 				url: that.data('path'),
-				success: function (data) {
+				statusCode: {
+	               403: function (response) {
+	                  flashMessage('{{ 'paywall.permissions.alert.flash'|trans }}', 'error');
+	               }
+	            }, success: function (data) {
 					if (data.status) {
 						flashMessage('{{ 'paywall.success.removed'|trans }}');
 						that.parent().parent().remove();

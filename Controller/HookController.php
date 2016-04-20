@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Newscoop\PaywallBundle\Entity\SubscriptionSpecification;
 use Newscoop\Entity\Article;
 use Doctrine\Common\Collections\ArrayCollection;
+use Newscoop\PaywallBundle\Permissions;
 
 class HookController extends BaseController
 {
@@ -70,6 +72,7 @@ class HookController extends BaseController
      */
     public function unmarkAction($articleNumber, $articleLanguage)
     {
+        $this->hasPermission(Permissions::SIDEBAR);
         $entityManager = $this->get('em');
         $article = $this->findOneOr404($articleNumber, $articleLanguage);
         $specification = $entityManager

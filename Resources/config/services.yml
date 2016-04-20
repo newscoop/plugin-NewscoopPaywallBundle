@@ -44,6 +44,8 @@ services:
             - @dispatcher
             - @newscoop.scheduler
             - @preferences
+            - @newscoop.plugins.service
+            - @translator
         tags:
             - { name: kernel.event_subscriber}
 
@@ -226,3 +228,10 @@ services:
         arguments: ["@templating", "@em", "@newscoop_paywall.subscription_template_provider", "@newscoop.plugins.service", "@user"]
         tags:
           - { name: kernel.event_listener, event: newscoop_admin.interface.article.edit.sidebar, method: sidebar }
+
+    newscoop_paywall.permissions.listener:
+        class: Newscoop\PaywallBundle\EventListener\PermissionsListener
+        arguments:
+            - @translator
+        tags:
+          - { name: kernel.event_listener, event: newscoop.plugins.permissions.register, method: registerPermissions }

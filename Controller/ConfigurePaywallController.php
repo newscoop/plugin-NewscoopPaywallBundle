@@ -5,16 +5,17 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Newscoop\PaywallBundle\Form\Type\SettingsFormType;
+use Newscoop\PaywallBundle\Permissions;
 
-class ConfigurePaywallController extends Controller
+class ConfigurePaywallController extends BaseController
 {
     /**
      * @Route("/admin/paywall_plugin/configure-paywall", options={"expose"=true})
@@ -22,6 +23,7 @@ class ConfigurePaywallController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $this->hasPermission(Permissions::CONFIGURE);
         $em = $this->getDoctrine()->getManager();
         $preferencesService = $this->container->get('system_preferences_service');
         $translator = $this->container->get('translator');
