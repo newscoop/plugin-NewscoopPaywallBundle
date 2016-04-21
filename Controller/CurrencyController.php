@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Newscoop\PaywallBundle\Entity\Currency;
 use Newscoop\PaywallBundle\Form\Type\CurrencyType;
 use Sylius\Component\Currency\Model\CurrencyInterface;
+use Newscoop\PaywallBundle\Permissions;
 
 class CurrencyController extends BaseController
 {
@@ -23,6 +25,7 @@ class CurrencyController extends BaseController
      */
     public function indexAction(Request $request)
     {
+        $this->hasPermission(Permissions::CURRENCIES_VIEW);
         $query = $this->getRepository()->findAllAvailable();
         $paginator = $this->get('knp_paginator');
         $currencies = $paginator->paginate(
@@ -43,6 +46,7 @@ class CurrencyController extends BaseController
      */
     public function createAction(Request $request)
     {
+        $this->hasPermission(Permissions::CURRENCIES_MANAGE);
         $currency = $this->getRepository()->createNew();
         $form = $this->createForm(new CurrencyType(), $currency);
         $em = $this->get('em');
@@ -75,6 +79,7 @@ class CurrencyController extends BaseController
      */
     public function editAction(Request $request, Currency $currency)
     {
+        $this->hasPermission(Permissions::CURRENCIES_MANAGE);
         $form = $this->createForm(new CurrencyType(), $currency);
         $em = $this->get('em');
         $translator = $this->get('translator');
@@ -113,6 +118,7 @@ class CurrencyController extends BaseController
      */
     public function deleteAction(Request $request, Currency $currency)
     {
+        $this->hasPermission(Permissions::CURRENCIES_MANAGE);
         $translator = $this->get('translator');
         if ($this->findByCode($currency)) {
             $em = $this->get('em');

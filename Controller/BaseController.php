@@ -11,6 +11,7 @@ namespace Newscoop\PaywallBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\Event;
 use Newscoop\EventDispatcher\Events\GenericEvent;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Base Controller.
@@ -37,5 +38,21 @@ abstract class BaseController extends Controller
     protected function dispatchNotificationEvent($name, $subscription)
     {
         $this->dispatchEvent($name, new GenericEvent($subscription));
+    }
+
+    /**
+     * Checks if user has permission.
+     *
+     * @param string $permission Permission name
+     *
+     * @return bool
+     */
+    protected function hasPermission($permission)
+    {
+        $userService = $this->get('user');
+        $user = $userService->getCurrentUser();
+        if (!$user->hasPermission($permission)) {
+            throw new AccessDeniedException();
+        }
     }
 }

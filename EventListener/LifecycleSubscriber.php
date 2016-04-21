@@ -26,8 +26,10 @@ class LifecycleSubscriber implements EventSubscriberInterface
     private $classDir;
     private $pluginDir = '/../../../../';
     private $cronjobs;
+    private $pluginsService;
+    private $translator;
 
-    public function __construct($em, $dispatcher, $scheduler, $systemPreferences)
+    public function __construct($em, $dispatcher, $scheduler, $systemPreferences, $pluginsService, $translator)
     {
         $this->em = $em;
         $this->dispatcher = $dispatcher;
@@ -36,6 +38,8 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $reflection = new \ReflectionClass($this);
         $this->classDir = $reflection->getFileName();
         $this->pluginDir = dirname($this->classDir).$this->pluginDir;
+        $this->pluginsService = $pluginsService;
+        $this->translator = $translator;
     }
 
     public function install(GenericEvent $event)
@@ -59,6 +63,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $this->systemPreferences->PaywallMembershipNotifyEmail = $this->systemPreferences->EmailFromAddress;
         $this->systemPreferences->PaywallMembershipNotifyFromEmail = $this->systemPreferences->EmailFromAddress;
         $this->systemPreferences->PaywallEmailNotifyEnabled = 0;
+        $this->setPermissions();
     }
 
     public function update(GenericEvent $event)
@@ -73,6 +78,8 @@ class LifecycleSubscriber implements EventSubscriberInterface
             $this->getClasses(),
             $this->pluginDir.'library/Proxy'
         );
+
+        $this->setPermissions();
     }
 
     public function remove(GenericEvent $event)
@@ -81,6 +88,7 @@ class LifecycleSubscriber implements EventSubscriberInterface
         $tool->dropSchema($this->getClasses(), true);
         $this->removeJobs();
         $this->removeSettings();
+        $this->removePermissions();
     }
 
     /**
@@ -148,6 +156,21 @@ class LifecycleSubscriber implements EventSubscriberInterface
             'plugin.update.newscoop_newscoop_paywall_bundle' => array('update', 1),
             'plugin.remove.newscoop_newscoop_paywall_bundle' => array('remove', 1),
         );
+    }
+
+    /**
+     * Remove plugin permissions.
+     */
+    private function removePermissions()
+    {
+        $this->pluginsService->removePluginPermissions($this->pluginsService->collectPermissions($this->translator->trans('paywall.title')));
+    }
+    /**
+     * Collect plugin permissions.
+     */
+    private function setPermissions()
+    {
+        $this->pluginsService->savePluginPermissions($this->pluginsService->collectPermissions($this->translator->trans('paywall.title')));
     }
 
     private function getClasses()

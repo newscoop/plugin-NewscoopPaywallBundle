@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -12,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Newscoop\PaywallBundle\Entity\Payment;
 use Newscoop\PaywallBundle\Form\Type\PaymentType;
+use Newscoop\PaywallBundle\Permissions;
 
 class PaymentController extends BaseController
 {
@@ -22,6 +24,7 @@ class PaymentController extends BaseController
      */
     public function indexAction(Request $request)
     {
+        $this->hasPermission(Permissions::PAYMENTS_VIEW);
         $query = $this->getRepository()->findAllAvailable();
         $paginator = $this->get('knp_paginator');
         $payments = $paginator->paginate(
@@ -42,6 +45,7 @@ class PaymentController extends BaseController
      */
     public function editAction(Request $request, Payment $payment)
     {
+        $this->hasPermission(Permissions::PAYMENTS_MANAGE);
         $form = $this->createForm(new PaymentType(), $payment);
         $entityManager = $this->get('em');
         $translator = $this->get('translator');
@@ -70,6 +74,7 @@ class PaymentController extends BaseController
      */
     public function deleteAction(Payment $payment)
     {
+        $this->hasPermission(Permissions::PAYMENTS_MANAGE);
         $translator = $this->get('translator');
         if ($this->getRepository()->findOneById($payment->getId())) {
             $entityManager = $this->get('em');

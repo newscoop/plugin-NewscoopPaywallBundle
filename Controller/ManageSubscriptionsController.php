@@ -5,17 +5,18 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Newscoop\PaywallBundle\Entity\Subscription;
 use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
+use Newscoop\PaywallBundle\Permissions;
 
-class ManageSubscriptionsController extends Controller
+class ManageSubscriptionsController extends BaseController
 {
     /**
      * @Route("/admin/paywall_plugin/manage", options={"expose"=true})
@@ -23,6 +24,7 @@ class ManageSubscriptionsController extends Controller
      */
     public function manageAction(Request $request)
     {
+        $this->hasPermission(Permissions::SUBSCRIPTIONS_VIEW);
         $subscription = new Subscription();
         $form = $this->createForm('subscriptionconf', $subscription);
         $em = $this->getDoctrine()->getManager();
@@ -42,6 +44,7 @@ class ManageSubscriptionsController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+        $this->hasPermission(Permissions::SUBSCRIPTIONS_MANAGE);
         if ($request->isMethod('POST')) {
             $em = $this->getDoctrine()->getManager();
             $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')

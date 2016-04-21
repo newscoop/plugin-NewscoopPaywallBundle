@@ -40,13 +40,18 @@ $(document).ready(function(){
         var dataTableCell = $(this).parent();
         var dataTableRow = dataTableCell.parent().get(0);
         event.preventDefault();
-        $.post($(this).attr('href'),
-         function(data) {
-            if (data.status) {
-                flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
-                dataTableRow.remove();
-                return false;
-            }
+        $.ajax($(this).attr('href'), {
+           statusCode: {
+              403: function (response) {
+                 flashMessage('{{ 'paywall.permissions.alert.flash'|trans }}', 'error');
+              }
+           }, success: function (data) {
+              if (data.status) {
+                    flashMessage('{{ 'paywall.flash.message.subscription.deleted'|trans }}');
+                    dataTableRow.remove();
+                    return false;
+                }
+           },
         });
     });
     $('#subscriptionsTable_filter label input').addClass('form-control input-sm');

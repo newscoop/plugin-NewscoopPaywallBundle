@@ -225,3 +225,24 @@ paywall:
       exists: "Period with the same value is already defined!"
       defaultcurrency: "Default currency"
       defaultcurrencysmall: "Choose default currency for the subscriptions."
+    permissions:
+      alert:
+          add: "You don't have permissions to add/update subscriptions."
+          flash: "You don't have permissions to do this action."
+      add: "Adding new subscriptions"
+      manage: "Manage defined subscriptions"
+      list: "View defined subscriptions"
+      orders:
+        main: "View orders"
+        manage: "Manage orders"
+      configure: "Configuration/Settings"
+      discounts:
+        main: "View discounts"
+        manage: "Manage discounts"
+      currencies:
+        main: "View currencies"
+        manage: "Manage currencies"
+      payments:
+        main: "View payments"
+        manage: "Manage payments"
+      sidebar: "Sidebar in AES"

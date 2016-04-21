@@ -8,7 +8,6 @@
 
 namespace Newscoop\PaywallBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -19,8 +18,9 @@ use Newscoop\PaywallBundle\Entity\Subscription;
 use Newscoop\PaywallBundle\Entity\SubscriptionSpecification;
 use Newscoop\PaywallBundle\Entity\Duration;
 use Newscoop\PaywallBundle\Form\Type\DurationType;
+use Newscoop\PaywallBundle\Permissions;
 
-class AdminController extends Controller
+class AdminController extends BaseController
 {
     /**
      * @Route("/admin/paywall_plugin")
@@ -30,8 +30,8 @@ class AdminController extends Controller
     public function adminAction(Request $request, $id = null)
     {
         $em = $this->getDoctrine()->getManager();
-
         if ($id) {
+            $this->hasPermission(Permissions::SUBSCRIPTIONS_MANAGE);
             $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                 ->findActiveOneBy($id);
 
@@ -58,6 +58,7 @@ class AdminController extends Controller
         $formSpecification = $this->createForm('specificationForm', $specification);
         $durationForm = $this->createForm(new DurationType());
         if ($request->isMethod('POST')) {
+            $this->hasPermission(Permissions::SUBSCRIPTION_ADD);
             $form->bind($request);
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
@@ -106,6 +107,7 @@ class AdminController extends Controller
         try {
             if ($form->isValid()) {
                 if (is_null($id)) {
+                    $this->hasPermission(Permissions::SUBSCRIPTION_ADD);
                     $subscription = $em->getRepository('Newscoop\PaywallBundle\Entity\Subscription')
                         ->findOneBy(array(
                             'name' => $request->get('subscriptionName'),
@@ -170,6 +172,7 @@ class AdminController extends Controller
      */
     public function durationRemoveAction(Request $request, $id = null)
     {
+        $this->hasPermission(Permissions::SUBSCRIPTIONS_MANAGE);
         $em = $this->getDoctrine()->getManager();
         $duration = $em->getRepository('Newscoop\PaywallBundle\Entity\Duration')
             ->findOneById($id);
@@ -204,6 +207,8 @@ class AdminController extends Controller
         $em = $this->getDoctrine()->getManager();
         $create = false;
         if ($id) {
+            $this->hasPermission(Permissions::SUBSCRIPTIONS_MANAGE);
+
             $specification = $em->getRepository('Newscoop\PaywallBundle\Entity\SubscriptionSpecification')
                 ->findOneBy(array(
                     'subscription' => $id,
@@ -213,6 +218,7 @@ class AdminController extends Controller
                 $create = true;
             }
         } else {
+            $this->hasPermission(Permissions::SUBSCRIPTION_ADD);
             $specification = new SubscriptionSpecification();
             $create = true;
         }
@@ -272,6 +278,8 @@ class AdminController extends Controller
      */
     public function getAllAction(Request $request)
     {
+        $this->hasPermission(Permissions::SUBSCRIPTIONS_MANAGE);
+
         return new Response(json_encode($this->getAll($request, $this->getDoctrine()->getManager())));
     }
 
@@ -280,6 +288,8 @@ class AdminController extends Controller
      */
     public function getPublicationsAction(Request $request)
     {
+        $this->hasPermission(Permissions::SUBSCRIPTIONS_MANAGE);
+
         return new Response(json_encode($this->getPublication($this->getDoctrine()->getManager())));
     }
 
@@ -288,6 +298,8 @@ class AdminController extends Controller
      */
     public function getIssuesAction(Request $request)
     {
+        $this->hasPermission(Permissions::SUBSCRIPTIONS_MANAGE);
+
         return new Response(json_encode($this->getIssue($request, $this->getDoctrine()->getManager())));
     }
 
@@ -296,6 +308,8 @@ class AdminController extends Controller
      */
     public function getSectionsAction(Request $request)
     {
+        $this->hasPermission(Permissions::SUBSCRIPTIONS_MANAGE);
+
         return new Response(json_encode($this->getSection($request, $this->getDoctrine()->getManager())));
     }
 
@@ -304,6 +318,8 @@ class AdminController extends Controller
      */
     public function getArticlesAction(Request $request)
     {
+        $this->hasPermission(Permissions::SUBSCRIPTIONS_MANAGE);
+
         return new Response(json_encode($this->getArticle($request, $this->getDoctrine()->getManager())));
     }
 

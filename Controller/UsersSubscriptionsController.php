@@ -5,6 +5,7 @@
  * @copyright 2013 Sourcefabric o.p.s.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -15,6 +16,7 @@ use Newscoop\PaywallBundle\Criteria\SubscriptionCriteria;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
 use Newscoop\PaywallBundle\Entity\Order;
 use Newscoop\PaywallBundle\Form\Type\OrderItemType;
+use Newscoop\PaywallBundle\Permissions;
 
 class UsersSubscriptionsController extends BaseController
 {
@@ -24,6 +26,7 @@ class UsersSubscriptionsController extends BaseController
      */
     public function loadSubscriptionsAction(Request $request, $id)
     {
+        $this->hasPermission(Permissions::ORDERS_VIEW);
         $criteria = $this->processRequest($request);
         $criteria->order = $id;
         $userSubscriptions = $this->get('paywall.subscription.service')
@@ -89,6 +92,7 @@ class UsersSubscriptionsController extends BaseController
      */
     public function deactivateAction(Request $request, $id)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
         if ($request->isMethod('POST')) {
             try {
                 $subscription = $this->get('paywall.subscription.service')->deactivateById($id);
@@ -106,6 +110,7 @@ class UsersSubscriptionsController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
         try {
             $subscriptionService = $this->get('paywall.subscription.service');
             $subscription = $subscriptionService->deactivateById($id);
@@ -128,6 +133,7 @@ class UsersSubscriptionsController extends BaseController
      */
     public function activateAction(Request $request, $id)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
         if ($request->isMethod('POST')) {
             try {
                 $subscription = $this->get('paywall.subscription.service')->activateById($id);
@@ -148,6 +154,7 @@ class UsersSubscriptionsController extends BaseController
      */
     public function addSubscriptionAction(Request $request, Order $order)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
         $subscriptionService = $this->container->get('paywall.subscription.service');
         $subscription = $subscriptionService->create();
         $form = $this->createForm(new OrderItemType());
@@ -219,6 +226,7 @@ class UsersSubscriptionsController extends BaseController
      */
     public function editsubscriptionAction(Request $request, $id)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
         $em = $this->getDoctrine()->getManager();
         $orderItem = $this->get('paywall.subscription.service')->getOneById($id);
 

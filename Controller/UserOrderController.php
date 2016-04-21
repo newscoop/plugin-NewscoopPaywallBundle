@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -14,6 +15,7 @@ use Newscoop\PaywallBundle\Entity\Order;
 use Newscoop\PaywallBundle\Entity\UserSubscription;
 use Newscoop\PaywallBundle\Form\Type\OrderItemType;
 use Newscoop\PaywallBundle\Events\PaywallEvents;
+use Newscoop\PaywallBundle\Permissions;
 
 class UserOrderController extends BaseController
 {
@@ -24,6 +26,7 @@ class UserOrderController extends BaseController
      */
     public function indexAction(Request $request)
     {
+        $this->hasPermission(Permissions::ORDERS_VIEW);
         $query = $this->getOrderRepository()->findOrders();
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -44,6 +47,7 @@ class UserOrderController extends BaseController
      */
     public function showAction(Request $request, $id)
     {
+        $this->hasPermission(Permissions::ORDERS_VIEW);
         $order = $this->getOrderRepository()->findSingleBy($id, $request->getLocale());
 
         return $this->render('NewscoopPaywallBundle:UserOrder:show.html.twig', array(
@@ -56,6 +60,7 @@ class UserOrderController extends BaseController
      */
     public function editAction(Request $request, Order $order)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
         $form = $this->createForm(new OrderItemType());
 
         return $this->render('NewscoopPaywallBundle:UserOrder:edit.html.twig', array(
@@ -71,6 +76,7 @@ class UserOrderController extends BaseController
      */
     public function deleteAction(Request $request, Order $order)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
         $translator = $this->get('translator');
         if ($this->exists($order)) {
             $em = $this->get('em');
@@ -92,6 +98,8 @@ class UserOrderController extends BaseController
      */
     public function createAction(Request $request)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
+
         return array();
     }
 
@@ -102,6 +110,7 @@ class UserOrderController extends BaseController
      */
     public function periodsAction(Request $request, Order $order)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
         $activeOnes = $this->getActiveSubscriptions($request->getLocale());
         $orderItem = new UserSubscription();
         $form = $this->createForm(new OrderItemType(), $orderItem, array('items' => $activeOnes));
@@ -121,6 +130,7 @@ class UserOrderController extends BaseController
      */
     public function createItemAction(Request $request, Order $order)
     {
+        $this->hasPermission(Permissions::ORDERS_MANAGE);
         $em = $this->get('em');
         $activeOnes = $this->getActiveSubscriptions($request->getLocale());
         $orderItem = new UserSubscription();

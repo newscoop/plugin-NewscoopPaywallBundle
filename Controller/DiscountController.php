@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Newscoop\PaywallBundle\Form\Type\DiscountType;
 use Newscoop\PaywallBundle\Entity\Discount;
+use Newscoop\PaywallBundle\Permissions;
 
 class DiscountController extends BaseController
 {
@@ -21,6 +22,7 @@ class DiscountController extends BaseController
      */
     public function indexAction(Request $request)
     {
+        $this->hasPermission(Permissions::DISCOUNTS_VIEW);
         $query = $this->getDiscountRepository()->findActive();
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -39,6 +41,7 @@ class DiscountController extends BaseController
      */
     public function createAction(Request $request)
     {
+        $this->hasPermission(Permissions::DISCOUNTS_MANAGE);
         $discount = new Discount();
         $form = $this->createForm(new DiscountType(), $discount);
         $em = $this->get('em');
@@ -71,6 +74,7 @@ class DiscountController extends BaseController
      */
     public function deleteAction(Request $request, Discount $discount)
     {
+        $this->hasPermission(Permissions::DISCOUNTS_MANAGE);
         $translator = $this->get('translator');
         if ($this->exists($discount)) {
             $em = $this->get('em');
@@ -90,6 +94,7 @@ class DiscountController extends BaseController
      */
     public function editAction(Request $request, Discount $discount)
     {
+        $this->hasPermission(Permissions::DISCOUNTS_MANAGE);
         $form = $this->createForm(new DiscountType(), $discount);
         $em = $this->get('em');
         $translator = $this->get('translator');
