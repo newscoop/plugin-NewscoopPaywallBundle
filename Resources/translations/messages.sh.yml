@@ -225,3 +225,24 @@ paywall:
         exists: null
         defaultcurrency: null
         defaultcurrencysmall: null
+    permissions:
+        alert:
+            add: null
+            flash: null
+        add: null
+        manage: null
+        list: null
+        orders:
+            main: null
+            manage: null
+        configure: null
+        discounts:
+            main: null
+            manage: null
+        currencies:
+            main: null
+            manage: null
+        payments:
+            main: null
+            manage: null
+        sidebar: null
