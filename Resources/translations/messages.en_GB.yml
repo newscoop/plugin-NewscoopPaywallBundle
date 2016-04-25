@@ -3,16 +3,16 @@ paywall:
     form:
         payment:
             state:
-                failed: null
-                cancelled: null
-                completed: null
-                new: null
-                unknown: null
-                pending: null
+                failed: Failed
+                cancelled: Cancelled
+                completed: Completed
+                new: New
+                unknown: Unknown
+                pending: Pending
     label:
         defineduration: 'Define periods & discounts'
         months: month(s)
-        days: null
+        days: day(s)
         discount: Discount
         unitprice: 'Unit Price'
         markedpaid: 'Marked as a paid article?'
@@ -32,9 +32,9 @@ paywall:
         editcurrency: 'Edit currency'
         removeitem: 'Are you sure you want to delete this item?'
         confirmation: Confirmation
-        method: null
-        order: null
-        paymentstate: null
+        method: Method
+        order: Order
+        paymentstate: 'Payment state'
         switchsaved: 'Switch saved.'
         paid: 'Mark this article as paid?'
         publicswitch: 'This switch lets you make an article visible to non-subscribers. If checked, an article will be public, even if the subscription is set for this article, otherwise the article content will be viewable only by the subscribers.'
@@ -109,7 +109,7 @@ paywall:
         activate: Activate
         cancel: Cancel
         close: Close
-        createpayment: null
+        createpayment: 'Create payment'
         createcurrency: 'Create currency'
         unmark: Unmark
     flash:
@@ -168,8 +168,8 @@ paywall:
             nocontent: 'There is no content added yet.'
             content: Content
             choose: Choose...
-            adapters: null
-            current: null
+            adapters: 'Available gateways:'
+            current: 'Current payment gateway'
             goback: 'Go back to users subscriptions'
             firstNotify: 'First reminder sent at'
             secondNotify: 'Second reminder sent at'
@@ -180,7 +180,7 @@ paywall:
             managesubscriptions: 'Manage Subscriptions'
             subscriptions.user: 'Manage User Subscriptions'
             configure.paywall: 'Configure Paywall'
-            payments: null
+            payments: Payments
             discounts: Discounts
             orders: Orders
             currencies: Currencies
@@ -205,19 +205,19 @@ paywall:
         notadded: 'Could not render added entry.'
         exists: 'Resource named %resource% already exists.'
         notexists: 'No item exists with this identifier.'
-        noitems: null
+        noitems: 'No items selected.'
     success:
         settingssaved: 'Settings saved successfully.'
         added: 'Added successfully.'
         removed: 'Removed successfully.'
         saved: 'Saved successfully.'
         created: 'Created successfully.'
-        exists: null
+        exists: 'This item already exists!'
     msg:
         membershipemail: 'Provide email for notifications'
         membershipemaillabel: 'Notifications email'
-        providersmall: null
-        providername: null
+        providersmall: 'Select payment gateway'
+        providername: 'Payment Gateway'
         enableNotify: 'Enable email notifications'
         enableNotifydesc: 'Enables/disables email notifications'
         fromemaillabel: 'Sender email'
@@ -227,17 +227,17 @@ paywall:
         defaultcurrencysmall: 'Choose default currency for the subscriptions.'
     permissions:
         alert:
-            add: null
-            flash: null
-        add: null
-        manage: null
-        list: null
+            add: 'You don''t have permission to add/update subscriptions.'
+            flash: 'You don''t have permission to perform this action.'
+        add: 'Adding new subscriptions'
+        manage: 'Manage defined subscriptions'
+        list: 'View defined subscriptions'
         orders:
-            main: null
-            manage: null
-        configure: null
+            main: 'View orders'
+            manage: 'Manage orders'
+        configure: Configuration/Settings
         discounts:
-            main: null
+            main: 'View discounts'
             manage: null
         currencies:
             main: null
