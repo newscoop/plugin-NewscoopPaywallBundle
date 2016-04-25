@@ -238,11 +238,11 @@ paywall:
         configure: Configuration/Settings
         discounts:
             main: 'View discounts'
-            manage: null
+            manage: 'Manage discounts'
         currencies:
-            main: null
-            manage: null
+            main: 'View currencies'
+            manage: 'Manage currencies'
         payments:
-            main: null
-            manage: null
-        sidebar: null
+            main: 'View payments'
+            manage: 'Manage payments'
+        sidebar: 'Sidebar in Article Edit Screen'
