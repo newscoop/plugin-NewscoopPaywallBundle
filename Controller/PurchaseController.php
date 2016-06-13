@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -67,10 +68,22 @@ class PurchaseController extends BaseController
             return $response;
         }
 
+        $method = $request->request->get('paymentMethod');
+        if (null !== $method) {
+            $paymentMethodContext = $this->get('newscoop_paywall.payment_method_context');
+            $paymentMethodContext->setMethod($method);
+        }
+
         $request->getSession()->set('paywall_purchase', $items);
 
         $purchaseService = $this->get('newscoop_paywall.services.purchase');
         $result = $purchaseService->startPurchase($items, $currency);
+
+        if (null === $result) {
+            $response->setStatusCode(204);
+
+            return $response;
+        }
 
         $data = $result->getData();
         if (isset($data['ACK']) && 'Success' === $data['ACK']) {

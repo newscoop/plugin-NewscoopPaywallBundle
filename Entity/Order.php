@@ -5,6 +5,7 @@
  * @copyright 2015 Sourcefabric z.ú.
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  */
+
 namespace Newscoop\PaywallBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -448,7 +449,7 @@ class Order implements OrderInterface
             $this->discountTotal -= $item->getDiscountTotal() * 100;
         }
 
-        $this->itemsTotal = $itemsTotal * 100;
+        $this->itemsTotal = round($itemsTotal, 2) * 100;
 
         return $this;
     }
