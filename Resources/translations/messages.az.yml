@@ -156,7 +156,7 @@ paywall:
             editallissues: null
             editallsections: 'Bütün bölmələri dəyiş'
             editallarticles: null
-            language: Dil
+            language: null
             individuallanguage: 'Şəxsi dillər'
             reglanguage: 'Dildən asılı olmayaraq'
             days: null
